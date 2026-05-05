@@ -114,6 +114,3 @@ tags-recomendations/
 - ⏳ `taxonomy/tools/build_taxonomy.py`, `stats.py`, `export_to_csv.py` —
   заглушки с `raise NotImplementedError`. Реализуем по запросу.
 - ⏳ `taxonomy/tools/enrich_taxonomy.py` — пока пусто, ждём оригинал от пользователя.
-- ⏳ Имя репо: текущий remote — `invme2/tags-recomendations`. В bootstrap-промпте
-  фигурировало `wanelo-shopify-system`. Решение по переименованию остаётся за
-  пользователем (см. ADR-001).

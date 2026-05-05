@@ -27,6 +27,11 @@
 - `tools/health_check.py` — общий smoke-тест.
 - CI: `.github/workflows/validate-taxonomy.yml`, `.github/workflows/smoke-pipeline.yml`.
 
+### Changed
+- ADR-001 обновлён: имя репо зафиксировано — `invme2/tags-recomendations`
+  (подтверждено пользователем 2026-05-05). Миграция в `wanelo-shopify-system`
+  снята с повестки.
+
 ### Notes
 - Стартовые файлы пользователя (`taxonomy.json`, `enrich_taxonomy.py`,
   `Shopify_Pipeline_v9_with_taxonomy.ipynb`) **не доставлены** в этой сессии —

@@ -6,27 +6,32 @@
 
 ---
 
-## ADR-001: Моно-репо для taxonomy и pipeline
+## ADR-001: Моно-репо для taxonomy и pipeline, имя `invme2/tags-recomendations`
 **Дата:** 2026-05-05
 **Статус:** Accepted
 
 **Контекст.** Taxonomy и Shopify-пайплайн логически связаны: пайплайн
 потребляет taxonomy. При этом taxonomy эволюционирует чаще и имеет
 собственный CI (валидация схемы), а пайплайн — это `.ipynb` с особыми
-правилами правок.
+правилами правок. На bootstrap-сессии возникал вопрос: оставить имя репо
+`invme2/tags-recomendations` (текущий remote) или мигрировать в
+`wanelo-shopify-system` (как фигурирует в исходном промпте).
 
 **Решение.** Один репозиторий, две независимые подпапки `taxonomy/` и
 `pipeline/`, общий тулинг в `tools/`, общий слой памяти (`CLAUDE.md` и др.) в
-корне. Имя репо текущее — `invme2/tags-recomendations`. Возможный
-ребрендинг в `wanelo-shopify-system` отложен до решения пользователя.
+корне. Имя репо зафиксировано — **`invme2/tags-recomendations`** (подтверждено
+пользователем 2026-05-05). Никакой миграции не планируется.
 
 **Альтернативы.**
 - Два отдельных репо: лишняя ceremony при кросс-изменениях, дублирование
   memory-файлов.
 - Git submodule для taxonomy: усложняет workflow, плохо дружит с raw-URL.
+- Переименование в `wanelo-shopify-system`: разорвало бы существующий remote
+  и raw-URL ссылки; пользователь решил сохранить текущее имя.
 
 **Последствия.** Один CHANGELOG на оба продукта, но раздельные CI-workflow.
-Pipeline ссылается на taxonomy через raw-URL внутри своего же репо.
+Pipeline ссылается на taxonomy через raw-URL вида
+`https://raw.githubusercontent.com/invme2/tags-recomendations/<ref>/taxonomy/taxonomy.json`.
 
 ---
 
