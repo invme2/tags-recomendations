@@ -31,9 +31,37 @@
 - ADR-001 обновлён: имя репо зафиксировано — `invme2/tags-recomendations`
   (подтверждено пользователем 2026-05-05). Миграция в `wanelo-shopify-system`
   снята с повестки.
+- **ADR-006 заменяет ADR-005.** Реальный `taxonomy.json` v3.2 (765 кластеров)
+  доставлен пользователем через ZIP в ветке. Полностью переписана
+  `taxonomy/schema.json` под фактическую структуру: 19 полей в cluster,
+  master-списки `personas/intents/demos` как объекты, `cluster.demos` как
+  объект, новый top-level `sections[]`, namespaced-теги (`cluster:`,
+  `persona:`, `intent:`, `demo:`), `demo.type ∈ {gender, age}`,
+  `status ∈ {approved, draft}`.
+- `validate_taxonomy.py` расширен с 4 до **9 бизнес-правил**: дубли
+  cluster/persona/intent/demo/section, broken section_id/slug/related,
+  unknown persona/intent/gender/age, empty embed_text.
+- `pipeline/tools/notebook_smoke.py` переписан с правильной обработкой
+  scope: больше не лезет в тела функций / классов / lambda. На реальном
+  ноутбуке прежняя версия давала 75 false-positive (флагала параметры
+  и локальные переменные функций как «undefined»); новая версия проходит.
+- `taxonomy/tests/test_taxonomy.py` расширен с 10 до **15 тестов**, добавлен
+  контрактный тест `test_real_taxonomy_validates`, который гарантирует, что
+  реальный `taxonomy.json` всегда проходит схему.
 
-### Notes
-- Стартовые файлы пользователя (`taxonomy.json`, `enrich_taxonomy.py`,
-  `Shopify_Pipeline_v9_with_taxonomy.ipynb`) **не доставлены** в этой сессии —
-  ждём способ передачи. Все тулы корректно репортят отсутствие источника
-  вместо тихого падения.
+### Added
+- `taxonomy/taxonomy.json` — реальная база (765 кластеров, 36 sections,
+  27 personas, 14 intents, 9 demos, version v3.2, schema_version 1).
+- `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт обогащения через
+  Claude API + FAISS-related (заменил мою заглушку).
+- `pipeline/Shopify_Pipeline.ipynb` — реальный пайплайн (17 ячеек, 8 code,
+  ~310KB), переименован из `Shopify_Pipeline_v9_with_taxonomy.ipynb`.
+- `taxonomy/data/v3.1-README.md` — оригинальный README пользователя
+  (положен в `data/` как исторический документ; верхнеуровневый
+  `README.md` остаётся моим, ссылается на `CLAUDE.md`).
+
+### Verified
+- `python tools/health_check.py` → exit 0, оба под-чека зелёные.
+- `python -m pytest taxonomy/tests/ -v` → 15/15 passed.
+- `python taxonomy/tools/validate_taxonomy.py` → 765 кластеров валидны.
+- `python pipeline/tools/notebook_smoke.py` → 17 ячеек валидны.

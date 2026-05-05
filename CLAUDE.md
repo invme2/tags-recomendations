@@ -36,19 +36,20 @@ tags-recomendations/
 │   ├── validate-taxonomy.yml       ← CI: pytest + схема taxonomy
 │   └── smoke-pipeline.yml          ← CI: nbformat-валидация ноутбука
 ├── taxonomy/
-│   ├── taxonomy.json               ← источник истины (НЕ доставлен пока)
-│   ├── schema.json                 ← JSON Schema (черновая, см. DECISIONS ADR-005)
-│   ├── data/                       ← черновые источники (.md, .py)
+│   ├── taxonomy.json               ← источник истины (765 кластеров, v3.2)
+│   ├── schema.json                 ← JSON Schema под реальную структуру (ADR-006)
+│   ├── data/
+│   │   └── v3.1-README.md          ← оригинальный README пользователя
 │   ├── tools/
-│   │   ├── validate_taxonomy.py    ← ✅ работает
+│   │   ├── validate_taxonomy.py    ← ✅ полная схема + 9 бизнес-правил
 │   │   ├── build_taxonomy.py       ← ⏳ stub (NotImplementedError)
-│   │   ├── enrich_taxonomy.py      ← ⏳ ждём доставки от пользователя
+│   │   ├── enrich_taxonomy.py      ← ✅ реальный скрипт обогащения через Claude API
 │   │   ├── stats.py                ← ⏳ stub
 │   │   └── export_to_csv.py        ← ⏳ stub
 │   └── tests/
-│       └── test_taxonomy.py        ← ✅ тестирует валидатор на синтетике
+│       └── test_taxonomy.py        ← ✅ синтетика + контрактный тест на реальный taxonomy.json
 ├── pipeline/
-│   ├── Shopify_Pipeline.ipynb      ← главный артефакт (НЕ доставлен пока)
+│   ├── Shopify_Pipeline.ipynb      ← ✅ доставлен (17 ячеек, 8 code, ~310KB)
 │   ├── PATCHES.md                  ← журнал точечных правок ноутбука
 │   ├── .snapshots/                 ← бекапы перед опасными правками
 │   └── tools/
@@ -95,22 +96,23 @@ tags-recomendations/
 
 ## Что СЕЙЧАС работает (не трогай без причины)
 - ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING)
-- ✅ `tools/health_check.py` — общий чек, корректно репортит отсутствие источников
-- ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + дубли + ссылочная целостность + непустой `embed_text`
-- ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячейные имена
-- ✅ `pipeline/tools/extract_cells.py` — `.ipynb` → плоский `.py`
-- ✅ `pipeline/tools/apply_patch.py` — точечный str_replace через nbformat
-- ✅ `taxonomy/tests/test_taxonomy.py` — тесты валидатора на синтетике
+- ✅ Реальный `taxonomy.json` v3.2 (765 кластеров, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
+- ✅ `taxonomy/schema.json` отражает реальную структуру (ADR-006, supersedes ADR-005)
+- ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + 9 бизнес-правил
+  (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
+  unknown persona/intent/gender/age, empty embed_text)
+- ✅ `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт пользователя (обогащение через Claude API + FAISS-related)
+- ✅ `pipeline/Shopify_Pipeline.ipynb` (переименован из `Shopify_Pipeline_v9_with_taxonomy.ipynb`) проходит `notebook_smoke`
+- ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячеечная дефинированность только на module-level scope (не лезет в тела функций — иначе 75 false-positive)
+- ✅ `pipeline/tools/extract_cells.py`, `apply_patch.py` — работают
+- ✅ `tools/health_check.py` — на реальных данных всё зелёное
+- ✅ `taxonomy/tests/test_taxonomy.py` — 15/15: синтетика покрывает все классы ошибок + контрактный тест на реальный `taxonomy.json`
 - ✅ CI: `validate-taxonomy.yml` + `smoke-pipeline.yml`
 
 ## Что СЕЙЧАС сломано / в работе
-- ⏳ Стартовые файлы пользователя (`taxonomy.json`, `enrich_taxonomy.py`,
-  `Shopify_Pipeline_v9_with_taxonomy.ipynb`, старый `README.md`) **не доставлены**
-  в рабочую папку — лежат на Windows-temp у пользователя, Linux-окружению Claude
-  недоступны. Ждём способ доставки (коммит с локальной машины / inline / URL).
-- ⏳ `taxonomy/schema.json` — **черновая**, написана по описанию из bootstrap-промпта
-  (см. ADR-005). Должна быть сверена с реальной структурой `taxonomy.json` и
-  при необходимости ужесточена.
 - ⏳ `taxonomy/tools/build_taxonomy.py`, `stats.py`, `export_to_csv.py` —
   заглушки с `raise NotImplementedError`. Реализуем по запросу.
-- ⏳ `taxonomy/tools/enrich_taxonomy.py` — пока пусто, ждём оригинал от пользователя.
+- ⏳ Gap-analysis ещё не делали — требуется дамп каталога EPROLO или Shopify (см. предложение по `gap_analysis.py`).
+- ⏳ В реальном `taxonomy.json` все 765 кластеров имеют пустые
+  `personas/intents/demos/related/synonyms/title_ru/description/shopify_collection_hints` —
+  это и есть работа `enrich_taxonomy.py`. После прогона валидатор должен снова пройти.

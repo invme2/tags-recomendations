@@ -1,77 +1,151 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/invme2/tags-recomendations/blob/main/taxonomy/schema.json",
-  "title": "Wanelo Taxonomy",
-  "description": "Provisional schema (ADR-005). Должна быть сверена с реальной структурой taxonomy.json после доставки источника от пользователя.",
+  "title": "Wanelo Taxonomy v3.x",
+  "description": "Реальная схема (ADR-006). Сверена с taxonomy.json v3.2 (765 кластеров, 36 sections, 27 personas, 14 intents, 9 demos).",
   "type": "object",
-  "required": ["clusters"],
+  "required": ["version", "schema_version", "sections", "clusters", "personas", "intents", "demos"],
   "additionalProperties": true,
   "properties": {
-    "version": {
-      "type": "string",
-      "description": "SemVer-строка версии taxonomy."
-    },
-    "personas": {
+    "version": {"type": "string"},
+    "schema_version": {"type": "string"},
+    "updated": {"type": "string"},
+    "stats": {"type": "object", "additionalProperties": true},
+
+    "sections": {
       "type": "array",
-      "description": "Master-список persona-идентификаторов.",
-      "items": {"type": "string", "minLength": 1},
-      "uniqueItems": true
-    },
-    "intents": {
-      "type": "array",
-      "description": "Master-список intent-идентификаторов.",
-      "items": {"type": "string", "minLength": 1},
-      "uniqueItems": true
-    },
-    "demos": {
-      "type": "array",
-      "description": "Master-список demo-идентификаторов.",
-      "items": {"type": "string", "minLength": 1},
-      "uniqueItems": true
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/section"}
     },
     "clusters": {
       "type": "array",
-      "description": "Кластеры таксономии. ~765 элементов в проде.",
+      "minItems": 1,
       "items": {"$ref": "#/definitions/cluster"}
+    },
+    "personas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/persona"}
+    },
+    "intents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/intent"}
+    },
+    "demos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/demo"}
     }
   },
+
   "definitions": {
-    "cluster": {
+    "tagPattern": {
+      "type": "string",
+      "pattern": "^[a-z]+:[a-z0-9-]+$",
+      "minLength": 3
+    },
+
+    "section": {
       "type": "object",
-      "required": ["tag", "embed_text"],
+      "required": ["id", "slug", "title_en"],
       "additionalProperties": true,
       "properties": {
-        "tag": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Уникальный идентификатор кластера."
-        },
+        "id":       {"type": "string", "minLength": 1},
+        "slug":     {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "title_en": {"type": "string", "minLength": 1}
+      }
+    },
+
+    "persona": {
+      "type": "object",
+      "required": ["tag", "title_en", "embed_text"],
+      "additionalProperties": true,
+      "properties": {
+        "tag":        {"type": "string", "pattern": "^persona:[a-z0-9-]+$"},
+        "title_en":   {"type": "string", "minLength": 1},
+        "embed_text": {"type": "string", "minLength": 1}
+      }
+    },
+
+    "intent": {
+      "type": "object",
+      "required": ["tag", "title_en", "embed_text", "rule"],
+      "additionalProperties": true,
+      "properties": {
+        "tag":        {"type": "string", "pattern": "^intent:[a-z0-9-]+$"},
+        "title_en":   {"type": "string", "minLength": 1},
+        "embed_text": {"type": "string", "minLength": 1},
+        "rule":       {"type": "string", "minLength": 1}
+      }
+    },
+
+    "demo": {
+      "type": "object",
+      "required": ["tag", "title_en", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "tag":      {"type": "string", "pattern": "^demo:[a-z0-9-]+$"},
+        "title_en": {"type": "string", "minLength": 1},
+        "type":     {"type": "string", "enum": ["gender", "age"]}
+      }
+    },
+
+    "clusterDemos": {
+      "type": "object",
+      "required": ["primary_gender", "ages"],
+      "additionalProperties": true,
+      "properties": {
+        "primary_gender": {"type": "string"},
+        "ages": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+
+    "cluster": {
+      "type": "object",
+      "required": [
+        "tag", "section_id", "section", "section_title_en",
+        "title_en", "description", "embed_text",
+        "typical_products", "personas", "intents", "demos",
+        "related", "synonyms", "shopify_collection_hints",
+        "status", "priority", "source"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "tag":               {"type": "string", "pattern": "^cluster:[a-z0-9-]+$"},
+        "section_id":        {"type": "string", "minLength": 1},
+        "section":           {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "section_title_en":  {"type": "string", "minLength": 1},
+        "section_title_ru":  {"type": "string"},
+
+        "title_en":          {"type": "string", "minLength": 1},
+        "title_ru":          {"type": "string"},
+        "description":       {"type": "string"},
+        "embed_text":        {"type": "string", "minLength": 1},
+        "typical_products":  {"type": "array", "items": {"type": "string"}},
+
         "personas": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
-          "uniqueItems": true
+          "items": {"type": "string", "pattern": "^persona:[a-z0-9-]+$"}
         },
         "intents": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
-          "uniqueItems": true
+          "items": {"type": "string", "pattern": "^intent:[a-z0-9-]+$"}
         },
-        "demos": {
-          "type": "array",
-          "items": {"type": "string", "minLength": 1},
-          "uniqueItems": true
-        },
+        "demos": {"$ref": "#/definitions/clusterDemos"},
         "related": {
           "type": "array",
-          "description": "Ссылки на tag других кластеров. Должны существовать.",
-          "items": {"type": "string", "minLength": 1},
-          "uniqueItems": true
+          "items": {"type": "string", "pattern": "^cluster:[a-z0-9-]+$"}
         },
-        "embed_text": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Текст для построения векторного эмбеддинга."
-        }
+        "synonyms":                 {"type": "array", "items": {"type": "string"}},
+        "shopify_collection_hints": {"type": "array", "items": {"type": "string"}},
+
+        "status":   {"type": "string", "enum": ["approved", "draft"]},
+        "priority": {"type": "string", "enum": ["low", "medium", "high"]},
+        "source":   {"type": "string"}
       }
     }
   }
