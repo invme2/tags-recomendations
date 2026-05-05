@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/invme2/tags-recomendations/blob/main/taxonomy/schema.json",
+  "title": "Wanelo Taxonomy",
+  "description": "Provisional schema (ADR-005). Должна быть сверена с реальной структурой taxonomy.json после доставки источника от пользователя.",
+  "type": "object",
+  "required": ["clusters"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "SemVer-строка версии taxonomy."
+    },
+    "personas": {
+      "type": "array",
+      "description": "Master-список persona-идентификаторов.",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "intents": {
+      "type": "array",
+      "description": "Master-список intent-идентификаторов.",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "demos": {
+      "type": "array",
+      "description": "Master-список demo-идентификаторов.",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "clusters": {
+      "type": "array",
+      "description": "Кластеры таксономии. ~765 элементов в проде.",
+      "items": {"$ref": "#/definitions/cluster"}
+    }
+  },
+  "definitions": {
+    "cluster": {
+      "type": "object",
+      "required": ["tag", "embed_text"],
+      "additionalProperties": true,
+      "properties": {
+        "tag": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Уникальный идентификатор кластера."
+        },
+        "personas": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "intents": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "demos": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "related": {
+          "type": "array",
+          "description": "Ссылки на tag других кластеров. Должны существовать.",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "embed_text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Текст для построения векторного эмбеддинга."
+        }
+      }
+    }
+  }
+}

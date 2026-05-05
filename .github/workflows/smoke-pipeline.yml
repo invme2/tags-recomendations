@@ -1,0 +1,41 @@
+name: smoke-pipeline
+
+on:
+  push:
+    paths:
+      - 'pipeline/**'
+      - 'tools/**'
+      - 'requirements-dev.txt'
+      - '.github/workflows/smoke-pipeline.yml'
+  pull_request:
+    paths:
+      - 'pipeline/**'
+      - 'tools/**'
+      - 'requirements-dev.txt'
+      - '.github/workflows/smoke-pipeline.yml'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dev deps
+        run: pip install -r requirements-dev.txt
+
+      - name: Smoke-test notebook (skip if absent)
+        run: |
+          set +e
+          python pipeline/tools/notebook_smoke.py
+          rc=$?
+          if [ $rc -eq 2 ]; then
+            echo "::warning::Shopify_Pipeline.ipynb отсутствует — пропускаю smoke (bootstrap state)"
+            exit 0
+          fi
+          exit $rc

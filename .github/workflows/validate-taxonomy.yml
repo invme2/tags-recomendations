@@ -1,0 +1,44 @@
+name: validate-taxonomy
+
+on:
+  push:
+    paths:
+      - 'taxonomy/**'
+      - 'tools/**'
+      - 'requirements-dev.txt'
+      - '.github/workflows/validate-taxonomy.yml'
+  pull_request:
+    paths:
+      - 'taxonomy/**'
+      - 'tools/**'
+      - 'requirements-dev.txt'
+      - '.github/workflows/validate-taxonomy.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dev deps
+        run: pip install -r requirements-dev.txt
+
+      - name: Run pytest (taxonomy validator tests)
+        run: python -m pytest taxonomy/tests/ -v
+
+      - name: Validate taxonomy.json (skip if absent)
+        run: |
+          set +e
+          python taxonomy/tools/validate_taxonomy.py
+          rc=$?
+          if [ $rc -eq 2 ]; then
+            echo "::warning::taxonomy.json отсутствует — пропускаю реальную валидацию (bootstrap state)"
+            exit 0
+          fi
+          exit $rc
