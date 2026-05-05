@@ -65,3 +65,72 @@
 - `python -m pytest taxonomy/tests/ -v` → 15/15 passed.
 - `python taxonomy/tools/validate_taxonomy.py` → 765 кластеров валидны.
 - `python pipeline/tools/notebook_smoke.py` → 17 ячеек валидны.
+
+---
+
+## Gap-analysis итерация 1 (2026-05-05, source v3.3)
+
+### Added (18 новых cluster:* в `taxonomy/taxonomy.json`)
+Внутренний gap-анализ против существующих 765 кластеров (структурный + по
+ключевым словам индустрии). Все новые — `status: draft`, `source: v3.3`,
+`personas/intents/demos/related/synonyms/title_ru/description` пустые
+(работа `enrich_taxonomy.py` после ревью пользователя).
+
+**Section 17 (Electronics & gadgets extended) — granular smart-home & audio:**
+- `cluster:smart-speaker` (Echo, HomePod, Sonos, Google Nest)
+- `cluster:smart-doorbell-lock` (Ring, Yale, August)
+- `cluster:smart-plug-outlet` (TP-Link Kasa, Amazon)
+- `cluster:noise-cancelling-headphones` (Bose QC, Sony WH-1000XM, AirPods Max)
+- `cluster:dash-cam-driving` (видеорегистратор)
+
+**Section 1.5 (Home & everyday) — крупная бытовая техника:**
+- `cluster:air-purifier-home` (HEPA, Dyson, Levoit)
+- `cluster:vacuum-cleaner-types` (cordless / stick / upright; не покрывалось `robot-cleaning`)
+- `cluster:steam-cleaner-home` (Karcher, паровые швабры)
+- `cluster:water-filter-purifier` (Brita, RO, кувшин-фильтр)
+
+**Section 1.6 (Work & productivity) — рабочее место home-office:**
+- `cluster:standing-desk-setup` (sit-stand, Flexispot, Uplift)
+- `cluster:ergonomic-office-chair` (Herman Miller, Secretlab)
+- `cluster:monitor-arm-mount` (VESA, Ergotron)
+- `cluster:office-supplies-essential` (степлеры, бумага, папки)
+
+**Section 1.1 (Morning rituals) — beauty deeper:**
+- `cluster:anti-aging-skin` (retinol, peptides; отдельно от `skincare-routine`)
+- `cluster:acne-treatment` (salicylic, benzoyl, патчи)
+
+**Section 1.7 (Pet care) — pet-tech:**
+- `cluster:smart-pet-tech` (Furbo, Whistle, smart feeders)
+
+**Section 22 (Health & wellness) — sleep tech:**
+- `cluster:sleep-tech-tracking` (Oura, Whoop, white noise; отдельно от `sleep-hygiene` который ритуал)
+
+**Section 1.4 (Travel & on-the-go) — личная безопасность:**
+- `cluster:personal-safety-self-defense` (alarm, pepper spray, для соло-путешествий)
+
+### Methodology
+1. Структурное распределение: 28 sections, средняя плотность ~27 кластеров/section,
+   тонкие (<12) — Lighting, Wall decor, Price positioning, Gourmet, Photo zone &
+   party, Specific diets, Kitchen appliances, Repair & tools, Transport & auto.
+   Тонкие — концептуально узкие, не дыры.
+2. Keyword-probe против существующих clusters (tag + title_en + embed_text +
+   typical_products): 36 кандидатов индустрии → 24 потенциальных пробела →
+   6 отсеяно после dedup-проверки (`cluster:nail-care`, `cluster:mens-skincare`,
+   `cluster:painting-kit`, `cluster:book-lover`, `cluster:earbuds-bundle`,
+   `cluster:smart-home`-агрегат).
+3. Финальные 18 — все с уникальным фокусом, не дублируют существующие.
+
+### Stats после итерации
+- `total_clusters`: 765 → **783**
+- `approved`: 430 (без изменений)
+- `draft`: 335 → **353**
+- `source: v3.3` — 18 новых; источников теперь три: v3.1 (430), v3.2 (335), v3.3 (18)
+- `updated: 2026-05-05`
+
+### Открыто (не делаю без запроса пользователя)
+- Реальный gap-анализ против каталога EPROLO/Shopify — требуется дамп каталога.
+  Без него мы видим только внутренние пробелы и обоснованные предположения по
+  индустрии, но не «эти 200 товаров нашего ассортимента не покрыты».
+- Запуск `enrich_taxonomy.py` на v3.3 кластерах для заполнения
+  `personas/intents/demos/synonyms/title_ru/description/related[]`.
+- Промоут отревьюенных v3.3 в `status: approved`.

@@ -96,7 +96,7 @@ tags-recomendations/
 
 ## Что СЕЙЧАС работает (не трогай без причины)
 - ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING)
-- ✅ Реальный `taxonomy.json` v3.2 (765 кластеров, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
+- ✅ `taxonomy.json` (783 кластера: 430 v3.1 approved + 335 v3.2 draft + **18 v3.3 draft, gap-fill итерация 1**, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
 - ✅ `taxonomy/schema.json` отражает реальную структуру (ADR-006, supersedes ADR-005)
 - ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + 9 бизнес-правил
   (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
@@ -113,6 +113,11 @@ tags-recomendations/
 - ⏳ `taxonomy/tools/build_taxonomy.py`, `stats.py`, `export_to_csv.py` —
   заглушки с `raise NotImplementedError`. Реализуем по запросу.
 - ⏳ Gap-analysis ещё не делали — требуется дамп каталога EPROLO или Shopify (см. предложение по `gap_analysis.py`).
-- ⏳ В реальном `taxonomy.json` все 765 кластеров имеют пустые
+- ⏳ В реальном `taxonomy.json` все 783 кластера имеют пустые
   `personas/intents/demos/related/synonyms/title_ru/description/shopify_collection_hints` —
-  это и есть работа `enrich_taxonomy.py`. После прогона валидатор должен снова пройти.
+  это работа `enrich_taxonomy.py`. После прогона валидатор должен снова пройти.
+- ⏳ 18 новых v3.3-кластеров (gap-fill итерация 1) — `status: draft`,
+  ждут ревью пользователем и (после ревью) промоута в `approved`.
+- ⏳ Реальный gap-анализ против каталога EPROLO/Shopify ещё не делали —
+  нужен дамп каталога. Текущая итерация — только внутренний структурный
+  + индустриальные эвристики (см. CHANGELOG раздел «Gap-analysis итерация 1»).

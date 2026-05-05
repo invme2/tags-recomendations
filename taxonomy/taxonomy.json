@@ -3,9 +3,9 @@
   "schema_version": "1",
   "updated": "2026-05-05",
   "stats": {
-    "total_clusters": 765,
+    "total_clusters": 783,
     "approved": 430,
-    "draft": 335,
+    "draft": 353,
     "personas": 27,
     "intents": 14,
     "demos": 9,
@@ -22977,6 +22977,550 @@
       "status": "draft",
       "priority": "medium",
       "source": "v3.2"
+    },
+    {
+      "tag": "cluster:smart-speaker",
+      "section_id": "17",
+      "section": "electronics-extended",
+      "section_title_en": "Electronics & gadgets (extended)",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЭЛЕКТРОНИКЕ И ГАДЖЕТАМ (расширенные)",
+      "title_en": "Smart Speaker",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Smart Speaker | smart speaker | Electronics & gadgets (extended) | echo dot homepod sonos google nest voice assistant alexa siri google assistant bluetooth smart speaker",
+      "typical_products": [
+        "умная колонка",
+        "Echo Dot",
+        "HomePod",
+        "Sonos",
+        "Google Nest",
+        "голосовой помощник"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:smart-doorbell-lock",
+      "section_id": "17",
+      "section": "electronics-extended",
+      "section_title_en": "Electronics & gadgets (extended)",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЭЛЕКТРОНИКЕ И ГАДЖЕТАМ (расширенные)",
+      "title_en": "Smart Doorbell & Lock",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Smart Doorbell & Lock | smart doorbell & lock | Electronics & gadgets (extended) | ring doorbell smart lock august yale schlage video doorbell wifi connected entry",
+      "typical_products": [
+        "умный дверной звонок",
+        "видеоглазок",
+        "умный замок",
+        "Ring",
+        "Yale",
+        "August"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:smart-plug-outlet",
+      "section_id": "17",
+      "section": "electronics-extended",
+      "section_title_en": "Electronics & gadgets (extended)",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЭЛЕКТРОНИКЕ И ГАДЖЕТАМ (расширенные)",
+      "title_en": "Smart Plug & Outlet",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Smart Plug & Outlet | smart plug & outlet | Electronics & gadgets (extended) | smart plug smart outlet kasa amazon wifi plug energy monitoring scheduling automation",
+      "typical_products": [
+        "умная розетка",
+        "TP-Link Kasa",
+        "Amazon Smart Plug",
+        "таймер",
+        "wifi розетка"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:noise-cancelling-headphones",
+      "section_id": "17",
+      "section": "electronics-extended",
+      "section_title_en": "Electronics & gadgets (extended)",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЭЛЕКТРОНИКЕ И ГАДЖЕТАМ (расширенные)",
+      "title_en": "Noise-Cancelling Headphones",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Noise-Cancelling Headphones | noise-cancelling headphones | Electronics & gadgets (extended) | noise cancelling headphones bose qc sony wh xm airpods max premium over-ear travel commute",
+      "typical_products": [
+        "шумоподавляющие наушники",
+        "Bose QuietComfort",
+        "Sony WH-1000XM",
+        "AirPods Max",
+        "over-ear"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:dash-cam-driving",
+      "section_id": "17",
+      "section": "electronics-extended",
+      "section_title_en": "Electronics & gadgets (extended)",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЭЛЕКТРОНИКЕ И ГАДЖЕТАМ (расширенные)",
+      "title_en": "Dash Cam",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Dash Cam | dash cam | Electronics & gadgets (extended) | dash cam dashcam car camera front rear 4k night vision parking mode driving recorder",
+      "typical_products": [
+        "видеорегистратор",
+        "dash cam",
+        "4K",
+        "ночной режим",
+        "парковочный режим"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:air-purifier-home",
+      "section_id": "1.5",
+      "section": "home-everyday",
+      "section_title_en": "Home & everyday",
+      "section_title_ru": "Дом и повседневность",
+      "title_en": "Air Purifier",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Air Purifier | air purifier | Home & everyday | air purifier hepa filter levoit dyson coway molekule allergy smoke dust pm2.5 indoor air quality",
+      "typical_products": [
+        "очиститель воздуха",
+        "HEPA фильтр",
+        "Dyson",
+        "Levoit",
+        "Xiaomi",
+        "для аллергиков"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:vacuum-cleaner-types",
+      "section_id": "1.5",
+      "section": "home-everyday",
+      "section_title_en": "Home & everyday",
+      "section_title_ru": "Дом и повседневность",
+      "title_en": "Vacuum Cleaner",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Vacuum Cleaner | vacuum cleaner | Home & everyday | vacuum cleaner cordless stick upright canister dyson shark bissell handheld pet hair",
+      "typical_products": [
+        "пылесос",
+        "беспроводной",
+        "вертикальный",
+        "Dyson",
+        "Shark",
+        "для шерсти животных"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:steam-cleaner-home",
+      "section_id": "1.5",
+      "section": "home-everyday",
+      "section_title_en": "Home & everyday",
+      "section_title_ru": "Дом и повседневность",
+      "title_en": "Steam Cleaner",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Steam Cleaner | steam cleaner | Home & everyday | steam cleaner steam mop karcher bissell deep clean tile grout chemical-free sanitize",
+      "typical_products": [
+        "пароочиститель",
+        "паровая швабра",
+        "Karcher",
+        "без химии",
+        "для плитки"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:water-filter-purifier",
+      "section_id": "1.5",
+      "section": "home-everyday",
+      "section_title_en": "Home & everyday",
+      "section_title_ru": "Дом и повседневность",
+      "title_en": "Water Filter & Purifier",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Water Filter & Purifier | water filter & purifier | Home & everyday | water filter water purifier brita pur reverse osmosis ro under sink pitcher tap chlorine",
+      "typical_products": [
+        "фильтр для воды",
+        "Brita",
+        "обратный осмос",
+        "кувшин фильтр",
+        "для крана"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:standing-desk-setup",
+      "section_id": "1.6",
+      "section": "work-productivity",
+      "section_title_en": "Work & productivity",
+      "section_title_ru": "Работа и продуктивность",
+      "title_en": "Standing Desk Setup",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Standing Desk Setup | standing desk setup | Work & productivity | standing desk sit stand height adjustable electric flexispot uplift fully wfh ergonomic",
+      "typical_products": [
+        "регулируемый стол",
+        "sit-stand",
+        "электропривод",
+        "Flexispot",
+        "Uplift"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:ergonomic-office-chair",
+      "section_id": "1.6",
+      "section": "work-productivity",
+      "section_title_en": "Work & productivity",
+      "section_title_ru": "Работа и продуктивность",
+      "title_en": "Ergonomic Office Chair",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Ergonomic Office Chair | ergonomic office chair | Work & productivity | ergonomic office chair herman miller aeron secretlab steelcase lumbar support mesh back",
+      "typical_products": [
+        "эргономичное кресло",
+        "Herman Miller Aeron",
+        "Secretlab",
+        "поясничная поддержка"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:monitor-arm-mount",
+      "section_id": "1.6",
+      "section": "work-productivity",
+      "section_title_en": "Work & productivity",
+      "section_title_ru": "Работа и продуктивность",
+      "title_en": "Monitor Arm & Mount",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Monitor Arm & Mount | monitor arm & mount | Work & productivity | monitor arm dual monitor stand vesa mount ergotron jarvis articulating gas spring desk",
+      "typical_products": [
+        "кронштейн для монитора",
+        "VESA mount",
+        "двойной кронштейн",
+        "Ergotron",
+        "Jarvis"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:office-supplies-essential",
+      "section_id": "1.6",
+      "section": "work-productivity",
+      "section_title_en": "Work & productivity",
+      "section_title_ru": "Работа и продуктивность",
+      "title_en": "Office Supplies Essentials",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Office Supplies Essentials | office supplies essentials | Work & productivity | office supplies stapler paper clips printer paper folders binders highlighter post-it tape",
+      "typical_products": [
+        "офисные принадлежности",
+        "степлер",
+        "папки",
+        "бумага для принтера",
+        "маркеры",
+        "скрепки"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:anti-aging-skin",
+      "section_id": "1.1",
+      "section": "rituals-morning-evening",
+      "section_title_en": "Morning & evening rituals",
+      "section_title_ru": "Утренние и вечерние ритуалы",
+      "title_en": "Anti-Aging Skincare",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Anti-Aging Skincare | anti-aging skincare | Morning & evening rituals | anti aging anti-aging retinol peptides niacinamide vitamin c wrinkle firming collagen mature skin",
+      "typical_products": [
+        "антивозрастной уход",
+        "ретинол",
+        "пептиды",
+        "витамин C",
+        "против морщин",
+        "коллаген"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:acne-treatment",
+      "section_id": "1.1",
+      "section": "rituals-morning-evening",
+      "section_title_en": "Morning & evening rituals",
+      "section_title_ru": "Утренние и вечерние ритуалы",
+      "title_en": "Acne Treatment",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Acne Treatment | acne treatment | Morning & evening rituals | acne treatment salicylic acid benzoyl peroxide pimple patches blemish clear skin breakout",
+      "typical_products": [
+        "уход за проблемной кожей",
+        "салициловая кислота",
+        "патчи от прыщей",
+        "против акне"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:smart-pet-tech",
+      "section_id": "1.7",
+      "section": "pet-care",
+      "section_title_en": "Pet care",
+      "section_title_ru": "Уход за питомцами",
+      "title_en": "Smart Pet Tech",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Smart Pet Tech | smart pet tech | Pet care | smart pet feeder gps tracker pet camera furbo whistle automatic feeder pet tech wifi camera",
+      "typical_products": [
+        "умная кормушка",
+        "GPS-трекер для питомца",
+        "pet camera",
+        "Furbo",
+        "Whistle"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:sleep-tech-tracking",
+      "section_id": "22",
+      "section": "health-wellness",
+      "section_title_en": "Health & wellness",
+      "section_title_ru": "КЛАСТЕРЫ ПО ЗДОРОВЬЮ И ВЕЛНЕС",
+      "title_en": "Sleep Tech & Tracking",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Sleep Tech & Tracking | sleep tech & tracking | Health & wellness | sleep tracker oura ring whoop smart alarm white noise machine hatch sunrise wake light snore",
+      "typical_products": [
+        "трекер сна",
+        "Oura Ring",
+        "Whoop",
+        "умный будильник",
+        "белый шум",
+        "будильник-рассвет"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
+    },
+    {
+      "tag": "cluster:personal-safety-self-defense",
+      "section_id": "1.4",
+      "section": "travel",
+      "section_title_en": "Travel & on-the-go",
+      "section_title_ru": "Путешествия и дорога",
+      "title_en": "Personal Safety & Self-Defense",
+      "title_ru": "",
+      "description": "",
+      "embed_text": "Personal Safety & Self-Defense | personal safety & self-defense | Travel & on-the-go | personal safety alarm pepper spray taser stun gun self defense whistle door wedge solo travel",
+      "typical_products": [
+        "личная безопасность",
+        "перцовый баллон",
+        "личная сирена",
+        "свисток для самообороны"
+      ],
+      "personas": [],
+      "intents": [],
+      "demos": {
+        "primary_gender": "",
+        "ages": []
+      },
+      "related": [],
+      "synonyms": [],
+      "shopify_collection_hints": [],
+      "status": "draft",
+      "priority": "medium",
+      "source": "v3.3"
     }
   ],
   "personas": [
