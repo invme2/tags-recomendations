@@ -91,6 +91,50 @@ DEFAULT_TEST_PRODUCTS = [
 ]
 
 
+# Per-section probe set: для каждой section_id — список (≥1) тестовых
+# продуктов, которые ОЖИДАЕТСЯ что top-1 кластер будет в этой секции.
+# Помогает ловить «section-coverage gaps»: секция объявлена, но никакой
+# типичный продукт её темы не находит подходящего кластера ВНУТРИ неё.
+PER_SECTION_PROBES: dict[str, list[str]] = {
+    "1.1": ["Hair dryer ionic cordless", "Silk pillowcase for skin and hair"],
+    "1.2": ["French press coffee maker glass", "Matcha green tea ceremonial grade"],
+    "1.3": ["Resistance bands set with door anchor", "Running shoes max cushion road"],
+    "1.4": ["Compression packing cubes set", "Universal travel adapter with USB-C"],
+    "1.5": ["Smart air quality monitor PM2.5", "Cordless handheld vacuum"],
+    "1.6": ["Mechanical keyboard hot-swappable RGB", "Wireless mouse ergonomic vertical"],
+    "1.7": ["Automatic cat litter box self-cleaning", "Dog harness no-pull padded"],
+    "1.8": ["Diaper bag backpack waterproof", "Baby monitor with camera Wi-Fi"],
+    "1.9": ["Board game strategy 4-player", "Drone racing FPV beginner kit"],
+    "2":   ["Charcuterie gift basket meat cheese", "Personalized photo frame engraved"],
+    "3":   ["Dining table extendable solid wood", "L-shape office desk corner"],
+    "4":   ["Boho macrame wall hanging tassel", "Minimalist Scandinavian decor"],
+    "5":   ["Christmas tree artificial pre-lit 7ft", "Halloween costume adult vampire"],
+    "6":   ["Coffee bundle French press kettle scale grinder", "Yoga starter kit mat blocks strap"],
+    "7":   ["Luxury watch under five thousand dollars", "Affordable gift under twenty"],
+    "8":   ["Linen bedding king size set 100% flax", "Walnut wood serving board hand-rubbed"],
+    "9":   ["Maximalist colorful eclectic decor", "Wabi-sabi minimalist wellness set"],
+    "10":  ["Skincare routine bundle 5 steps cleanser toner moisturizer", "Tea sampler box 12 varieties"],
+    "11":  ["Bachelorette party kit decorations sash", "New baby announcement gift box"],
+    "12":  ["Sage green decor accent set", "Terracotta orange pottery vase"],
+    "13":  ["Car seat covers waterproof full set", "Bike rack hitch-mounted 4-bike"],
+    "14":  ["Cordless drill driver 20V brushless", "Soldering iron station temperature controlled"],
+    "15":  ["Smart RGB strip lights 32ft Wi-Fi", "Sunset lamp projector amber"],
+    "16":  ["Workout leggings high-waist squat-proof", "Beach vacation outfit set linen"],
+    "17":  ["Wireless earbuds in-ear active noise cancelling", "External SSD 2TB USB-C portable"],
+    "18":  ["Pickleball paddle graphite carbon fiber", "Surfboard inflatable beginner SUP"],
+    "19":  ["Truffle oil black 250ml gourmet", "Saffron threads premium grade"],
+    "20":  ["Acrylic paint set 24 colors professional", "MIDI keyboard 49 keys USB"],
+    "21":  ["Framed canvas print large abstract", "Wall mirror round decorative"],
+    "22":  ["Foot massager shiatsu deep kneading", "Pulse oximeter fingertip"],
+    "23":  ["Stand mixer 6-quart professional baking", "Coffee grinder burr conical electric"],
+    "24":  ["Balloon arch kit gold rose pearl", "Polaroid camera instant film"],
+    "25":  ["Pearl necklace freshwater multi-strand", "Silk scarf large square women"],
+    "26":  ["Closet system modular wardrobe", "Drawer organizer set bamboo expandable"],
+    "27":  ["Phone stand desk adjustable", "Cable organizer box management"],
+    "28":  ["Keto snacks variety pack low-carb", "Vegan protein powder plant-based"],
+}
+
+
 def load_products(path: Path | None) -> list[str]:
     if path is None:
         return list(DEFAULT_TEST_PRODUCTS)
@@ -161,6 +205,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--products", type=Path, default=None)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument(
+        "--probe-set",
+        choices=["default", "per-section", "all"],
+        default=None,
+        help="default = смешанный из 39 продуктов; per-section = ~70 проб по 1-2 на каждую section_id с проверкой что top-1 попадает в ожидаемую section; all = объединение",
+    )
     parser.add_argument("--top-k", type=int, default=3)
     parser.add_argument("--threshold", type=float, default=None)
     parser.add_argument("--json", type=Path, default=None)
@@ -168,21 +218,43 @@ def main() -> int:
     parser.add_argument("--backend", choices=["auto", "st", "tfidf"], default="auto")
     args = parser.parse_args()
 
-    if not args.self_test and args.products is None:
-        parser.error("укажи --products или --self-test")
+    if not args.self_test and args.probe_set is None and args.products is None:
+        parser.error("укажи --products, --self-test или --probe-set")
     if not TAXONOMY_PATH.exists():
         print(f"❌ {TAXONOMY_PATH} не найден")
         return 1
 
-    products = load_products(args.products)
-    if not products:
+    # Build (product, expected_section_id) — expected может быть None
+    triples: list[tuple[str, str | None]] = []
+    if args.products is not None:
+        for p in load_products(args.products):
+            triples.append((p, None))
+    elif args.probe_set == "per-section":
+        for sid, ps in PER_SECTION_PROBES.items():
+            for p in ps:
+                triples.append((p, sid))
+    elif args.probe_set == "all":
+        for p in DEFAULT_TEST_PRODUCTS:
+            triples.append((p, None))
+        for sid, ps in PER_SECTION_PROBES.items():
+            for p in ps:
+                triples.append((p, sid))
+    else:  # --self-test or --probe-set default
+        for p in DEFAULT_TEST_PRODUCTS:
+            triples.append((p, None))
+
+    if not triples:
         print("❌ нет продуктов на вход")
         return 1
+    products = [t[0] for t in triples]
+    expected = [t[1] for t in triples]
 
     with TAXONOMY_PATH.open(encoding="utf-8") as f:
         tax = json.load(f)
     clusters = tax["clusters"]
     cluster_texts = [c["embed_text"] for c in clusters]
+    cluster_section_ids = [c["section_id"] for c in clusters]
+    sections_by_id = {s["id"]: s for s in tax["sections"]}
 
     backend = pick_backend(args.backend)
     threshold = args.threshold if args.threshold is not None else (0.45 if backend == "st" else 0.10)
@@ -200,19 +272,37 @@ def main() -> int:
 
     report = []
     uncovered = 0
+    section_mismatched = 0
     for i, product in enumerate(products):
         matches = [
             {
                 "tag": clusters[j]["tag"],
                 "title": clusters[j]["title_en"],
+                "section_id": clusters[j]["section_id"],
                 "status": clusters[j]["status"],
                 "score": float(sims[i, j]),
             }
             for j in top_idx[i]
         ]
-        best = matches[0]["score"]
-        is_uncov = best < threshold
-        report.append({"product": product, "best_score": best, "uncovered": is_uncov, "matches": matches})
+        best = matches[0]
+        is_uncov = best["score"] < threshold
+        section_ok: bool | None
+        if expected[i] is not None:
+            section_ok = best["section_id"] == expected[i]
+            if not section_ok:
+                section_mismatched += 1
+        else:
+            section_ok = None
+        report.append(
+            {
+                "product": product,
+                "expected_section": expected[i],
+                "best_score": best["score"],
+                "uncovered": is_uncov,
+                "section_ok": section_ok,
+                "matches": matches,
+            }
+        )
         if is_uncov:
             uncovered += 1
 
@@ -220,27 +310,59 @@ def main() -> int:
         args.json.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"📄 JSON отчёт → {args.json}", file=sys.stderr)
 
+    has_expected = any(r["expected_section"] is not None for r in report)
+
     print(f"\n{'='*72}")
     print(f"  Backend: {backend} · threshold cosine={threshold:.2f} · top-k={args.top_k}")
     print(f"  Test products: {len(products)} · Uncovered: {uncovered} ({100*uncovered/len(products):.0f}%)")
+    if has_expected:
+        n_exp = sum(1 for r in report if r["expected_section"] is not None)
+        print(f"  Section mismatches: {section_mismatched}/{n_exp} ({100*section_mismatched/n_exp:.0f}%)")
     print("=" * 72)
 
-    print(f"\n--- UNCOVERED ({uncovered}) ---")
-    for r in report:
-        if r["uncovered"]:
-            best = r["matches"][0]
-            print(f"  ❌ {r['best_score']:.3f}  {r['product']}")
-            print(f"        nearest: {best['tag']:<42} ({best['score']:.3f}) {best['title']}")
+    if has_expected and section_mismatched:
+        print(f"\n--- SECTION MISMATCHES ({section_mismatched}) ---")
+        print("(top-1 кластер попал не в ту секцию, что ожидали)")
+        per_section_bad: dict[str, list[str]] = {}
+        for r in report:
+            if r["expected_section"] is not None and r["section_ok"] is False:
+                exp = r["expected_section"]
+                actual_sid = r["matches"][0]["section_id"]
+                exp_title = sections_by_id.get(exp, {}).get("title_en", "?")
+                act_title = sections_by_id.get(actual_sid, {}).get("title_en", "?")
+                line = (
+                    f"  ⚠️  expected sec {exp} ({exp_title}) → got sec {actual_sid} ({act_title})\n"
+                    f"      product: {r['product']}\n"
+                    f"      top-1:   {r['matches'][0]['tag']} ({r['matches'][0]['score']:.3f})"
+                )
+                print(line)
+                per_section_bad.setdefault(exp, []).append(r["product"])
+
+    if uncovered:
+        print(f"\n--- UNCOVERED by absolute threshold ({uncovered}) ---")
+        for r in report:
+            if r["uncovered"]:
+                best = r["matches"][0]
+                tag = best["tag"]
+                print(f"  ❌ {r['best_score']:.3f}  {r['product']}")
+                print(f"        nearest: {tag:<42} ({best['score']:.3f}) {best['title']}")
 
     if not args.quiet:
-        print(f"\n--- COVERED ({len(products) - uncovered}) ---")
+        n_cov = len(products) - uncovered
+        print(f"\n--- COVERED ({n_cov}) ---")
         for r in report:
             if not r["uncovered"]:
                 best = r["matches"][0]
-                print(f"  ✅ {r['best_score']:.3f}  {r['product']:<60s}")
-                print(f"        match: {best['tag']:<42} {best['title']}")
+                tag = best["tag"]
+                marker = (
+                    "✅"
+                    if r["section_ok"] is None or r["section_ok"]
+                    else "🟡"  # покрыт по score, но top-1 в чужой секции
+                )
+                print(f"  {marker} {r['best_score']:.3f}  {r['product']}")
+                print(f"        match: {tag:<42} {best['title']}")
 
-    return 3 if uncovered else 0
+    return 3 if (uncovered or section_mismatched) else 0
 
 
 if __name__ == "__main__":
