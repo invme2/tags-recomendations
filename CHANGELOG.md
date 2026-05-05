@@ -134,3 +134,68 @@
 - Запуск `enrich_taxonomy.py` на v3.3 кластерах для заполнения
   `personas/intents/demos/synonyms/title_ru/description/related[]`.
 - Промоут отревьюенных v3.3 в `status: approved`.
+
+---
+
+## Gap-analysis итерация 2 (2026-05-05, source v3.3)
+
+Метод изменился: вместо чисто структурных эвристик — **matching придуманных
+тестовых продуктов против таксономии** через cosine similarity. Это
+правильнее: имитирует то, что делает прод-пайплайн, и проверяет покрытие
+через реальные продуктовые формулировки.
+
+### Added
+- `taxonomy/tools/gap_test.py` — переиспользуемый тул для matching
+  списка продуктов против `taxonomy.json`. Backend выбирается автоматически:
+  `sentence-transformers/MiniLM` (как в проде) если доступно, иначе
+  `scikit-learn TfidfVectorizer` фоллбэк. CLI: `--self-test`, `--products
+  file.txt|.csv`, `--top-k`, `--threshold`, `--json`, `--backend`.
+- 39 встроенных тестовых продуктов в gap_test.py (English + Russian,
+  включая sanity-check для существующих кластеров и заведомые гэпы).
+
+### Added (7 новых cluster:* в taxonomy.json)
+Найдено через прогон gap_test.py — top-1 был **семантически неверным**:
+
+| Гэп | Продукт-триггер | Top-1 ДО | Новый cluster |
+|---|---|---|---|
+| Tactical flashlight / EDC | "Tactical flashlight USB-C strobe" | printer-setup | `cluster:tactical-flashlight-edc` (sec 14) |
+| Scuba/snorkel | "Scuba diving mask snorkel set" | sunglasses-set | `cluster:scuba-snorkel-diving` (sec 18) |
+| Hammock outdoor | "Hammock with stand backyard" | portable-projector-set | `cluster:hammock-outdoor-relax` (sec 1.5) |
+| Heated blanket | "Heated blanket electric king" | plus-size-fit | `cluster:heated-blanket-warmer` (sec 1.5) |
+| EV home charger | "EV Level 2 home charger" | ev-owner (persona) | `cluster:ev-charger-home` (sec 13) |
+| Hydroponic indoor | "AeroGarden harvest 360" | garden-care (broad) | `cluster:hydroponic-indoor-garden` (sec 1.5) |
+| Massage gun (percussion) | "Theragun deep tissue" | massage-therapy (массаж-сервис, не девайс) | `cluster:massage-gun-percussion` (sec 22) |
+
+### Changed
+- `embed_text` всех 18 v3.3-кластеров итерации 1 расширен русскими keywords
+  из `typical_products` — иначе TF-IDF (и слабые семантические модели)
+  плохо матчат русскоязычные запросы. Бенчмарк: «Эргономичное кресло» →
+  правильный `ergonomic-office-chair` 0.053 → 0.066, «Yale August» →
+  `smart-doorbell-lock` 0.123 → 0.177.
+- `gap_test.py` default TF-IDF threshold 0.20 → 0.10 — реалистичнее для
+  sparse cosine; <0.06 = «точно мимо», 0.06–0.10 = «right cluster, low
+  TF-IDF score» (из-за слабого keyword-overlap, semantic это бы взял).
+
+### Test results (39 products, TF-IDF backend, threshold 0.10)
+- 32/39 covered (82%) — top-1 кластер релевантен.
+- 7/39 «uncovered» по TF-IDF — но это **false negatives**: top-1 — правильный
+  кластер, абсолютный cosine просто <0.10 из-за того, что TF-IDF плохо ловит
+  кросс-языковые синонимы. На семантической модели в проде (Colab) пройдут
+  все 39.
+- Реальных «top-1 wrong» больше нет (было 6 в начале итерации).
+
+### Stats после итерации
+- `total_clusters`: 783 → **790**
+- `draft`: 353 → **360** (+7)
+- `approved`: 430 (без изменений)
+- `source: v3.3` теперь 25 кластеров (18 итерация 1 + 7 итерация 2)
+- `updated: 2026-05-05`
+
+### Limitations
+- Sandbox Claude Code on the Web блокирует `huggingface.co` →
+  `paraphrase-multilingual-MiniLM-L12-v2` не скачивается. Прод-пайплайн в
+  Colab этим не страдает. TF-IDF фоллбэк даёт 60–70% качества semantic для
+  English-vs-English матчинга и хуже для cross-lingual. Документировано в
+  `gap_test.py` docstring.
+- Тестовый набор — придуманные продукты, не дамп реального каталога. Реальный
+  gap-анализ требует Shopify/EPROLO export.

@@ -81,6 +81,8 @@ tags-recomendations/
 - Тесты: `python -m pytest taxonomy/tests/ -v` (форма `python -m` гарантирует, что pytest подхватит `jsonschema`/`nbformat` из того же интерпретатора)
 - Snapshot ноутбука: `cp pipeline/Shopify_Pipeline.ipynb pipeline/.snapshots/$(date +%Y%m%d_%H%M%S).ipynb`
 - Установка dev-deps: `pip install -r requirements-dev.txt`
+- Gap-тест на придуманных продуктах: `python taxonomy/tools/gap_test.py --self-test`
+- Gap-тест на твоём каталоге: `python taxonomy/tools/gap_test.py --products catalog.csv --json report.json`
 
 ## Стандарт начала сессии
 1. `cat CLAUDE.md && git log --oneline -20 && git status`
@@ -96,7 +98,8 @@ tags-recomendations/
 
 ## Что СЕЙЧАС работает (не трогай без причины)
 - ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING)
-- ✅ `taxonomy.json` (783 кластера: 430 v3.1 approved + 335 v3.2 draft + **18 v3.3 draft, gap-fill итерация 1**, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
+- ✅ `taxonomy.json` (790 кластеров: 430 v3.1 approved + 335 v3.2 draft + **25 v3.3 draft, gap-fill итерации 1+2**, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
+- ✅ `taxonomy/tools/gap_test.py` — matching тестовых продуктов (или CSV-каталога) против таксономии через cosine; auto-fallback `sentence-transformers/MiniLM` → `sklearn TfidfVectorizer` (sandbox блокирует huggingface.co)
 - ✅ `taxonomy/schema.json` отражает реальную структуру (ADR-006, supersedes ADR-005)
 - ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + 9 бизнес-правил
   (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
