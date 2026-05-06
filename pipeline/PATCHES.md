@@ -166,5 +166,53 @@ ANTHROPIC_API_KEY либо есть, либо нет.
 - `python -m pytest pipeline/tests/ taxonomy/tests/` → 53/53 passed
   (тесты не зависят от ноутбука, но регресс-проверка инфраструктуры в порядке).
 
+Коммит: 2f17678.
+
+---
+
+## 2026-05-06 — feat(prompts): HTML_CLEAN_OUTPUT_RULES для всех HTML-промптов
+Cells: #2 (добавлена константа), #4 (collection html), #10 (legacy writer), #15 (modular designer)
+Snapshot: pipeline/.snapshots/<TS>_before-clean-rules.ipynb
+
+### Что было
+Промпты HTML-генерации не запрещали явно невидимые символы (zero-width
+spaces, BOM, directional marks, PUA), AI-водяные атрибуты (`data-ai`,
+`data-watermark`), скрытый SEO-стаффинг (off-screen, transparent text,
+font-size:0) и homoglyph-подмены. LLM иногда такое генерируют —
+особенно при кэшированных system-промптах с инструкциями «отметить» вывод.
+
+### Что стало
+В config-ячейке (#2) появилась константа `HTML_CLEAN_OUTPUT_RULES` с двумя
+секциями: «Silently remove these characters» (16 классов unicode) и
+«NEVER include in output» (12 видов AI-водяных знаков и stealth-content).
+
+Константа подставляется в три prompt'а:
+- `generate_collection_html` (cell #4) — короткий collection page description.
+- `WRITER_SYSTEM_PROMPT` (cell #10, legacy Sonnet writer).
+- `_designer_system` (cell #15, modular Opus designer).
+
+Все три используют конкатенацию `… + HTML_CLEAN_OUTPUT_RULES` — изменение
+правил в одном месте автоматически применяется ко всем.
+
+### Зачем
+- Защита от AI-watermarking: data-* атрибуты, скрытые комментарии с
+  generation context, invisible chars иногда используются как стелс-маркеры
+  AI-генерации. Google и другие краулеры могут это распознавать.
+- Защита от homoglyph-подмен: модель иногда вставляет кириллические/греческие
+  буквы в латинский текст — выглядит идентично, но ломает text-search и
+  даёт «mixed-script» флаг в Lighthouse.
+- Защита от классического hidden SEO: position:absolute;left:-9999px,
+  font-size:0, transparent text — за такое Google штрафует.
+
+### Тест
+- `python pipeline/tools/notebook_smoke.py` → 18 ячеек валидны.
+- `python -m pytest pipeline/tests/ taxonomy/tests/` → 53/53 passed.
+- Реальная проверка эффективности — на стороне пользователя в Colab dry-run:
+  открыть выходной HTML в редакторе, искать символы из списка (Python-regex
+  `r"[​-‏ -‮⁠-⁯﻿­͏؜᠎]|[-]"`),
+  искать атрибуты `data-ai|data-generated|data-watermark|data-model`.
+  Если что-то всё-таки проникает — добавим Python-postprocessor в
+  `sanitize_html` (defense in depth).
+
 Коммит: следующий после этой записи.
 
