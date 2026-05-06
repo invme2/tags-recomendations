@@ -1,5 +1,5 @@
 /* WANELO Product Page Framework — modular system
- * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06)
+ * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06T18:46:24)
  * Per-product palette comes from inline <style>:root{...}</style> in metafield.
  * Module backgrounds are mostly transparent — theme bg shows through.
  */
@@ -11,7 +11,7 @@
   /* ============================================================ */
   
   /* No global * reset — it would zero theme paddings. Scoped reset below. */
-  .wa-page,.wa-page > *{margin:0;padding:0;box-sizing:border-box}
+  .wa-page *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
   /* Scoped to .wa-page so we never override the Shopify theme background. */
   .wa-page{
