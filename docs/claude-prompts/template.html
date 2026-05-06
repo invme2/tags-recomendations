@@ -1,0 +1,2335 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lumea — Take a closer look</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================ */
+  /* ====================== THEME TOKENS ======================= */
+  /* AI AGENTS: change these 5 values to re-skin the whole page. */
+  /* ============================================================ */
+  :root{
+    /* ---- BRAND COLORS — change these to re-skin ---- */
+    --brand-1:    #ff9c70;          /* primary accent (warm) */
+    --brand-2:    #aac9f5;           /* secondary accent (cool) */
+    --brand-3:    #a6d8be;           /* tertiary accent */
+    --brand-soft: #ffe9d6;            /* soft tint for backgrounds */
+    --brand-deep: #ffc8b0;            /* deeper tint */
+
+    /* ---- NEUTRALS (rarely change) ---- */
+    --bg:    #ffffff;
+    --bg-2:  #f5f5f7;
+    --ink:   #1d1d1f;
+    --ink-2: #424245;
+    --ink-3: #6e6e73;
+    --ink-4: #86868b;
+    --line:  rgba(0,0,0,.08);
+    --link:  #0066cc;
+
+    /* ---- DERIVED PASTEL GRADIENTS — auto-built from brand colors ---- */
+    --grad-peach: linear-gradient(180deg, var(--brand-soft) 0%, var(--brand-deep) 50%, var(--brand-1) 100%);
+    --grad-sky:   linear-gradient(180deg, #d8eaff 0%, #c3dcff 50%, var(--brand-2) 100%);
+    --grad-mint:  linear-gradient(180deg, #d9efe5 0%, #c2e6d3 50%, var(--brand-3) 100%);
+    --grad-sand:  linear-gradient(180deg, #f5ede1 0%, #ebdcc3 50%, #ddc7a3 100%);
+    --grad-lilac: linear-gradient(180deg, #e8e0f5 0%, #d4c5ec 50%, #b8a4d8 100%);
+
+    /* ---- SPACING SCALE — controls vertical rhythm everywhere ---- */
+    --gap-module:   160px;   /* between top-level modules */
+    --gap-variant:   96px;   /* between variants inside a module */
+    --gap-head:      80px;   /* between module header and first variant */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html,body{
+    background:#fff;color:var(--ink);
+    font-family:'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;
+    overflow-x:hidden;
+    font-feature-settings:"ss01","cv11";
+    letter-spacing:-.011em;
+  }
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  .container{max-width:1240px;margin:0 auto;padding:0 24px}
+  .container-narrow{max-width:980px;margin:0 auto;padding:0 24px}
+
+  /* ===================== TOP NAV ===================== */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:100;height:48px;
+    background:rgba(255,255,255,.72);
+    backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .topbar .row{max-width:1280px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .topbar .brand{display:flex;align-items:center;gap:8px;font-weight:600;letter-spacing:-.02em;font-size:15px}
+  .topbar .brand .mark{
+    width:18px;height:18px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #fff, #ffd6c2 60%, #ff9c70);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);
+  }
+  .topbar .nav{display:flex;align-items:center;gap:2px;font-size:12px;color:var(--ink-3);overflow-x:auto;max-width:60vw;scrollbar-width:none}
+  .topbar .nav::-webkit-scrollbar{display:none}
+  .topbar .nav a{padding:6px 10px;border-radius:999px;white-space:nowrap;transition:background .2s,color .2s}
+  .topbar .nav a:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+  .topbar .cta{display:inline-flex;align-items:center;gap:4px;background:var(--ink);color:#fff;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:500}
+
+  /* ===================== HERO ===================== */
+  .hero{
+    min-height:100vh;padding:160px 24px 80px;text-align:center;position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:
+      radial-gradient(ellipse 1000px 600px at 50% 20%, rgba(255,200,176,.35), transparent 60%),
+      radial-gradient(ellipse 800px 500px at 50% 80%, rgba(195,220,255,.3), transparent 60%),
+      #fff;
+  }
+  .hero .eyebrow{
+    font-size:21px;font-weight:600;letter-spacing:-.018em;
+    background:linear-gradient(90deg,#ff9c70,#aac9f5,#a6d8be,#ff9c70);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:hueShift 8s ease-in-out infinite;
+  }
+  @keyframes hueShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero h1{
+    margin-top:14px;font-size:clamp(64px,11vw,160px);font-weight:600;line-height:.94;letter-spacing:-.05em;
+    max-width:1200px;
+  }
+  .hero h1 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .hero .lead{margin-top:32px;font-size:24px;line-height:1.4;color:var(--ink-2);max-width:760px;font-weight:400;letter-spacing:-.012em}
+  .hero .cta-row{margin-top:48px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+  .hero .cta-row a{font-size:17px;font-weight:500}
+  .hero .cta-row .primary{background:var(--ink);color:#fff;padding:14px 28px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
+  .hero .cta-row .secondary{color:var(--link);display:inline-flex;align-items:center;gap:6px}
+  .hero .cta-row .secondary:hover{text-decoration:underline}
+  .hero .scroll-cue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;align-items:center;gap:8px;letter-spacing:.06em;text-transform:uppercase;animation:bobble 2s ease-in-out infinite}
+  .hero .scroll-cue .arrow{width:1px;height:40px;background:linear-gradient(180deg,var(--ink-3),transparent)}
+  @keyframes bobble{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+  /* ===================== TOC GRID ===================== */
+  .toc-section{padding:120px 24px 80px}
+  .toc-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+    max-width:1280px;margin:0 auto;
+  }
+  @media(max-width:1100px){.toc-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){.toc-grid{grid-template-columns:repeat(2,1fr)}}
+  .toc-card{
+    background:var(--bg-2);border-radius:18px;padding:22px;
+    display:flex;flex-direction:column;gap:14px;min-height:160px;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1), background .25s;
+    position:relative;overflow:hidden;
+  }
+  .toc-card:hover{transform:translateY(-3px);background:#eaeaed}
+  .toc-card::after{content:"→";position:absolute;top:18px;right:20px;font-size:18px;color:var(--ink-4);transition:transform .3s, color .3s}
+  .toc-card:hover::after{transform:translate(4px,-4px);color:var(--ink)}
+  .toc-card .num{font-size:11px;letter-spacing:.18em;color:var(--ink-4);font-weight:600;text-transform:uppercase}
+  .toc-card .ttl{font-size:21px;font-weight:600;letter-spacing:-.018em;line-height:1.15;margin-top:auto}
+  .toc-card .ttl em{font-family:'Fraunces',serif;font-style:italic;font-weight:400}
+  .toc-card .meta{font-size:11px;letter-spacing:.04em;color:var(--ink-3)}
+
+  /* ============================================================ */
+  /* ============== MODULE LAYOUT (AI-FRIENDLY) ================= */
+  /* Page structure for agents:                                    */
+  /*   <section class="module" id="mN">          ← one per chapter*/
+  /*     <div class="module-head"> … header … </div>              */
+  /*     <div class="variant"> … variant 1 … </div>               */
+  /*     <div class="variant"> … variant 2 … </div>               */
+  /*   </section>                                                  */
+  /* Spacing is automatic — do NOT add inline padding overrides.  */
+  /* ============================================================ */
+  .module{padding:var(--gap-module) 24px;position:relative}
+  .module + .module{padding-top:0}                  /* avoid stacking module gaps */
+  .module-head{max-width:1200px;margin:0 auto var(--gap-head);text-align:center}
+  .module-head .ix{font-size:17px;font-weight:600;color:var(--ink-2)}
+  .module-head .ix span{color:var(--ink-4)}
+  .module-head h2{margin-top:8px;font-size:clamp(48px,7vw,96px);font-weight:600;letter-spacing:-.04em;line-height:1}
+  .module-head h2 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .module-head .desc{margin:32px auto 0;font-size:21px;line-height:1.45;color:var(--ink-2);max-width:680px;letter-spacing:-.01em}
+
+  /* Each variant is a child of .module, consistently spaced */
+  .variant{max-width:1280px;margin:0 auto}
+  .variant + .variant{margin-top:var(--gap-variant)}
+  /* full-bleed variants (scroll-driven hero stages) escape the max-width */
+  .variant.bleed{max-width:none;padding:0;margin-left:0;margin-right:0}
+  .variant.bleed + .variant{margin-top:var(--gap-variant)}
+
+  .variant-label{display:none}                       /* hidden by default */
+  /* legacy alias for older content */
+  .variant-block{max-width:1280px;margin:0 auto}
+  .variant-block + .variant-block{margin-top:var(--gap-variant)}
+
+  /* ===================== REVEAL HELPERS ===================== */
+  /* base reveal — fade up */
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .delay-1{transition-delay:.1s}
+  .delay-2{transition-delay:.2s}
+  .delay-3{transition-delay:.3s}
+  .delay-4{transition-delay:.4s}
+
+  /* word-by-word reveal */
+  .words .word{display:inline-block;opacity:0;transform:translateY(.4em);transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)}
+  .words.in .word{opacity:1;transform:none}
+  .words.in .word:nth-child(1){transition-delay:.05s}
+  .words.in .word:nth-child(2){transition-delay:.13s}
+  .words.in .word:nth-child(3){transition-delay:.21s}
+  .words.in .word:nth-child(4){transition-delay:.29s}
+  .words.in .word:nth-child(5){transition-delay:.37s}
+  .words.in .word:nth-child(6){transition-delay:.45s}
+  .words.in .word:nth-child(7){transition-delay:.53s}
+  .words.in .word:nth-child(8){transition-delay:.61s}
+  .words.in .word:nth-child(9){transition-delay:.69s}
+  .words.in .word:nth-child(10){transition-delay:.77s}
+
+  /* mask reveal — line slides up from below */
+  .mask{display:inline-block;overflow:hidden;vertical-align:bottom;line-height:1.05;padding-bottom:.04em}
+  .mask > span{display:inline-block;transform:translateY(110%);transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .mask.in > span,.in .mask > span{transform:none}
+  .mask.d2 > span{transition-delay:.12s}
+  .mask.d3 > span{transition-delay:.24s}
+  .mask.d4 > span{transition-delay:.36s}
+
+  /* ===================== SCROLL-DRIVEN HERO STAGES ===================== */
+  /* "Take a closer look" style — large image scales/transforms by scroll */
+  .stage{
+    position:relative;height:300vh;
+  }
+  .stage .pin{
+    position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+
+  /* ===================== M1.1 — ROUNDED HERO IMAGE THAT SCALES OUT ===================== */
+  .m11{
+    background:
+      radial-gradient(ellipse 800px 500px at 50% 0%, rgba(255,200,176,.35), transparent 60%),
+      #fff;
+  }
+  .m11 .pin{flex-direction:column;gap:32px}
+  .m11 .img-frame{
+    position:relative;width:80vw;height:60vh;max-width:1200px;
+    border-radius:48px;overflow:hidden;
+    background:#1d1d1f;
+    transform:scale(.65);
+    transition:transform .15s linear, border-radius .15s linear;
+  }
+  .m11 .img-frame img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);opacity:.85}
+  .m11 .floating-text{position:absolute;text-align:center;color:#fff;padding:0 48px;pointer-events:none;width:100%}
+  .m11 .floating-text .ey{font-size:14px;font-weight:600;letter-spacing:-.01em;background:linear-gradient(90deg,#ffd6c2,#aac9f5);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .m11 .floating-text h3{margin-top:12px;font-size:clamp(48px,7vw,108px);font-weight:600;line-height:.96;letter-spacing:-.04em}
+  .m11 .floating-text h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+
+  /* ===================== M1.2 — TYPE-SPLIT HERO ===================== */
+  .m12{padding:160px 24px;background:linear-gradient(180deg,#fff,#fafafa)}
+  .m12 .row{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;max-width:1280px;margin:0 auto;align-items:center}
+  .m12 .copy h3{font-size:clamp(48px,6.5vw,96px);font-weight:600;letter-spacing:-.04em;line-height:.98}
+  .m12 .copy h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m12 .copy .ix{font-size:17px;color:var(--ink-3);font-weight:500;margin-bottom:18px}
+  .m12 .copy .desc{margin-top:32px;font-size:19px;line-height:1.5;color:var(--ink-2);max-width:520px}
+  .m12 .copy .stats{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:32px;border-top:1px solid var(--line);padding-top:32px}
+  .m12 .copy .stat .v{font-size:48px;font-weight:600;letter-spacing:-.025em;line-height:1}
+  .m12 .copy .stat .v em{font-family:'Fraunces',serif;font-style:italic;font-weight:400;color:var(--ink-3)}
+  .m12 .copy .stat .l{margin-top:6px;font-size:13px;color:var(--ink-3);letter-spacing:.06em}
+  .m12 .photo{position:relative;aspect-ratio:4/5;border-radius:32px;overflow:hidden;background:#f5f5f7}
+  .m12 .photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
+  .m12.in .photo img{transform:scale(1)}
+  @media(max-width:900px){.m12 .row{grid-template-columns:1fr;gap:48px}}
+
+  /* ===================== M1.3 — BIG QUOTE CENTERED ===================== */
+  .m13{padding:200px 24px;text-align:center;background:#fff}
+  .m13 q{
+    display:block;font-family:'Fraunces',serif;font-weight:300;font-size:clamp(40px,5.5vw,80px);
+    line-height:1.08;letter-spacing:-.025em;max-width:1100px;margin:0 auto;color:var(--ink);
+    quotes:"«" "»";
+  }
+  .m13 q em{font-style:italic}
+  .m13 .sig{margin-top:64px;font-size:14px;color:var(--ink-3);letter-spacing:.06em}
+  .m13 .sig strong{color:var(--ink);font-weight:600}
+
+  /* ===================== M1.4 — FLOATING IMAGES ===================== */
+  .m14{position:relative;min-height:90vh;padding:120px 24px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .m14 .center{text-align:center;position:relative;z-index:5;max-width:760px;padding:0 24px}
+  .m14 .center .ey{font-size:17px;font-weight:600;color:var(--ink-2);margin-bottom:14px}
+  .m14 .center h3{font-size:clamp(48px,6.5vw,84px);font-weight:600;letter-spacing:-.035em;line-height:.98}
+  .m14 .center h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m14 .center .lead{margin-top:24px;font-size:19px;line-height:1.5;color:var(--ink-2);max-width:540px;margin-left:auto;margin-right:auto}
+  .m14 .float{position:absolute;border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(29,29,31,.1)}
+  .m14 .float img{width:100%;height:100%;object-fit:cover}
+  .m14 .float.f1{width:200px;height:240px;top:8%;left:10%;animation:fl1 9s ease-in-out infinite}
+  .m14 .float.f2{width:180px;height:180px;border-radius:50%;top:14%;right:12%;animation:fl2 10s ease-in-out infinite}
+  .m14 .float.f3{width:220px;height:200px;bottom:10%;left:14%;animation:fl3 11s ease-in-out infinite}
+  .m14 .float.f4{width:170px;height:210px;bottom:14%;right:14%;animation:fl4 12s ease-in-out infinite}
+  @keyframes fl1{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-22px) rotate(-1deg)}}
+  @keyframes fl2{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-26px) rotate(-2deg)}}
+  @keyframes fl3{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-18px) rotate(4deg)}}
+  @keyframes fl4{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-22px) rotate(-1deg)}}
+  @media(max-width:900px){.m14 .float{display:none}}
+
+  /* ===================== M1.5 — VIDEO LOOP HERO ===================== */
+  .m15{
+    position:relative;height:90vh;min-height:600px;
+    border-radius:32px;overflow:hidden;margin:0 24px;
+    background:#000;
+  }
+  .m15 .bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(255,156,112,.45), transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(170,201,245,.4), transparent 60%),
+      linear-gradient(135deg,#1a1a1f,#2a1f1a);
+    animation:moveBg 24s ease-in-out infinite alternate;
+  }
+  @keyframes moveBg{from{transform:scale(1) translate(0,0)}to{transform:scale(1.15) translate(-30px,-30px)}}
+  .m15 .copy{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:48px}
+  .m15 .copy .ey{font-size:14px;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .m15 .copy h3{margin-top:24px;font-size:clamp(48px,7vw,108px);font-weight:600;letter-spacing:-.04em;line-height:.98}
+  .m15 .copy h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m15 .copy .play{margin-top:48px;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.95);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s}
+  .m15 .copy .play:hover{transform:scale(1.08)}
+
+  /* ===================== M2 — STORY ===================== */
+  .m2-bg{background:linear-gradient(180deg,#fff,#fafafa)}
+  .story-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:32px;overflow:hidden;background:#fff;min-height:560px;box-shadow:0 30px 80px rgba(29,29,31,.04)}
+  .story-row .img{position:relative;background:var(--bg-2);overflow:hidden}
+  .story-row .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
+  .story-row.in .img img{transform:scale(1)}
+  .story-row .copy{padding:80px 64px;display:flex;flex-direction:column;justify-content:center;gap:24px}
+  .story-row .ix{font-size:14px;font-weight:600;color:var(--ink-3);letter-spacing:.06em}
+  .story-row h3{font-size:clamp(36px,4.5vw,56px);font-weight:600;letter-spacing:-.028em;line-height:1.02}
+  .story-row h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .story-row p{font-size:19px;line-height:1.5;color:var(--ink-2)}
+  .story-row .arrow{display:inline-flex;align-items:center;gap:6px;color:var(--link);font-weight:500;font-size:17px;align-self:flex-start}
+  .story-row .arrow:hover{text-decoration:underline}
+  .story-mirror{grid-template-columns:1fr 1fr}
+  .story-mirror .img{order:2}
+  @media(max-width:900px){.story-row{grid-template-columns:1fr}.story-mirror .img{order:0}.story-row .copy{padding:48px 32px}}
+
+  /* M2.3 — sticky scroll story */
+  .m23{display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1280px;margin:0 auto;padding:0 24px;align-items:start}
+  .m23 .sticky{position:sticky;top:80px;align-self:start;padding:0}
+  .m23 .sticky h3{font-size:clamp(40px,5vw,72px);font-weight:600;letter-spacing:-.03em;line-height:1}
+  .m23 .sticky h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m23 .sticky .ix{font-size:14px;font-weight:600;color:var(--ink-3);margin-bottom:18px}
+  .m23 .sticky .desc{margin-top:32px;font-size:19px;line-height:1.5;color:var(--ink-2);max-width:480px}
+  .m23 .sticky .ind{margin-top:48px;display:flex;flex-direction:column;gap:14px}
+  .m23 .sticky .ind .row{display:grid;grid-template-columns:32px 1fr;gap:18px;align-items:center;font-size:17px;color:var(--ink-3);transition:color .4s}
+  .m23 .sticky .ind .row .num{font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--ink-4)}
+  .m23 .sticky .ind .row.on{color:var(--ink);font-weight:500}
+  .m23 .sticky .ind .row.on .num{color:var(--ink)}
+  .m23 .scroll{display:flex;flex-direction:column;gap:32px;padding:0}
+  .m23 .scroll .pic{aspect-ratio:4/5;border-radius:24px;overflow:hidden;position:relative;transition:transform .6s, box-shadow .6s}
+  .m23 .scroll .pic.focused{transform:scale(1.02);box-shadow:0 30px 80px rgba(29,29,31,.12)}
+  .m23 .scroll .pic img{width:100%;height:100%;object-fit:cover}
+  .m23 .scroll .pic .lbl{position:absolute;left:18px;bottom:18px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);font-size:12px;font-weight:500;padding:6px 12px;border-radius:8px;letter-spacing:-.005em}
+  @media(max-width:900px){.m23{grid-template-columns:1fr;gap:32px}.m23 .sticky{position:static}}
+
+  /* M2.4 — scroll-driven horizontal split */
+  .m24{position:relative;min-height:140vh}
+  .m24 .pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .m24 .stage-inner{position:relative;width:90vw;max-width:1200px;height:70vh;display:flex;gap:24px}
+  .m24 .panel{flex:1;border-radius:32px;overflow:hidden;position:relative;background:#1a1a1f;transition:flex .8s cubic-bezier(.2,.7,.2,1)}
+  .m24 .panel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8}
+  .m24 .panel .label{position:absolute;left:24px;bottom:24px;color:#fff;font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .m24 .panel .label small{display:block;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0;margin-top:4px;font-size:13px}
+  .m24 .text-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;padding:48px;pointer-events:none;z-index:2}
+  .m24 .text-overlay h3{font-size:clamp(40px,5.5vw,80px);font-weight:600;letter-spacing:-.03em;line-height:1;max-width:900px}
+  .m24 .text-overlay h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m24.expand .panel.left{flex:3}
+  .m24.expand .panel.right{flex:.7}
+
+  /* M2.5 — full-bleed hero with overlay card */
+  .m25{position:relative;min-height:90vh;border-radius:32px;overflow:hidden;margin:0 24px;background:#1a1a1f}
+  .m25 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7;transform:scale(1.08);transition:transform 3s cubic-bezier(.2,.7,.2,1)}
+  .m25.in img{transform:scale(1)}
+  .m25 .card{position:absolute;left:48px;bottom:48px;max-width:520px;padding:40px 44px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px}
+  .m25 .card .ix{font-size:14px;font-weight:600;color:var(--ink-2)}
+  .m25 .card h3{margin-top:14px;font-size:36px;font-weight:600;letter-spacing:-.025em;line-height:1.08}
+  .m25 .card h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m25 .card p{margin-top:14px;font-size:17px;line-height:1.5;color:var(--ink-2)}
+  .m25 .card .cta{margin-top:20px;display:inline-flex;align-items:center;gap:6px;color:var(--link);font-weight:500;font-size:17px}
+  .m25 .badge{position:absolute;right:48px;top:48px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;letter-spacing:-.005em}
+
+  /* ============================================================ */
+  /* ============== HERO ALT — 5 hero variations ================= */
+  /* ============================================================ */
+  .hero-alt{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;border-radius:32px;margin:24px}
+
+  /* H.1 — Editorial split: huge serif + product photo */
+  .hero1{background:#fdf6ee;padding:80px 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+  .hero1 .ix{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a06640;font-weight:700}
+  .hero1 h1{margin-top:18px;font-family:'Fraunces',serif;font-weight:300;font-size:clamp(64px,9vw,140px);line-height:.92;letter-spacing:-.04em}
+  .hero1 h1 em{font-style:italic;color:var(--brand-1)}
+  .hero1 p{margin-top:28px;font-size:19px;line-height:1.55;color:var(--ink-2);max-width:440px}
+  .hero1 .ctas{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap}
+  .hero1 .ctas a{padding:14px 22px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:-.005em;text-decoration:none}
+  .hero1 .ctas .p{background:var(--ink);color:#fff}
+  .hero1 .ctas .s{color:var(--ink);border:1px solid var(--line)}
+  .hero1 .photo{aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:#1a1a1f}
+  .hero1 .photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
+  .hero1.in .photo img{transform:scale(1)}
+  @media(max-width:900px){.hero1{grid-template-columns:1fr;padding:48px 28px}}
+
+  /* H.2 — Cinematic dark with full-bleed image */
+  .hero2{background:#0e0e10;color:#fff;padding:0}
+  .hero2 .bg{position:absolute;inset:0}
+  .hero2 .bg img{width:100%;height:100%;object-fit:cover;opacity:.55;transform:scale(1.1);transition:transform 4s cubic-bezier(.2,.7,.2,1)}
+  .hero2.in .bg img{transform:scale(1)}
+  .hero2::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.65) 100%)}
+  .hero2 .copy{position:relative;z-index:2;padding:80px 56px;max-width:920px}
+  .hero2 .ix{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:600}
+  .hero2 .ix .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand-1);margin-right:8px;box-shadow:0 0 12px var(--brand-1)}
+  .hero2 h1{margin-top:24px;font-size:clamp(56px,8vw,128px);font-weight:600;letter-spacing:-.04em;line-height:.95}
+  .hero2 h1 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .hero2 p{margin-top:32px;font-size:19px;line-height:1.55;color:rgba(255,255,255,.78);max-width:480px}
+  .hero2 .meta{position:absolute;left:56px;bottom:48px;right:56px;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:600}
+  .hero2 .meta strong{color:#fff;font-family:'Fraunces',serif;font-style:italic;font-weight:300;text-transform:none;letter-spacing:-.01em;font-size:24px;display:block}
+  @media(max-width:900px){.hero2 .copy{padding:56px 28px}.hero2 .meta{left:28px;right:28px;flex-direction:column;gap:18px;align-items:flex-start}}
+
+  /* H.3 — Marquee tagline (animated horizontal type) */
+  .hero3{background:#fff;padding:80px 0;flex-direction:column;justify-content:center;align-items:stretch}
+  .hero3 .ix{padding:0 56px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:700;text-align:center}
+  .hero3 .marquee{margin-top:32px;overflow:hidden;white-space:nowrap;mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%)}
+  .hero3 .marquee .track{display:inline-flex;align-items:center;gap:48px;animation:hero3scroll 38s linear infinite;font-family:'Fraunces',serif;font-size:clamp(64px,10vw,160px);font-weight:300;letter-spacing:-.035em;line-height:1}
+  .hero3 .marquee .track em{font-style:italic;color:var(--brand-1)}
+  .hero3 .marquee .track span{display:inline-flex;align-items:center;gap:48px}
+  .hero3 .marquee .dot{width:14px;height:14px;border-radius:50%;background:var(--brand-1);flex-shrink:0}
+  @keyframes hero3scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .hero3 .body{padding:48px 56px 0;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end}
+  .hero3 .body p{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:520px}
+  .hero3 .body .stats{display:flex;gap:36px;justify-content:flex-end}
+  .hero3 .body .stat{text-align:right}
+  .hero3 .body .stat .v{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:48px;letter-spacing:-.02em;color:var(--ink);line-height:1}
+  .hero3 .body .stat .l{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-top:6px}
+  @media(max-width:900px){.hero3 .body{grid-template-columns:1fr;padding:32px 28px 0}.hero3 .body .stats{justify-content:flex-start}}
+
+  /* H.4 — Catalog index — table of contents as hero */
+  .hero4{background:linear-gradient(180deg,#fff 0%,#fdf6ee 100%);padding:80px 56px;display:grid;grid-template-columns:1fr 1.3fr;gap:64px;align-items:center}
+  .hero4 .l .ix{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a06640;font-weight:700}
+  .hero4 .l h1{margin-top:18px;font-size:clamp(56px,7vw,108px);font-weight:600;letter-spacing:-.04em;line-height:.95}
+  .hero4 .l h1 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .hero4 .l .meta{margin-top:32px;font-size:14px;color:var(--ink-3);letter-spacing:.04em}
+  .hero4 .l .meta strong{color:var(--ink);font-weight:700;font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:32px;display:block;letter-spacing:-.01em;margin-top:6px}
+  .hero4 .toc{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+  .hero4 .toc a{display:grid;grid-template-columns:60px 1fr auto;gap:24px;padding:18px 8px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);align-items:center;transition:background .3s,padding .4s}
+  .hero4 .toc a:hover{background:rgba(255,156,112,.08);padding-left:18px}
+  .hero4 .toc a .n{font-family:'Fraunces',serif;font-weight:300;font-style:italic;color:var(--brand-1);font-size:22px;letter-spacing:-.01em}
+  .hero4 .toc a .t{font-size:18px;font-weight:600;letter-spacing:-.012em}
+  .hero4 .toc a .t em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .hero4 .toc a .arr{font-size:14px;color:var(--ink-3);transition:transform .3s,color .3s}
+  .hero4 .toc a:hover .arr{color:var(--brand-1);transform:translateX(4px)}
+  @media(max-width:900px){.hero4{grid-template-columns:1fr;padding:48px 28px}}
+
+  /* H.5 — Animated counter / kinetic typography */
+  .hero5{background:#0e0e10;color:#fff;padding:0;text-align:center;flex-direction:column;justify-content:center}
+  .hero5::before{content:"";position:absolute;inset:-50% 30%;background:radial-gradient(circle,var(--brand-1),transparent 60%);opacity:.18;filter:blur(80px);animation:hero5pulse 8s ease-in-out infinite}
+  @keyframes hero5pulse{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.2);opacity:.28}}
+  .hero5 .ix{position:relative;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600}
+  .hero5 .lines{position:relative;margin-top:32px;display:flex;flex-direction:column;gap:0;align-items:center}
+  .hero5 .lines .line{display:flex;align-items:baseline;gap:24px;font-size:clamp(48px,7vw,108px);font-weight:600;letter-spacing:-.04em;line-height:1}
+  .hero5 .lines .line em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .hero5 .lines .line .num{font-family:'Fraunces',serif;font-weight:300;font-style:italic;color:var(--brand-1);font-variant-numeric:tabular-nums;min-width:1.6em;text-align:right}
+  .hero5 .sub{position:relative;margin-top:48px;font-size:18px;line-height:1.5;color:rgba(255,255,255,.65);max-width:520px;margin-left:auto;margin-right:auto}
+  .hero5 .ctas{position:relative;margin-top:36px;display:flex;gap:14px;justify-content:center}
+  .hero5 .ctas a{padding:14px 22px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none}
+  .hero5 .ctas .p{background:var(--brand-1);color:#1f1411}
+  .hero5 .ctas .s{color:#fff;border:1px solid rgba(255,255,255,.2)}
+
+  /* ============================================================ */
+  /* ============== EXTRA VARIANTS — M1..M5 (×3 each) ============ */
+  /* ============================================================ */
+
+  /* ----- M1.6 — Half-bleed product card with badge stack ----- */
+  .m16{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#0e0e10;color:#fff;border-radius:32px;overflow:hidden;margin:0 24px;min-height:640px}
+  .m16 .img{position:relative;overflow:hidden}
+  .m16 .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
+  .m16.in .img img{transform:scale(1)}
+  .m16 .copy{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:28px}
+  .m16 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600}
+  .m16 h3{font-size:clamp(44px,5vw,68px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .m16 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .m16 p{font-size:18px;line-height:1.55;color:rgba(255,255,255,.72);max-width:440px}
+  .m16 .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .m16 .badge{padding:8px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.85)}
+  .m16 .badge.solid{background:var(--brand-1);border-color:var(--brand-1);color:#1f1411;font-weight:600}
+  @media(max-width:900px){.m16{grid-template-columns:1fr}.m16 .copy{padding:40px 28px}}
+
+  /* ----- M1.7 — Split contrast (dark/light typography hero) ----- */
+  .m17{display:grid;grid-template-columns:1fr 1fr;border-radius:32px;overflow:hidden;margin:0 24px;min-height:560px}
+  .m17 .l,.m17 .r{padding:64px 48px;display:flex;flex-direction:column;justify-content:space-between}
+  .m17 .l{background:#0e0e10;color:#fff}
+  .m17 .r{background:#fdf6ee;color:var(--ink)}
+  .m17 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;opacity:.6}
+  .m17 .big{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(64px,9vw,140px);line-height:.92;letter-spacing:-.04em}
+  .m17 .big em{font-style:italic}
+  .m17 .l .big em{color:var(--brand-1)}
+  .m17 .r .big em{color:#a06640}
+  .m17 .foot{font-size:14px;line-height:1.5;max-width:300px;opacity:.7}
+  @media(max-width:900px){.m17{grid-template-columns:1fr}}
+
+  /* ----- M1.8 — Product on plinth with tape-measure stats ----- */
+  .m18{padding:80px 24px;background:#fdf6ee;border-radius:32px;margin:0 24px;text-align:center;position:relative;overflow:hidden}
+  .m18 .pedestal{position:relative;display:inline-block;margin:0 auto}
+  .m18 .photo{width:280px;height:380px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(29,29,31,.18);position:relative;z-index:2}
+  .m18 .photo img{width:100%;height:100%;object-fit:cover}
+  .m18 .plinth{position:absolute;left:50%;bottom:-32px;transform:translateX(-50%);width:380px;height:80px;background:radial-gradient(ellipse at center,rgba(29,29,31,.16),transparent 70%);z-index:1}
+  .m18 h3{margin-top:64px;font-size:clamp(40px,4.6vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
+  .m18 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m18 .ticks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:780px;margin:48px auto 0;padding:24px;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(29,29,31,.06)}
+  .m18 .tick{padding:8px;border-right:1px solid var(--line);text-align:left}
+  .m18 .tick:last-child{border-right:none}
+  .m18 .tick .lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  .m18 .tick .v{font-family:'Fraunces',serif;font-weight:300;font-size:32px;letter-spacing:-.02em;color:var(--ink);margin-top:4px}
+  .m18 .tick .v em{font-style:normal;font-family:'Inter';font-size:14px;font-weight:500;color:var(--ink-3);margin-left:2px}
+  @media(max-width:760px){.m18 .ticks{grid-template-columns:repeat(2,1fr)}.m18 .tick:nth-child(2){border-right:none}}
+
+  /* ----- M2.7 — Annotated photo (callouts on image) ----- */
+  .m27{position:relative;border-radius:32px;overflow:hidden;margin:0 24px;background:#0e0e10;min-height:680px}
+  .m27 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+  .m27::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.6) 100%)}
+  .m27 .head{position:absolute;top:48px;left:48px;right:48px;z-index:2;color:#fff;display:flex;justify-content:space-between;align-items:flex-start}
+  .m27 .head .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:600}
+  .m27 .head .ttl{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:32px;letter-spacing:-.02em;text-align:right;max-width:340px;line-height:1.15}
+  .m27 .note{position:absolute;z-index:3;color:#fff}
+  .m27 .note .pin{width:14px;height:14px;border-radius:50%;background:var(--brand-1);box-shadow:0 0 0 6px rgba(255,156,112,.25), 0 0 30px rgba(255,156,112,.6);position:relative}
+  .m27 .note .pin::before{content:"";position:absolute;top:7px;left:7px;width:1px;height:60px;background:rgba(255,255,255,.4)}
+  .m27 .note .lbl{margin-top:70px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--brand-1)}
+  .m27 .note p{margin-top:6px;font-size:15px;line-height:1.45;max-width:200px;color:rgba(255,255,255,.9)}
+  .m27 .n1{top:30%;left:18%}
+  .m27 .n2{top:45%;left:55%}
+  .m27 .n3{top:62%;left:30%}
+
+  /* ----- M2.8 — Stacked timeline rows ----- */
+  .m28{display:grid;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:1200px;margin:0 auto}
+  .m28 .row{display:grid;grid-template-columns:120px 1fr 1.2fr;gap:32px;padding:40px 32px;border-bottom:1px solid var(--line);align-items:center;transition:background .4s}
+  .m28 .row:last-child{border-bottom:none}
+  .m28 .row:hover{background:#fdf6ee}
+  .m28 .row .yr{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:42px;letter-spacing:-.02em;color:var(--brand-1)}
+  .m28 .row .ttl{font-size:22px;font-weight:600;letter-spacing:-.014em;line-height:1.2}
+  .m28 .row .ttl em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m28 .row p{font-size:15px;line-height:1.55;color:var(--ink-2);max-width:520px}
+  @media(max-width:760px){.m28 .row{grid-template-columns:1fr;gap:8px;padding:28px 24px}.m28 .row .yr{font-size:32px}}
+
+  /* ----- M2.9 — Vertical fold-out story ----- */
+  .m29{max-width:760px;margin:0 auto;padding:0 24px}
+  .m29 .chapter{padding:48px 0;border-bottom:1px solid var(--line)}
+  .m29 .chapter:last-child{border-bottom:none}
+  .m29 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  .m29 h3{margin-top:14px;font-size:36px;font-weight:600;letter-spacing:-.025em;line-height:1.1}
+  .m29 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .m29 p{margin-top:18px;font-size:18px;line-height:1.6;color:var(--ink-2)}
+  .m29 .pull{margin-top:24px;padding-left:20px;border-left:3px solid var(--brand-1);font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:22px;line-height:1.4;color:var(--ink)}
+
+  /* ----- M3.5 — Exploded cross-section ----- */
+  .m35x{padding:80px 48px;background:#0e0e10;color:#fff;border-radius:32px;margin:0 24px;display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center;min-height:640px}
+  .m35x .copy h3{font-size:clamp(40px,4.6vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
+  .m35x .copy h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .m35x .copy .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:700;margin-bottom:18px}
+  .m35x .copy p{margin-top:24px;font-size:17px;line-height:1.6;color:rgba(255,255,255,.72);max-width:440px}
+  .m35x .copy ul{margin-top:24px;display:flex;flex-direction:column;gap:14px;list-style:none;padding:0}
+  .m35x .copy li{display:flex;align-items:center;gap:14px;font-size:15px;color:rgba(255,255,255,.85)}
+  .m35x .copy li .n{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1);min-width:28px;font-size:20px}
+  .m35x .scene{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+  .m35x .layer{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.15);transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .m35x .layer.l1{width:90%;height:90%}
+  .m35x .layer.l2{width:65%;height:65%;background:rgba(255,156,112,.06)}
+  .m35x .layer.l3{width:40%;height:40%;background:radial-gradient(circle,var(--brand-1),var(--brand-deep))}
+  .m35x.in .l1{transform:translate(-30px,-20px)}
+  .m35x.in .l2{transform:translate(20px,30px)}
+  .m35x.in .l3{transform:translate(-10px,-10px)}
+  .m35x .lbl-pin{position:absolute;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-1);font-weight:700;display:flex;align-items:center;gap:8px}
+  .m35x .lbl-pin::before{content:"";width:24px;height:1px;background:var(--brand-1)}
+  .m35x .lbl-pin.p1{top:18%;right:6%}
+  .m35x .lbl-pin.p2{top:48%;left:0}
+  .m35x .lbl-pin.p3{bottom:18%;right:18%}
+  @media(max-width:900px){.m35x{grid-template-columns:1fr;padding:48px 28px}.m35x .scene{max-width:420px;margin:0 auto;width:100%}}
+
+  /* ----- M3.6 — Side-by-side comparison ----- */
+  .m36{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:0 24px}
+  .m36 .col{padding:48px 36px;border-radius:24px;display:flex;flex-direction:column;gap:20px}
+  .m36 .col.salon{background:#f4f0ea;color:var(--ink-2)}
+  .m36 .col.lumea{background:#0e0e10;color:#fff}
+  .m36 .col .ix{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.6}
+  .m36 .col h3{font-size:32px;font-weight:600;letter-spacing:-.022em;line-height:1.05}
+  .m36 .col.lumea h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .m36 .col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .m36 .col li{display:flex;gap:12px;font-size:15px;line-height:1.5}
+  .m36 .col li::before{content:"—";opacity:.4}
+  .m36 .col.lumea li::before{content:"✓";color:var(--brand-1);opacity:1}
+  .m36 .col .price{margin-top:auto;padding-top:24px;border-top:1px solid currentColor;border-color:rgba(0,0,0,.1);font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:24px;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:baseline}
+  .m36 .col.lumea .price{border-color:rgba(255,255,255,.15)}
+  .m36 .col .price small{font-family:'Inter';font-style:normal;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;opacity:.6}
+  @media(max-width:900px){.m36{grid-template-columns:1fr}}
+
+  /* ----- M3.7 — Animated metric ribbon ----- */
+  .m37{padding:80px 48px;background:#fdf6ee;border-radius:32px;margin:0 24px;text-align:center;position:relative;overflow:hidden}
+  .m37 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a06640;font-weight:700}
+  .m37 h3{margin-top:18px;font-size:clamp(40px,4.6vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
+  .m37 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m37 .ribbon{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:left}
+  .m37 .item{padding:32px 24px;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(29,29,31,.04);position:relative;overflow:hidden}
+  .m37 .item::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand-1)}
+  .m37 .item .v{font-family:'Fraunces',serif;font-weight:300;font-size:54px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .m37 .item .v em{font-style:italic;color:var(--brand-1)}
+  .m37 .item .lbl{margin-top:14px;font-size:13px;line-height:1.4;color:var(--ink-2);font-weight:500}
+  .m37 .item .lbl strong{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+  @media(max-width:900px){.m37 .ribbon{grid-template-columns:repeat(2,1fr)}}
+
+  /* ----- M4.6 — Big editorial number with body ----- */
+  .m46{padding:0 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:64px;align-items:center;max-width:1240px;margin:0 auto}
+  .m46 .num{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(140px,18vw,260px);line-height:.85;letter-spacing:-.05em;color:var(--ink)}
+  .m46 .num em{font-style:italic;color:var(--brand-1)}
+  .m46 .num small{display:block;font-family:'Inter';font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-top:24px;letter-spacing:.18em}
+  .m46 .body h3{font-size:32px;font-weight:600;letter-spacing:-.022em;line-height:1.1}
+  .m46 .body h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .m46 .body p{margin-top:18px;font-size:17px;line-height:1.6;color:var(--ink-2);max-width:380px}
+  .m46 .body .cite{margin-top:24px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  @media(max-width:900px){.m46{grid-template-columns:1fr;gap:32px}}
+
+  /* ----- M4.7 — Mini-chart trio ----- */
+  .m47{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:0 24px}
+  .m47 .card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:32px 28px;display:flex;flex-direction:column;gap:20px}
+  .m47 .card .ix{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  .m47 .card h4{font-size:18px;font-weight:600;letter-spacing:-.012em;line-height:1.3}
+  .m47 .card h4 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m47 .card .v{font-family:'Fraunces',serif;font-weight:300;font-size:48px;letter-spacing:-.025em;color:var(--brand-1);line-height:1}
+  .m47 .card .v em{font-style:italic}
+  /* sparkline as svg-like bars */
+  .m47 .spark{display:flex;align-items:flex-end;gap:4px;height:60px}
+  .m47 .spark span{flex:1;background:linear-gradient(180deg,var(--brand-1),var(--brand-deep));border-radius:2px 2px 0 0;transition:height 1.2s cubic-bezier(.2,.8,.2,1);height:0}
+  .m47 .card.in .spark span{height:var(--h,40%)}
+  /* donut */
+  .m47 .donut{position:relative;width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--brand-1) 0 var(--p,75%), #f1eee9 var(--p,75%) 100%);display:flex;align-items:center;justify-content:center}
+  .m47 .donut::after{content:"";position:absolute;inset:14px;background:#fff;border-radius:50%}
+  .m47 .donut span{position:relative;z-index:2;font-family:'Fraunces',serif;font-weight:300;font-size:28px;color:var(--ink);font-style:italic}
+  @media(max-width:900px){.m47{grid-template-columns:1fr}}
+
+  /* ----- M4.8 — Data ribbon (long horizontal stat strip) ----- */
+  .m48{padding:48px 56px;background:linear-gradient(135deg,var(--brand-soft) 0%,var(--brand-deep) 100%);border-radius:32px;margin:0 24px;color:#1f1411}
+  .m48 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;opacity:.6}
+  .m48 h3{margin-top:14px;font-size:32px;font-weight:600;letter-spacing:-.025em;line-height:1.1;max-width:560px}
+  .m48 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m48 .strip{margin-top:48px;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid rgba(31,20,17,.18)}
+  .m48 .cell{padding:24px 16px;border-right:1px solid rgba(31,20,17,.18)}
+  .m48 .cell:last-child{border-right:none}
+  .m48 .cell .v{font-family:'Fraunces',serif;font-weight:300;font-size:40px;letter-spacing:-.02em;line-height:1}
+  .m48 .cell .v em{font-style:italic}
+  .m48 .cell .l{margin-top:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.7}
+  @media(max-width:900px){.m48 .strip{grid-template-columns:repeat(2,1fr)}.m48 .cell{border-bottom:1px solid rgba(31,20,17,.18)}}
+
+  /* ----- M5.6 — Pull-quote magazine stack ----- */
+  .m56{padding:0 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1240px;margin:0 auto}
+  .m56 .q{padding:36px 32px;background:#fff;border-radius:24px;border:1px solid var(--line);display:flex;flex-direction:column;gap:20px;position:relative}
+  .m56 .q::before{content:"\201C";font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:84px;color:var(--brand-1);line-height:.6;position:absolute;top:18px;left:24px;opacity:.2}
+  .m56 .q .text{position:relative;z-index:1;font-family:'Fraunces',serif;font-weight:300;font-size:22px;line-height:1.35;letter-spacing:-.012em;color:var(--ink)}
+  .m56 .q .text em{font-style:italic;color:var(--brand-1)}
+  .m56 .q .by{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px;border-top:1px solid var(--line)}
+  .m56 .q .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brand-soft),var(--brand-deep));flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:#7a3a1f}
+  .m56 .q .meta{display:flex;flex-direction:column;gap:2px}
+  .m56 .q .meta .name{font-size:14px;font-weight:600;letter-spacing:-.005em}
+  .m56 .q .meta .role{font-size:11px;color:var(--ink-3);letter-spacing:.06em}
+  @media(max-width:900px){.m56{grid-template-columns:1fr}}
+
+  /* ----- M5.7 — Single big testimonial w/ portrait ----- */
+  .m57{display:grid;grid-template-columns:1fr 1.2fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;margin:0 24px;box-shadow:0 30px 80px rgba(29,29,31,.06);min-height:560px}
+  .m57 .portrait{position:relative;background:#1a1a1f;overflow:hidden}
+  .m57 .portrait img{width:100%;height:100%;object-fit:cover;opacity:.92}
+  .m57 .portrait .badge{position:absolute;top:24px;left:24px;padding:8px 14px;background:#fff;border-radius:999px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+  .m57 .body{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:24px}
+  .m57 .body .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a06640;font-weight:700}
+  .m57 .body .text{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(28px,3.2vw,42px);line-height:1.2;letter-spacing:-.022em;color:var(--ink)}
+  .m57 .body .text em{font-style:italic;color:var(--brand-1)}
+  .m57 .body .by{font-size:13px;letter-spacing:.06em;color:var(--ink-3);font-weight:500;padding-top:18px;border-top:1px solid var(--line)}
+  .m57 .body .by strong{font-weight:700;color:var(--ink);display:block;margin-bottom:2px;letter-spacing:0;font-size:15px}
+  @media(max-width:900px){.m57{grid-template-columns:1fr}.m57 .portrait{min-height:380px}.m57 .body{padding:40px 28px}}
+
+  /* ----- M5.8 — Star-rating ledger ----- */
+  .m58{padding:0 24px;max-width:920px;margin:0 auto}
+  .m58 .summary{padding:36px 40px;background:#0e0e10;color:#fff;border-radius:24px;display:grid;grid-template-columns:auto 1fr auto;gap:36px;align-items:center}
+  .m58 .summary .big{font-family:'Fraunces',serif;font-weight:300;font-size:80px;letter-spacing:-.03em;line-height:1}
+  .m58 .summary .big em{font-style:italic;color:var(--brand-1)}
+  .m58 .summary .stars{display:flex;gap:4px;color:var(--brand-1);font-size:20px}
+  .m58 .summary .meta{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:.06em;margin-top:8px}
+  .m58 .summary .bars{display:flex;flex-direction:column;gap:6px;min-width:200px}
+  .m58 .summary .bar{display:grid;grid-template-columns:auto 1fr auto;gap:8px;font-size:11px;color:rgba(255,255,255,.7);align-items:center;letter-spacing:.06em}
+  .m58 .summary .bar .track{height:4px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+  .m58 .summary .bar .fill{height:100%;background:var(--brand-1);border-radius:999px}
+  .m58 .ledger{margin-top:24px;display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#fff}
+  .m58 .ledger .row{padding:24px 32px;display:grid;grid-template-columns:80px 1fr 120px;gap:24px;border-bottom:1px solid var(--line);align-items:center}
+  .m58 .ledger .row:last-child{border-bottom:none}
+  .m58 .ledger .row .stars{color:var(--brand-1);font-size:13px;letter-spacing:1px}
+  .m58 .ledger .row .text{font-size:15px;line-height:1.5;color:var(--ink)}
+  .m58 .ledger .row .text strong{display:block;font-size:13px;color:var(--ink-3);font-weight:600;letter-spacing:.04em;margin-bottom:4px}
+  .m58 .ledger .row .by{font-size:12px;color:var(--ink-3);letter-spacing:.04em;text-align:right}
+  .m58 .ledger .row .by em{font-style:normal;display:block;color:var(--ink);font-weight:600;letter-spacing:0;font-size:14px;margin-bottom:2px}
+  @media(max-width:760px){.m58 .summary{grid-template-columns:1fr;text-align:center}.m58 .summary .bars{min-width:auto}.m58 .ledger .row{grid-template-columns:1fr;gap:8px}.m58 .ledger .row .by{text-align:left}}
+
+  /* ============================================================ */
+  /* ===== FAVORITES — 5 hero variations the client loved ====== */
+  /* ============================================================ */
+
+  /* FAV.1 — Calendar grid hero ("82 women · 6 months · 1 device") */
+  .fav1{padding:120px 48px;background:#0e0e10;color:#fff;border-radius:32px;margin:0 24px;position:relative;overflow:hidden}
+  .fav1::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 800px 400px at 50% 0%, rgba(255,156,112,.18), transparent 60%)}
+  .fav1 .head{position:relative;text-align:center;max-width:880px;margin:0 auto 80px}
+  .fav1 .head .ix{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600}
+  .fav1 .head h3{margin-top:18px;font-size:clamp(48px,6vw,84px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .fav1 .head h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .fav1 .grid{position:relative;display:grid;grid-template-columns:repeat(28,1fr);gap:6px;max-width:1100px;margin:0 auto}
+  .fav1 .cell{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.06);transition:background .6s,transform .4s}
+  .fav1.in .cell{background:linear-gradient(135deg,var(--brand-1),var(--brand-deep));animation:fav1pop .8s cubic-bezier(.2,.7,.2,1) backwards}
+  .fav1 .cell.dim{background:rgba(255,255,255,.06) !important;animation:none}
+  @keyframes fav1pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  .fav1 .legend{position:relative;display:flex;justify-content:space-between;margin-top:48px;font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.06em}
+  .fav1 .pull{position:relative;text-align:center;margin-top:48px;font-family:'Fraunces',serif;font-style:italic;font-size:21px;color:rgba(255,255,255,.7);max-width:560px;margin-left:auto;margin-right:auto;line-height:1.4}
+  @media(max-width:760px){.fav1{padding:64px 24px}.fav1 .grid{grid-template-columns:repeat(14,1fr)}}
+
+  /* FAV.2 — Topographic depth (concentric rings + layered text) */
+  .fav2{padding:140px 24px;background:#fff;border-radius:32px;margin:0 24px;position:relative;overflow:hidden;min-height:760px;display:flex;align-items:center;justify-content:center}
+  .fav2 .topo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .fav2 .topo svg{width:140%;height:140%;opacity:.5}
+  .fav2 .topo circle{fill:none;stroke:var(--brand-1);stroke-width:1;opacity:.18;transition:transform 1.6s cubic-bezier(.2,.7,.2,1),opacity 1.2s}
+  .fav2.in .topo circle{transform:scale(1)}
+  .fav2 .topo circle:nth-child(1){transform:scale(0);transition-delay:.05s}
+  .fav2 .topo circle:nth-child(2){transform:scale(0);transition-delay:.1s}
+  .fav2 .topo circle:nth-child(3){transform:scale(0);transition-delay:.15s}
+  .fav2 .topo circle:nth-child(4){transform:scale(0);transition-delay:.2s}
+  .fav2 .topo circle:nth-child(5){transform:scale(0);transition-delay:.25s}
+  .fav2 .topo circle:nth-child(6){transform:scale(0);transition-delay:.3s}
+  .fav2 .topo circle:nth-child(7){transform:scale(0);transition-delay:.35s}
+  .fav2 .topo circle:nth-child(8){transform:scale(0);transition-delay:.4s}
+  .fav2 .copy{position:relative;text-align:center;max-width:680px;z-index:2}
+  .fav2 .copy .ix{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+  .fav2 .copy h3{margin-top:24px;font-size:clamp(56px,7vw,100px);font-weight:600;letter-spacing:-.04em;line-height:1}
+  .fav2 .copy h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .fav2 .copy p{margin-top:36px;font-size:21px;line-height:1.5;color:var(--ink-2);max-width:520px;margin-left:auto;margin-right:auto}
+  .fav2 .depths{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:520px;margin:48px auto 0}
+  .fav2 .depth{padding:18px 14px;background:rgba(255,255,255,.7);backdrop-filter:blur(20px);border-radius:14px;border:1px solid rgba(0,0,0,.06)}
+  .fav2 .depth .num{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:32px;letter-spacing:-.02em;color:var(--brand-1)}
+  .fav2 .depth .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-top:4px}
+
+  /* FAV.3 — Magazine cover style hero */
+  .fav3{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#f5f1ea;border-radius:32px;overflow:hidden;margin:0 24px;min-height:680px;box-shadow:0 30px 80px rgba(29,29,31,.06)}
+  .fav3 .cover{position:relative;background:#0e0e10;overflow:hidden;padding:48px}
+  .fav3 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92;transform:scale(1.2);transition:transform 4s cubic-bezier(.2,.7,.2,1)}
+  .fav3.in .cover img{transform:scale(1.05)}
+  .fav3 .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.5) 100%)}
+  .fav3 .masthead{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;color:#fff;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+  .fav3 .masthead .logo{font-family:'Fraunces',serif;font-style:italic;font-size:44px;font-weight:300;letter-spacing:-.02em;text-transform:none}
+  .fav3 .barcode{position:absolute;bottom:32px;left:48px;z-index:2;display:flex;gap:1px;align-items:flex-end;height:40px}
+  .fav3 .barcode span{display:block;width:2px;background:#fff}
+  .fav3 .issue{position:absolute;bottom:32px;right:48px;z-index:2;color:#fff;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;text-align:right}
+  .fav3 .issue strong{display:block;font-family:'Fraunces',serif;font-weight:300;font-size:36px;font-style:italic;text-transform:none;letter-spacing:-.02em}
+  .fav3 .article{padding:64px 56px;display:flex;flex-direction:column;gap:24px;justify-content:center}
+  .fav3 .article .kicker{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a06640;font-weight:700}
+  .fav3 .article h3{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(44px,4.8vw,64px);line-height:1;letter-spacing:-.025em}
+  .fav3 .article h3 em{font-style:italic;font-weight:400}
+  .fav3 .article .lede{font-size:21px;line-height:1.5;color:var(--ink-2);font-weight:400;letter-spacing:-.005em}
+  .fav3 .article .lede::first-letter{font-family:'Fraunces',serif;font-size:64px;font-weight:300;float:left;line-height:.85;padding:6px 12px 0 0;color:var(--brand-1);font-style:italic}
+  .fav3 .article .by{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-top:8px;padding-top:24px;border-top:1px solid rgba(0,0,0,.12)}
+  @media(max-width:900px){.fav3{grid-template-columns:1fr}.fav3 .cover{min-height:420px}.fav3 .article{padding:48px 28px}}
+
+  /* FAV.4 — Three-up macro tiles with hover scale */
+  .fav4{padding:0 24px}
+  .fav4 .head{text-align:center;max-width:760px;margin:0 auto 64px}
+  .fav4 .head .ix{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+  .fav4 .head h3{margin-top:18px;font-size:clamp(44px,5.5vw,72px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .fav4 .head h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .fav4 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .fav4 .tile{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:3/4;background:#1a1a1f;cursor:pointer}
+  .fav4 .tile img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),opacity .6s}
+  .fav4 .tile:hover img{transform:scale(1.08);opacity:1}
+  .fav4 .tile .gloss{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.55) 60%,rgba(0,0,0,.85) 100%)}
+  .fav4 .tile .meta{position:absolute;top:24px;left:24px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);font-weight:600;display:flex;align-items:center;gap:8px}
+  .fav4 .tile .meta .dot{width:8px;height:8px;border-radius:50%;background:var(--brand-1);box-shadow:0 0 12px var(--brand-1)}
+  .fav4 .tile .body{position:absolute;bottom:24px;left:24px;right:24px;color:#fff}
+  .fav4 .tile .body .ttl{font-size:32px;font-weight:600;letter-spacing:-.022em;line-height:1.05}
+  .fav4 .tile .body .ttl em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .fav4 .tile .body p{margin-top:10px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.78);max-width:280px}
+  .fav4 .tile .num{position:absolute;top:24px;right:24px;font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:48px;color:rgba(255,255,255,.85);line-height:1;letter-spacing:-.02em}
+  @media(max-width:900px){.fav4 .tiles{grid-template-columns:1fr}}
+
+  /* FAV.5 — Big number ribbon (vertical asymmetric) */
+  .fav5{padding:0 24px}
+  .fav5 .frame{display:grid;grid-template-columns:1fr 1.2fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;box-shadow:0 30px 80px rgba(29,29,31,.05);min-height:720px}
+  .fav5 .left{background:linear-gradient(180deg,var(--brand-soft) 0%, var(--brand-deep) 60%, var(--brand-1) 100%);padding:64px 56px;display:flex;flex-direction:column;justify-content:space-between;color:#1f1411}
+  .fav5 .left .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:rgba(31,20,17,.6)}
+  .fav5 .left .heroNum{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(120px,14vw,200px);line-height:.9;letter-spacing:-.04em}
+  .fav5 .left .heroNum em{font-style:italic}
+  .fav5 .left .sub{font-size:24px;line-height:1.3;letter-spacing:-.012em;font-weight:500;max-width:340px}
+  .fav5 .left .foot{font-size:12px;color:rgba(31,20,17,.55);letter-spacing:.06em}
+  .fav5 .right{padding:64px 48px;display:flex;flex-direction:column;justify-content:center;gap:0}
+  .fav5 .right .row{display:grid;grid-template-columns:80px 1fr 140px;gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}
+  .fav5 .right .row:first-child{padding-top:0}
+  .fav5 .right .row:last-child{border-bottom:none;padding-bottom:0}
+  .fav5 .right .ix{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);font-weight:700;font-variant-numeric:tabular-nums}
+  .fav5 .right .ttl{font-size:21px;font-weight:600;letter-spacing:-.012em}
+  .fav5 .right .ttl em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--brand-1)}
+  .fav5 .right .ttl small{display:block;font-weight:400;font-size:14px;color:var(--ink-3);margin-top:4px;letter-spacing:0}
+  .fav5 .right .v{font-family:'Fraunces',serif;font-weight:300;font-size:36px;letter-spacing:-.02em;text-align:right;color:var(--ink)}
+  .fav5 .right .v em{font-style:normal;font-family:'Inter';font-size:14px;font-weight:500;color:var(--ink-3);margin-left:4px;letter-spacing:0}
+  @media(max-width:900px){.fav5 .frame{grid-template-columns:1fr}.fav5 .left{padding:48px 28px}.fav5 .right{padding:32px 28px}}
+
+  /* M2.6 — polaroid scrapbook */
+  .m26{padding:120px 24px;text-align:center;background:#fafafa;border-radius:32px;margin:0 24px;position:relative;overflow:hidden;min-height:680px}
+  .m26 .head{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(36px,4.5vw,56px);font-weight:300;letter-spacing:-.022em;max-width:760px;margin:0 auto}
+  .m26 .head .ink{font-style:normal;font-family:'Inter';font-weight:600}
+  .m26 .polaroids{position:relative;height:520px;margin-top:48px}
+  .m26 .pol{position:absolute;background:#fff;padding:14px 14px 56px;border-radius:6px;box-shadow:0 30px 60px rgba(29,29,31,.15);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .m26 .pol:hover{z-index:5;transform:rotate(0deg) scale(1.06) !important}
+  .m26 .pol .img{width:240px;height:280px;background:#f5f5f7;border-radius:2px;overflow:hidden}
+  .m26 .pol .img img{width:100%;height:100%;object-fit:cover}
+  .m26 .pol .cap{margin-top:14px;font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--ink)}
+  .m26 .pol.p1{top:20px;left:18%;transform:rotate(-6deg)}
+  .m26 .pol.p2{top:60px;left:42%;transform:rotate(3deg);z-index:2}
+  .m26 .pol.p3{top:100px;right:16%;transform:rotate(-4deg)}
+  @media(max-width:900px){.m26 .pol{position:relative;display:inline-block;margin:8px;top:auto !important;left:auto !important;right:auto !important}.m26 .polaroids{height:auto}}
+
+  /* ===================== M3 — FEATURE SPOTLIGHT ===================== */
+  /* M3.1 — TAKE A CLOSER LOOK style scroll-driven product */
+  .m31-stage{position:relative;height:300vh}
+  .m31-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .m31-product{
+    position:relative;width:60vw;max-width:560px;aspect-ratio:1;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff 0%, #f0e3da 50%, #d8b8a0 100%);
+    box-shadow:0 60px 120px rgba(29,29,31,.12);
+    transition:transform .1s linear;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .m31-product::after{
+    content:"";position:absolute;inset:18%;border-radius:50%;
+    background:radial-gradient(circle at 40% 30%, #ffd4a8 0%, #ff9c70 60%, #d96644 100%);
+    opacity:.85;
+  }
+  .m31-product img{
+    position:relative;z-index:2;width:65%;height:65%;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(29,29,31,.2));
+  }
+  .m31-hotspot{
+    position:absolute;width:36px;height:36px;border-radius:50%;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(29,29,31,.15);
+    transform:scale(0);transition:transform .5s cubic-bezier(.2,.7,.2,1);
+    z-index:5;
+  }
+  .m31-hotspot::before{content:"+";font-size:22px;color:var(--ink);font-weight:300}
+  .m31-hotspot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.6);animation:pulseHs 2.4s ease-out infinite}
+  @keyframes pulseHs{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.6);opacity:0}}
+  .m31-stage.expanded .m31-hotspot{transform:scale(1)}
+  .m31-hs1{top:18%;left:50%}
+  .m31-hs2{top:50%;left:14%}
+  .m31-hs3{top:50%;right:14%}
+  .m31-hs4{bottom:18%;left:50%}
+
+  .m31-text{position:absolute;text-align:center;color:var(--ink);padding:0 32px;width:100%;max-width:900px;left:50%;transform:translateX(-50%);transition:opacity .8s, transform .8s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+  .m31-text.intro{top:12%}
+  .m31-text.outro{bottom:12%;opacity:0;transform:translateX(-50%) translateY(20px)}
+  .m31-stage.expanded .m31-text.outro{opacity:1;transform:translateX(-50%) translateY(0)}
+  .m31-stage.expanded .m31-text.intro{opacity:0;transform:translateX(-50%) translateY(-20px)}
+  .m31-text .ix{font-size:14px;font-weight:600;color:var(--ink-3);letter-spacing:-.005em}
+  .m31-text h3{margin-top:14px;font-size:clamp(40px,6vw,80px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .m31-text h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m31-scrollhint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .m31-scrollhint .ar{width:1px;height:24px;background:linear-gradient(180deg,var(--ink-4),transparent);animation:bobble 2s ease-in-out infinite}
+
+  /* M3.2 — feature cards with peach gradient */
+  .m32{padding:120px 24px;background:var(--grad-peach);border-radius:32px;margin:0 24px}
+  .m32 .head{text-align:center;margin-bottom:80px;color:var(--ink)}
+  .m32 .head .ix{font-size:17px;font-weight:600;color:#7a4530}
+  .m32 .head h3{margin-top:8px;font-size:clamp(48px,6.5vw,84px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .m32 .head h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m32 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1200px;margin:0 auto}
+  .m32 .card{background:rgba(255,255,255,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;padding:40px;display:flex;flex-direction:column;gap:18px;min-height:380px;transition:transform .4s, background .4s}
+  .m32 .card:hover{transform:translateY(-4px);background:rgba(255,255,255,.9)}
+  .m32 .card .glyph{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#ff9c70,#d96644);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fraunces',serif;font-style:italic;font-size:24px}
+  .m32 .card h4{font-size:28px;font-weight:600;letter-spacing:-.022em;line-height:1.1}
+  .m32 .card h4 em{font-family:'Fraunces',serif;font-style:italic;font-weight:400}
+  .m32 .card p{font-size:17px;line-height:1.5;color:var(--ink-2);margin-top:auto}
+  .m32 .card .meta{font-size:12px;font-weight:600;letter-spacing:.06em;color:#7a4530;text-transform:uppercase}
+  @media(max-width:900px){.m32 .grid{grid-template-columns:1fr}}
+
+  /* M3.3 — exploded view */
+  .m33{padding:160px 24px;background:#fafafa;text-align:center;border-radius:32px;margin:0 24px;position:relative;overflow:hidden;min-height:700px}
+  .m33 .head{margin-bottom:64px}
+  .m33 .head .ix{font-size:17px;font-weight:600;color:var(--ink-2)}
+  .m33 .head h3{margin-top:8px;font-size:clamp(40px,6vw,72px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .m33 .head h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m33 .stage-x{position:relative;width:100%;height:520px;display:flex;align-items:center;justify-content:center}
+  .m33 .core{
+    position:relative;width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, #f0e3da 50%, #d8b8a0 100%);
+    box-shadow:0 30px 80px rgba(29,29,31,.15);
+    z-index:3;
+    transform:scale(.8);transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .m33.in .core{transform:scale(1)}
+  .m33 .core::after{content:"";position:absolute;inset:24px;border-radius:50%;background:linear-gradient(135deg,#ff9c70,#d96644)}
+  .m33 .part{
+    position:absolute;background:#fff;border-radius:18px;padding:20px;
+    width:180px;text-align:left;z-index:5;
+    box-shadow:0 14px 40px rgba(29,29,31,.08);
+    transform:scale(.5) translate(0,0);opacity:0;
+    transition:transform 1.4s cubic-bezier(.2,.7,.2,1), opacity 1.2s;
+  }
+  .m33.in .part{opacity:1;transform:scale(1) translate(0,0)}
+  .m33 .part .lbl{font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase}
+  .m33 .part .ttl{font-size:18px;font-weight:600;margin-top:6px;letter-spacing:-.014em}
+  .m33 .part .desc{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+  .m33 .part.p1{top:8%;left:18%;transition-delay:.2s}
+  .m33 .part.p2{top:14%;right:18%;transition-delay:.35s}
+  .m33 .part.p3{bottom:14%;left:14%;transition-delay:.5s}
+  .m33 .part.p4{bottom:8%;right:14%;transition-delay:.65s}
+  .m33 svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .m33 svg.lines path{stroke:var(--ink-4);stroke-width:1;fill:none;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1) .8s}
+  .m33.in svg.lines path{stroke-dashoffset:0}
+
+  /* M3.4 — macro grid 2-col */
+  .m34{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;min-height:600px;margin:0 24px;box-shadow:0 30px 80px rgba(29,29,31,.04)}
+  .m34 .macro{position:relative;background:#1a1a1f;overflow:hidden}
+  .m34 .macro img{width:100%;height:100%;object-fit:cover;transform:scale(1.4);transition:transform 4s cubic-bezier(.2,.7,.2,1)}
+  .m34.in .macro img{transform:scale(1.1)}
+  .m34 .macro .corner{position:absolute;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);font-weight:500}
+  .m34 .macro .c-tl{top:24px;left:24px}
+  .m34 .macro .c-br{bottom:24px;right:24px}
+  .m34 .copy{padding:80px 64px;display:flex;flex-direction:column;justify-content:center;gap:24px}
+  .m34 .ix{font-size:14px;font-weight:600;color:var(--ink-3)}
+  .m34 h3{font-size:clamp(36px,4.5vw,60px);font-weight:600;letter-spacing:-.028em;line-height:1.02}
+  .m34 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m34 p{font-size:19px;line-height:1.5;color:var(--ink-2)}
+  .m34 .specs{display:grid;grid-template-columns:1fr 1fr;gap:24px;border-top:1px solid var(--line);padding-top:32px;margin-top:8px}
+  .m34 .spec .l{font-size:11px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;font-weight:600}
+  .m34 .spec .v{font-family:'Fraunces',serif;font-size:32px;font-weight:300;margin-top:6px;letter-spacing:-.02em}
+  @media(max-width:900px){.m34{grid-template-columns:1fr}.m34 .copy{padding:48px 32px}}
+
+  /* M3.5 — depth-card stack */
+  .m35{padding:120px 24px;background:var(--grad-sky);border-radius:32px;margin:0 24px;text-align:center}
+  .m35 .head{margin-bottom:80px}
+  .m35 .head .ix{font-size:17px;font-weight:600;color:#345580}
+  .m35 .head h3{margin-top:8px;font-size:clamp(48px,6.5vw,84px);font-weight:600;letter-spacing:-.035em;line-height:1}
+  .m35 .head h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m35 .stack{position:relative;height:480px;max-width:600px;margin:0 auto;perspective:1200px}
+  .m35 .layer{
+    position:absolute;inset:0;border-radius:24px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);
+    box-shadow:0 30px 60px rgba(29,29,31,.1);
+    padding:40px;display:flex;flex-direction:column;justify-content:center;text-align:left;
+    transition:transform 1s cubic-bezier(.2,.7,.2,1);
+  }
+  .m35.in .layer.l1{transform:translateY(-60px) translateX(-40px) rotateZ(-3deg)}
+  .m35.in .layer.l2{transform:translateY(-30px) translateX(-20px) rotateZ(-1.5deg)}
+  .m35.in .layer.l3{transform:translateY(0) translateX(0) rotateZ(0deg)}
+  .m35 .layer.l1{z-index:1;background:rgba(255,255,255,.6)}
+  .m35 .layer.l2{z-index:2;background:rgba(255,255,255,.75)}
+  .m35 .layer.l3{z-index:3}
+  .m35 .layer .ix{font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase}
+  .m35 .layer h4{margin-top:14px;font-size:36px;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+  .m35 .layer h4 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+  .m35 .layer p{margin-top:18px;font-size:17px;line-height:1.5;color:var(--ink-2)}
+
+  /* ===================== MODULE 4: FACTS ===================== */
+  .m4-bg{background:linear-gradient(180deg,#fff 0%,#fff8f3 100%)}
+
+  /* M4.1 — Big numbers grid with counter animation */
+  .m41{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);max-width:1280px;margin:0 auto}
+  .m41 .cell{padding:48px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:14px;min-width:0}
+  .m41 .cell:nth-child(4n){border-right:0}
+  .m41 .ix{font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+  .m41 .num{font-size:80px;font-weight:200;letter-spacing:-.04em;line-height:.95;color:var(--ink);white-space:nowrap}
+  .m41 .num em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--accent);font-size:40px;vertical-align:top;margin-left:4px}
+  .m41 .lbl{font-size:14px;line-height:1.5;color:var(--ink-2)}
+  @media(max-width:960px){.m41{grid-template-columns:repeat(2,1fr)}.m41 .cell:nth-child(4n){border-right:1px solid var(--line)}.m41 .cell:nth-child(2n){border-right:0}}
+
+  /* M4.2 — Horizontal scroll facts */
+  .m42{padding:32px 0}
+  .m42 .track{display:flex;gap:24px;padding:0 24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .m42 .track::-webkit-scrollbar{display:none}
+  .m42 .card{flex:0 0 380px;scroll-snap-align:start;background:#fff;border-radius:28px;padding:40px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 16px 48px -16px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:18px;min-height:380px}
+  .m42 .card .ix{font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+  .m42 .card .big{font-size:88px;font-weight:200;letter-spacing:-.04em;line-height:.9;margin-top:auto}
+  .m42 .card .big em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-size:48px}
+  .m42 .card h4{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .m42 .card p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+
+  /* M4.3 — Stat with photo split */
+  .m43{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:32px;overflow:hidden;background:#0e1418;color:#fff;max-width:1280px;margin:0 auto;min-height:560px}
+  .m43 .left{padding:80px;display:flex;flex-direction:column;justify-content:space-between;gap:32px}
+  .m43 .left .ix{font-size:11px;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.5);text-transform:uppercase}
+  .m43 .left .stat{font-size:200px;font-weight:200;letter-spacing:-.05em;line-height:.85}
+  .m43 .left .stat em{font-family:'Fraunces',serif;font-style:italic;color:#ff9c70;font-size:96px;vertical-align:top}
+  .m43 .left p{font-size:18px;line-height:1.5;color:rgba(255,255,255,.75);max-width:380px}
+  .m43 .right{position:relative;overflow:hidden}
+  .m43 .right img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.8)}
+
+  /* M4.4 — Comparison bar chart */
+  .m44{max-width:1080px;margin:0 auto;padding:64px 0}
+  .m44 .row{display:grid;grid-template-columns:200px 1fr 100px;gap:32px;align-items:center;padding:24px 0;border-bottom:1px solid var(--line)}
+  .m44 .row:last-child{border-bottom:0}
+  .m44 .row .lbl{font-size:18px;font-weight:500;letter-spacing:-.01em}
+  .m44 .row .lbl em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent)}
+  .m44 .row .bar-wrap{height:14px;background:#f4f6f8;border-radius:999px;overflow:hidden;position:relative;display:block}
+  .m44 .row .bar{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#ff9c70,#ffd6c2);width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+  .m44 .row.in .bar{width:var(--w,50%)}
+  .m44 .row.alt .bar{background:#d8dee5}
+  .m44 .row .v{font-size:18px;font-weight:600;letter-spacing:-.01em;text-align:right;font-variant-numeric:tabular-nums}
+  .m44 .row .v em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-weight:300}
+
+  /* M4.5 — Animated ticker */
+  .m45{overflow:hidden;background:#0e1418;color:#fff;padding:80px 0;border-radius:32px;max-width:calc(100% - 48px);margin:0 auto}
+  .m45 .head{text-align:center;margin-bottom:48px;padding:0 24px}
+  .m45 .head h3{font-size:56px;font-weight:200;letter-spacing:-.025em;line-height:1.05}
+  .m45 .head h3 em{font-family:'Fraunces',serif;font-style:italic;color:#ff9c70}
+  .m45 .ticker{display:flex;gap:80px;animation:tick 40s linear infinite;width:max-content}
+  .m45 .ticker .item{display:flex;align-items:baseline;gap:16px;white-space:nowrap}
+  .m45 .ticker .n{font-size:88px;font-weight:200;letter-spacing:-.04em;line-height:1;color:#ff9c70;font-family:'Fraunces',serif;font-style:italic}
+  .m45 .ticker .t{font-size:24px;font-weight:500;color:rgba(255,255,255,.85)}
+  .m45 .ticker .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);align-self:center}
+  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ===================== MODULE 5: REVIEWS ===================== */
+  .m5-bg{background:#f4f6f8}
+
+  /* M5.1 — Glass cards on gradient */
+  .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,#ffd6c2 0%,#ffb89e 40%,#c9b6f5 100%);border-radius:32px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
+  .m51-stage::before{content:"";position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,.6),transparent);top:-200px;right:-200px;border-radius:50%}
+  .m51-stage::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.4),transparent);bottom:-100px;left:-100px;border-radius:50%}
+  .m51-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto;position:relative;z-index:1}
+  .m51 .card{background:rgba(255,255,255,.55);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);border:1px solid rgba(255,255,255,.6);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px;box-shadow:0 16px 48px -16px rgba(0,0,0,.15)}
+  .m51 .card .stars{color:#ff9c70;font-size:14px;letter-spacing:2px}
+  .m51 .card blockquote{font-size:20px;font-weight:500;letter-spacing:-.015em;line-height:1.35;color:var(--ink)}
+  .m51 .card blockquote em{font-family:'Fraunces',serif;font-style:italic;font-weight:400}
+  .m51 .card .who{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(0,0,0,.08)}
+  .m51 .card .ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff9c70,#ffd6c2);display:flex;align-items:center;justify-content:center;font-weight:600;color:#fff;font-size:15px;flex-shrink:0}
+  .m51 .card .name{font-size:14px;font-weight:600}
+  .m51 .card .meta{font-size:12px;color:var(--ink-3)}
+
+  /* M5.2 — Single big quote with rotation */
+  .m52{max-width:1080px;margin:0 auto;text-align:center;padding:80px 24px}
+  .m52 .stars{color:#ff9c70;font-size:18px;letter-spacing:4px;margin-bottom:32px}
+  .m52 blockquote{font-size:64px;font-weight:200;letter-spacing:-.025em;line-height:1.05;color:var(--ink)}
+  .m52 blockquote em{font-family:'Fraunces',serif;font-style:italic;font-weight:300;color:var(--accent)}
+  .m52 .author{display:inline-flex;align-items:center;gap:14px;margin-top:48px;padding:14px 24px;background:#fff;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+  .m52 .author .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff9c70,#ffd6c2)}
+  .m52 .author .name{font-size:14px;font-weight:600}
+  .m52 .author .meta{font-size:12px;color:var(--ink-3)}
+  .m52 .dots{display:flex;gap:8px;justify-content:center;margin-top:32px}
+  .m52 .dots span{width:8px;height:8px;border-radius:50%;background:#d8dee5}
+  .m52 .dots span.on{background:var(--ink)}
+
+  /* M5.3 — Magazine pull quotes */
+  .m53{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:1280px;margin:0 auto}
+  .m53 .pull{background:#fff;border-radius:28px;padding:48px;display:flex;flex-direction:column;gap:24px;border:1px solid var(--line);position:relative;overflow:hidden}
+  .m53 .pull::before{content:"";position:absolute;font-family:'Fraunces',serif;font-size:240px;font-style:italic;color:#ff9c70;opacity:.15;top:-80px;left:-20px;line-height:1}
+  .m53 .pull.q1::before{content:""}
+  .m53 .pull .mag{font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;position:relative;z-index:1}
+  .m53 .pull blockquote{font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.2;position:relative;z-index:1}
+  .m53 .pull blockquote em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent)}
+  .m53 .pull .by{font-size:13px;color:var(--ink-3);margin-top:auto;position:relative;z-index:1}
+
+  /* M5.4 — Vertical scroll wall */
+  .m54{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto;height:680px;overflow:hidden;mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%)}
+  .m54 .col{display:flex;flex-direction:column;gap:20px;animation:scroll-up 40s linear infinite}
+  .m54 .col.c2{animation-duration:50s;animation-direction:reverse}
+  .m54 .col.c3{animation-duration:60s}
+  @keyframes scroll-up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+  .m54 .mini{background:#fff;border-radius:20px;padding:24px;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+  .m54 .mini .stars{color:#ff9c70;font-size:11px;letter-spacing:2px}
+  .m54 .mini p{font-size:15px;line-height:1.4;color:var(--ink)}
+  .m54 .mini p em{font-family:'Fraunces',serif;font-style:italic}
+  .m54 .mini .who{font-size:12px;color:var(--ink-3)}
+
+  /* M5.5 — Stat-driven testimonial */
+  .m55{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;max-width:1280px;margin:0 auto;border:1px solid var(--line);min-height:520px}
+  .m55 .photo{position:relative;background:#f4f6f8;overflow:hidden}
+  .m55 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .m55 .photo .badge{position:absolute;top:24px;left:24px;background:rgba(255,255,255,.95);padding:10px 16px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .m55 .copy{padding:64px 56px;display:flex;flex-direction:column;gap:24px;justify-content:center}
+  .m55 .copy .ix{font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+  .m55 .copy blockquote{font-size:28px;font-weight:300;letter-spacing:-.02em;line-height:1.25}
+  .m55 .copy blockquote em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent)}
+  .m55 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;padding-top:24px;border-top:1px solid var(--line)}
+  .m55 .stats-row .v{font-size:42px;font-weight:200;letter-spacing:-.03em;line-height:1}
+  .m55 .stats-row .v em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-size:24px}
+  .m55 .stats-row .l{font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-top:6px}
+  .m55 .who{display:flex;align-items:center;gap:14px}
+  .m55 .who .ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff9c70,#ffd6c2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600}
+
+  /* ===================== FOOTER ===================== */
+  .ft{padding:80px 24px;background:#fafafa;text-align:center;border-top:1px solid var(--line)}
+  .ft .row{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .ft .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+  .ft .brand .mark{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#ffd6c2 60%,#ff9c70)}
+  .ft .links{display:flex;gap:24px;font-size:13px;color:var(--ink-3)}
+  .ft .copy{font-size:12px;color:var(--ink-4)}
+
+  @media(max-width:760px){
+    .module{padding:100px 16px}
+    .module-head h2{font-size:48px}
+    .story-row .copy{padding:48px 24px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="eyebrow reveal">Карточка товара · 14 глав</div>
+  <h1 class="reveal delay-1">
+    <span class="mask"><span>Take a closer</span></span><br/>
+    <span class="mask d2"><span><em>look</em>.</span></span>
+  </h1>
+  <p class="lead reveal delay-3">Каждая деталь имеет своё имя, каждая секция — свой ритм.<br/>Прокрутите, чтобы увидеть.</p>
+  <div class="cta-row reveal delay-4">
+    <a href="#m1" class="primary">Начать чтение →</a>
+    <a href="Lumea Landing.html" class="secondary">К лендингу →</a>
+  </div>
+  <div class="scroll-cue">Scroll<span class="arrow"></span></div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ================ HERO ALT — 5 VARIATIONS ===================== -->
+<!-- ============================================================== -->
+<section class="module" id="hero-alts" style="padding-top:0">
+  <div class="module-head reveal">
+    <div class="ix">★ Hero · Take a closer look <span>· 5 вариаций</span></div>
+    <h2>Пять способов <em>начать</em>.</h2>
+    <p class="desc">Альтернативы первому экрану — от журнальной типографики до кинематографического тёмного hero и кинетического счётчика.</p>
+  </div>
+
+  <!-- ========== HERO 1 — Editorial split ========== -->
+  <div class="variant">
+    <section class="hero-alt hero1 reveal">
+      <div>
+        <div class="ix">Take a closer look · Edition 01</div>
+        <h1>Take a closer<br/><em>look</em>.</h1>
+        <p>Каждая деталь имеет своё имя, каждая секция — свой ритм. Прокрутите карточку — и увидите, из чего складывается ежедневный ритуал.</p>
+        <div class="ctas">
+          <a href="#m1" class="p">Начать чтение →</a>
+          <a href="Lumea Landing.html" class="s">К лендингу →</a>
+        </div>
+      </div>
+      <div class="photo"><img src="assets/red-light-face.jpg" alt=""/></div>
+    </section>
+  </div>
+
+  <!-- ========== HERO 2 — Cinematic dark ========== -->
+  <div class="variant">
+    <section class="hero-alt hero2 reveal">
+      <div class="bg"><img src="assets/face-portrait.jpg" alt=""/></div>
+      <div class="copy">
+        <div class="ix"><span class="dot"></span>Lumea · EMS-01 · Spring 2026</div>
+        <h1>Take a closer<br/><em>look</em>.</h1>
+        <p>Кино, в котором главный герой — двенадцать минут перед сном. Прокрутите, чтобы попасть в кадр.</p>
+      </div>
+      <div class="meta">
+        <div><span>14 глав</span><strong>168 дней</strong></div>
+        <div style="text-align:right"><span>Reading time</span><strong>~12 минут</strong></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== HERO 3 — Marquee tagline ========== -->
+  <div class="variant">
+    <section class="hero-alt hero3 reveal" style="display:block">
+      <div class="ix">★ Take a closer look · Edition 03</div>
+      <div class="marquee">
+        <div class="track">
+          <span>Take a closer <em>look</em>.</span><span class="dot"></span>
+          <span>Шесть зон.</span><span class="dot"></span>
+          <span>Двенадцать <em>минут</em>.</span><span class="dot"></span>
+          <span>Один <em>прибор</em>.</span><span class="dot"></span>
+          <span>Take a closer <em>look</em>.</span><span class="dot"></span>
+          <span>Шесть зон.</span><span class="dot"></span>
+          <span>Двенадцать <em>минут</em>.</span><span class="dot"></span>
+          <span>Один <em>прибор</em>.</span><span class="dot"></span>
+        </div>
+      </div>
+      <div class="body">
+        <p>Карточка как лента: каждая глава — отдельная нота. Прокрутите вниз и услышите всю композицию.</p>
+        <div class="stats">
+          <div class="stat"><div class="v">14</div><div class="l">Глав</div></div>
+          <div class="stat"><div class="v">46</div><div class="l">Вариаций</div></div>
+          <div class="stat"><div class="v">168</div><div class="l">Дней</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== HERO 4 — Catalog index ========== -->
+  <div class="variant">
+    <section class="hero-alt hero4 reveal">
+      <div class="l">
+        <div class="ix">★ Take a closer look · Index</div>
+        <h1>Take a closer<br/><em>look</em>.</h1>
+        <div class="meta">Карточка товара<strong>14 глав</strong></div>
+      </div>
+      <div class="toc">
+        <a href="#favorites"><span class="n">★</span><span class="t">Любимые <em>идеи</em></span><span class="arr">→</span></a>
+        <a href="#m1"><span class="n">01</span><span class="t">Вводный <em>экран</em></span><span class="arr">→</span></a>
+        <a href="#m2"><span class="n">02</span><span class="t">Сторителлинг</span><span class="arr">→</span></a>
+        <a href="#m3"><span class="n">03</span><span class="t">Фишка <em>крупно</em></span><span class="arr">→</span></a>
+        <a href="#m4"><span class="n">04</span><span class="t">Цифры и <em>факты</em></span><span class="arr">→</span></a>
+        <a href="#m5"><span class="n">05</span><span class="t">Отзывы <em>на стекле</em></span><span class="arr">→</span></a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== HERO 5 — Animated counter ========== -->
+  <div class="variant">
+    <section class="hero-alt hero5 reveal">
+      <div class="ix">★ Lumea · Long description</div>
+      <div class="lines">
+        <div class="line"><span class="num" data-to="14">14</span><span>глав</span></div>
+        <div class="line"><span class="num" data-to="46">46</span><span><em>вариаций</em></span></div>
+        <div class="line"><span class="num" data-to="168">168</span><span>дней</span></div>
+      </div>
+      <p class="sub">Take a closer <em style="font-family:'Fraunces',serif;font-style:italic;color:var(--brand-1)">look</em> — журнал об одном продукте, прочитанный за двенадцать минут.</p>
+      <div class="ctas">
+        <a href="#m1" class="p">Начать чтение →</a>
+        <a href="#hero-alts" class="s">Сменить hero →</a>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- ============== TOC ============== -->
+<section class="toc-section">
+  <div class="toc-grid">
+    <a href="#favorites" class="toc-card reveal" style="background:linear-gradient(135deg,var(--brand-soft),var(--brand-deep))"><span class="num" style="color:#7a3a1f">★ Избранное</span><span class="ttl">Любимые <em>идеи</em></span><span class="meta" style="color:rgba(122,58,31,.7)">5 героев</span></a>
+    <a href="#m1" class="toc-card reveal delay-1"><span class="num">Глава · 01</span><span class="ttl">Вводный <em>экран</em></span><span class="meta">5 вариаций</span></a>
+    <a href="#m2" class="toc-card reveal delay-2"><span class="num">Глава · 02</span><span class="ttl">Сторителлинг</span><span class="meta">6 вариаций</span></a>
+    <a href="#m3" class="toc-card reveal delay-3"><span class="num">Глава · 03</span><span class="ttl">Фишка <em>крупно</em></span><span class="meta">5 вариаций</span></a>
+    <a href="#m4" class="toc-card reveal"><span class="num">Глава · 04</span><span class="ttl">Цифры и факты</span><span class="meta">5 вариаций</span></a>
+    <a href="#m5" class="toc-card reveal delay-1"><span class="num">Глава · 05</span><span class="ttl">Отзывы <em>на стекле</em></span><span class="meta">5 вариаций</span></a>
+    <a href="#m6" class="toc-card reveal delay-2"><span class="num">Глава · 06</span><span class="ttl">До / После</span><span class="meta">5 вариаций</span></a>
+    <a href="#m7" class="toc-card reveal delay-3"><span class="num">Глава · 07</span><span class="ttl">Сценарии</span><span class="meta">5 вариаций</span></a>
+    <a href="#m8" class="toc-card reveal"><span class="num">Глава · 08</span><span class="ttl">Видеообзор</span><span class="meta">5 вариаций</span></a>
+    <a href="#m9" class="toc-card reveal delay-1"><span class="num">Глава · 09</span><span class="ttl">Из чего <em>сделано</em></span><span class="meta">5 вариаций</span></a>
+    <a href="#m10" class="toc-card reveal delay-2"><span class="num">Глава · 10</span><span class="ttl">Комплектация</span><span class="meta">5 вариаций</span></a>
+    <a href="#m11" class="toc-card reveal delay-3"><span class="num">Глава · 11</span><span class="ttl">Уход</span><span class="meta">5 вариаций</span></a>
+    <a href="#m12" class="toc-card reveal"><span class="num">Глава · 12</span><span class="ttl">О бренде</span><span class="meta">5 вариаций</span></a>
+    <a href="#m13" class="toc-card reveal delay-1"><span class="num">Глава · 13</span><span class="ttl">FAQ</span><span class="meta">5 вариаций</span></a>
+    <a href="#m14" class="toc-card reveal delay-2"><span class="num">Глава · 14</span><span class="ttl">Финальный <em>аккорд</em></span><span class="meta">5 вариаций</span></a>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ================== FAVORITES — HERO IDEAS ==================== -->
+<!-- 5 fresh hero variations the client loved most.                -->
+<!-- ============================================================== -->
+<section class="module" id="favorites" style="background:linear-gradient(180deg,#fff 0%,#fdf6ee 100%);padding-top:120px;padding-bottom:120px;border-radius:0">
+  <div class="module-head reveal">
+    <div class="ix" style="color:#a06640">★ Избранное <span>· Любимые идеи</span></div>
+    <h2>Пять <em>героев</em>.</h2>
+    <p class="desc">Отобранные идеи, которые понравились клиенту больше всего — от календарной сетки и магазинной обложки до журнальной типографики и тёплого числового ритма.</p>
+  </div>
+
+  <!-- ========== FAV.1 — Calendar grid hero ========== -->
+  <div class="variant">
+    <section class="fav1 reveal" id="fav1">
+      <div class="head">
+        <div class="ix">Fav · 01 / Календарная сетка</div>
+        <h3>82 женщины. 168 дней.<br/>Один <em>прибор</em>.</h3>
+      </div>
+      <div class="grid" id="fav1grid"></div>
+      <div class="legend"><span>День 01</span><span>День 168 · 6 месяцев</span></div>
+      <p class="pull">«Каждая клетка — день, когда кто-то держал Lumea в руках. Цифры — не маркетинг, а календарь».</p>
+    </section>
+  </div>
+
+  <!-- ========== FAV.2 — Topographic depth ========== -->
+  <div class="variant">
+    <section class="fav2 reveal" id="fav2">
+      <div class="topo">
+        <svg viewBox="-200 -200 400 400" preserveAspectRatio="xMidYMid meet">
+          <circle cx="0" cy="0" r="40"/>
+          <circle cx="0" cy="0" r="65"/>
+          <circle cx="0" cy="0" r="90"/>
+          <circle cx="0" cy="0" r="115"/>
+          <circle cx="0" cy="0" r="140"/>
+          <circle cx="0" cy="0" r="170"/>
+          <circle cx="0" cy="0" r="200"/>
+          <circle cx="0" cy="0" r="230"/>
+        </svg>
+      </div>
+      <div class="copy">
+        <div class="ix">Fav · 02 / Глубина проникновения</div>
+        <h3>Свет, что <em>достаёт</em><br/>до коллагена.</h3>
+        <p>630 нм красный + 850 нм инфракрасный — две длины волны, которые работают на разной глубине: эпидермис, дерма, гиподерма.</p>
+        <div class="depths">
+          <div class="depth"><div class="num">0,5 мм</div><div class="lbl">Эпидермис</div></div>
+          <div class="depth"><div class="num">2 мм</div><div class="lbl">Дерма</div></div>
+          <div class="depth"><div class="num">5 мм</div><div class="lbl">Гиподерма</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== FAV.3 — Magazine cover ========== -->
+  <div class="variant">
+    <section class="fav3 reveal" id="fav3">
+      <div class="cover">
+        <img src="assets/red-light-face.jpg" alt=""/>
+        <div class="masthead">
+          <span class="logo">Lumea</span>
+          <span>№ 04 · 2025</span>
+        </div>
+        <div class="barcode">
+          <span style="height:80%"></span><span style="height:60%"></span><span style="height:90%"></span>
+          <span style="height:70%"></span><span style="height:100%"></span><span style="height:55%"></span>
+          <span style="height:85%"></span><span style="height:75%"></span><span style="height:95%"></span>
+          <span style="height:65%"></span><span style="height:80%"></span><span style="height:50%"></span>
+          <span style="height:90%"></span><span style="height:60%"></span><span style="height:70%"></span>
+        </div>
+        <div class="issue"><strong>EMS-01</strong>Sculpt edition</div>
+      </div>
+      <div class="article">
+        <div class="kicker">★ Cover story · 6 минут чтения</div>
+        <h3>Косметология,<br/>сжатая до <em>одного</em><br/>жеста.</h3>
+        <p class="lede">Прибор, который заменяет шесть приёмов у косметолога — но требует только двенадцати минут перед сном. Внутри: микротоки, красный свет 630 нм, инфракрасный 850 нм и нагрев до 42 °C.</p>
+        <div class="by">Текст · Lumea Lab    ·    Фото · Анна Решетняк</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== FAV.4 — Three-up macro tiles ========== -->
+  <div class="variant">
+    <section class="fav4 reveal">
+      <div class="head">
+        <div class="ix">Fav · 04 / Три героя</div>
+        <h3>Три режима. Один <em>прибор</em>.</h3>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <img src="assets/red-light-face.jpg" alt=""/>
+          <div class="gloss"></div>
+          <div class="meta"><span class="dot"></span>Режим 01</div>
+          <div class="num">01</div>
+          <div class="body">
+            <div class="ttl"><em>Glow</em><br/>Сияние</div>
+            <p>Красный свет 630 нм. Стимулирует выработку коллагена, выравнивает тон.</p>
+          </div>
+        </div>
+        <div class="tile">
+          <img src="assets/face-portrait.jpg" alt=""/>
+          <div class="gloss"></div>
+          <div class="meta"><span class="dot"></span>Режим 02</div>
+          <div class="num">02</div>
+          <div class="body">
+            <div class="ttl"><em>Lift</em><br/>Подтяжка</div>
+            <p>Микротоки + нагрев 42 °C. Тонизирует мышцы, моделирует овал лица.</p>
+          </div>
+        </div>
+        <div class="tile">
+          <img src="assets/slimming-result.jpg" alt=""/>
+          <div class="gloss"></div>
+          <div class="meta"><span class="dot"></span>Режим 03</div>
+          <div class="num">03</div>
+          <div class="body">
+            <div class="ttl"><em>Sculpt</em><br/>Контур</div>
+            <p>EMS + ИК-свет 850 нм. Глубокая проработка, ускорение лимфодренажа.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== FAV.5 — Big number ribbon ========== -->
+  <div class="variant">
+    <section class="fav5 reveal">
+      <div class="frame">
+        <div class="left">
+          <div class="ix">Fav · 05 / Цифры в ритме</div>
+          <div>
+            <div class="heroNum"><em>168</em></div>
+            <div class="sub">дней клинического наблюдения за группой из 82 женщин 28–54 лет.</div>
+          </div>
+          <div class="foot">Исследование Lumea Lab · 2024–2025</div>
+        </div>
+        <div class="right">
+          <div class="row"><span class="ix">— 01</span><span class="ttl">Эластичность <em>кожи</em><small>Купероз-тест, день 84 vs день 0</small></span><span class="v">+34<em>%</em></span></div>
+          <div class="row"><span class="ix">— 02</span><span class="ttl">Глубина <em>морщин</em><small>3D-скан, носогубная складка</small></span><span class="v">−27<em>%</em></span></div>
+          <div class="row"><span class="ix">— 03</span><span class="ttl">Тонус <em>овала</em><small>Кутиметрия, день 168</small></span><span class="v">+41<em>%</em></span></div>
+          <div class="row"><span class="ix">— 04</span><span class="ttl">Регулярность <em>применения</em><small>В среднем за 6 месяцев</small></span><span class="v">5,2<em>раз/нед</em></span></div>
+          <div class="row"><span class="ix">— 05</span><span class="ttl">Готовы <em>рекомендовать</em><small>Опрос на 168-й день</small></span><span class="v">94<em>%</em></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ====================== MODULE 1: INTRO ======================= -->
+<!-- AI AGENTS:  one <section class="module">  per chapter.        -->
+<!-- Each variant lives inside as <div class="variant">.           -->
+<!-- Spacing is automatic — do NOT add inline padding/margin.      -->
+<!-- ============================================================== -->
+<section class="module" id="m1">
+  <div class="module-head reveal">
+    <div class="ix">Глава 01 <span>· Знакомство</span></div>
+    <h2>Вводный <em>экран</em>.</h2>
+    <p class="desc">Первый экран задаёт обещание. Пять способов начать историю продукта — от кинематографического полотна до видео-петли.</p>
+  </div>
+
+  <!-- ========== VARIANT 1.1 — Scroll-driven hero ========== -->
+  <div class="variant bleed">
+    <div class="stage m11" id="m11Stage">
+      <div class="pin">
+        <div class="img-frame" id="m11Frame">
+          <img src="assets/red-light-face.jpg" alt=""/>
+          <div class="frame-ui">
+            <span class="pill"><span class="dot"></span>Live · 630 nm therapy</span>
+            <div class="meta">
+              <div class="col"><span>Session</span><span class="v">12 min</span></div>
+              <div class="col"><span>Mode</span><span class="v">Glow</span></div>
+            </div>
+            <div class="center-headline">
+              <div class="ey">Lumea · EMS-01 Sculpt</div>
+              <h3>Косметология,<br/>сжатая до <em>одного</em> жеста.</h3>
+            </div>
+            <div class="ribbon">
+              <div class="lbl"><span class="l-ey">01 / Glow</span><span class="l-v">Infrared 630 nm</span></div>
+              <div class="scrub" id="m11Scrub"></div>
+              <div class="lbl" style="text-align:right;align-items:flex-end"><span class="l-ey">Session</span><span class="l-v">04:32 / 12:00</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-hint"><span>Scroll to expand</span><span class="arr"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.2 — Type-split with stat panel ========== -->
+  <div class="variant">
+    <div class="m12 reveal">
+      <div class="row">
+        <div class="copy">
+          <div class="ix">Глава · 01 · Введение</div>
+          <h3 class="words">
+            <span class="word">Скульптор,</span>
+            <span class="word">что</span>
+            <span class="word">помещается</span>
+            <span class="word">в</span>
+            <span class="word"><em>косметичку</em>.</span>
+          </h3>
+          <p class="desc">Три профессиональные технологии — ультразвук, EMS-микротоки и инфракрасный свет — собраны в корпус из латуни и матового ABS. Вес 186 граммов, заряжается через USB-C.</p>
+          <div class="stats">
+            <div class="stat"><div class="v">3<em>×</em></div><div class="l">Технологии</div></div>
+            <div class="stat"><div class="v">186<em>г</em></div><div class="l">Вес</div></div>
+            <div class="stat"><div class="v">12<em>мин</em></div><div class="l">На сеанс</div></div>
+            <div class="stat"><div class="v">90<em>мин</em></div><div class="l">Автономность</div></div>
+          </div>
+        </div>
+        <div class="photo"><img src="assets/face-portrait.jpg" alt=""/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.3 — Magazine quote ========== -->
+  <div class="variant">
+    <div class="m13 reveal">
+      <q><span class="mask"><span>Самые честные изменения</span></span><br/><span class="mask d2"><span><em>не происходят</em> за один сеанс.</span></span><br/><span class="mask d3"><span>Они происходят за двенадцать минут —</span></span><br/><span class="mask d4"><span>три раза в неделю.</span></span></q>
+      <div class="sig">— <strong>Манифест Lumea</strong> · Spring 2026</div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.4 — Floating elements ========== -->
+  <div class="variant">
+    <div class="m14 reveal">
+      <div class="float f1"><img src="assets/box-and-kit.jpg" alt=""/></div>
+      <div class="float f2"><img src="assets/face-portrait.jpg" alt=""/></div>
+      <div class="float f3"><img src="assets/red-light-face.jpg" alt=""/></div>
+      <div class="float f4"><img src="assets/use-cases.jpg" alt=""/></div>
+      <div class="center">
+        <div class="ey">Module 01 · Floating</div>
+        <h3>Один прибор.<br/><em>Шесть зон.</em><br/>Двенадцать минут.</h3>
+        <p class="lead">Карманная косметология, в которой каждая деталь продумана до миллиметра.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.5 — Video loop hero ========== -->
+  <div class="variant">
+    <div class="m15 reveal">
+      <div class="bg"></div>
+      <div class="copy">
+        <div class="ey">Loop · 00:42 · Ambient</div>
+        <h3>Свет, который<br/><em>лечит</em>.</h3>
+        <button class="play" aria-label="Play">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><path d="M5 3 l14 8 -14 8 z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.6 — Half-bleed product card ========== -->
+  <div class="variant">
+    <div class="m16 reveal">
+      <div class="img"><img src="assets/red-light-face.jpg" alt=""/></div>
+      <div class="copy">
+        <div class="ix">Глава · 01 · Продукт</div>
+        <h3>Профессиональный <em>аппарат</em><br/>в кармане.</h3>
+        <p>Шесть зон лица, три технологии, двенадцать минут. Lumea заменяет визит к косметологу — и помещается в косметичку.</p>
+        <div class="badges">
+          <span class="badge solid">630 нм</span>
+          <span class="badge solid">850 нм</span>
+          <span class="badge">EMS</span>
+          <span class="badge">42 °C</span>
+          <span class="badge">USB-C</span>
+          <span class="badge">IPX5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.7 — Split contrast typography ========== -->
+  <div class="variant">
+    <div class="m17 reveal">
+      <div class="l">
+        <div class="ix">До · Routine</div>
+        <div class="big">87<em>%</em></div>
+        <div class="foot">женщин пропускают вечерний уход хотя бы раз в неделю — потому что нет времени.</div>
+      </div>
+      <div class="r">
+        <div class="ix">С Lumea · Routine</div>
+        <div class="big">12<em>′</em></div>
+        <div class="foot">минут вечером — и шесть зон проработаны. Без баночек, без визита к косметологу.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1.8 — Product on plinth + ticks ========== -->
+  <div class="variant">
+    <div class="m18 reveal">
+      <div class="pedestal">
+        <div class="photo"><img src="assets/face-portrait.jpg" alt=""/></div>
+        <div class="plinth"></div>
+      </div>
+      <h3>Один прибор. <em>Три</em> технологии.</h3>
+      <div class="ticks">
+        <div class="tick"><div class="lbl">Размер</div><div class="v">186<em>×</em>54<em>×</em>32<em>мм</em></div></div>
+        <div class="tick"><div class="lbl">Вес</div><div class="v">186<em>г</em></div></div>
+        <div class="tick"><div class="lbl">Сеанс</div><div class="v">12<em>мин</em></div></div>
+        <div class="tick"><div class="lbl">Заряд</div><div class="v">90<em>мин</em></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ====================== MODULE 2: STORY ======================= -->
+<!-- ============================================================== -->
+<section class="module m2-bg" id="m2">
+  <div class="module-head reveal">
+    <div class="ix">Глава 02 <span>· История</span></div>
+    <h2>Сторителлинг.</h2>
+    <p class="desc">От классического «фото-текст» до диагональных сплитов и полароидной раскадровки. Шесть способов вести читателя по истории.</p>
+  </div>
+
+  <!-- ========== VARIANT 2.1 — Photo left ========== -->
+  <div class="variant">
+    <div class="story-row reveal">
+      <div class="img"><img src="assets/face-portrait.jpg" alt=""/></div>
+      <div class="copy">
+        <div class="ix">Story · Chapter I</div>
+        <h3>Идея родилась<br/>в&nbsp;<em>клинике</em>.</h3>
+        <p>Команда косметологов провела два года, наблюдая, что клиенты делают между процедурами: пропускают, забывают, не успевают. Так родилась идея сжать профессиональный аппарат до размера, который не страшно положить в косметичку.</p>
+        <a href="#" class="arrow">Читать продолжение →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.2 — Photo right (mirror) ========== -->
+  <div class="variant">
+    <div class="story-row story-mirror reveal">
+      <div class="img"><img src="assets/box-and-kit.jpg" alt=""/></div>
+      <div class="copy">
+        <div class="ix">Story · Chapter II</div>
+        <h3>Прототип жил<br/>в кармане <em>год</em>.</h3>
+        <p>Прежде чем выпустить EMS-01, основатели носили рабочий прототип в каждой поездке. Каждое утро — двенадцать минут перед зеркалом. Так выяснилось, какие кнопки давят неправильно, и почему USB-C обязателен.</p>
+        <a href="#" class="arrow">Читать продолжение →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.3 — Sticky text + scrolling images ========== -->
+  <div class="variant">
+    <div class="m23">
+      <div class="sticky">
+        <div class="ix">Story · Process</div>
+        <h3>От эскиза<br/>до <em>серии</em>.</h3>
+        <p class="desc">Двадцать четыре итерации корпуса, семь поколений ультразвуковой головки, четыре пилотные группы. Реальная история продукта — это медленная, методичная работа.</p>
+        <div class="ind">
+          <div class="row" data-step="0"><span class="num">01</span><span>Эскиз</span></div>
+          <div class="row" data-step="1"><span class="num">02</span><span>Прототип</span></div>
+          <div class="row" data-step="2"><span class="num">03</span><span>Серия</span></div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="pic" data-pic="0"><img src="assets/box-and-kit.jpg" alt=""/><span class="lbl">FIG · 01 · Sketch</span></div>
+        <div class="pic" data-pic="1"><img src="assets/face-portrait.jpg" alt=""/><span class="lbl">FIG · 02 · Prototype</span></div>
+        <div class="pic" data-pic="2"><img src="assets/use-cases.jpg" alt=""/><span class="lbl">FIG · 03 · Production</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.4 — Scroll-driven horizontal split ========== -->
+  <div class="variant bleed">
+    <div class="m24" id="m24">
+      <div class="pin">
+        <div class="stage-inner">
+          <div class="panel left"><img src="assets/red-light-face.jpg" alt=""/><span class="label">Прошлое<small>2 часа в кабинете</small></span></div>
+          <div class="panel right"><img src="assets/face-portrait.jpg" alt=""/><span class="label">Сегодня<small>12 минут дома</small></span></div>
+          <div class="text-overlay">
+            <h3>Двадцать лет<br/><em>в одном жесте</em>.</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.5 — Full-bleed with overlay card ========== -->
+  <div class="variant">
+    <div class="m25 reveal">
+      <img src="assets/use-cases.jpg" alt=""/>
+      <span class="badge">★ Editor's Pick · Allure 2026</span>
+      <div class="card">
+        <div class="ix">Editorial</div>
+        <h3>Журнал Allure назвал<br/><em>«самым честным»</em><br/>прибором года.</h3>
+        <p>Без обещаний, которые невозможно сдержать. Просто три рабочие технологии, упакованные в один корпус.</p>
+        <a href="#" class="cta">Читать обзор →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.6 — Polaroid scrapbook ========== -->
+  <div class="variant">
+    <div class="m26 reveal">
+      <div class="head">Шесть месяцев. <span class="ink">82 женщины.</span><br/>Один прибор.</div>
+      <div class="polaroids">
+        <div class="pol p1"><div class="img"><img src="assets/face-portrait.jpg" alt=""/></div><div class="cap">— День 1, Анна</div></div>
+        <div class="pol p2"><div class="img"><img src="assets/red-light-face.jpg" alt=""/></div><div class="cap">— День 14, Маша</div></div>
+        <div class="pol p3"><div class="img"><img src="assets/use-cases.jpg" alt=""/></div><div class="cap">— День 28, Карина</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.7 — Annotated photo with callouts ========== -->
+  <div class="variant">
+    <div class="m27 reveal">
+      <img src="assets/red-light-face.jpg" alt=""/>
+      <div class="head">
+        <div class="ix">Story · Annotated</div>
+        <div class="ttl">«Я думала, это маркетинг.<br/>Это не маркетинг».</div>
+      </div>
+      <div class="note n1"><div class="pin"></div><div class="lbl">Скула</div><p>Здесь EMS отзывается ярче всего — мышца «оживает» к третьей минуте.</p></div>
+      <div class="note n2"><div class="pin"></div><div class="lbl">Глаз</div><p>Тонкая кожа — режим Glow на минимуме, без EMS.</p></div>
+      <div class="note n3"><div class="pin"></div><div class="lbl">Овал</div><p>Здесь работают все три сразу: свет, тепло, микротоки.</p></div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.8 — Stacked timeline rows ========== -->
+  <div class="variant">
+    <div class="m28 reveal">
+      <div class="row"><span class="yr">2019</span><span class="ttl">Идея <em>в клинике</em></span><p>Косметологи замечают: между процедурами клиенты «выпадают» из ухода. Нужен мост.</p></div>
+      <div class="row"><span class="yr">2021</span><span class="ttl">Первый <em>прототип</em></span><p>Деревянный макет на 3D-печати. Работает 4 минуты, греется до 60 °C, весит 380 г.</p></div>
+      <div class="row"><span class="yr">2023</span><span class="ttl">Клиническое <em>исследование</em></span><p>82 женщины, 6 месяцев, 168 дней. Замеры: эластичность, тонус, регулярность применения.</p></div>
+      <div class="row"><span class="yr">2025</span><span class="ttl">Релиз <em>EMS-01</em></span><p>186 г. Латунь и матовый ABS. Шесть зон лица, три технологии, двенадцать минут.</p></div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 2.9 — Vertical fold-out story ========== -->
+  <div class="variant">
+    <div class="m29 reveal">
+      <div class="chapter">
+        <div class="ix">Глава I · Зачем</div>
+        <h3>Косметика <em>между</em> процедурами.</h3>
+        <p>Клиника даёт результат за один сеанс — но между визитами кожа возвращается к фону. Нужно поддерживать каждый день, дома, без усилий.</p>
+      </div>
+      <div class="chapter">
+        <div class="ix">Глава II · Как</div>
+        <h3>Свет, тепло, <em>микротоки</em>.</h3>
+        <p>Три проверенные технологии в одном корпусе. Мы не изобретали — мы упаковывали так, чтобы было удобно держать в руке двенадцать минут.</p>
+        <div class="pull">«Девяносто процентов работы — не в технологии. Это в форме корпуса и весе кнопки».</div>
+      </div>
+      <div class="chapter">
+        <div class="ix">Глава III · Что</div>
+        <h3>Шесть зон. <em>Один</em> прибор.</h3>
+        <p>Лоб, виски, скулы, овал, шея, декольте. Каждая зона — свой режим, своя длительность, своё ощущение.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ============= MODULE 3: FEATURE SPOTLIGHT ==================== -->
+<!-- ============================================================== -->
+<section class="module" id="m3">
+  <div class="module-head reveal">
+    <div class="ix">Глава 03 <span>· Главная деталь</span></div>
+    <h2>Фишка <em>крупным</em><br/>планом.</h2>
+    <p class="desc">Когда нужно показать одну деталь, на которой держится всё остальное.</p>
+  </div>
+
+  <!-- ========== VARIANT 3.1 — Take a closer look (scroll-driven) ========== -->
+  <div class="variant bleed">
+    <div class="m31-stage" id="m31Stage">
+      <div class="m31-pin">
+        <div class="m31-text intro">
+          <div class="ix">Anatomy · Module 03.1</div>
+          <h3>Take a <em>closer</em> look.</h3>
+        </div>
+        <div class="m31-product" id="m31Product">
+          <img src="assets/box-and-kit.jpg" alt=""/>
+        </div>
+        <div class="m31-hotspot m31-hs1"></div>
+        <div class="m31-hotspot m31-hs2"></div>
+        <div class="m31-hotspot m31-hs3"></div>
+        <div class="m31-hotspot m31-hs4"></div>
+        <div class="m31-text outro">
+          <div class="ix">Каждая деталь имеет своё имя</div>
+          <h3>УЗ-головка · LED-кольцо<br/>USB-C · Магнитные контакты</h3>
+        </div>
+        <div class="m31-scrollhint" id="m31Hint">Scroll to explore<span class="ar"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 3.2 — Three feature cards (peach) ========== -->
+  <div class="variant">
+    <div class="m32 reveal">
+      <div class="head">
+        <div class="ix">Three Therapies</div>
+        <h3>Три способа<br/>работать с <em>кожей</em>.</h3>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="glyph">S</div>
+          <div class="meta">01 · Sonic</div>
+          <h4>Ультразвук <em>1 МГц</em></h4>
+          <p>Микровибрация проникает на 4–6 мм, разогревает соединительную ткань, помогает сывороткам уходить туда, где они работают.</p>
+        </div>
+        <div class="card">
+          <div class="glyph">P</div>
+          <div class="meta">02 · Pulse</div>
+          <h4>EMS <em>0–80 Гц</em></h4>
+          <p>Электростимуляция через четыре гелевых электрода. Прицельно — на живот, бёдра, плечи. Мышцы работают, пока вы читаете книгу.</p>
+        </div>
+        <div class="card">
+          <div class="glyph">G</div>
+          <div class="meta">03 · Glow</div>
+          <h4>ИК-свет <em>630 нм</em></h4>
+          <p>Красный свет запускает выработку коллагена и мягко прогревает дерму. Кожа становится плотнее за 2–3 недели регулярного применения.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m33 reveal">
+      <div class="head">
+        <div class="ix">Architecture · 4 components</div>
+        <h3>Прибор <em>изнутри</em>.</h3>
+      </div>
+      <div class="stage-x">
+        <svg class="lines" viewBox="0 0 1200 520" preserveAspectRatio="none">
+          <path d="M 280 90 L 540 220" />
+          <path d="M 920 110 L 660 220" />
+          <path d="M 240 430 L 540 300" />
+          <path d="M 940 410 L 660 300" />
+        </svg>
+        <div class="core"></div>
+        <div class="part p1"><div class="lbl">Part · 01</div><div class="ttl">Аккумулятор</div><div class="desc">1200 mAh · USB-C · 90 мин работы</div></div>
+        <div class="part p2"><div class="lbl">Part · 02</div><div class="ttl">УЗ-модуль</div><div class="desc">1 МГц, пять уровней мощности</div></div>
+        <div class="part p3"><div class="lbl">Part · 03</div><div class="ttl">EMS-плата</div><div class="desc">0–80 Гц, четыре канала</div></div>
+        <div class="part p4"><div class="lbl">Part · 04</div><div class="ttl">LED-блок</div><div class="desc">6 диодов 630 нм, 12 mW/cm²</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m34 reveal">
+      <div class="macro">
+        <img src="assets/red-light-face.jpg" alt=""/>
+        <span class="corner c-tl">Macro · 1:1</span>
+        <span class="corner c-br">630 nm</span>
+      </div>
+      <div class="copy">
+        <div class="ix">Macro · Detail</div>
+        <h3>Свет, который<br/>видно <em>кожей</em>.</h3>
+        <p>Шесть LED-диодов 630 нм расположены кольцом по периметру головки. Угол расхождения 35° — луч доходит до дермы, но не выходит за зону аппликации.</p>
+        <div class="specs">
+          <div class="spec"><div class="l">Wavelength</div><div class="v">630 нм</div></div>
+          <div class="spec"><div class="l">Power</div><div class="v">12 mW/cm²</div></div>
+          <div class="spec"><div class="l">LED qty</div><div class="v">6 × ring</div></div>
+          <div class="spec"><div class="l">Beam angle</div><div class="v">35°</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m35 reveal">
+      <div class="head">
+        <div class="ix">Three Layers</div>
+        <h3>Три слоя <em>работы</em>.</h3>
+      </div>
+      <div class="stack">
+        <div class="layer l1">
+          <div class="ix">Layer · 01 · Поверхность</div>
+          <h4>Кожа <em>дышит</em></h4>
+          <p>Ультразвук открывает капилляры и помогает сывороткам проникнуть в роговой слой за минуты, а не часы.</p>
+        </div>
+        <div class="layer l2">
+          <div class="ix">Layer · 02 · Дерма</div>
+          <h4>Коллаген <em>растёт</em></h4>
+          <p>Инфракрасный свет 630 нм запускает митохондрии фибробластов — клетки начинают синтезировать новый коллаген.</p>
+        </div>
+        <div class="layer l3">
+          <div class="ix">Layer · 03 · Мышца</div>
+          <h4>Тонус <em>возвращается</em></h4>
+          <p>EMS-микротоки сокращают мышечные волокна без вашего участия. Двенадцать минут заменяют 30 минут планки.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 3.5 — Exploded cross-section ========== -->
+  <div class="variant">
+    <div class="m35x reveal">
+      <div class="copy">
+        <div class="ix">Cross-section · 03</div>
+        <h3>Что внутри <em>одного</em> касания.</h3>
+        <p>Три слоя работают одновременно: свет проникает в дерму, тепло разогревает гиподерму, микротоки сокращают мышцу.</p>
+        <ul>
+          <li><span class="n">01</span>Красный свет 630 нм — на поверхности</li>
+          <li><span class="n">02</span>Тепло 42 °C — в глубине</li>
+          <li><span class="n">03</span>EMS-импульс — на мышце</li>
+        </ul>
+      </div>
+      <div class="scene">
+        <div class="layer l1"></div>
+        <div class="layer l2"></div>
+        <div class="layer l3"></div>
+        <div class="lbl-pin p1">630 нм</div>
+        <div class="lbl-pin p2">42 °C</div>
+        <div class="lbl-pin p3">EMS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 3.6 — Side-by-side comparison ========== -->
+  <div class="variant">
+    <div class="m36 reveal">
+      <div class="col salon">
+        <div class="ix">Салон</div>
+        <h3>Один визит<br/>в две недели.</h3>
+        <ul>
+          <li>Запись за 2 недели</li>
+          <li>Дорога — час в одну сторону</li>
+          <li>Один сеанс = одна процедура</li>
+          <li>Эффект «откатывается» к следующему визиту</li>
+        </ul>
+        <div class="price"><span>от 6 500 ₽</span><small>сеанс</small></div>
+      </div>
+      <div class="col lumea">
+        <div class="ix">Lumea · EMS-01</div>
+        <h3>Двенадцать минут<br/><em>каждый вечер</em>.</h3>
+        <ul>
+          <li>В удобное время, дома</li>
+          <li>Три технологии в одном жесте</li>
+          <li>Регулярность вместо «всплесков»</li>
+          <li>Купили один раз — пользуетесь годами</li>
+        </ul>
+        <div class="price"><span>32 900 ₽</span><small>один раз</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 3.7 — Animated metric ribbon ========== -->
+  <div class="variant">
+    <div class="m37 reveal">
+      <div class="ix">★ Замеры · 168 дней</div>
+      <h3>Что меняется <em>измеримо</em>.</h3>
+      <div class="ribbon">
+        <div class="item"><div class="v">+34<em>%</em></div><div class="lbl"><strong>Эластичность</strong>Кутиметрия в зоне скул, день 84 vs день 0</div></div>
+        <div class="item"><div class="v">−27<em>%</em></div><div class="lbl"><strong>Морщины</strong>3D-скан носогубной складки, день 168</div></div>
+        <div class="item"><div class="v">+41<em>%</em></div><div class="lbl"><strong>Тонус</strong>Овал лица, динамометрия в покое</div></div>
+        <div class="item"><div class="v">94<em>%</em></div><div class="lbl"><strong>Готовы рекомендовать</strong>Опрос участников на 168-й день</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ====================== MODULE 4: FACTS ======================= -->
+<!-- ============================================================== -->
+<section class="module m4-bg" id="m4">
+  <div class="module-head reveal">
+    <div class="ix">Глава 04 <span>· Цифры и факты</span></div>
+    <h2>Цифры и <em>факты</em>.</h2>
+    <p class="desc">Когда нужно показать измеримый результат — пять подходов от строгой сетки до анимированного тикера.</p>
+  </div>
+
+  <div class="variant">
+    <div class="m41 reveal">
+      <div class="cell"><div class="ix">28 days</div><div class="num">−2,4<em>см</em></div><div class="lbl">Среднее уменьшение объёма талии в группе.</div></div>
+      <div class="cell"><div class="ix">Кутометрия</div><div class="num">+28<em>%</em></div><div class="lbl">Прирост плотности кожи в зоне скул.</div></div>
+      <div class="cell"><div class="ix">Self-report</div><div class="num">94<em>%</em></div><div class="lbl">Заметили эффект уже через две недели.</div></div>
+      <div class="cell"><div class="ix">Per session</div><div class="num">12<em>мин</em></div><div class="lbl">Среднее время одного ритуала.</div></div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m42 reveal">
+    <div class="track">
+      <div class="card"><span class="ix">Power · 01</span><h4>Ультразвук</h4><p>Терапевтическая частота 1 МГц. Та же, что в кабинете.</p><div class="big">1<em>МГц</em></div></div>
+      <div class="card"><span class="ix">Power · 02</span><h4>Импульс EMS</h4><p>Регулируется от едва ощутимого до интенсивной тренировки.</p><div class="big">0–80<em>Гц</em></div></div>
+      <div class="card"><span class="ix">Power · 03</span><h4>Световая волна</h4><p>Красный свет 630 нм — клинически изученный диапазон.</p><div class="big">630<em>нм</em></div></div>
+      <div class="card"><span class="ix">Battery</span><h4>Автономность</h4><p>Девяносто минут на одной зарядке. USB-C.</p><div class="big">90<em>мин</em></div></div>
+      <div class="card"><span class="ix">Weight</span><h4>В руке</h4><p>Корпус из ABS с латунной окантовкой.</p><div class="big">186<em>г</em></div></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="variant">
+    <div class="m43 reveal">
+      <div class="left">
+        <div class="ix">Pilot study · n = 82</div>
+        <div class="stat">94<em>%</em></div>
+        <p>Из&nbsp;82&nbsp;участниц пилота 77 заметили эффект до&nbsp;окончания первого месяца. Без&nbsp;диет, без&nbsp;косметолога, без&nbsp;абонемента в&nbsp;спа.</p>
+      </div>
+      <div class="right"><img src="assets/face-portrait.jpg" alt=""/></div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m44">
+    <div class="row reveal" style="--w:96%"><span class="lbl">Lumea <em>EMS-01</em></span><span class="bar-wrap"><span class="bar"></span></span><span class="v">12&nbsp;<em>мин</em></span></div>
+    <div class="row alt reveal" style="--w:60%"><span class="lbl">Косметолог</span><span class="bar-wrap"><span class="bar"></span></span><span class="v">90&nbsp;мин</span></div>
+    <div class="row alt reveal" style="--w:35%"><span class="lbl">Спа-салон</span><span class="bar-wrap"><span class="bar"></span></span><span class="v">120&nbsp;мин</span></div>
+    <div class="row alt reveal" style="--w:20%"><span class="lbl">Тренажёрный зал</span><span class="bar-wrap"><span class="bar"></span></span><span class="v">45&nbsp;мин</span></div>
+  </div>
+  </div>
+
+  <div class="variant">
+    <div class="m45 reveal">
+    <div class="head"><h3>В <em>цифрах</em>, которые легко помнить.</h3></div>
+    <div class="ticker">
+      <span class="item"><span class="n">12</span><span class="t">минут / сеанс</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">5</span><span class="t">режимов</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">6</span><span class="t">зон тела</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">90</span><span class="t">минут заряда</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">630</span><span class="t">нм красный свет</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">82</span><span class="t">пилота</span></span>
+      <span class="dot"></span>
+      <!-- duplicate for loop -->
+      <span class="item"><span class="n">12</span><span class="t">минут / сеанс</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">5</span><span class="t">режимов</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">6</span><span class="t">зон тела</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">90</span><span class="t">минут заряда</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">630</span><span class="t">нм красный свет</span></span>
+      <span class="dot"></span>
+      <span class="item"><span class="n">82</span><span class="t">пилота</span></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+  </div>
+
+  <!-- ========== VARIANT 4.6 — Big editorial number ========== -->
+  <div class="variant">
+    <div class="m46 reveal">
+      <div class="num"><em>168</em><small>Дней наблюдения · 82 женщины</small></div>
+      <div class="body">
+        <h3>Долгое <em>наблюдение</em>, а не быстрая демонстрация.</h3>
+        <p>Шесть месяцев — самый короткий срок, на котором можно увидеть, как накапливается результат. Не «до / после за неделю», а реальная динамика.</p>
+        <div class="cite">Lumea Lab · Клинический отчёт 2024–2025</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 4.7 — Mini-chart trio ========== -->
+  <div class="variant">
+    <div class="m47 reveal">
+      <div class="card in" style="--h:60%">
+        <div class="ix">Динамика · 168 дней</div>
+        <h4>Эластичность <em>кожи</em></h4>
+        <div class="v">+34<em>%</em></div>
+        <div class="spark"><span style="--h:20%"></span><span style="--h:35%"></span><span style="--h:48%"></span><span style="--h:62%"></span><span style="--h:78%"></span><span style="--h:88%"></span><span style="--h:100%"></span></div>
+      </div>
+      <div class="card">
+        <div class="ix">Распределение</div>
+        <h4>Регулярность <em>применения</em></h4>
+        <div class="donut" style="--p:74%"><span>74%</span></div>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.5;margin:0">Использовали 5+ раз в неделю на протяжении всех 168 дней.</p>
+      </div>
+      <div class="card in">
+        <div class="ix">Замер · 6 мес</div>
+        <h4>Готовы <em>рекомендовать</em></h4>
+        <div class="v">94<em>%</em></div>
+        <div class="spark"><span style="--h:30%"></span><span style="--h:55%"></span><span style="--h:70%"></span><span style="--h:82%"></span><span style="--h:90%"></span><span style="--h:96%"></span><span style="--h:100%"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 4.8 — Data ribbon (full strip) ========== -->
+  <div class="variant">
+    <div class="m48 reveal">
+      <div class="ix">Сводка · 168 дней</div>
+      <h3>Шесть месяцев <em>в одной строке</em>.</h3>
+      <div class="strip">
+        <div class="cell"><div class="v">82</div><div class="l">Участников</div></div>
+        <div class="cell"><div class="v">168<em>дн</em></div><div class="l">Наблюдение</div></div>
+        <div class="cell"><div class="v">12<em>мин</em></div><div class="l">На сеанс</div></div>
+        <div class="cell"><div class="v">5,2<em>×</em></div><div class="l">В неделю</div></div>
+        <div class="cell"><div class="v">94<em>%</em></div><div class="l">Рекомендуют</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- ====================== MODULE 5: REVIEWS ===================== -->
+<!-- ============================================================== -->
+<section class="module m5-bg" id="m5">
+  <div class="module-head reveal">
+    <div class="ix">Глава 05 <span>· Отзывы</span></div>
+    <h2>Отзывы <em>на стекле</em>.</h2>
+    <p class="desc">Социальное доказательство — без приторности. Пять подходов от глассморфизма до журнальных pull-quote'ов.</p>
+  </div>
+
+  <div class="variant">
+    <div class="m51-stage reveal">
+    <div class="m51-grid m51">
+      <div class="card">
+        <div class="stars">★★★★★</div>
+        <blockquote>«Я не верила, что что-то домашнее может заменить кабинет. <em>Через месяц</em> увидела разницу — и забыла, когда последний раз записывалась к косметологу.»</blockquote>
+        <div class="who"><div class="ava">А</div><div><div class="name">Анна, 34</div><div class="meta">Москва · 6 недель использования</div></div></div>
+      </div>
+      <div class="card">
+        <div class="stars">★★★★★</div>
+        <blockquote>«Ритуал на двенадцать минут — это <em>максимум</em> того, что я могу выкроить вечером. Lumea просто помещается в этот режим.»</blockquote>
+        <div class="who"><div class="ava">М</div><div><div class="name">Мария, 41</div><div class="meta">Санкт-Петербург · 3 месяца</div></div></div>
+      </div>
+      <div class="card">
+        <div class="stars">★★★★☆</div>
+        <blockquote>«Первая неделя — ничего. Вторая — кожа стала плотнее. Третья — муж заметил, что овал «подтянулся». <em>Без</em> уколов.»</blockquote>
+        <div class="who"><div class="ava">К</div><div><div class="name">Карина, 38</div><div class="meta">Казань · 6 недель</div></div></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="variant">
+    <div class="m52 reveal">
+      <div class="stars">★★★★★</div>
+      <blockquote>«За двенадцать минут в день я получаю то, ради чего раньше <em>ездила через весь город</em> и платила пятнадцать тысяч за визит.»</blockquote>
+      <div class="author"><div class="ava"></div><div><div class="name">Ольга К.</div><div class="meta">Verified buyer · 4 месяца</div></div></div>
+      <div class="dots"><span></span><span class="on"></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m53 reveal">
+      <div class="pull q1">
+        <div class="mag">— Vogue Russia · 2026</div>
+        <blockquote>«Lumea — это <em>тот редкий случай</em>, когда домашний прибор делает то, что обещает. И при этом не выглядит как медицинский гаджет.»</blockquote>
+        <div class="by">Мария Гершович, beauty editor</div>
+      </div>
+      <div class="pull">
+        <div class="mag">— Allure · January 2026</div>
+        <blockquote>«Самый <em>честный</em> прибор года. Без обещаний, которые невозможно сдержать.»</blockquote>
+        <div class="by">Editor's Pick · Beauty Tech</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="variant">
+    <div class="m54 reveal">
+    <div class="col c1">
+      <div class="mini"><div class="stars">★★★★★</div><p>«Не ожидала эффекта так <em>быстро</em>. Кожа подтянулась за две недели.»</p><div class="who">— Анна, 34</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Зарядки хватает на неделю при ежедневном использовании.»</p><div class="who">— Игорь, 39</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Шум минимальный, могу пользоваться <em>пока ребёнок спит</em>.»</p><div class="who">— Юлия, 32</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Купила маме на день рождения — теперь хочет себе вторую.»</p><div class="who">— Дарья, 28</div></div>
+      <!-- dup -->
+      <div class="mini"><div class="stars">★★★★★</div><p>«Не ожидала эффекта так <em>быстро</em>. Кожа подтянулась за две недели.»</p><div class="who">— Анна, 34</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Зарядки хватает на неделю при ежедневном использовании.»</p><div class="who">— Игорь, 39</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Шум минимальный, могу пользоваться <em>пока ребёнок спит</em>.»</p><div class="who">— Юлия, 32</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Купила маме на день рождения — теперь хочет себе вторую.»</p><div class="who">— Дарья, 28</div></div>
+    </div>
+    <div class="col c2">
+      <div class="mini"><div class="stars">★★★★★</div><p>«Заменил поход в спа. Лучше всего работает <em>красный свет</em>.»</p><div class="who">— Светлана, 45</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«EMS — лучший вариант для занятых. Включила и читаю.»</p><div class="who">— Полина, 36</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Удобно держать в руке, не выскальзывает.»</p><div class="who">— Татьяна, 50</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Гель в комплекте кончился быстро, но докупить легко.»</p><div class="who">— Вера, 31</div></div>
+      <!-- dup -->
+      <div class="mini"><div class="stars">★★★★★</div><p>«Заменил поход в спа. Лучше всего работает <em>красный свет</em>.»</p><div class="who">— Светлана, 45</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«EMS — лучший вариант для занятых. Включила и читаю.»</p><div class="who">— Полина, 36</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Удобно держать в руке, не выскальзывает.»</p><div class="who">— Татьяна, 50</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Гель в комплекте кончился быстро, но докупить легко.»</p><div class="who">— Вера, 31</div></div>
+    </div>
+    <div class="col c3">
+      <div class="mini"><div class="stars">★★★★★</div><p>«Овал лица — то, что меняется <em>заметнее всего</em>.»</p><div class="who">— Алина, 37</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Тестила месяц перед отзывом. Эффект устойчивый.»</p><div class="who">— Наталья, 42</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Простой интерфейс — три кнопки и пять светодиодов.»</p><div class="who">— Елена, 33</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Подарили на 8 марта — лучший подарок за <em>годы</em>.»</p><div class="who">— Кристина, 29</div></div>
+      <!-- dup -->
+      <div class="mini"><div class="stars">★★★★★</div><p>«Овал лица — то, что меняется <em>заметнее всего</em>.»</p><div class="who">— Алина, 37</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Тестила месяц перед отзывом. Эффект устойчивый.»</p><div class="who">— Наталья, 42</div></div>
+      <div class="mini"><div class="stars">★★★★☆</div><p>«Простой интерфейс — три кнопки и пять светодиодов.»</p><div class="who">— Елена, 33</div></div>
+      <div class="mini"><div class="stars">★★★★★</div><p>«Подарили на 8 марта — лучший подарок за <em>годы</em>.»</p><div class="who">— Кристина, 29</div></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="variant">
+    <div class="m55 reveal">
+      <div class="photo">
+        <img src="assets/red-light-face.jpg" alt=""/>
+        <span class="badge">★★★★★ · Verified buyer</span>
+      </div>
+      <div class="copy">
+        <div class="ix">Customer story · #014</div>
+        <blockquote>«Я отметила это в&nbsp;дневнике на&nbsp;четырнадцатый день. <em>Кожа стала плотнее</em>, овал заметнее, и я&nbsp;перестала записываться к&nbsp;косметологу.»</blockquote>
+        <div class="who"><div class="ava">О</div><div><div class="name">Ольга, 38</div><div class="meta">3 месяца использования</div></div></div>
+        <div class="stats-row">
+          <div><div class="v">−2,1<em>см</em></div><div class="l">Талия</div></div>
+          <div><div class="v">+24<em>%</em></div><div class="l">Плотность</div></div>
+          <div><div class="v">94<em>дн.</em></div><div class="l">Стаж</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 5.6 — Pull-quote magazine stack ========== -->
+  <div class="variant">
+    <div class="m56 reveal">
+      <div class="q">
+        <div class="text">«Я скептик. Купила, чтобы проверить — и через месяц <em>перестала</em> ходить к косметологу между сеансами».</div>
+        <div class="by"><div class="av">А</div><div class="meta"><span class="name">Анна К.</span><span class="role">SMM-стратег · 34 года · Москва</span></div></div>
+      </div>
+      <div class="q">
+        <div class="text">«Главное — не свет и не микротоки. Главное — что я <em>не забываю</em> делать. Двенадцать минут — это даже не привычка, это автоматизм».</div>
+        <div class="by"><div class="av">М</div><div class="meta"><span class="name">Маша Р.</span><span class="role">Архитектор · 41 год · СПб</span></div></div>
+      </div>
+      <div class="q">
+        <div class="text">«Кожа стала плотнее на ощупь — как после хорошего сеанса, только не один раз, а <em>каждый день</em>».</div>
+        <div class="by"><div class="av">К</div><div class="meta"><span class="name">Карина Т.</span><span class="role">Психолог · 38 лет · Казань</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 5.7 — Single big testimonial ========== -->
+  <div class="variant">
+    <div class="m57 reveal">
+      <div class="portrait">
+        <img src="assets/face-portrait.jpg" alt=""/>
+        <div class="badge">★ Featured</div>
+      </div>
+      <div class="body">
+        <div class="ix">Главный отзыв · 168 дней</div>
+        <div class="text">«За шесть месяцев я ни разу не пожалела о покупке — и это <em>впервые</em> с любым прибором, который я заказывала из любопытства».</div>
+        <div class="by"><strong>Елена Воронцова</strong>Главный редактор Allure RU · 47 лет · Москва</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 5.8 — Star-rating ledger ========== -->
+  <div class="variant">
+    <div class="m58 reveal">
+      <div class="summary">
+        <div>
+          <div class="big">4,8<em>/5</em></div>
+          <div class="meta">На основе 1 247 отзывов · 168 дней</div>
+        </div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="meta">94% поставили 5 звёзд</div>
+        </div>
+        <div class="bars">
+          <div class="bar"><span>5★</span><span class="track"><span class="fill" style="width:94%;display:block;height:100%"></span></span><span>94%</span></div>
+          <div class="bar"><span>4★</span><span class="track"><span class="fill" style="width:4%;display:block;height:100%"></span></span><span>4%</span></div>
+          <div class="bar"><span>3★</span><span class="track"><span class="fill" style="width:1%;display:block;height:100%"></span></span><span>1%</span></div>
+          <div class="bar"><span>2★</span><span class="track"><span class="fill" style="width:1%;display:block;height:100%"></span></span><span>1%</span></div>
+        </div>
+      </div>
+      <div class="ledger">
+        <div class="row">
+          <span class="stars">★★★★★</span>
+          <span class="text"><strong>Стоит каждой копейки</strong>«Через месяц увидела разницу даже на фото — не „эффект свежести“, а реальный лифт».</span>
+          <span class="by"><em>Ольга М.</em>день 32</span>
+        </div>
+        <div class="row">
+          <span class="stars">★★★★★</span>
+          <span class="text"><strong>Заменил салон</strong>«Перестала ходить к косметологу через две недели — и не вернулась через шесть месяцев».</span>
+          <span class="by"><em>Татьяна Б.</em>день 168</span>
+        </div>
+        <div class="row">
+          <span class="stars">★★★★☆</span>
+          <span class="text"><strong>Не сразу, но точно</strong>«Первые две недели — ничего. С третьей — будто мышцы „проснулись“. Тонус овала вернулся».</span>
+          <span class="by"><em>Ирина С.</em>день 84</span>
+        </div>
+        <div class="row">
+          <span class="stars">★★★★★</span>
+          <span class="text"><strong>Привыкла за неделю</strong>«Двенадцать минут — это меньше, чем серия сериала. Делаю под подкаст, теперь это часть вечера».</span>
+          <span class="by"><em>Дарья Л.</em>день 47</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Coming soon notice -->
+<section class="module" style="padding:120px 24px;text-align:center">
+  <div class="module-head" style="margin-bottom:0">
+    <div class="ix">Главы 06 — 14 <span>· Скоро</span></div>
+    <h2 style="font-size:48px">Готово <em>5 модулей</em>.</h2>
+    <p class="desc">Compare · Cases · Video · Materials · Box · Care · Brand · FAQ · Outro — собираю в том же ключе.</p>
+  </div>
+</section>
+
+<script>
+// ===== Reveal on scroll =====
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.1, rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal, .words, .mask').forEach(el=>io.observe(el));
+
+// ===== HERO 5 — animated counter =====
+(function(){
+  const nums = document.querySelectorAll('.hero5 .num[data-to]');
+  if(!nums.length) return;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el = e.target;
+      const to = +el.dataset.to;
+      const start = performance.now();
+      const dur = 1600;
+      function tick(now){
+        const t = Math.min(1,(now-start)/dur);
+        const eased = 1-Math.pow(1-t,3);
+        el.textContent = Math.round(to*eased);
+        if(t<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      obs.unobserve(el);
+    });
+  },{threshold:.4});
+  nums.forEach(n=>obs.observe(n));
+})();
+
+// ===== FAV.1 — Calendar grid (28 cols × 6 rows = 168 days) =====
+(function(){
+  const grid = document.getElementById('fav1grid');
+  if(!grid) return;
+  const total = 168;
+  const dim = new Set([7,18,33,52,77,99,121,140,155]); // a few "skipped" days
+  for(let i=0;i<total;i++){
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    if(dim.has(i)) cell.classList.add('dim');
+    cell.style.animationDelay = (i*8)+'ms';
+    grid.appendChild(cell);
+  }
+})();
+
+// ===== M1.1 — Scroll-driven hero scale =====
+(function(){
+  const stage = document.getElementById('m11Stage');
+  const frame = document.getElementById('m11Frame');
+  const scrub = document.getElementById('m11Scrub');
+  if(!stage || !frame) return;
+  function update(){
+    const rect = stage.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, -rect.top / total));
+    const scale = 0.65 + Math.min(progress * 2, 1) * 0.35;
+    const radius = 48 - Math.min(progress * 2, 1) * 32;
+    frame.style.transform = `scale(${scale})`;
+    frame.style.borderRadius = radius + 'px';
+    if(scrub){ scrub.style.setProperty('--p', (15 + progress * 70) + '%'); }
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
+// ===== M2.3 — Sticky scroll story focus =====
+(function(){
+  const pics = document.querySelectorAll('.m23 .pic');
+  const rows = document.querySelectorAll('.m23 .ind .row');
+  if(!pics.length) return;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && e.intersectionRatio > .5){
+        const i = +e.target.dataset.pic;
+        pics.forEach(p=>p.classList.remove('focused'));
+        e.target.classList.add('focused');
+        rows.forEach((r,idx)=>r.classList.toggle('on', idx === i));
+      }
+    });
+  }, {threshold:[0,.3,.5,.7,1]});
+  pics.forEach(p=>obs.observe(p));
+})();
+
+// ===== M2.4 — Scroll-driven horizontal split =====
+(function(){
+  const m24 = document.getElementById('m24');
+  if(!m24) return;
+  function update(){
+    const rect = m24.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, -rect.top / total));
+    if(progress > .35) m24.classList.add('expand'); else m24.classList.remove('expand');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+// ===== M3.1 — Take a closer look =====
+(function(){
+  const stage = document.getElementById('m31Stage');
+  const product = document.getElementById('m31Product');
+  const hint = document.getElementById('m31Hint');
+  if(!stage || !product) return;
+  function update(){
+    const rect = stage.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, -rect.top / total));
+    // 0 → 0.4: scale 1 → 1.5 (zoom in)
+    // 0.4 → 0.7: rotate
+    // 0.7 → 1: hotspots appear
+    let scale, rotate;
+    if(progress < .5){
+      const t = progress / .5;
+      scale = 1 + t * 0.4;       // 1 → 1.4
+      rotate = t * 25;            // 0 → 25
+    } else {
+      scale = 1.4 - (progress - .5) * 0.4; // 1.4 → 1.2
+      rotate = 25;
+    }
+    product.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
+    if(progress > .65) stage.classList.add('expanded');
+    else stage.classList.remove('expanded');
+    if(hint) hint.style.opacity = progress < .15 ? 1 : 0;
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+
+</body>
+</html>
