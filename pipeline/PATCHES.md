@@ -325,5 +325,46 @@ os.environ["GITHUB_TOKEN"] = userdata.get("GITHUB_TOKEN")
 - В этом контейнере real github.com выдаёт 403 на наш приватный репо,
   поэтому full E2E test возможен только из Colab после действия (A) или (B).
 
+Коммит: b10332a.
+
+---
+
+## 2026-05-06 — fix(schema): primary_collection column + Cell 6 defensive SELECT
+Cells: #2 (Cell 1 — ALTER list), #15 (Cell 6 — Product Loop)
+Snapshot: pipeline/.snapshots/<TS>_before-primary-collection-fix.ipynb
+
+### Что было — пре-existing баг
+Cell 1 в migration-блоке `ALTER TABLE products ADD COLUMN ...` НЕ добавлял
+`primary_collection`, хотя:
+- Cell 1 Excel-parser пишет: `UPDATE products SET primary_collection=?`
+  (в try/except — тихо падает).
+- Cell 3 Stage 4 SEO пишет туда же (тоже try/except).
+- Cell 6 fallback ЧИТАЕТ: `SELECT primary_collection FROM products...`
+  и НЕ обёрнут в try/except → крашит loop.
+
+В предыдущих запусках это «работало», потому что junction-таблица
+`product_collections` была заполнена и до fallback-ветки не доходило.
+В свежей сессии пользователя:
+  Product links: 0 | Keywords saved: 26
+  ...
+  ERROR: no such column: primary_collection
+junction пустой → fallback срабатывает → крах на отсутствующем столбце.
+
+### Что стало
+1. В Cell 1 ALTER-list: добавлен `'primary_collection'` → столбец
+   создаётся при первом запуске свежего ноутбука.
+2. В Cell 6 SELECT обёрнут в try/except — safety net на случай отсутствия
+   столбца в legacy DB (которая была создана до этого фикса).
+
+### Действие пользователя для уже работающей сессии
+В Colab остановить runtime + выполнить разовый patch-cell с:
+  ALTER TABLE products ADD COLUMN primary_collection TEXT
+  + relink products → collections через Excel re-parsing
+  + сброс status='error' (см. чат-сообщение от 2026-05-06).
+
+### Тест
+- python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
+- python -m pytest pipeline/tests/ taxonomy/tests/ → 62/62 passed.
+
 Коммит: следующий после этой записи.
 
