@@ -366,5 +366,39 @@ junction пустой → fallback срабатывает → крах на от
 - python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
 - python -m pytest pipeline/tests/ taxonomy/tests/ → 62/62 passed.
 
+Коммит: 1d489fa.
+
+---
+
+## 2026-05-06 — chore(models): bump to latest Anthropic model IDs
+Cells: #2 (Cell 1 — CONFIG), #4 (Cell 2 — Helpers)
+Snapshot: pipeline/.snapshots/<TS>_before-model-bump.ipynb
+
+### Что было
+- `MODEL_WRITER = "claude-sonnet-4-5-20250929"` (Sonnet 4.5 — устарел).
+- `MODEL = "claude-opus-4-6"` в Cell 4 для `call_claude` (SEO-категоризация).
+  Fallback при ошибке: `claude-sonnet-4-5-20250929` (тоже устарел).
+
+### Что стало
+Все ссылки на модели приведены к актуальным ID:
+- `MODEL_VISION   = "claude-haiku-4-5-20251001"` (без изменений — уже актуальный).
+- `MODEL_WRITER   = "claude-sonnet-4-6"` (был 4.5).
+- `MODEL_DESIGNER = "claude-sonnet-4-6"` (без изменений).
+- `MODEL`         в Cell 4: `"claude-opus-4-7"` (был 4.6).
+- Fallback в Cell 4: `"claude-sonnet-4-6"` (был 4.5).
+
+### Зачем
+Sonnet 4.6 и Opus 4.7 — последние Claude-модели по состоянию на январь 2026
+(см. system prompt в Claude Code). Старые ID продолжают работать, но без
+улучшений последних поколений.
+
+### Pricing impact
+Без изменений: Sonnet 4.5 и 4.6 имеют одинаковую цену ($3/$15 per M).
+Opus 4.6 и 4.7 — также одинаковая ($15/$75 per M).
+
+### Тест
+- python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
+- python -m pytest pipeline/tests/ taxonomy/tests/ → 62/62 passed.
+
 Коммит: следующий после этой записи.
 
