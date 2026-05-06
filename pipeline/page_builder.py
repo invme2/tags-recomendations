@@ -185,10 +185,10 @@ _MODULE_HTML: dict[str, str] = {
     <h1>{H1}</h1>
     <p>{P}</p>
   </div>
-  <div class="photo"><img src="{IMG_URL}" alt="{IMG_ALT}"/></div>
+  <div class="photo"><img src="{IMG_URL}" alt="{IMG_ALT}" loading="eager" fetchpriority="high" decoding="async"/></div>
 </section>""",
     'hero2': """<section class="hero-alt hero2 reveal" style="background:#0a0a0c;color:#fff;padding:120px 24px;border-radius:16px;position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;opacity:.55"><img src="{IMG_URL}" alt="{IMG_ALT}" style="width:100%;height:100%;object-fit:cover"/></div>
+  <div style="position:absolute;inset:0;opacity:.55"><img src="{IMG_URL}" alt="{IMG_ALT}" loading="eager" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"/></div>
   <div style="position:relative;max-width:880px;margin:0 auto;text-align:center">
     <div class="ix" style="color:rgba(255,255,255,.7)">{KICKER}</div>
     <h1 style="color:#fff">{H1}</h1>
@@ -203,7 +203,7 @@ _MODULE_HTML: dict[str, str] = {
 </div>""",
     'm16': """<div class="variant">
   <div class="m16 reveal">
-    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}"/></div>
+    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}" loading="lazy" decoding="async"/></div>
     <div class="copy">
       <div class="ix">{KICKER}</div>
       <h3>{H3}</h3>
@@ -214,7 +214,7 @@ _MODULE_HTML: dict[str, str] = {
 </div>""",
     'm21': """<div class="variant">
   <div class="story-row reveal">
-    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}"/></div>
+    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}" loading="lazy" decoding="async"/></div>
     <div class="copy">
       <div class="ix">{KICKER}</div>
       <h3>{H3}</h3>
@@ -224,7 +224,7 @@ _MODULE_HTML: dict[str, str] = {
 </div>""",
     'm22': """<div class="variant">
   <div class="story-row story-mirror reveal">
-    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}"/></div>
+    <div class="img"><img src="{IMG_URL}" alt="{IMG_ALT}" loading="lazy" decoding="async"/></div>
     <div class="copy">
       <div class="ix">{KICKER}</div>
       <h3>{H3}</h3>

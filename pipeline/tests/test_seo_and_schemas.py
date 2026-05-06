@@ -257,3 +257,67 @@ def test_assembled_page_no_duplicate_collections_section_with_modular() -> None:
     out = pb.assemble_page(layout, slots, PALETTE, interlinks=interlinks)
     explore_count = out.count("Explore more")
     assert explore_count == 1, f"Expected 1 'Explore more' section, got {explore_count}"
+
+
+# ============================================================
+# Image loading optimizations (Core Web Vitals)
+# ============================================================
+
+@pytest.mark.parametrize("hero_id", ["hero1", "hero2"])
+def test_hero_image_eager_with_fetchpriority(hero_id: str) -> None:
+    """Hero is the LCP element on most product pages — must load with high
+    priority so Chrome doesn't deprioritize it behind below-fold assets."""
+    html = pb._MODULE_HTML[hero_id]
+    assert 'loading="eager"' in html, f"{hero_id} hero <img> should be loading=eager"
+    assert 'fetchpriority="high"' in html, f"{hero_id} hero <img> should be fetchpriority=high"
+    assert 'decoding="async"' in html, f"{hero_id} hero <img> should be decoding=async"
+
+
+@pytest.mark.parametrize("body_id", ["m16", "m21", "m22"])
+def test_below_fold_images_lazy_loaded(body_id: str) -> None:
+    """Below-the-fold images get loading=lazy so they don't block initial paint."""
+    html = pb._MODULE_HTML[body_id]
+    assert 'loading="lazy"' in html, f"{body_id} <img> should be loading=lazy"
+    assert 'decoding="async"' in html, f"{body_id} <img> should be decoding=async"
+
+
+def test_no_module_image_lacks_loading_attribute() -> None:
+    """Every <img> in the module catalog should have an explicit loading
+    attribute (eager for above-fold, lazy for below). Missing attribute
+    means browser default of 'eager' which hurts performance."""
+    for mid, html in pb._MODULE_HTML.items():
+        for img_tag in re.findall(r"<img[^>]*>", html):
+            assert "loading=" in img_tag, (
+                f"[{mid}] <img> without loading attribute: {img_tag[:100]}"
+            )
+
+
+# ============================================================
+# Module template integrity
+# ============================================================
+
+def test_every_template_slot_is_in_catalog() -> None:
+    """Every {SLOT} placeholder in a module template must be declared in
+    MODULE_CATALOG[mid]['slots']. Mismatch → assemble_page can't fill it
+    properly because slots dict won't have the key."""
+    for mid, html in pb._MODULE_HTML.items():
+        declared = set(pb.MODULE_CATALOG[mid]["slots"])
+        in_template = set(re.findall(r"\{(\w+)\}", html))
+        extra = in_template - declared
+        missing = declared - in_template
+        assert not extra, f"[{mid}] template uses undeclared slots: {extra}"
+        assert not missing, f"[{mid}] catalog declares unused slots: {missing}"
+
+
+def test_every_module_class_has_css_rule() -> None:
+    """Every CSS class referenced in a module template must have a rule in
+    BASE_CSS, otherwise the element renders unstyled."""
+    helper_classes = {"reveal", "in", "words", "mask", "visible"}  # JS-controlled
+    for mid, html in pb._MODULE_HTML.items():
+        for cls_attr in re.findall(r'class="([^"]+)"', html):
+            for cls in cls_attr.split():
+                if cls in helper_classes:
+                    continue
+                assert re.search(rf"\.{re.escape(cls)}\b", pb.BASE_CSS), (
+                    f"[{mid}] class '{cls}' has no rule in BASE_CSS"
+                )
