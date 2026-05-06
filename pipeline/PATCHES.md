@@ -273,5 +273,57 @@ Per-product designer cost: ~$0.50 → ~$0.10 (5× экономия). Опцио�
 - `get_smart_interlinks()` — без изменений, тот же формат данных.
 - `ALL_SHOP_COLLECTIONS` фетч и Stage 1-9 SEO — не задеты.
 
+Коммит: 655149d.
+
+---
+
+## 2026-05-06 — fix(urls): TAXONOMY_URL placeholder + private-repo support
+Cells: #2 (GITHUB_BRANCH/REPO/TOKEN), #12 (taxonomy fetch), #13 (page_builder fetch)
+Snapshot: pipeline/.snapshots/<TS>_before-taxonomy-url-fix.ipynb
+
+### Что было — три связанных бага
+1. **TAXONOMY_URL placeholder.** В config-ячейке оставался дефолт
+   `https://raw.githubusercontent.com/YOUR-ORG/taxonomy/main/taxonomy.json`,
+   что давало 404 при первом запуске ноутбука.
+2. **PAGE_BUILDER_URL хардкодил `main`**, а page_builder.py пока живёт
+   только в feature-ветке. После merge — пришлось бы править в двух местах.
+3. **Репо приватный** на real github.com (api.github.com отдаёт 403). Без
+   token'а Colab не может фетчить ни taxonomy.json, ни page_builder.py.
+
+### Что стало
+- `GITHUB_BRANCH` и `GITHUB_REPO` — две переменные в config-ячейке.
+  `TAXONOMY_URL` и `PAGE_BUILDER_URL` собираются из них через f-string.
+  После merge feature → main: одна правка `GITHUB_BRANCH = "main"`.
+- Опциональный `os.environ["GITHUB_TOKEN"]` в обоих fetch-ячейках:
+  если установлен — добавляется `Authorization: Bearer …` header. Без него
+  ноутбук работает только для public-репо.
+- Понятные RuntimeError'ы на 404: говорят что чинить (ветка / приватность
+  / token), вместо безликого `HTTPError 404 Client Error: Not Found`.
+- Импорт `urllib.error` добавлен в page_builder-fetch для exception-обработки.
+
+### Действие на стороне пользователя
+Один из двух вариантов (любой работает):
+
+**A. Сделать репо публичным** (проще всего):
+   github.com/invme2/tags-recomendations → Settings → Change visibility → Public.
+   После этого никаких токенов, raw URL работает из коробки.
+
+**B. GitHub token в Colab**:
+```python
+import os
+from google.colab import userdata
+os.environ["GITHUB_TOKEN"] = userdata.get("GITHUB_TOKEN")
+```
+   Token: Settings → Developer settings → Personal access tokens →
+   Fine-grained → выбрать репо → Read access на Contents.
+
+После merge feature-ветки в main: `GITHUB_BRANCH = "main"` в config-ячейке.
+
+### Тест
+- `python pipeline/tools/notebook_smoke.py` → 18 ячеек валидны.
+- `python -m pytest pipeline/tests/ taxonomy/tests/` → 62/62 passed.
+- В этом контейнере real github.com выдаёт 403 на наш приватный репо,
+  поэтому full E2E test возможен только из Colab после действия (A) или (B).
+
 Коммит: следующий после этой записи.
 
