@@ -341,20 +341,30 @@ def assemble_page(
     output_format: str = "shopify_fragment",
     language: str = "en",
     title: str = "",
+    interlinks: list[dict[str, Any]] | None = None,
+    interlinks_kicker: str = "Explore more",
 ) -> str:
     """Собрать финальный HTML из выбранных модулей.
 
-    layout         — порядок модулей (могут повторяться)
-    slot_values    — список slot-словарей, параллельный layout
-    palette        — 5 hex-цветов (brand_1..brand_deep). None → дефолтная палитра.
-    output_format  —
+    layout             — порядок модулей (могут повторяться)
+    slot_values        — список slot-словарей, параллельный layout
+    palette            — 5 hex-цветов (brand_1..brand_deep). None → дефолтная.
+    output_format      —
         "shopify_fragment" (default): фрагмент `<div class="rte wa-page">…</div>`
             для прямой вставки в product description Shopify. Включает inline
             <style> с темой+CSS, модули, и <script> reveal-observer внутри div.
             Совместимо с существующей validate_html() (проверяет wa-page wrapper).
         "full": полноценный <!doctype html> документ — для preview и dry-run.
-    language       — атрибут <html lang=...> (только для output_format="full")
-    title          — <title> (только для output_format="full")
+    language           — атрибут <html lang=...> (только для output_format="full")
+    title              — <title> (только для output_format="full")
+    interlinks         — список dict'ов формата `get_smart_interlinks`
+                         (`{title, handle, anchors, relevance}`). Если непуст,
+                         в КОНЕЦ страницы автоматически добавляется
+                         pill-секция Related Collections для SEO-перелинковки.
+                         Детерминированно — без участия LLM. Это решает риск,
+                         что Opus/Sonnet проигнорирует interlinks или вставит
+                         сломанные хэндлы.
+    interlinks_kicker  — kicker-текст над секцией (по умолчанию "Explore more").
 
     Никаких topbar / footer / shipping / returns не добавляется (требование
     пользователя — эти блоки идут от темы Shopify).
@@ -370,6 +380,9 @@ def assemble_page(
         raise ValueError(f"unknown output_format: {output_format!r}")
 
     body_parts = [render_module(mid, slots) for mid, slots in zip(layout, slot_values)]
+    coll_section = render_collections_section(interlinks, kicker=interlinks_kicker)
+    if coll_section:
+        body_parts.append(coll_section)
     body = "\n\n".join(body_parts)
     style_block = "<style>\n" + render_theme_tokens(palette or {}) + "\n" + BASE_CSS + "\n</style>"
     script_block = f"<script>{BASIC_JS}</script>"
@@ -417,6 +430,65 @@ def render_badges(items: list[str], solid_first: int = 2) -> str:
         cls = "badge solid" if i < solid_first else "badge"
         out.append(f'<span class="{cls}">{t}</span>')
     return "".join(out)
+
+
+def render_collections_section(
+    interlinks: list[dict[str, Any]] | None,
+    kicker: str = "Explore more",
+) -> str:
+    """SEO-перелинковка: pill-ссылки на релевантные коллекции, в стиле Lumea.
+
+    Принимает формат `get_smart_interlinks` из ноутбука:
+        {"title": "...", "handle": "...", "relevance": "own"|"related",
+         "anchors": ["keyword phrase 1", ...]}
+
+    Anchor text — первый элемент `anchors` (keyword-rich для SEO),
+    либо `title` если anchors пустые.
+
+    Возвращает пустую строку если interlinks пустой/None — секция не
+    рендерится. Дубли по handle отсекаются.
+
+    Детерминированно: ссылки **только** из переданного списка → совместимо
+    с validate_html() в writer'е (она проверяет, что все /collections/…
+    хэндлы есть в provided_collection_handles).
+    """
+    if not interlinks:
+        return ""
+    pills: list[str] = []
+    seen: set[str] = set()
+    for lnk in interlinks:
+        if not isinstance(lnk, dict):
+            continue
+        handle = (lnk.get("handle") or "").strip()
+        if not handle or handle in seen:
+            continue
+        seen.add(handle)
+        anchors = lnk.get("anchors") or []
+        anchor_text = (anchors[0] if anchors else lnk.get("title") or handle).strip()
+        if not anchor_text:
+            anchor_text = handle
+        pills.append(
+            f'<a href="/collections/{handle}" class="wa-link" '
+            f'style="display:inline-block;padding:10px 20px;border-radius:999px;'
+            f'border:1px solid var(--line);font-size:14px;font-weight:500;'
+            f'color:var(--ink-2);text-decoration:none;'
+            f'transition:background .2s,border-color .2s,color .2s">'
+            f"{anchor_text}</a>"
+        )
+    if not pills:
+        return ""
+    pills_html = "\n        ".join(pills)
+    return (
+        '<section class="module reveal" style="padding:80px 24px;text-align:center">\n'
+        '  <div class="module-head" style="margin-bottom:32px">\n'
+        f'    <div class="ix">{kicker}</div>\n'
+        "  </div>\n"
+        '  <div style="display:flex;flex-wrap:wrap;justify-content:center;'
+        'gap:10px;max-width:880px;margin:0 auto">\n'
+        f"        {pills_html}\n"
+        "  </div>\n"
+        "</section>"
+    )
 
 
 

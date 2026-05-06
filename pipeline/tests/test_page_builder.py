@@ -221,3 +221,92 @@ def test_render_badges_marks_first_n_solid() -> None:
     html = pb.render_badges(["A", "B", "C", "D"], solid_first=2)
     assert html.count('class="badge solid"') == 2
     assert html.count('class="badge"') == 2  # rest
+
+
+# ============================================================
+# Interlinks (SEO-collection footer) — fix per user request
+# ============================================================
+
+INTERLINKS_FIXTURE = [
+    {"title": "Best Yoga Mats", "handle": "best-yoga-mats", "relevance": "own",
+     "anchors": ["non-slip yoga mats", "thick yoga mat"]},
+    {"title": "Eco Activewear", "handle": "eco-activewear", "relevance": "related",
+     "anchors": ["organic activewear"]},
+    {"title": "Pilates Gear", "handle": "pilates-gear", "relevance": "related",
+     "anchors": []},
+]
+
+
+def test_render_collections_section_empty_returns_empty_string() -> None:
+    assert pb.render_collections_section(None) == ""
+    assert pb.render_collections_section([]) == ""
+
+
+def test_render_collections_section_uses_first_anchor_else_title() -> None:
+    out = pb.render_collections_section(INTERLINKS_FIXTURE)
+    # First anchor should be used for first two (anchors non-empty)
+    assert "non-slip yoga mats" in out
+    assert "organic activewear" in out
+    # Third has empty anchors → falls back to title
+    assert "Pilates Gear" in out
+    # Original titles for cases with anchors should NOT appear as anchor text
+    assert ">Best Yoga Mats<" not in out
+    assert ">Eco Activewear<" not in out
+
+
+def test_render_collections_section_renders_handles_as_hrefs() -> None:
+    out = pb.render_collections_section(INTERLINKS_FIXTURE)
+    assert 'href="/collections/best-yoga-mats"' in out
+    assert 'href="/collections/eco-activewear"' in out
+    assert 'href="/collections/pilates-gear"' in out
+
+
+def test_render_collections_section_dedupes_handles() -> None:
+    dup = INTERLINKS_FIXTURE + [{"title": "Dup", "handle": "best-yoga-mats", "anchors": []}]
+    out = pb.render_collections_section(dup)
+    assert out.count('href="/collections/best-yoga-mats"') == 1
+
+
+def test_render_collections_section_skips_blank_handles() -> None:
+    out = pb.render_collections_section([{"title": "X", "handle": "", "anchors": []}])
+    assert out == ""
+
+
+def test_assemble_page_appends_collections_section() -> None:
+    out = pb.assemble_page(
+        ["hero1"],
+        [_slots_for("hero1")],
+        PALETTE,
+        interlinks=INTERLINKS_FIXTURE,
+    )
+    assert 'href="/collections/best-yoga-mats"' in out
+    assert "Explore more" in out
+    # Section должна идти ПОСЛЕ модуля hero1
+    h1_idx = out.find("hero-alt hero1")
+    coll_idx = out.find('href="/collections/')
+    assert h1_idx >= 0 and coll_idx > h1_idx
+
+
+def test_assemble_page_no_interlinks_no_collections_section() -> None:
+    out = pb.assemble_page(["hero1"], [_slots_for("hero1")], PALETTE)
+    assert "/collections/" not in out
+    assert "Explore more" not in out
+
+
+def test_assemble_page_custom_kicker() -> None:
+    out = pb.assemble_page(
+        ["hero1"],
+        [_slots_for("hero1")],
+        PALETTE,
+        interlinks=INTERLINKS_FIXTURE,
+        interlinks_kicker="См. также",
+    )
+    assert "См. также" in out
+    assert "Explore more" not in out
+
+
+def test_collections_section_links_use_wa_link_for_legacy_compat() -> None:
+    """class='wa-link' нужен, чтобы validate_html() в writer'е (legacy путь
+    тоже вставляет такие ссылки) обрабатывал их единообразно."""
+    out = pb.render_collections_section(INTERLINKS_FIXTURE)
+    assert out.count('class="wa-link"') == 3

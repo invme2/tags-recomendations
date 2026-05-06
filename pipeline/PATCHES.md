@@ -214,5 +214,64 @@ font-size:0) и homoglyph-подмены. LLM иногда такое генер
   Если что-то всё-таки проникает — добавим Python-postprocessor в
   `sanitize_html` (defense in depth).
 
+Коммит: 039594d.
+
+---
+
+## 2026-05-06 — fix(designer): Sonnet 4.6 вместо Opus 4.7 + детерминированная SEO-перелинковка
+Cells: #2 (MODEL_DESIGNER + cost), #15 (assemble_page interlinks + designer prompt)
+File: pipeline/page_builder.py (новая render_collections_section + interlinks param в assemble_page)
+Snapshot: pipeline/.snapshots/<TS>_before-model-swap-and-interlinks.ipynb
+
+### Что было — два бага
+**Cost.** `MODEL_DESIGNER = "claude-opus-4-7"` (~$15/$75 per M). Per-product
+~$0.50, что в 5× дороже legacy Sonnet writer ($3/$15).
+
+**SEO interlinking конфликт.** `get_smart_interlinks()` собирает 4-6 коллекций
+для каждого продукта, прокидывает в writer prompt как `interlink_block`.
+Legacy `WRITER_SYSTEM_PROMPT` инструктирует Sonnet weave inline + footer
+`<a class="wa-link">`. Но мой modular `_designer_system` вообще не упоминал
+interlinks → Opus игнорировал коллекции либо вставлял ссылки в P-слоты
+произвольно. validate_html() удалял невалидные хэндлы, но не восполнял
+отсутствующие → SEO-перелинковка ломалась полностью на modular пути.
+
+### Что стало
+**Cost:** `MODEL_DESIGNER = "claude-sonnet-4-6"` (новейший Sonnet, того же
+$3/$15). Cost calculation в writer cell обновлён под Sonnet pricing.
+Per-product designer cost: ~$0.50 → ~$0.10 (5× экономия). Опционально
+можно поднять обратно до Opus, поменяв одну строку.
+
+**Interlinking:** перевёл на детерминированную сборку — без участия LLM:
+- `pipeline/page_builder.py`: новая `render_collections_section(interlinks)`
+  рендерит pill-кнопки с keyword-rich anchor text (первый из `anchors[]`,
+  fallback `title`). class="wa-link" для совместимости с validate_html.
+- `assemble_page` принимает `interlinks=` и `interlinks_kicker=` ("Explore
+  more" по умолчанию, можно поменять на "См. также" если язык товара RU).
+- В cell #15 modular path: `assemble_page(..., interlinks=interlinks)`.
+- `_designer_system` промпт обновлён: «DO NOT include /collections/ links
+  in any slot text — Related-collections appended automatically». Меньше
+  ошибок и токенов в ответе.
+
+Преимущества детерминизма:
+- Ссылки **гарантированно** есть, если interlinks не пустой.
+- Все хэндлы — из реально созданных Shopify коллекций (validate_html не
+  будет их удалять).
+- Не зависит от настроения модели и не «галлюцинируется».
+
+### Тест
+- pipeline/tests/test_page_builder.py: +9 тестов (32/32 passed) — empty
+  interlinks, anchor text fallback, dedup handles, blank handle skip,
+  custom kicker, append after modules, no duplication при повторных
+  вызовах.
+- python -m pytest pipeline/tests/ taxonomy/tests/ → 62/62 passed.
+- python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
+
+### Что не задето
+- Legacy `WRITER_SYSTEM_PROMPT` (Sonnet 4.5) — продолжает плести
+  interlinks inline через свой собственный flow. Не трогал — рискованно
+  ломать рабочий код, у пользователя есть rollback через `USE_MODULAR_HTML=False`.
+- `get_smart_interlinks()` — без изменений, тот же формат данных.
+- `ALL_SHOP_COLLECTIONS` фетч и Stage 1-9 SEO — не задеты.
+
 Коммит: следующий после этой записи.
 
