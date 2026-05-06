@@ -400,5 +400,34 @@ Opus 4.6 и 4.7 — также одинаковая ($15/$75 per M).
 - python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
 - python -m pytest pipeline/tests/ taxonomy/tests/ → 62/62 passed.
 
+Коммит: edf11dd.
+
+---
+
+## 2026-05-06 — feat(ux): RESET_DB flag вместо интерактивного y/n prompt
+Cell: #2 (CONFIG)
+Snapshot: pipeline/.snapshots/<TS>_before-reset-flag.ipynb
+
+### Что было
+В Cell 1 при наличии данных в DB шёл `input('Upload new files? (y=reset / Enter=continue): ')`.
+Интерактивный prompt в Colab требует кликать в input-field, неудобно при
+повторных прогонах. Пользователь хотел явный флаг.
+
+### Что стало
+В config-ячейке добавлен булев-флаг:
+```python
+RESET_DB = False  # True = wipe DB before run, False = continue/resume
+```
+
+Логика:
+- `n_prods > 0 and RESET_DB` → wipe всё и upload свежие файлы.
+- `n_prods > 0 and not RESET_DB` → continue с существующими данными (resumable).
+- `n_prods == 0` → upload свежие файлы (как и было).
+
+Никакого input() — флаг переключается одной строкой в начале CONFIG-ячейки.
+
+### Тест
+- python pipeline/tools/notebook_smoke.py → 18 ячеек валидны.
+
 Коммит: следующий после этой записи.
 
