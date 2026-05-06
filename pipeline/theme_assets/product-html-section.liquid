@@ -1,0 +1,39 @@
+{%- comment -%}
+  WANELO Product HTML Section
+  -----------------------------------------------------------
+  Replaces the previous Liquid section that only had JSON-LD.
+  Now also renders the per-product HTML metafield with the
+  shared CSS framework (wanelo-product.css) and reveal JS
+  (wanelo-product.js) loaded once from theme assets.
+  Per-product palette comes inline via <style>:root{...}</style>
+  embedded in the metafield value.
+{%- endcomment -%}
+
+{%- if product.metafields.custom.html_description != blank -%}
+
+  {{ 'wanelo-product.css' | asset_url | stylesheet_tag }}
+
+  <div class="product-html-description">
+    {{ product.metafields.custom.html_description }}
+  </div>
+
+  {{ 'wanelo-product.js' | asset_url | script_tag }}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncate: 250 | json }},
+    "image": {{ product.featured_image | img_url: 'master' | prepend: 'https:' | json }},
+    "brand": {"@type":"Brand","name":{{ product.vendor | json }}},
+    "offers": {
+      "@type":"Offer",
+      "price": {{ product.price | money_without_currency | json }},
+      "priceCurrency": {{ shop.currency | json }},
+      "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+    }
+  }
+  </script>
+
+{%- endif -%}
