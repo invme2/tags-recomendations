@@ -1,5 +1,5 @@
 /* WANELO Product Page Framework — modular system
- * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06T18:56:29)
+ * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06T19:31:07)
  * Per-product palette comes from inline <style>:root{...}</style> in metafield.
  * Module backgrounds are mostly transparent — theme bg shows through.
  */
@@ -942,10 +942,11 @@
   .m5-bg{background:#f4f6f8}
 
   /* M5.1 — Glass cards on gradient */
-  .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,#ffd6c2 0%,#ffb89e 40%,#c9b6f5 100%);border-radius:16px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
+  .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,var(--brand-soft) 0%,var(--brand-1) 50%,var(--brand-2) 100%);border-radius:16px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
   .m51-stage::before{content:"";position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,.6),transparent);top:-200px;right:-200px;border-radius:50%}
   .m51-stage::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.4),transparent);bottom:-100px;left:-100px;border-radius:50%}
   .m51-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto;position:relative;z-index:1}
+  @media(max-width:760px){.m51-grid{grid-template-columns:1fr}.m51-stage{padding:48px 16px}}
   .m51 .card{background:rgba(255,255,255,.55);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);border:1px solid rgba(255,255,255,.6);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px;box-shadow:0 16px 48px -16px rgba(0,0,0,.15)}
   .m51 .card .stars{color:#ff9c70;font-size:14px;letter-spacing:2px}
   .m51 .card blockquote{font-size:20px;font-weight:500;letter-spacing:-.015em;line-height:1.35;color:var(--ink)}
