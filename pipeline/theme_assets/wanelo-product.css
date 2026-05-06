@@ -1,6 +1,7 @@
 /* WANELO Product Page Framework — modular system
- * Source: pipeline/page_builder.py BASE_CSS
+ * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06)
  * Per-product palette comes from inline <style>:root{...}</style> in metafield.
+ * Module backgrounds are mostly transparent — theme bg shows through.
  */
 
 
@@ -9,12 +10,13 @@
   /* AI AGENTS: change these 5 values to re-skin the whole page. */
   /* ============================================================ */
   
-  *{box-sizing:border-box;margin:0;padding:0}
+  /* No global * reset — it would zero theme paddings. Scoped reset below. */
+  .wa-page,.wa-page > *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-  html,body{
-    background:#fff;color:var(--ink);
+  /* Scoped to .wa-page so we never override the Shopify theme background. */
+  .wa-page{
+    background:transparent;color:var(--ink);
     font-family:'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;
-    overflow-x:hidden;
     font-feature-settings:"ss01","cv11";
     letter-spacing:-.011em;
   }
@@ -27,12 +29,9 @@
 
   /* ===================== HERO ===================== */
   .hero{
-    min-height:100vh;padding:160px 24px 80px;text-align:center;position:relative;
+    min-height:auto;padding:80px 24px 40px;text-align:center;position:relative;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:
-      radial-gradient(ellipse 1000px 600px at 50% 20%, rgba(255,200,176,.35), transparent 60%),
-      radial-gradient(ellipse 800px 500px at 50% 80%, rgba(195,220,255,.3), transparent 60%),
-      #fff;
+    background:transparent;
   }
   .hero .eyebrow{
     font-size:21px;font-weight:600;letter-spacing:-.018em;
@@ -66,8 +65,8 @@
   @media(max-width:1100px){.toc-grid{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:700px){.toc-grid{grid-template-columns:repeat(2,1fr)}}
   .toc-card{
-    background:var(--bg-2);border-radius:18px;padding:22px;
-    display:flex;flex-direction:column;gap:14px;min-height:160px;
+    background:var(--brand-soft);border-radius:12px;padding:22px;
+    display:flex;flex-direction:column;gap:14px;min-height:140px;
     transition:transform .35s cubic-bezier(.2,.7,.2,1), background .25s;
     position:relative;overflow:hidden;
   }
@@ -153,9 +152,7 @@
 
   /* ===================== M1.1 — ROUNDED HERO IMAGE THAT SCALES OUT ===================== */
   .m11{
-    background:
-      radial-gradient(ellipse 800px 500px at 50% 0%, rgba(255,200,176,.35), transparent 60%),
-      #fff;
+    background:transparent;
   }
   .m11 .pin{flex-direction:column;gap:32px}
   .m11 .img-frame{
@@ -172,7 +169,7 @@
   .m11 .floating-text h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
 
   /* ===================== M1.2 — TYPE-SPLIT HERO ===================== */
-  .m12{padding:160px 24px;background:linear-gradient(180deg,#fff,#fafafa)}
+  .m12{padding:120px 24px;background:transparent}
   .m12 .row{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;max-width:1280px;margin:0 auto;align-items:center}
   .m12 .copy h3{font-size:clamp(48px,6.5vw,96px);font-weight:600;letter-spacing:-.04em;line-height:.98}
   .m12 .copy h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
@@ -188,7 +185,7 @@
   @media(max-width:900px){.m12 .row{grid-template-columns:1fr;gap:48px}}
 
   /* ===================== M1.3 — BIG QUOTE CENTERED ===================== */
-  .m13{padding:200px 24px;text-align:center;background:#fff}
+  .m13{padding:120px 24px;text-align:center;background:transparent}
   .m13 q{
     display:block;font-family:'Fraunces',serif;font-weight:300;font-size:clamp(40px,5.5vw,80px);
     line-height:1.08;letter-spacing:-.025em;max-width:1100px;margin:0 auto;color:var(--ink);
@@ -241,7 +238,7 @@
 
   /* ===================== M2 — STORY ===================== */
   .m2-bg{background:linear-gradient(180deg,#fff,#fafafa)}
-  .story-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:32px;overflow:hidden;background:#fff;min-height:560px;box-shadow:0 30px 80px rgba(29,29,31,.04)}
+  .story-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;border-radius:0;overflow:visible;background:transparent;min-height:auto;box-shadow:none;align-items:center}
   .story-row .img{position:relative;background:var(--bg-2);overflow:hidden}
   .story-row .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
   .story-row.in .img img{transform:scale(1)}
@@ -307,7 +304,7 @@
   .hero-alt{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;border-radius:32px;margin:24px}
 
   /* H.1 — Editorial split: huge serif + product photo */
-  .hero1{background:#fdf6ee;padding:80px 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+  .hero1{background:transparent;padding:64px 24px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center;border-radius:0}
   .hero1 .ix{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a06640;font-weight:700}
   .hero1 h1{margin-top:18px;font-family:'Fraunces',serif;font-weight:300;font-size:clamp(64px,9vw,140px);line-height:.92;letter-spacing:-.04em}
   .hero1 h1 em{font-style:italic;color:var(--brand-1)}
@@ -322,7 +319,9 @@
   @media(max-width:900px){.hero1{grid-template-columns:1fr;padding:48px 28px}}
 
   /* H.2 — Cinematic dark with full-bleed image */
-  .hero2{background:#0e0e10;color:#fff;padding:0}
+  .hero2{background:#0e0e10;color:#fff;padding:0;border-radius:0;margin:0 -24px}
+  .wa-page .hero2 *{color:#fff}
+  .wa-page .hero2 a{color:#fff}
   .hero2 .bg{position:absolute;inset:0}
   .hero2 .bg img{width:100%;height:100%;object-fit:cover;opacity:.55;transform:scale(1.1);transition:transform 4s cubic-bezier(.2,.7,.2,1)}
   .hero2.in .bg img{transform:scale(1)}
@@ -391,7 +390,8 @@
   /* ============================================================ */
 
   /* ----- M1.6 — Half-bleed product card with badge stack ----- */
-  .m16{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#0e0e10;color:#fff;border-radius:32px;overflow:hidden;margin:0 24px;min-height:640px}
+  .m16{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#0e0e10;color:#fff;border-radius:16px;overflow:hidden;margin:0 24px;min-height:auto}
+  .wa-page .m16 *{color:#fff}
   .m16 .img{position:relative;overflow:hidden}
   .m16 .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
   .m16.in .img img{transform:scale(1)}
@@ -419,7 +419,7 @@
   @media(max-width:900px){.m17{grid-template-columns:1fr}}
 
   /* ----- M1.8 — Product on plinth with tape-measure stats ----- */
-  .m18{padding:80px 24px;background:#fdf6ee;border-radius:32px;margin:0 24px;text-align:center;position:relative;overflow:hidden}
+  .m18{padding:80px 24px;background:transparent;border-radius:0;margin:0;text-align:center;position:relative;overflow:visible}
   .m18 .pedestal{position:relative;display:inline-block;margin:0 auto}
   .m18 .photo{width:280px;height:380px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(29,29,31,.18);position:relative;z-index:2}
   .m18 .photo img{width:100%;height:100%;object-fit:cover}
@@ -513,7 +513,7 @@
   @media(max-width:900px){.m36{grid-template-columns:1fr}}
 
   /* ----- M3.7 — Animated metric ribbon ----- */
-  .m37{padding:80px 48px;background:#fdf6ee;border-radius:32px;margin:0 24px;text-align:center;position:relative;overflow:hidden}
+  .m37{padding:80px 24px;background:transparent;border-radius:0;margin:0;text-align:center;position:relative;overflow:visible}
   .m37 .ix{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a06640;font-weight:700}
   .m37 h3{margin-top:18px;font-size:clamp(40px,4.6vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
   .m37 h3 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
@@ -582,7 +582,7 @@
   @media(max-width:900px){.m56{grid-template-columns:1fr}}
 
   /* ----- M5.7 — Single big testimonial w/ portrait ----- */
-  .m57{display:grid;grid-template-columns:1fr 1.2fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;margin:0 24px;box-shadow:0 30px 80px rgba(29,29,31,.06);min-height:560px}
+  .m57{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;background:transparent;border-radius:0;overflow:visible;margin:0;box-shadow:none;min-height:auto;align-items:center}
   .m57 .portrait{position:relative;background:#1a1a1f;overflow:hidden}
   .m57 .portrait img{width:100%;height:100%;object-fit:cover;opacity:.92}
   .m57 .portrait .badge{position:absolute;top:24px;left:24px;padding:8px 14px;background:#fff;border-radius:999px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--ink)}
@@ -722,7 +722,7 @@
   @media(max-width:900px){.fav5 .frame{grid-template-columns:1fr}.fav5 .left{padding:48px 28px}.fav5 .right{padding:32px 28px}}
 
   /* M2.6 — polaroid scrapbook */
-  .m26{padding:120px 24px;text-align:center;background:#fafafa;border-radius:32px;margin:0 24px;position:relative;overflow:hidden;min-height:680px}
+  .m26{padding:80px 24px;text-align:center;background:transparent;border-radius:0;margin:0;position:relative;overflow:visible;min-height:auto}
   .m26 .head{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(36px,4.5vw,56px);font-weight:300;letter-spacing:-.022em;max-width:760px;margin:0 auto}
   .m26 .head .ink{font-style:normal;font-family:'Inter';font-weight:600}
   .m26 .polaroids{position:relative;height:520px;margin-top:48px}
@@ -786,7 +786,7 @@
   .m31-scrollhint .ar{width:1px;height:24px;background:linear-gradient(180deg,var(--ink-4),transparent);animation:bobble 2s ease-in-out infinite}
 
   /* M3.2 — feature cards with peach gradient */
-  .m32{padding:120px 24px;background:var(--grad-peach);border-radius:32px;margin:0 24px}
+  .m32{padding:80px 24px;background:var(--grad-peach);border-radius:16px;margin:0;color:#1a1411}
   .m32 .head{text-align:center;margin-bottom:80px;color:var(--ink)}
   .m32 .head .ix{font-size:17px;font-weight:600;color:#7a4530}
   .m32 .head h3{margin-top:8px;font-size:clamp(48px,6.5vw,84px);font-weight:600;letter-spacing:-.035em;line-height:1}
@@ -802,7 +802,7 @@
   @media(max-width:900px){.m32 .grid{grid-template-columns:1fr}}
 
   /* M3.3 — exploded view */
-  .m33{padding:160px 24px;background:#fafafa;text-align:center;border-radius:32px;margin:0 24px;position:relative;overflow:hidden;min-height:700px}
+  .m33{padding:80px 24px;background:transparent;text-align:center;border-radius:0;margin:0;position:relative;overflow:visible;min-height:auto}
   .m33 .head{margin-bottom:64px}
   .m33 .head .ix{font-size:17px;font-weight:600;color:var(--ink-2)}
   .m33 .head h3{margin-top:8px;font-size:clamp(40px,6vw,72px);font-weight:600;letter-spacing:-.035em;line-height:1}
@@ -836,7 +836,7 @@
   .m33.in svg.lines path{stroke-dashoffset:0}
 
   /* M3.4 — macro grid 2-col */
-  .m34{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;min-height:600px;margin:0 24px;box-shadow:0 30px 80px rgba(29,29,31,.04)}
+  .m34{display:grid;grid-template-columns:1fr 1fr;gap:48px;background:transparent;border-radius:0;overflow:visible;min-height:auto;margin:0;box-shadow:none;align-items:center}
   .m34 .macro{position:relative;background:#1a1a1f;overflow:hidden}
   .m34 .macro img{width:100%;height:100%;object-fit:cover;transform:scale(1.4);transition:transform 4s cubic-bezier(.2,.7,.2,1)}
   .m34.in .macro img{transform:scale(1.1)}
@@ -902,7 +902,8 @@
   .m42 .card p{font-size:15px;line-height:1.5;color:var(--ink-2)}
 
   /* M4.3 — Stat with photo split */
-  .m43{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:32px;overflow:hidden;background:#0e1418;color:#fff;max-width:1280px;margin:0 auto;min-height:560px}
+  .m43{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:16px;overflow:hidden;background:#0e1418;color:#fff;max-width:1280px;margin:0 auto;min-height:auto}
+  .wa-page .m43 *{color:#fff}
   .m43 .left{padding:80px;display:flex;flex-direction:column;justify-content:space-between;gap:32px}
   .m43 .left .ix{font-size:11px;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.5);text-transform:uppercase}
   .m43 .left .stat{font-size:200px;font-weight:200;letter-spacing:-.05em;line-height:.85}
@@ -925,7 +926,8 @@
   .m44 .row .v em{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-weight:300}
 
   /* M4.5 — Animated ticker */
-  .m45{overflow:hidden;background:#0e1418;color:#fff;padding:80px 0;border-radius:32px;max-width:calc(100% - 48px);margin:0 auto}
+  .m45{overflow:hidden;background:#0e1418;color:#fff;padding:80px 0;border-radius:16px;max-width:calc(100% - 48px);margin:0 auto}
+  .wa-page .m45 *{color:#fff}
   .m45 .head{text-align:center;margin-bottom:48px;padding:0 24px}
   .m45 .head h3{font-size:56px;font-weight:200;letter-spacing:-.025em;line-height:1.05}
   .m45 .head h3 em{font-family:'Fraunces',serif;font-style:italic;color:#ff9c70}
@@ -989,7 +991,7 @@
   .m54 .mini .who{font-size:12px;color:var(--ink-3)}
 
   /* M5.5 — Stat-driven testimonial */
-  .m55{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:32px;overflow:hidden;max-width:1280px;margin:0 auto;border:1px solid var(--line);min-height:520px}
+  .m55{display:grid;grid-template-columns:1fr 1fr;gap:0;background:transparent;border-radius:0;overflow:visible;max-width:1280px;margin:0 auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:auto}
   .m55 .photo{position:relative;background:#f4f6f8;overflow:hidden}
   .m55 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .m55 .photo .badge{position:absolute;top:24px;left:24px;background:rgba(255,255,255,.95);padding:10px 16px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
