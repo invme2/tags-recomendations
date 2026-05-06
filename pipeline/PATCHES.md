@@ -131,3 +131,40 @@ inline-стилях. Каждый продукт получал свой пол�
 
 Коммит: следующий после этой записи.
 
+---
+
+## 2026-05-06 — fix(logging): API error messages identify service (Anthropic / DataForSEO) + 401 fail-fast
+Cells: #4 (call_claude), #6 (api_post_with_retry)
+Snapshot: pipeline/.snapshots/<TS>_before-error-prefixes.ipynb
+
+### Что было
+В `call_claude` (Anthropic) и `api_post_with_retry` (DataForSEO) логи ретраев
+были одинаково безликие: `[API err 401, retry 1]`, `[Timeout, retry 1/3]`,
+`[FAILED: ...]`. На реальном прогоне пользователь не мог понять, какой
+именно сервис отвалился (Anthropic / DataForSEO / Shopify).
+
+Дополнительно: 401 (auth-error) ретраился 4 раза подряд без шансов на успех —
+ANTHROPIC_API_KEY либо есть, либо нет.
+
+### Что стало
+- **`call_claude`** (Anthropic): все retry/error-сообщения с префиксом
+  `[Anthropic …]`. На 401/403 — fail-fast (без ретраев) с actionable хинтом
+  `check ANTHROPIC_API_KEY in env`.
+- **`api_post_with_retry`** (DataForSEO): сервис определяется по URL хосту
+  (`api.dataforseo.com → DataForSEO`). На 401 — fail-fast с хинтом
+  `check DATAFORSEO_LOGIN/DATAFORSEO_PASSWORD env`. На 402 (баланс) и 403
+  — fail-fast с пометкой kind.
+- `shopify_gql` уже имел префикс `[Shopify …]` — не трогал.
+
+### Зачем
+Сэкономить время диагностики: в выводе сразу видно, у какого сервиса
+проблема и что чинить (env-переменная). Авто-ретрай 401 был бессмысленным
+(пятикратное повторение auth-fail только тратит время и токены).
+
+### Тест
+- `python pipeline/tools/notebook_smoke.py` → 18 ячеек валидны.
+- `python -m pytest pipeline/tests/ taxonomy/tests/` → 53/53 passed
+  (тесты не зависят от ноутбука, но регресс-проверка инфраструктуры в порядке).
+
+Коммит: следующий после этой записи.
+
