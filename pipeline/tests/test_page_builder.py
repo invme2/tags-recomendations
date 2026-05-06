@@ -122,19 +122,33 @@ def test_palette_none_uses_all_defaults() -> None:
 # assemble_page — full assembly
 # ============================================================
 
-def test_assemble_minimal_one_module() -> None:
+def test_assemble_minimal_shopify_fragment_default() -> None:
+    """По умолчанию — shopify_fragment с wa-page wrapper."""
     out = pb.assemble_page(["hero1"], [_slots_for("hero1")], PALETTE)
+    assert out.startswith('<div class="rte wa-page"')
+    assert out.strip().endswith("</div>")
+    assert "<!doctype" not in out.lower()
+    assert "<html" not in out
+    assert "hero-alt hero1" in out
+
+
+def test_assemble_full_document_when_requested() -> None:
+    out = pb.assemble_page(["hero1"], [_slots_for("hero1")], PALETTE, output_format="full", title="Demo")
     assert out.startswith("<!doctype html>")
     assert "</html>" in out.strip()
-    assert "<title></title>" in out  # default empty
-    assert "hero-alt hero1" in out
+    assert "<title>Demo</title>" in out
+    assert 'class="rte wa-page"' not in out
+
+
+def test_assemble_unknown_output_format_raises() -> None:
+    with pytest.raises(ValueError, match="output_format"):
+        pb.assemble_page(["hero1"], [_slots_for("hero1")], PALETTE, output_format="weird")
 
 
 def test_assemble_six_module_layout() -> None:
     layout = ["hero1", "m16", "m21", "m32", "m41", "m51"]
     slot_values = [_slots_for(m) for m in layout]
-    out = pb.assemble_page(layout, slot_values, PALETTE, title="Demo")
-    assert "<title>Demo</title>" in out
+    out = pb.assemble_page(layout, slot_values, PALETTE)
     for m in layout:
         # Each module's CSS class must appear in output
         if m == "hero1":   assert "hero-alt hero1" in out

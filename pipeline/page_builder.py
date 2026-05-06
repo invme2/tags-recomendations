@@ -325,24 +325,39 @@ def validate_layout(layout: list[str]) -> list[str]:
     return [m for m in layout if m not in _MODULE_HTML]
 
 
+FONTS_LINK = (
+    '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800'
+    '&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">'
+)
+
+
 def assemble_page(
     layout: list[str],
     slot_values: list[dict[str, str]],
     palette: dict[str, str] | None = None,
     *,
+    output_format: str = "shopify_fragment",
     language: str = "en",
     title: str = "",
 ) -> str:
-    """Собрать финальный HTML страницы продукта из выбранных модулей.
+    """Собрать финальный HTML из выбранных модулей.
 
-    layout      — порядок модулей (могут повторяться)
-    slot_values — список slot-словарей, параллельный layout
-    palette     — 5 hex-цветов (brand_1..brand_deep). None → дефолтная палитра.
-    language    — атрибут <html lang=...>
-    title       — <title> тега (можно пустую — пользователь делает отдельно SEO meta)
+    layout         — порядок модулей (могут повторяться)
+    slot_values    — список slot-словарей, параллельный layout
+    palette        — 5 hex-цветов (brand_1..brand_deep). None → дефолтная палитра.
+    output_format  —
+        "shopify_fragment" (default): фрагмент `<div class="rte wa-page">…</div>`
+            для прямой вставки в product description Shopify. Включает inline
+            <style> с темой+CSS, модули, и <script> reveal-observer внутри div.
+            Совместимо с существующей validate_html() (проверяет wa-page wrapper).
+        "full": полноценный <!doctype html> документ — для preview и dry-run.
+    language       — атрибут <html lang=...> (только для output_format="full")
+    title          — <title> (только для output_format="full")
 
-    Никаких topbar / footer / shipping / returns не добавляется. Эти блоки
-    обеспечиваются темой Shopify.
+    Никаких topbar / footer / shipping / returns не добавляется (требование
+    пользователя — эти блоки идут от темы Shopify).
     """
     if len(layout) != len(slot_values):
         raise ValueError(
@@ -351,9 +366,25 @@ def assemble_page(
     bad = validate_layout(layout)
     if bad:
         raise ValueError(f"unknown module ids: {bad}; available: {sorted(_MODULE_HTML)}")
+    if output_format not in ("shopify_fragment", "full"):
+        raise ValueError(f"unknown output_format: {output_format!r}")
 
     body_parts = [render_module(mid, slots) for mid, slots in zip(layout, slot_values)]
     body = "\n\n".join(body_parts)
+    style_block = "<style>\n" + render_theme_tokens(palette or {}) + "\n" + BASE_CSS + "\n</style>"
+    script_block = f"<script>{BASIC_JS}</script>"
+
+    if output_format == "shopify_fragment":
+        # Wrapper класс совместим с validate_html() — она ищет class="rte wa-page".
+        # FONTS_LINK можно убирать, если тема Shopify уже грузит Inter+Fraunces.
+        return (
+            f'<div class="rte wa-page" role="article" lang="{language}">\n'
+            f"{FONTS_LINK}\n"
+            f"{style_block}\n"
+            f"{body}\n"
+            f"{script_block}\n"
+            "</div>\n"
+        )
 
     return (
         "<!doctype html>\n"
@@ -362,17 +393,12 @@ def assemble_page(
         '<meta charset="utf-8" />\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1" />\n'
         f"<title>{title}</title>\n"
-        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">\n'
-        "<style>\n"
-        + render_theme_tokens(palette or {}) + "\n"
-        + BASE_CSS + "\n"
-        "</style>\n"
+        f"{FONTS_LINK}\n"
+        f"{style_block}\n"
         "</head>\n"
         "<body>\n"
-        + body + "\n"
-        f"<script>{BASIC_JS}</script>\n"
+        f"{body}\n"
+        f"{script_block}\n"
         "</body>\n"
         "</html>\n"
     )
