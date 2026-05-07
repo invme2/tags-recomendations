@@ -7,6 +7,11 @@
 ## [Unreleased]
 
 ### Changed
+- **Pricing: gpt-image-2 cost table replaces gpt-image-1 estimate.** The cost
+  map is now size-aware and matches the official pricing (medium 1024² = $0.053,
+  medium 1024×1536 = $0.041, high 1024² = $0.211). Cost-per-brief is computed
+  from `IMAGE_GEN_QUALITY × _size`. Comment notes additional input-token overhead
+  because gpt-image-2 always processes reference images at high fidelity.
 - **Pipeline architecture: Image Strategy agent merged into Designer.** Previously
   three agents ran sequentially (Strategy → Image Strategy → Designer). Now
   Designer (Sonnet 4.6) emits the page content **and** photo briefs in a single

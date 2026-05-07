@@ -255,6 +255,36 @@ def test_image_gen_quality_cost_map(cells: dict) -> None:
         assert f"'{q}'" in c6
 
 
+def test_image_gen_uses_gpt_image_2_pricing(cells: dict) -> None:
+    """Cost table must reflect gpt-image-2 prices, not gpt-image-1.
+    Verify a few known values from the docs (medium 1024² = $0.053, high 1024×1536 = $0.165)."""
+    c6 = cells["ce20f070"]
+    # gpt-image-2 medium 1024x1024 = $0.053 (gpt-image-1 was $0.042)
+    assert "'1024x1024': 0.053" in c6, (
+        "Cost table must use gpt-image-2 medium-square price 0.053, not the legacy gpt-image-1 0.042"
+    )
+    # gpt-image-2 high 1024×1536 = $0.165 (gpt-image-1 was $0.25)
+    assert "'1024x1536': 0.165" in c6
+    # No more flat-rate gpt-image-1 prices
+    assert "'medium': 0.042" not in c6, "Legacy flat 'medium': 0.042 (gpt-image-1) must be removed"
+    assert "'high': 0.167" not in c6, "Legacy flat 'high': 0.167 (gpt-image-1) must be removed"
+
+
+def test_image_gen_does_not_pass_input_fidelity(cells: dict) -> None:
+    """gpt-image-2 forbids the input_fidelity parameter — it always runs refs at high fidelity."""
+    c6 = cells["ce20f070"]
+    assert "input_fidelity" not in c6, (
+        "gpt-image-2 doesn't accept input_fidelity — must not be passed to images.edit()"
+    )
+
+
+def test_image_gen_does_not_request_transparent_background(cells: dict) -> None:
+    """gpt-image-2 doesn't support transparent backgrounds."""
+    c6 = cells["ce20f070"]
+    assert 'background="transparent"' not in c6
+    assert "background='transparent'" not in c6
+
+
 def test_image_gen_uploads_to_shopify(cells: dict) -> None:
     c6 = cells["ce20f070"]
     assert "openai_client.images.edit" in c6
