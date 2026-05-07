@@ -1,0 +1,27 @@
+{%- comment -%}
+  INTERLINKS snippet — pill-style collection links for SEO.
+  Reads product.metafields.custom.interlinks JSON:
+    {head: {kicker, h2}, items: [{handle, anchor}]}
+  Renders as a flex-wrap of <a> pills. handles are validated by pipeline
+  (only collections from the current run are passed).
+{%- endcomment -%}
+
+{%- assign interlinks = product.metafields.custom.interlinks.value -%}
+{%- if interlinks and interlinks.items and interlinks.items.size > 0 -%}
+<section class="wanelo-interlinks reveal">
+  {%- if interlinks.head and interlinks.head.h2 != blank -%}
+    <h3>{{ interlinks.head.h2 }}</h3>
+  {%- else -%}
+    <h3>Explore more</h3>
+  {%- endif -%}
+  <div class="wanelo-interlinks__list">
+    {%- for item in interlinks.items -%}
+      {%- if item.handle != blank -%}
+        <a class="wanelo-interlinks__link" href="/collections/{{ item.handle }}">
+          {{- item.anchor | default: item.handle -}}
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}

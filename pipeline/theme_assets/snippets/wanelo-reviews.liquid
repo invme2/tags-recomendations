@@ -1,0 +1,50 @@
+{%- comment -%}
+  REVIEWS snippet — 3-column animated wall (m54 style).
+  Reads product.metafields.custom.reviews JSON:
+    {head: {kicker, h2, desc}, items: [{stars, quote, author, meta}]}
+  Designer should provide 9-12 items. Pipeline distributes across 3 columns
+  (positions 0,3,6,9 → c1; 1,4,7,10 → c2; 2,5,8,11 → c3) and duplicates each
+  column for seamless infinite scroll.
+{%- endcomment -%}
+
+{%- assign reviews = product.metafields.custom.reviews.value -%}
+{%- if reviews and reviews.items and reviews.items.size > 0 -%}
+<section class="wanelo-section">
+  {%- if reviews.head and reviews.head.h2 != blank -%}
+    <div class="wanelo-head reveal">
+      {%- if reviews.head.kicker != blank -%}<div class="wanelo-kicker">{{ reviews.head.kicker }}</div>{%- endif -%}
+      <h2>{{ reviews.head.h2 }}</h2>
+      {%- if reviews.head.desc != blank -%}<p class="desc">{{ reviews.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-reviews reveal">
+    <div class="wanelo-reviews__wall">
+      {%- for col_index in (0..2) -%}
+        {%- assign col_class = 'c1' -%}
+        {%- if col_index == 1 %}{%- assign col_class = 'c2' -%}{%- endif -%}
+        {%- if col_index == 2 %}{%- assign col_class = 'c3' -%}{%- endif -%}
+        <div class="wanelo-reviews__col {{ col_class }}">
+          {%- comment -%} render twice for seamless infinite scroll {%- endcomment -%}
+          {%- for n in (1..2) -%}
+            {%- for item in reviews.items -%}
+              {%- if forloop.index0 mod 3 == col_index -%}
+                <div class="wanelo-reviews__card">
+                  {%- if item.stars != blank -%}<div class="wanelo-reviews__stars">{{ item.stars }}</div>{%- endif -%}
+                  {%- if item.quote != blank -%}<p class="wanelo-reviews__quote">{{ item.quote }}</p>{%- endif -%}
+                  {%- if item.author != blank or item.meta != blank -%}
+                    <div class="wanelo-reviews__who">
+                      {%- if item.author != blank -%}{{ item.author }}{%- endif -%}
+                      {%- if item.meta != blank -%}{%- if item.author != blank %} · {% endif -%}{{ item.meta }}{%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}

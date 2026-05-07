@@ -1,0 +1,38 @@
+{%- comment -%}
+  STORY snippet — alternating photo/text rows.
+  Reads product.metafields.custom.story JSON:
+    {head: {kicker, h2, desc}, chapters: [{image_url, image_alt, kicker, h3, p}]}
+  Each chapter renders as a story-row; even-indexed rows are mirrored (photo on right).
+{%- endcomment -%}
+
+{%- assign story = product.metafields.custom.story.value -%}
+{%- if story and story.chapters and story.chapters.size > 0 -%}
+<section class="wanelo-section">
+  {%- if story.head and story.head.h2 != blank -%}
+    <div class="wanelo-head reveal">
+      {%- if story.head.kicker != blank -%}<div class="wanelo-kicker">{{ story.head.kicker }}</div>{%- endif -%}
+      <h2>{{ story.head.h2 }}</h2>
+      {%- if story.head.desc != blank -%}<p class="desc">{{ story.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- for chapter in story.chapters -%}
+    {%- assign mirror_class = '' -%}
+    {%- if forloop.index0 mod 2 == 1 -%}{%- assign mirror_class = ' mirror' -%}{%- endif -%}
+    <div class="wanelo-story-row reveal{{ mirror_class }}">
+      {%- if chapter.image_url != blank -%}
+        <div class="wanelo-story-row__img">
+          <img src="{{ chapter.image_url }}"
+               alt="{{ chapter.image_alt | default: '' | escape }}"
+               loading="lazy" decoding="async">
+        </div>
+      {%- endif -%}
+      <div class="wanelo-story-row__copy">
+        {%- if chapter.kicker != blank -%}<div class="wanelo-kicker">{{ chapter.kicker }}</div>{%- endif -%}
+        {%- if chapter.h3 != blank -%}<h3>{{ chapter.h3 }}</h3>{%- endif -%}
+        {%- if chapter.p != blank -%}<p>{{ chapter.p }}</p>{%- endif -%}
+      </div>
+    </div>
+  {%- endfor -%}
+</section>
+{%- endif -%}

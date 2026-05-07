@@ -1,0 +1,60 @@
+{%- comment -%}
+  WANELO Product Page — single section, renders the entire long-form
+  description from 9 Shopify metafields (each a JSON object).
+
+  Add this section ONCE to your product template. The section reads
+  product metafields and renders 8 stacked sub-sections in this order:
+
+    1. hero            (custom.hero)
+    2. story           (custom.story)
+    3. features        (custom.features)
+    4. stats           (custom.stats)
+    5. reviews         (custom.reviews)  — animated 3-column wall
+    6. faq             (custom.faq)      — accordion + JSON-LD FAQPage
+    7. cta             (custom.cta)
+    8. interlinks      (custom.interlinks) — collection pills
+
+  Sections render only if their metafield has content — so a product
+  without FAQ (faq metafield empty) simply skips that section.
+
+  The pipeline (Shopify_Pipeline.ipynb) writes all 9 metafields per product
+  in JSON format. Per-product palette (custom.palette) is injected via
+  inline <style>:root{--brand-1:..}</style> from snippets/wanelo-palette.
+
+  Animations: assets/wanelo.js IntersectionObserver toggles `.in` class
+  on `.reveal` and `.mask` elements when they enter viewport.
+{%- endcomment -%}
+
+{{ 'wanelo.css' | asset_url | stylesheet_tag }}
+{% render 'wanelo-palette' %}
+
+<div class="wanelo-page" role="article">
+
+  {% render 'wanelo-hero' %}
+  {% render 'wanelo-story' %}
+  {% render 'wanelo-features' %}
+  {% render 'wanelo-stats' %}
+  {% render 'wanelo-reviews' %}
+  {% render 'wanelo-faq' %}
+  {% render 'wanelo-cta' %}
+  {% render 'wanelo-interlinks' %}
+
+</div>
+
+<script src="{{ 'wanelo.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Wanelo Product Page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders the long-form product description from JSON metafields. Add this section once to your product template. All sections gate on metafield content — empty metafield = section hidden."
+    }
+  ],
+  "presets": [
+    { "name": "Wanelo Product Page" }
+  ]
+}
+{% endschema %}
