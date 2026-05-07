@@ -112,10 +112,21 @@ def test_faq_snippet_emits_faqpage_schema() -> None:
 
 
 def test_reviews_snippet_distributes_across_3_columns() -> None:
-    """Reviews wall splits items into 3 columns by index mod 3 and duplicates
-    each column for seamless infinite scroll."""
+    """Reviews wall splits items into 3 columns by `index | modulo: 3` and
+    duplicates each column for seamless infinite scroll."""
     content = (LIQUID_SNIPPETS_DIR / "wanelo-reviews.liquid").read_text(encoding="utf-8")
-    assert "mod 3" in content, "should distribute by index mod 3"
+    assert "modulo: 3" in content, "should distribute by index | modulo: 3 (Liquid filter, not 'mod' operator)"
     assert "(1..2)" in content or "1..2" in content, (
         "should duplicate each column for infinite-scroll loop"
     )
+
+
+def test_no_snippet_uses_unsupported_mod_operator() -> None:
+    """Liquid has no `mod` operator — must use `| modulo:` filter.
+    Catches regressions where snippets revert to `forloop.index0 mod N`."""
+    import re as _re
+    for path in LIQUID_SNIPPETS_DIR.glob("*.liquid"):
+        content = path.read_text(encoding="utf-8")
+        assert not _re.search(r"\bmod\s+\d", content), (
+            f"{path.name}: uses unsupported `mod N` operator — replace with `| modulo: N`"
+        )

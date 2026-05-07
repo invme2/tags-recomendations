@@ -18,7 +18,8 @@
 
   {%- for chapter in story.chapters -%}
     {%- assign mirror_class = '' -%}
-    {%- if forloop.index0 mod 2 == 1 -%}{%- assign mirror_class = ' mirror' -%}{%- endif -%}
+    {%- assign row_rem = forloop.index0 | modulo: 2 -%}
+    {%- if row_rem == 1 -%}{%- assign mirror_class = ' mirror' -%}{%- endif -%}
     <div class="wanelo-story-row reveal{{ mirror_class }}">
       {%- if chapter.image_url != blank -%}
         <div class="wanelo-story-row__img">

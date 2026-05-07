@@ -28,7 +28,8 @@
           {%- comment -%} render twice for seamless infinite scroll {%- endcomment -%}
           {%- for n in (1..2) -%}
             {%- for item in reviews.items -%}
-              {%- if forloop.index0 mod 3 == col_index -%}
+              {%- assign rev_rem = forloop.index0 | modulo: 3 -%}
+              {%- if rev_rem == col_index -%}
                 <div class="wanelo-reviews__card">
                   {%- if item.stars != blank -%}<div class="wanelo-reviews__stars">{{ item.stars }}</div>{%- endif -%}
                   {%- if item.quote != blank -%}<p class="wanelo-reviews__quote">{{ item.quote }}</p>{%- endif -%}
