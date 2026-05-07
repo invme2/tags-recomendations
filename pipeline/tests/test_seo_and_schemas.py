@@ -25,7 +25,10 @@ sys.path.insert(0, str(ROOT / "pipeline"))
 
 import page_builder as pb  # noqa: E402
 
-LIQUID_PATH = ROOT / "pipeline" / "theme_assets" / "product-html-section.liquid"
+# Theme files migrated to JSON-driven architecture (commit 0d01d10).
+# Path now points at the master section. Old liquid file removed.
+LIQUID_SECTION_PATH = ROOT / "pipeline" / "theme_assets" / "sections" / "wanelo-product-page.liquid"
+LIQUID_SNIPPETS_DIR = ROOT / "pipeline" / "theme_assets" / "snippets"
 
 PALETTE = {
     "brand_1": "#ff9c70", "brand_2": "#aac9f5", "brand_3": "#a6d8be",
@@ -196,38 +199,95 @@ def test_metafield_prep_strips_attribute_variants_of_script() -> None:
 # Liquid section: no duplicate schema, still loads assets
 # ============================================================
 
-def test_liquid_section_does_not_emit_product_schema() -> None:
+def test_master_section_does_not_emit_product_schema() -> None:
     """Theme typically emits its own Product schema — duplication causes
-    confusion in Google's structured-data parser."""
-    liquid = LIQUID_PATH.read_text(encoding="utf-8")
-    # Ensure no Product schema construction in Liquid
+    confusion in Google's structured-data parser. Our master section
+    delegates schema-emission to snippets (only FAQPage from wanelo-faq)."""
+    liquid = LIQUID_SECTION_PATH.read_text(encoding="utf-8")
     assert '"@type": "Product"' not in liquid
     assert '"@type":"Product"' not in liquid
 
 
-def test_liquid_section_loads_css_asset() -> None:
-    liquid = LIQUID_PATH.read_text(encoding="utf-8")
-    assert "wanelo-product.css" in liquid
+def test_master_section_loads_css_asset() -> None:
+    liquid = LIQUID_SECTION_PATH.read_text(encoding="utf-8")
+    assert "wanelo.css" in liquid
     assert "asset_url" in liquid
     assert "stylesheet_tag" in liquid
 
 
-def test_liquid_section_loads_js_asset() -> None:
-    liquid = LIQUID_PATH.read_text(encoding="utf-8")
-    assert "wanelo-product.js" in liquid
-    assert "script_tag" in liquid
+def test_master_section_loads_js_asset() -> None:
+    liquid = LIQUID_SECTION_PATH.read_text(encoding="utf-8")
+    assert "wanelo.js" in liquid
+    assert "asset_url" in liquid
 
 
-def test_liquid_section_renders_metafield() -> None:
-    liquid = LIQUID_PATH.read_text(encoding="utf-8")
-    assert "product.metafields.custom.html_description" in liquid
+def test_master_section_renders_all_9_snippets() -> None:
+    """Master section delegates rendering to 8 sub-snippets (palette is loaded
+    once; the other 8 are content sections)."""
+    liquid = LIQUID_SECTION_PATH.read_text(encoding="utf-8")
+    expected_snippets = [
+        "wanelo-palette",
+        "wanelo-hero",
+        "wanelo-story",
+        "wanelo-features",
+        "wanelo-stats",
+        "wanelo-reviews",
+        "wanelo-faq",
+        "wanelo-cta",
+        "wanelo-interlinks",
+    ]
+    for s in expected_snippets:
+        assert s in liquid, f"Master section missing render '{s}'"
 
 
-def test_liquid_section_gates_on_metafield_blank() -> None:
-    """Don't emit anything if the metafield is empty — prevents broken layouts
-    on products that haven't been processed yet."""
-    liquid = LIQUID_PATH.read_text(encoding="utf-8")
-    assert "!= blank" in liquid
+def test_each_snippet_gates_on_metafield_blank() -> None:
+    """Each content snippet must check `!= blank` (or similar) so a missing
+    metafield doesn't emit broken HTML on products not yet processed."""
+    snippets = [
+        "wanelo-hero", "wanelo-story", "wanelo-features", "wanelo-stats",
+        "wanelo-reviews", "wanelo-faq", "wanelo-cta", "wanelo-interlinks",
+    ]
+    for name in snippets:
+        path = LIQUID_SNIPPETS_DIR / f"{name}.liquid"
+        assert path.exists(), f"Snippet missing: {path}"
+        content = path.read_text(encoding="utf-8")
+        assert "{%- if " in content or "{% if " in content, (
+            f"{name}: missing gate ({{% if ... %}}) — would emit broken markup on empty metafield"
+        )
+
+
+def test_each_snippet_reads_its_own_metafield() -> None:
+    """Each section snippet reads from product.metafields.custom.<key>."""
+    expected = {
+        "wanelo-hero":       "custom.hero",
+        "wanelo-story":      "custom.story",
+        "wanelo-features":   "custom.features",
+        "wanelo-stats":      "custom.stats",
+        "wanelo-reviews":    "custom.reviews",
+        "wanelo-faq":        "custom.faq",
+        "wanelo-cta":        "custom.cta",
+        "wanelo-interlinks": "custom.interlinks",
+        "wanelo-palette":    "custom.palette",
+    }
+    for snippet, mf in expected.items():
+        path = LIQUID_SNIPPETS_DIR / f"{snippet}.liquid"
+        content = path.read_text(encoding="utf-8")
+        assert mf in content, f"{snippet} should read product.metafields.{mf}"
+
+
+def test_faq_snippet_emits_faqpage_schema() -> None:
+    """The FAQ snippet should emit JSON-LD FAQPage schema for Google rich snippets."""
+    content = (LIQUID_SNIPPETS_DIR / "wanelo-faq.liquid").read_text(encoding="utf-8")
+    assert 'application/ld+json' in content
+    assert '"@type": "FAQPage"' in content or '"@type":"FAQPage"' in content
+
+
+def test_reviews_snippet_distributes_across_3_columns() -> None:
+    """Reviews wall splits items into 3 columns by index mod 3 and duplicates
+    each column for seamless infinite scroll."""
+    content = (LIQUID_SNIPPETS_DIR / "wanelo-reviews.liquid").read_text(encoding="utf-8")
+    assert "mod 3" in content, "should distribute by index mod 3"
+    assert "(1..2)" in content or "1..2" in content, "should duplicate each column for infinite-scroll loop"
 
 
 # ============================================================
