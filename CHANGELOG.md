@@ -6,6 +6,25 @@
 
 ## [Unreleased]
 
+### Changed
+- **Pipeline architecture: Image Strategy agent merged into Designer.** Previously
+  three agents ran sequentially (Strategy → Image Strategy → Designer). Now
+  Designer (Sonnet 4.6) emits the page content **and** photo briefs in a single
+  JSON: `gallery_briefs[5]` (Shopify carousel) + `metafield_briefs[3-7]` (inline
+  description images). Step 3.7 generates all images via gpt-image-2 and
+  substitutes `image_id` placeholders with Shopify CDN URLs in the content JSON.
+  Status flow shrinks to: `strategy_done → html_ready → images_generated → done`
+  (was: `strategy_done → image_plan_done → images_generated → html_ready → done`).
+  Saves one Sonnet call per product (~$0.02) and one DB column.
+- Step 5 Shopify push prefers AI-generated `gallery_urls` for `productCreateMedia`,
+  falls back to EPROLO top photos when image gen is disabled.
+- DB schema: added `strategy_json`, `assets_json` columns; removed
+  `image_plan_json` references.
+- New constant `GALLERY_PHOTO_COUNT = 5` (Shopify product carousel).
+- Conflict tests `pipeline/tests/test_pipeline_flow.py` (36 tests) cover status
+  flow, agent removal, designer brief schema, image-gen substitution, gallery
+  upload preference, and pastel-palette / voice cross-cell consistency.
+
 ### Added
 - Каркас моно-репо: директории `taxonomy/`, `pipeline/`, `tools/`, `.github/workflows/`, `docs/`.
 - Memory-файлы: `CLAUDE.md` (конституция), `DECISIONS.md` (ADR-001..005),
