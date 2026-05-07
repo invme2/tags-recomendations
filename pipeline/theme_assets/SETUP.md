@@ -72,10 +72,26 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 
 Если у тебя там была кастомная Liquid-секция со старым кодом (рендеринг `product.metafields.custom.html_description` + JSON-LD) — **удалить её** (нажми трёхточечное меню секции → Remove). Иначе будет дублирование.
 
+## Env-переменные перед запуском (Colab → Secrets)
+
+| Имя                 | Зачем                                                  | Обязательно                |
+| ------------------- | ------------------------------------------------------ | -------------------------- |
+| `ANTHROPIC_API_KEY` | Claude API (vision + strategy + designer)              | да                         |
+| `SHOPIFY_STORE`     | например `wanelo.myshopify.com`                        | да                         |
+| `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET` | Admin API custom app credentials | да                         |
+| `DATAFORSEO_LOGIN` / `DATAFORSEO_PASSWORD`    | SEO keyword research              | да                         |
+| `OPENAI_API_KEY`    | gpt-image-2 для 5 главных фото + inline-картинок       | если `USE_IMAGE_GEN=True` |
+| `GITHUB_TOKEN`      | если репо приватный — нужен для taxonomy fetch         | optional                   |
+
+В Cell 1 ноутбука есть параметры:
+- `USE_IMAGE_GEN = True` — генерить ли через gpt-image-2 (если `False` — берутся фото EPROLO как есть)
+- `IMAGE_GEN_QUALITY = "medium"` — `low` ($0.005-0.006) / `medium` ($0.041-0.053) / `high` ($0.165-0.211) per image
+- `GALLERY_PHOTO_COUNT = 5` — сколько фото в основной карусели Shopify
+
 ## Запустить пайплайн
 
-1. Скачай свежий ноутбук: [Open in Colab](https://colab.research.google.com/github/invme2/tags-recomendations/blob/claude/enrich-shopify-taxonomy-kMPmA/pipeline/Shopify_Pipeline.ipynb)
-2. RESET_DB ✓ → выполни Cell 1 → загрузи CSV/Excel
+1. Открой ноутбук: [Open in Colab](https://colab.research.google.com/github/invme2/tags-recomendations/blob/claude/enrich-shopify-taxonomy-kMPmA/pipeline/Shopify_Pipeline.ipynb)
+2. `RESET_DB ✓` → выполни Cell 1 → загрузи CSV/Excel
 3. Cell 2 — увидишь `Metafield definitions ensured: 9`
 4. Cell 3-5.5 → как обычно
 5. Cell 6 — для каждого товара лог:
@@ -83,27 +99,34 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
    [N/total] Product
      → Scraping...
      → Vision...
+     → Strategy (Opus 4.7)... voice=warm-confidant | idea: Twenty minutes of stalking equals an evening of peace
      → Generating JSON content...
        JSON OK: hero=True story=2 feat=3 stat=4 rev=12 faq=5 | $0.0234
+       Briefs: 5 gallery + 5 metafield
        Tags: 8 valid
+     → Generating 10 images (gpt-image-2/medium)...
+       [1/10] gallery/1: OK $0.041
+       [2/10] gallery/2: OK $0.041
+       ...
+       Total: 10 OK / 0 fail | $0.45
      → Shopify... Created: gid://shopify/...
        Metafields: 9/9 written (8423 chars total)
+       Gallery: 5/5 (AI)
    ```
 
 ## Как это работает
 
 ```
-PIPELINE                                    SHOPIFY                          BROWSER
-─────────                                   ────────                         ─────────
-designer → JSON                            ──→ custom.hero      (json)        ──→ wanelo-hero.liquid
-                                          ──→ custom.story     (json)        ──→ wanelo-story.liquid
-                                          ──→ custom.features  (json)        ──→ wanelo-features.liquid
-                                          ──→ custom.stats     (json)        ──→ wanelo-stats.liquid
-                                          ──→ custom.reviews   (json)        ──→ wanelo-reviews.liquid
-                                          ──→ custom.faq       (json)        ──→ wanelo-faq.liquid
-                                          ──→ custom.cta       (json)        ──→ wanelo-cta.liquid
-                                          ──→ custom.palette   (json)        ──→ wanelo-palette.liquid
-                                          ──→ custom.interlinks(json)        ──→ wanelo-interlinks.liquid
+PIPELINE                                       SHOPIFY                            BROWSER
+─────────                                      ────────                           ─────────
+Strategy (Opus) → Designer (Sonnet) writes:
+  • content JSON (9 sections)                 ──→ 9 custom.* metafields (json)   ──→ 9 wanelo-*.liquid snippets
+  • gallery_briefs[5]   (Shopify carousel)
+  • metafield_briefs[N] (inline photos)
+
+Image gen (gpt-image-2):
+  • generates 5 gallery photos                ──→ Shopify product images          ──→ /products/handle карусель
+  • generates N inline photos                 ──→ url substituted into metafields ──→ внутри long-form sections
 
 CSS framework loads ONCE from theme:  /assets/wanelo.css (~30KB cached)
 JS observer loads ONCE:               /assets/wanelo.js (~400 bytes)
