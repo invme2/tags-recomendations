@@ -1,0 +1,31 @@
+{%- comment -%}
+  HOW-TO snippet — numbered steps for using/setting up the product.
+  Reads product.metafields.custom.how_to JSON:
+    {head: {kicker, h2, desc}, items: [{n: 1, h4, p}]}
+  Designer fills 3-7 steps for: rituals, recipes, electronics setup, hobbies.
+  Skip-if-blank: if items empty, section doesn't render.
+{%- endcomment -%}
+
+{%- assign howto = product.metafields.custom.how_to.value -%}
+{%- if howto and howto.items and howto.items.size > 0 -%}
+<section class="wanelo-section wanelo-howto reveal">
+  {%- if howto.head and howto.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if howto.head.kicker != blank -%}<div class="wanelo-kicker">{{ howto.head.kicker }}</div>{%- endif -%}
+      <h2>{{ howto.head.h2 }}</h2>
+      {%- if howto.head.desc != blank -%}<p class="desc">{{ howto.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ol class="wanelo-howto__list">
+    {%- for step in howto.items -%}
+      <li class="wanelo-howto__step">
+        <span class="wanelo-howto__n">{{ step.n | default: forloop.index }}</span>
+        <div class="wanelo-howto__body">
+          {%- if step.h4 != blank -%}<h4>{{ step.h4 }}</h4>{%- endif -%}
+          {%- if step.p != blank -%}<p>{{ step.p }}</p>{%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+{%- endif -%}

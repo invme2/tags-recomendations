@@ -272,77 +272,115 @@
 .wanelo-page .wanelo-interlinks__link:hover{background:var(--brand-soft);border-color:var(--brand-deep);color:var(--ink)}
 
 /* ============================================================
-   TEMPLATE VARIANTS — 5 visual presets selected per-product by Designer.
-   Picked via product.metafields.custom.palette.value.template ∈ {
-     editorial, minimal, warm, vibrant, luxury
-   }
-   Master section emits <div class="wanelo-page" data-template="...">.
-   Each template overrides typography / density / accents while preserving
-   the same module structure — products stay coherent internally, vary across.
+   HOW-TO — numbered steps (rituals, recipes, setup)
    ============================================================ */
+.wanelo-page .wanelo-howto{padding:64px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-howto__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:24px;counter-reset:howto-counter}
+@media(min-width:760px){.wanelo-page .wanelo-howto__list{grid-template-columns:repeat(2,1fr);gap:32px}}
+.wanelo-page .wanelo-howto__step{display:flex;gap:20px;align-items:flex-start}
+.wanelo-page .wanelo-howto__n{
+  flex:0 0 56px;width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--brand-soft);color:var(--ink);
+  font-size:22px;font-weight:600;font-feature-settings:'tnum';
+}
+.wanelo-page .wanelo-howto__body h4{font-size:18px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+.wanelo-page .wanelo-howto__body p{font-size:15px;line-height:1.6;color:var(--ink-2)}
 
-/* editorial — beauty / wellness / skincare / luxury skincare (DEFAULT)
-   Serif headings, generous gaps, quote-style accents. */
-.wanelo-page[data-template="editorial"] h1,
-.wanelo-page[data-template="editorial"] h2,
-.wanelo-page[data-template="editorial"] h3,
-.wanelo-page[data-template="editorial"] h4{
-  font-family:'Fraunces','Source Serif Pro',Georgia,serif;
-  letter-spacing:-.018em;
-  font-weight:500;
-}
-.wanelo-page[data-template="editorial"] em{font-style:italic;font-weight:inherit}
-.wanelo-page[data-template="editorial"] .wanelo-kicker{font-style:italic;letter-spacing:.05em}
+/* ============================================================
+   SPECS — technical specs table
+   ============================================================ */
+.wanelo-page .wanelo-specs{padding:64px 24px;margin:0 auto;max-width:900px}
+.wanelo-page .wanelo-specs__table{display:grid;grid-template-columns:1fr;gap:0;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.wanelo-page .wanelo-specs__row{display:grid;grid-template-columns:1fr 1.5fr;gap:0;border-bottom:1px solid var(--line);margin:0;padding:0}
+.wanelo-page .wanelo-specs__row:last-child{border-bottom:0}
+.wanelo-page .wanelo-specs__label{padding:16px 20px;font-size:14px;font-weight:500;color:var(--ink-3);background:var(--bg-2);margin:0}
+.wanelo-page .wanelo-specs__value{padding:16px 20px;font-size:15px;color:var(--ink);margin:0;font-feature-settings:'tnum'}
+@media(max-width:560px){.wanelo-page .wanelo-specs__row{grid-template-columns:1fr;gap:0}.wanelo-page .wanelo-specs__label{background:var(--bg-2);padding:12px 16px}.wanelo-page .wanelo-specs__value{padding:12px 16px;border-top:1px solid var(--line)}}
 
-/* minimal — tech / electronics / productivity / gadgets
-   Tight letter-spacing, sharp corners, info-dense. */
-.wanelo-page[data-template="minimal"]{
-  --r-sm:4px;--r-md:6px;--r-lg:8px;--r-xl:10px;
-  --gap-section:80px;--gap-head:40px;
-  letter-spacing:-.022em;
+/* ============================================================
+   WHAT'S INCLUDED — items in the box/bundle
+   ============================================================ */
+.wanelo-page .wanelo-whatsincluded{padding:64px 24px;margin:0 auto;max-width:1000px}
+.wanelo-page .wanelo-whatsincluded__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.wanelo-page .wanelo-whatsincluded__list{grid-template-columns:repeat(2,1fr);gap:20px}}
+@media(min-width:960px){.wanelo-page .wanelo-whatsincluded__list{grid-template-columns:repeat(3,1fr)}}
+.wanelo-page .wanelo-whatsincluded__item{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+  background:var(--brand-soft);border-radius:var(--r-md);
 }
-.wanelo-page[data-template="minimal"] h1,
-.wanelo-page[data-template="minimal"] h2,
-.wanelo-page[data-template="minimal"] h3{font-weight:600;letter-spacing:-.03em}
-.wanelo-page[data-template="minimal"] .wanelo-kicker{font-family:'JetBrains Mono','SF Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
-.wanelo-page[data-template="minimal"] .wanelo-stats__cell{border:1px solid var(--line);border-radius:6px}
+.wanelo-page .wanelo-whatsincluded__glyph{font-size:22px;flex:0 0 auto}
+.wanelo-page .wanelo-whatsincluded__body{display:flex;flex-direction:column;gap:2px;flex:1 1 auto}
+.wanelo-page .wanelo-whatsincluded__name{font-size:15px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-whatsincluded__qty{font-size:13px;font-weight:500;color:var(--ink-3);font-feature-settings:'tnum'}
+.wanelo-page .wanelo-whatsincluded__note{font-size:13px;color:var(--ink-3)}
 
-/* warm — home / kitchen / lifestyle / pet / baby
-   Rounded everything, friendly weight, breathable. */
-.wanelo-page[data-template="warm"]{
-  --r-sm:18px;--r-md:28px;--r-lg:40px;--r-xl:56px;
-  --gap-section:100px;--gap-head:56px;
-  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+/* ============================================================
+   INGREDIENTS — chips/badges of ingredient list
+   ============================================================ */
+.wanelo-page .wanelo-ingredients{padding:64px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-ingredients__list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.wanelo-page .wanelo-ingredients__chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:999px;
+  background:var(--brand-soft);border:1px solid var(--line);
 }
-.wanelo-page[data-template="warm"] p{line-height:1.7}
-.wanelo-page[data-template="warm"] h1,
-.wanelo-page[data-template="warm"] h2{font-weight:600;letter-spacing:-.015em}
-.wanelo-page[data-template="warm"] .wanelo-features__card,
-.wanelo-page[data-template="warm"] .wanelo-stats__cell{border-radius:24px}
+.wanelo-page .wanelo-ingredients__badge{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-deep);padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.55)}
+.wanelo-page .wanelo-ingredients__name{font-size:14px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-ingredients__role{font-size:13px;color:var(--ink-3);font-style:italic}
 
-/* vibrant — sport / fitness / kids / energy / outdoor
-   Bold weight, faster motion, high contrast. */
-.wanelo-page[data-template="vibrant"]{
-  --gap-section:90px;
-  font-family:'Manrope','Inter',sans-serif;
+/* ============================================================
+   TIMELINE — before/after milestones
+   ============================================================ */
+.wanelo-page .wanelo-timeline{padding:64px 24px;margin:0 auto;max-width:900px}
+.wanelo-page .wanelo-timeline__list{list-style:none;padding:0;margin:0;position:relative}
+.wanelo-page .wanelo-timeline__list::before{content:'';position:absolute;left:80px;top:8px;bottom:8px;width:2px;background:var(--line)}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__list::before{left:24px}}
+.wanelo-page .wanelo-timeline__step{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:flex-start;padding:16px 0;position:relative}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__step{grid-template-columns:64px 1fr;gap:16px}}
+.wanelo-page .wanelo-timeline__when{
+  font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--brand-deep);padding-top:4px;
 }
-.wanelo-page[data-template="vibrant"] h1,
-.wanelo-page[data-template="vibrant"] h2{font-weight:800;letter-spacing:-.03em}
-.wanelo-page[data-template="vibrant"] .reveal{transition-duration:.6s}
-.wanelo-page[data-template="vibrant"] .wanelo-cta__btn,
-.wanelo-page[data-template="vibrant"] .button{font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.wanelo-page .wanelo-timeline__body{padding-left:16px;border-left:none;position:relative}
+.wanelo-page .wanelo-timeline__body::before{content:'';position:absolute;left:-24px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--brand-1);box-shadow:0 0 0 4px var(--bg)}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__body::before{left:-32px}}
+.wanelo-page .wanelo-timeline__body h4{font-size:18px;font-weight:600;margin-bottom:4px;color:var(--ink)}
+.wanelo-page .wanelo-timeline__body p{font-size:15px;line-height:1.6;color:var(--ink-2)}
 
-/* luxury — premium / jewelry / fragrance / designer / collectibles
-   Spaced caps, slow reveals, refined serifs. */
-.wanelo-page[data-template="luxury"]{
-  --gap-section:140px;--gap-head:80px;
-  font-family:'Cormorant Garamond','Playfair Display',Georgia,serif;
-  letter-spacing:0;
+/* ============================================================
+   TRUST — certifications + press mentions
+   ============================================================ */
+.wanelo-page .wanelo-trust{padding:64px 24px;margin:0 auto;max-width:1100px;text-align:center}
+.wanelo-page .wanelo-trust__certs{list-style:none;padding:0;margin:0 0 32px;display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.wanelo-page .wanelo-trust__cert{
+  display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  padding:14px 22px;border-radius:var(--r-md);
+  background:var(--bg-2);border:1px solid var(--line);
+  min-width:140px;
 }
-.wanelo-page[data-template="luxury"] h1,
-.wanelo-page[data-template="luxury"] h2{
-  font-family:'Playfair Display','DM Serif Display',Georgia,serif;
-  font-weight:400;letter-spacing:-.005em;
-}
-.wanelo-page[data-template="luxury"] .wanelo-kicker{letter-spacing:.32em;text-transform:uppercase;font-size:11px}
-.wanelo-page[data-template="luxury"] .reveal{transition-duration:1.4s}
+.wanelo-page .wanelo-trust__label{font-size:14px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-trust__sub{font-size:12px;color:var(--ink-3)}
+.wanelo-page .wanelo-trust__press{margin-top:32px;padding-top:32px;border-top:1px solid var(--line)}
+.wanelo-page .wanelo-trust__press-label{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.wanelo-page .wanelo-trust__press-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:center}
+.wanelo-page .wanelo-trust__press-item{font-size:15px;font-weight:500;color:var(--ink-2);font-style:italic}
+.wanelo-page .wanelo-trust__press-item span{font-size:13px;color:var(--ink-4);font-style:normal}
+
+/* ============================================================
+   COMPARE — vs alternatives matrix
+   ============================================================ */
+.wanelo-page .wanelo-compare{padding:64px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-compare__wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--line)}
+.wanelo-page .wanelo-compare__table{width:100%;border-collapse:collapse;font-size:14px}
+.wanelo-page .wanelo-compare__table th,
+.wanelo-page .wanelo-compare__table td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.wanelo-page .wanelo-compare__table th:last-child,
+.wanelo-page .wanelo-compare__table td:last-child{border-right:0}
+.wanelo-page .wanelo-compare__table tbody tr:last-child td{border-bottom:0}
+.wanelo-page .wanelo-compare__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:160px}
+.wanelo-page .wanelo-compare__col{font-weight:600;background:var(--bg-2);position:relative}
+.wanelo-page .wanelo-compare__col--badge{background:var(--brand-soft)}
+.wanelo-page .wanelo-compare__col-name{display:block;font-size:14px;color:var(--ink)}
+.wanelo-page .wanelo-compare__col-badge{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--brand-1);color:var(--ink)}
+.wanelo-page .wanelo-compare__cell{font-size:14px;color:var(--ink-2);font-weight:500}

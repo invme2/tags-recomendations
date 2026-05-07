@@ -1,0 +1,31 @@
+{%- comment -%}
+  TIMELINE snippet — before/after milestones over time.
+  Reads product.metafields.custom.timeline JSON:
+    {head: {kicker, h2, desc}, items: [{when, h4, p}]}
+  Designer fills 3-5 milestones for: skincare results (day 1/14/30),
+  fitness journey, ritual progression, supplement cycles.
+{%- endcomment -%}
+
+{%- assign tl = product.metafields.custom.timeline.value -%}
+{%- if tl and tl.items and tl.items.size > 0 -%}
+<section class="wanelo-section wanelo-timeline reveal">
+  {%- if tl.head and tl.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if tl.head.kicker != blank -%}<div class="wanelo-kicker">{{ tl.head.kicker }}</div>{%- endif -%}
+      <h2>{{ tl.head.h2 }}</h2>
+      {%- if tl.head.desc != blank -%}<p class="desc">{{ tl.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ol class="wanelo-timeline__list">
+    {%- for item in tl.items -%}
+      <li class="wanelo-timeline__step">
+        {%- if item.when != blank -%}<span class="wanelo-timeline__when">{{ item.when }}</span>{%- endif -%}
+        <div class="wanelo-timeline__body">
+          {%- if item.h4 != blank -%}<h4>{{ item.h4 }}</h4>{%- endif -%}
+          {%- if item.p != blank -%}<p>{{ item.p }}</p>{%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+{%- endif -%}

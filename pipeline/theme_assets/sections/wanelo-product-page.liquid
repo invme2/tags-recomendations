@@ -28,21 +28,19 @@
 {{ 'wanelo.css' | asset_url | stylesheet_tag }}
 {% render 'wanelo-palette' %}
 
-{%- comment -%}
-  Per-product visual template — Designer picks one of 5 ∈
-  { editorial, minimal, warm, vibrant, luxury } based on product category.
-  Drives typography / density / accents in wanelo.css under
-  .wanelo-page[data-template="..."]. Falls back to editorial.
-{%- endcomment -%}
-{%- assign _palette = product.metafields.custom.palette.value -%}
-{%- assign _template = _palette.template | default: 'editorial' -%}
-
-<div class="wanelo-page" data-template="{{ _template }}" role="article">
+<div class="wanelo-page" role="article">
 
   {% render 'wanelo-hero' %}
   {% render 'wanelo-story' %}
   {% render 'wanelo-features' %}
+  {% render 'wanelo-ingredients' %}
+  {% render 'wanelo-how-to' %}
+  {% render 'wanelo-timeline' %}
   {% render 'wanelo-stats' %}
+  {% render 'wanelo-specs' %}
+  {% render 'wanelo-whats-included' %}
+  {% render 'wanelo-compare' %}
+  {% render 'wanelo-trust' %}
   {% render 'wanelo-reviews' %}
   {% render 'wanelo-faq' %}
   {% render 'wanelo-cta' %}

@@ -1,0 +1,30 @@
+{%- comment -%}
+  SPECS snippet — technical specifications table.
+  Reads product.metafields.custom.specs JSON:
+    {head: {kicker, h2, desc}, items: [{label, value}]}
+  Designer fills 6-12 spec rows for: electronics, kitchen appliances,
+  jewelry materials, sports gear dimensions.
+{%- endcomment -%}
+
+{%- assign specs = product.metafields.custom.specs.value -%}
+{%- if specs and specs.items and specs.items.size > 0 -%}
+<section class="wanelo-section wanelo-specs reveal">
+  {%- if specs.head and specs.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if specs.head.kicker != blank -%}<div class="wanelo-kicker">{{ specs.head.kicker }}</div>{%- endif -%}
+      <h2>{{ specs.head.h2 }}</h2>
+      {%- if specs.head.desc != blank -%}<p class="desc">{{ specs.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <dl class="wanelo-specs__table">
+    {%- for row in specs.items -%}
+      {%- if row.label != blank or row.value != blank -%}
+        <div class="wanelo-specs__row">
+          <dt class="wanelo-specs__label">{{ row.label }}</dt>
+          <dd class="wanelo-specs__value">{{ row.value }}</dd>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </dl>
+</section>
+{%- endif -%}
