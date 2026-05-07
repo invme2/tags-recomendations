@@ -72,17 +72,16 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 
 Если у тебя там была кастомная Liquid-секция со старым кодом (рендеринг `product.metafields.custom.html_description` + JSON-LD) — **удалить её** (нажми трёхточечное меню секции → Remove). Иначе будет дублирование.
 
-## ⚠ Перед прогоном — пополни 3 сервиса
+## ⚠ Перед прогоном — пополни 2 сервиса
 
-Anthropic, OpenAI, DataForSEO — все три должны быть с балансом. Подробности и расход на товар в [`pipeline/BILLING.md`](../BILLING.md):
+Anthropic + DataForSEO — оба должны быть с балансом, иначе прогон встанет посередине.
 
 | Сервис | Dashboard |
 |---|---|
 | Anthropic | https://console.anthropic.com/settings/billing |
-| OpenAI | https://platform.openai.com/settings/organization/billing/overview |
 | DataForSEO | https://app.dataforseo.com/billing |
 
-Если хоть один в нуле — прогон встанет посередине. Расход на 1 товар при `IMAGE_GEN_QUALITY="medium"`: ~$0.75 (Anthropic ~$0.25 + OpenAI ~$0.50) + ~$3.75 на батч от DataForSEO.
+Расход: ~$0.25 на товар (Anthropic vision + strategy + designer) + ~$3.75 на батч (DataForSEO keyword research, не масштабируется на товар).
 
 ## Env-переменные перед запуском (Colab → Secrets)
 
@@ -92,13 +91,8 @@ Anthropic, OpenAI, DataForSEO — все три должны быть с бал�
 | `SHOPIFY_STORE`     | например `wanelo.myshopify.com`                        | да                         |
 | `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET` | Admin API custom app credentials | да                         |
 | `DATAFORSEO_LOGIN` / `DATAFORSEO_PASSWORD`    | SEO keyword research              | да                         |
-| `OPENAI_API_KEY`    | gpt-image-2 для 5 главных фото + inline-картинок       | если `USE_IMAGE_GEN=True` |
 | `GITHUB_TOKEN`      | если репо приватный — нужен для taxonomy fetch         | optional                   |
 
-В Cell 1 ноутбука есть параметры:
-- `USE_IMAGE_GEN = True` — генерить ли через gpt-image-2 (если `False` — берутся фото EPROLO как есть)
-- `IMAGE_GEN_QUALITY = "medium"` — `low` ($0.005-0.006) / `medium` ($0.041-0.053) / `high` ($0.165-0.211) per image
-- `GALLERY_PHOTO_COUNT = 5` — сколько фото в основной карусели Shopify
 
 ## Запустить пайплайн
 
@@ -114,16 +108,10 @@ Anthropic, OpenAI, DataForSEO — все три должны быть с бал�
      → Strategy (Opus 4.7)... voice=warm-confidant | idea: Twenty minutes of stalking equals an evening of peace
      → Generating JSON content...
        JSON OK: hero=True story=2 feat=3 stat=4 rev=12 faq=5 | $0.0234
-       Briefs: 5 gallery + 5 metafield
        Tags: 8 valid
-     → Generating 10 images (gpt-image-2/medium)...
-       [1/10] gallery/1: OK $0.041
-       [2/10] gallery/2: OK $0.041
-       ...
-       Total: 10 OK / 0 fail | $0.45
      → Shopify... Created: gid://shopify/...
        Metafields: 9/9 written (8423 chars total)
-       Gallery: 5/5 (AI)
+       Gallery: N/N (EPROLO)
    ```
 
 ## Как это работает
@@ -131,14 +119,12 @@ Anthropic, OpenAI, DataForSEO — все три должны быть с бал�
 ```
 PIPELINE                                       SHOPIFY                            BROWSER
 ─────────                                      ────────                           ─────────
-Strategy (Opus) → Designer (Sonnet) writes:
-  • content JSON (9 sections)                 ──→ 9 custom.* metafields (json)   ──→ 9 wanelo-*.liquid snippets
-  • gallery_briefs[5]   (Shopify carousel)
-  • metafield_briefs[N] (inline photos)
-
-Image gen (gpt-image-2):
-  • generates 5 gallery photos                ──→ Shopify product images          ──→ /products/handle карусель
-  • generates N inline photos                 ──→ url substituted into metafields ──→ внутри long-form sections
+Strategy (Opus 4.7) — positioning per product
+        ↓
+Designer (Sonnet 4.6) — writes 9 content sections, picks EPROLO image_url's
+        ↓
+9 custom.* JSON metafields                    ──→ Shopify Admin Custom Data       ──→ 9 wanelo-*.liquid snippets
+EPROLO photos (top images)                    ──→ productCreateMedia (carousel)   ──→ /products/handle карусель
 
 CSS framework loads ONCE from theme:  /assets/wanelo.css (~30KB cached)
 JS observer loads ONCE:               /assets/wanelo.js (~400 bytes)

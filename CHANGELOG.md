@@ -7,6 +7,24 @@
 ## [Unreleased]
 
 ### Removed
+- **gpt-image-2 image generation cut entirely.** User decision after API style
+  inconsistency across briefs (single-prompt isolation in `images.edit` calls
+  cannot match ChatGPT UI's threaded conversation memory). Removed:
+    - Cell 1: `OPENAI_API_KEY`, `USE_IMAGE_GEN`, `MODEL_IMAGE_GEN`,
+      `IMAGE_GEN_QUALITY`, `GALLERY_PHOTO_COUNT` constants + OpenAI billing line
+    - Cell 2: openai_client init block
+    - Cell 6: entire STEP 3.7 (image gen + URL substitution), `_assets_initial`
+      persistence, `gallery_briefs`/`metafield_briefs`/`visual_style` schema
+      fields, `image_id` placeholder system
+    - DB: `images_generated` status (flow shrinks to
+      `strategy_done → html_ready → done`); `assets_json` column kept harmless
+    - Diagnostic: `pipeline/tools/test_openai_image.py`
+    - Docs: `pipeline/BILLING.md` deleted; SETUP.md trimmed to Anthropic +
+      DataForSEO only
+  Designer now picks `image_url` directly from EPROLO source list (same as
+  pre-image-gen architecture). Step 5 attaches EPROLO top photos to product
+  carousel via `shopify_attach_media`.
+
 - **Dead code purge** (~50KB / 21 functions / 1 cell). Notebook shrank from
   18 cells / 9 code cells / 249K chars → 17 cells / 8 code cells / 200K chars.
   Removed:
