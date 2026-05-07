@@ -72,6 +72,18 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 
 Если у тебя там была кастомная Liquid-секция со старым кодом (рендеринг `product.metafields.custom.html_description` + JSON-LD) — **удалить её** (нажми трёхточечное меню секции → Remove). Иначе будет дублирование.
 
+## ⚠ Перед прогоном — пополни 3 сервиса
+
+Anthropic, OpenAI, DataForSEO — все три должны быть с балансом. Подробности и расход на товар в [`pipeline/BILLING.md`](../BILLING.md):
+
+| Сервис | Dashboard |
+|---|---|
+| Anthropic | https://console.anthropic.com/settings/billing |
+| OpenAI | https://platform.openai.com/settings/organization/billing/overview |
+| DataForSEO | https://app.dataforseo.com/billing |
+
+Если хоть один в нуле — прогон встанет посередине. Расход на 1 товар при `IMAGE_GEN_QUALITY="medium"`: ~$0.75 (Anthropic ~$0.25 + OpenAI ~$0.50) + ~$3.75 на батч от DataForSEO.
+
 ## Env-переменные перед запуском (Colab → Secrets)
 
 | Имя                 | Зачем                                                  | Обязательно                |
