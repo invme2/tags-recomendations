@@ -1,11 +1,8 @@
 /* WANELO Product Page Framework (merged)
- * Regenerated: 2026-05-07T08:59:47
- * Section 1: BASE_CSS — modular module styles (.hero1/.hero2/.m13...m57)
- * Section 2: WA_CSS_FRAMEWORK — composable helpers (.wa-grid/.wa-benefit/etc)
- * Per-product palette tokens come inline via <style>:root{...}</style>.
+ * Regenerated: 2026-05-07T09:31:22
  */
 
-/* === SECTION 1 — BASE_CSS (modular) === */
+/* === SECTION 1: BASE_CSS (modular) === */
 
   /* ============================================================ */
   /* ====================== THEME TOKENS ======================= */
@@ -44,7 +41,7 @@
   }
   @keyframes hueShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   .hero h1{
-    margin-top:14px;font-size:clamp(48px,8vw,96px);font-weight:600;line-height:.96;letter-spacing:-.05em;
+    margin-top:14px;font-size:clamp(56px,9vw,128px);font-weight:600;line-height:.94;letter-spacing:-.05em;
     max-width:1200px;
   }
   .hero h1 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
@@ -95,7 +92,7 @@
   .module-head{max-width:1200px;margin:0 auto var(--gap-head);text-align:center}
   .module-head .ix{font-size:17px;font-weight:600;color:var(--ink-2)}
   .module-head .ix span{color:var(--ink-4)}
-  .module-head h2{margin-top:8px;font-size:clamp(48px,7vw,96px);font-weight:600;letter-spacing:-.04em;line-height:1}
+  .module-head h2{margin-top:18px;font-size:clamp(48px,7vw,96px);font-weight:600;letter-spacing:-.04em;line-height:1}
   .module-head h2 em{font-family:'Fraunces',serif;font-style:italic;font-weight:300}
   .module-head .desc{margin:32px auto 0;font-size:21px;line-height:1.45;color:var(--ink-2);max-width:680px;letter-spacing:-.01em}
 
@@ -181,7 +178,7 @@
   .m12 .copy .stat .v{font-size:48px;font-weight:600;letter-spacing:-.025em;line-height:1}
   .m12 .copy .stat .v em{font-family:'Fraunces',serif;font-style:italic;font-weight:400;color:var(--ink-3)}
   .m12 .copy .stat .l{margin-top:6px;font-size:13px;color:var(--ink-3);letter-spacing:.06em}
-  .m12 .photo{position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:#f5f5f7}
+  .m12 .photo{position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;}
   .m12 .photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
   .m12.in .photo img{transform:scale(1)}
   @media(max-width:900px){.m12 .row{grid-template-columns:1fr;gap:48px}}
@@ -241,7 +238,7 @@
   /* ===================== M2 — STORY ===================== */
   .m2-bg{background:linear-gradient(180deg,#fff,#fafafa)}
   .story-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;border-radius:0;overflow:visible;background:transparent;min-height:auto;box-shadow:none;align-items:center}
-  .story-row .img{position:relative;background:var(--bg-2);overflow:hidden}
+  .story-row .img{position:relative;overflow:hidden}
   .story-row .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
   .story-row.in .img img{transform:scale(1)}
   .story-row .copy{padding:80px 64px;display:flex;flex-direction:column;justify-content:center;gap:24px}
@@ -303,7 +300,7 @@
   /* ============================================================ */
   /* ============== HERO ALT — 5 hero variations ================= */
   /* ============================================================ */
-  .hero-alt{position:relative;min-height:60vh;display:flex;align-items:center;overflow:hidden;border-radius:0;margin:0}
+  .hero-alt{position:relative;min-height:80vh;display:flex;align-items:center;overflow:hidden;border-radius:32px;margin:24px}
 
   /* H.1 — Editorial split: huge serif + product photo */
   .hero1{background:transparent;padding:64px 24px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center;border-radius:0}
@@ -315,7 +312,7 @@
   .hero1 .ctas a{padding:14px 22px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:-.005em;text-decoration:none}
   .hero1 .ctas .p{background:var(--ink);color:#fff}
   .hero1 .ctas .s{color:var(--ink);border:1px solid var(--line)}
-  .hero1 .photo{aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:#1a1a1f}
+  .hero1 .photo{aspect-ratio:4/5;border-radius:24px;overflow:hidden;}
   .hero1 .photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
   .hero1.in .photo img{transform:scale(1)}
   @media(max-width:900px){.hero1{grid-template-columns:1fr;padding:48px 28px}}
@@ -423,7 +420,7 @@
   /* ----- M1.8 — Product on plinth with tape-measure stats ----- */
   .m18{padding:80px 24px;background:transparent;border-radius:0;margin:0;text-align:center;position:relative;overflow:visible}
   .m18 .pedestal{position:relative;display:inline-block;margin:0 auto}
-  .m18 .photo{width:280px;height:380px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(29,29,31,.18);position:relative;z-index:2}
+  .m18 .photo{width:280px;height:380px;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(29,29,31,.18);position:relative;z-index:2}
   .m18 .photo img{width:100%;height:100%;object-fit:cover}
   .m18 .plinth{position:absolute;left:50%;bottom:-32px;transform:translateX(-50%);width:380px;height:80px;background:radial-gradient(ellipse at center,rgba(29,29,31,.16),transparent 70%);z-index:1}
   .m18 h3{margin-top:64px;font-size:clamp(40px,4.6vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
@@ -730,7 +727,7 @@
   .m26 .polaroids{position:relative;height:520px;margin-top:48px}
   .m26 .pol{position:absolute;background:#fff;padding:14px 14px 56px;border-radius:6px;box-shadow:0 30px 60px rgba(29,29,31,.15);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
   .m26 .pol:hover{z-index:5;transform:rotate(0deg) scale(1.06) !important}
-  .m26 .pol .img{width:240px;height:280px;background:#f5f5f7;border-radius:2px;overflow:hidden}
+  .m26 .pol .img{width:240px;height:280px;border-radius:2px;overflow:hidden}
   .m26 .pol .img img{width:100%;height:100%;object-fit:cover}
   .m26 .pol .cap{margin-top:14px;font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--ink)}
   .m26 .pol.p1{top:20px;left:18%;transform:rotate(-6deg)}
@@ -788,7 +785,7 @@
   .m31-scrollhint .ar{width:1px;height:24px;background:linear-gradient(180deg,var(--ink-4),transparent);animation:bobble 2s ease-in-out infinite}
 
   /* M3.2 — feature cards with peach gradient */
-  .m32{padding:80px 24px;background:var(--grad-peach);border-radius:16px;margin:0;color:#1a1411}
+  .m32{padding:120px 24px;background:var(--grad-peach);border-radius:32px;margin:0 24px;color:var(--ink)}
   .m32 .head{text-align:center;margin-bottom:80px;color:var(--ink)}
   .m32 .head .ix{font-size:17px;font-weight:600;color:#7a4530}
   .m32 .head h3{margin-top:8px;font-size:clamp(48px,6.5vw,84px);font-weight:600;letter-spacing:-.035em;line-height:1}
@@ -944,7 +941,7 @@
   .m5-bg{background:#f4f6f8}
 
   /* M5.1 — Glass cards on gradient */
-  .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,var(--brand-soft) 0%,var(--brand-1) 50%,var(--brand-2) 100%);border-radius:16px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
+  .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,var(--brand-soft) 0%,var(--brand-2) 50%,var(--brand-3) 100%);border-radius:32px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
   .m51-stage::before{content:"";position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,.6),transparent);top:-200px;right:-200px;border-radius:50%}
   .m51-stage::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.4),transparent);bottom:-100px;left:-100px;border-radius:50%}
   .m51-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto;position:relative;z-index:1}
@@ -996,7 +993,7 @@
 
   /* M5.5 — Stat-driven testimonial */
   .m55{display:grid;grid-template-columns:1fr 1fr;gap:0;background:transparent;border-radius:0;overflow:visible;max-width:1280px;margin:0 auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:auto}
-  .m55 .photo{position:relative;background:#f4f6f8;overflow:hidden}
+  .m55 .photo{position:relative;overflow:hidden}
   .m55 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .m55 .photo .badge{position:absolute;top:24px;left:24px;background:rgba(255,255,255,.95);padding:10px 16px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
   .m55 .copy{padding:64px 56px;display:flex;flex-direction:column;gap:24px;justify-content:center}
@@ -1025,7 +1022,7 @@
   }
 
 
-/* === SECTION 2 — WA_CSS_FRAMEWORK (helpers) === */
+/* === SECTION 2: WA_CSS_FRAMEWORK === */
 /* ═══ WANELO v9 — inherits theme typography ═══ */
 .wa-page{max-width:100%;margin:0 auto;padding:0}
 .wa-page img{max-width:720px;height:auto;border-radius:12px;display:block;margin:1.5rem auto}

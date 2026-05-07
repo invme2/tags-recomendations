@@ -146,17 +146,27 @@ def test_assemble_unknown_output_format_raises() -> None:
 
 
 def test_assemble_six_module_layout() -> None:
-    layout = ["hero1", "m16", "m21", "m32", "m41", "m51"]
+    layout = ["hero1", "m13", "m21", "m32", "m41", "m51"]
     slot_values = [_slots_for(m) for m in layout]
     out = pb.assemble_page(layout, slot_values, PALETTE)
     for m in layout:
         # Each module's CSS class must appear in output
         if m == "hero1":   assert "hero-alt hero1" in out
-        elif m == "m16":   assert 'class="m16 reveal"' in out
+        elif m == "m13":   assert 'class="m13 reveal"' in out
         elif m == "m21":   assert "story-row reveal" in out
         elif m == "m32":   assert 'class="m32 reveal"' in out
         elif m == "m41":   assert 'class="m41 reveal"' in out
         elif m == "m51":   assert "m51-stage reveal" in out
+
+
+def test_no_dark_modules_in_catalog() -> None:
+    """User requirement: pastel-only design, no dark cinematic backgrounds.
+    hero2 (#0a0a0c bg) and m16 (#0e0e10 bg) must not be selectable."""
+    assert "hero2" not in pb.MODULE_CATALOG
+    assert "m16" not in pb.MODULE_CATALOG
+    # Heroes available: only hero1
+    heroes = [m for m, spec in pb.MODULE_CATALOG.items() if spec["kind"] == "hero"]
+    assert heroes == ["hero1"]
 
 
 def test_assemble_repeated_modules_allowed() -> None:

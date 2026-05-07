@@ -99,16 +99,14 @@ def test_a_walink_preserved() -> None:
     assert 'href="/collections/yoga-mats"' in html
 
 
-def test_badge_html_preserved() -> None:
-    """BADGES_HTML slot is supposed to contain <span class="badge">…</span>
-    pre-rendered HTML — those must pass through."""
-    badges = '<span class="badge solid">630nm</span><span class="badge">USB-C</span>'
-    html = pb.render_module(
-        "m16",
-        {"KICKER": "K", "H3": "H", "P": "P",
-         "IMG_URL": "u", "IMG_ALT": "a", "BADGES_HTML": badges})
+def test_badge_html_preserved_via_render_badges() -> None:
+    """render_badges helper produces <span class="badge solid">N</span>
+    pre-rendered HTML for use inside slots that accept HTML."""
+    html = pb.render_badges(["630nm", "USB-C", "30g"], solid_first=2)
     assert 'class="badge solid"' in html
     assert "630nm" in html
+    assert html.count('class="badge solid"') == 2
+    assert html.count('class="badge"') == 1  # remaining
 
 
 # ============================================================
@@ -263,7 +261,7 @@ def test_assembled_page_no_duplicate_collections_section_with_modular() -> None:
 # Image loading optimizations (Core Web Vitals)
 # ============================================================
 
-@pytest.mark.parametrize("hero_id", ["hero1", "hero2"])
+@pytest.mark.parametrize("hero_id", ["hero1"])
 def test_hero_image_eager_with_fetchpriority(hero_id: str) -> None:
     """Hero is the LCP element on most product pages — must load with high
     priority so Chrome doesn't deprioritize it behind below-fold assets."""
@@ -273,7 +271,7 @@ def test_hero_image_eager_with_fetchpriority(hero_id: str) -> None:
     assert 'decoding="async"' in html, f"{hero_id} hero <img> should be decoding=async"
 
 
-@pytest.mark.parametrize("body_id", ["m16", "m21", "m22"])
+@pytest.mark.parametrize("body_id", ["m21", "m22"])
 def test_below_fold_images_lazy_loaded(body_id: str) -> None:
     """Below-the-fold images get loading=lazy so they don't block initial paint."""
     html = pb._MODULE_HTML[body_id]
