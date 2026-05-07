@@ -1,9 +1,18 @@
-/* WANELO Product Page Framework — modular system
- * Source: pipeline/page_builder.py BASE_CSS (regenerated 2026-05-06T20:21:20)
- * Per-product palette comes from inline <style>:root{...}</style> in metafield.
- * Module backgrounds are mostly transparent — theme bg shows through.
+/* WANELO Product Page Framework (merged)
+ * Regenerated: 2026-05-07T08:07:44
+ * Section 1: BASE_CSS — modular module styles (.hero1/.hero2/.m13...m57)
+ *            from pipeline/page_builder.py — used as design reference for the
+ *            free-form writer + as fallback styles when writer composes own HTML.
+ * Section 2: WA_CSS_FRAMEWORK — composable helpers (.wa-grid/.wa-benefit/
+ *            .wa-step/.wa-faq/.wa-cta/.wa-card/.wa-link/etc.) — used freely
+ *            by writer alongside modular classes.
+ * Per-product palette tokens come inline via <style>:root{...}</style> in
+ * each product's metafield.
  */
 
+/* ============================================================ */
+/* ============= SECTION 1 — BASE_CSS (modular) =============== */
+/* ============================================================ */
 
   /* ============================================================ */
   /* ====================== THEME TOKENS ======================= */
@@ -1020,3 +1029,89 @@
     .module-head h2{font-size:48px}
     .story-row .copy{padding:48px 24px}
   }
+
+
+/* ============================================================ */
+/* ========== SECTION 2 — WA_CSS_FRAMEWORK (helpers) ========== */
+/* ============================================================ */
+/* ═══ WANELO v9 — inherits theme typography ═══ */
+.wa-page{max-width:100%;margin:0 auto;padding:0}
+.wa-page img{max-width:720px;height:auto;border-radius:12px;display:block;margin:1.5rem auto}
+.wa-page h2{font-size:1.8em;margin:2rem 0 0.75rem}
+.wa-page h3{font-size:1.4em;margin:1.5rem 0 0.75rem}
+
+/* Grid */
+.wa-grid{display:grid;gap:1.5rem}
+.wa-grid-2{grid-template-columns:repeat(2,1fr)}
+.wa-grid-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:640px){.wa-grid-2,.wa-grid-3{grid-template-columns:1fr}}
+
+/* Section */
+.wa-section{margin:2.5rem 0;padding:0}
+.wa-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.wa-highlight{border-radius:12px;padding:1.5rem;background:#f9fafb}
+
+/* Benefits */
+.wa-benefit{display:flex;gap:1rem;align-items:flex-start;padding:1rem 0}
+.wa-benefit-icon{font-size:1.5rem;flex-shrink:0;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#f3f4f6}
+.wa-benefit h4{margin:0 0 0.25rem}
+.wa-benefit p{margin:0}
+
+/* Steps */
+.wa-steps{counter-reset:step}
+.wa-step{counter-increment:step;padding:1.25rem 1.25rem 1.25rem 3.5rem;position:relative;border-left:2px solid #e5e7eb;margin-left:1rem}
+.wa-step::before{content:counter(step);position:absolute;left:-1rem;top:1.25rem;width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9375rem;color:#fff}
+.wa-step:last-child{border-left-color:transparent}
+.wa-step h4{margin:0 0 0.25rem}
+.wa-step p{margin:0}
+
+/* Reviews */
+.wa-review{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin:0.75rem 0}
+.wa-review-stars{color:#f59e0b;font-size:1rem;letter-spacing:1px}
+.wa-review-meta{font-size:0.9em;color:#9ca3af;margin-top:0.5rem}
+
+/* FAQ */
+.wa-faq{margin:0.5rem 0}
+.wa-faq summary{font-weight:600;cursor:pointer;padding:1rem 0;border-bottom:1px solid #e5e7eb;list-style:none}
+.wa-faq summary::-webkit-details-marker{display:none}
+.wa-faq summary::after{content:'+';float:right;font-weight:400;color:#9ca3af}
+.wa-faq[open] summary::after{content:'-'}
+.wa-faq .wa-faq-body{padding:1rem 0}
+
+/* CTA */
+.wa-cta{text-align:center;padding:2.5rem 1.5rem;border-radius:12px;margin:2rem 0}
+
+/* Collections */
+.wa-collections{padding:1.5rem 0;border-top:1px solid #e5e7eb;margin-top:2rem}
+.wa-collections-grid{display:flex;flex-wrap:wrap;gap:0.5rem}
+.wa-collections-grid a{padding:0.5rem 1rem;border-radius:999px;border:1px solid #e5e7eb;text-decoration:none;color:inherit;transition:all 0.2s}
+.wa-collections-grid a:hover{border-color:#999}
+
+/* Links */
+.wa-page a.wa-link{text-decoration:underline;text-decoration-color:#d1d5db;text-underline-offset:2px;color:inherit}
+.wa-page a.wa-link:hover{text-decoration-color:currentColor}
+
+/* Specs table */
+.wa-specs{width:100%;border-collapse:collapse;margin:1rem 0}
+.wa-specs tr{border-bottom:1px solid #f3f4f6}
+.wa-specs td,.wa-specs th{padding:0.75rem;text-align:left}
+.wa-specs td:first-child,.wa-specs th:first-child{font-weight:600;width:40%}
+
+/* Ingredients */
+.wa-ingredients{display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0}
+.wa-ingredient-tag{padding:0.4rem 0.9rem;border-radius:999px;border:1px solid #e5e7eb;background:#fafafa}
+.wa-ingredient-tag.key{font-weight:600;border-color:currentColor}
+
+/* Caption */
+.wa-img-caption{text-align:center;margin-top:0.5rem;color:#888;font-size:0.9em}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s}
+.reveal.visible{opacity:1;transform:none}
+.reveal.d1{transition-delay:0.1s}.reveal.d2{transition-delay:0.2s}.reveal.d3{transition-delay:0.3s}
+
+/* Cross-sell */
+.wa-cross-sell-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:640px){.wa-cross-sell-grid{grid-template-columns:1fr}}
+.wa-cross-sell-item{text-decoration:none;color:inherit;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;text-align:center}
+.wa-cross-sell-item:hover{border-color:#999}
