@@ -1,8 +1,7 @@
 /* WANELO Product Page Framework (merged)
- * Regenerated: 2026-05-07T09:31:22
+ * Regenerated: 2026-05-07T09:37:06
  */
 
-/* === SECTION 1: BASE_CSS (modular) === */
 
   /* ============================================================ */
   /* ====================== THEME TOKENS ======================= */
@@ -134,7 +133,7 @@
   /* mask reveal — line slides up from below */
   .mask{display:inline-block;overflow:hidden;vertical-align:bottom;line-height:1.05;padding-bottom:.04em}
   .mask > span{display:inline-block;transform:translateY(110%);transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
-  .mask.in > span,.in .mask > span{transform:none}
+  .mask.in > span,.in .mask.in > span,.in .mask > span{transform:none}
   .mask.d2 > span{transition-delay:.12s}
   .mask.d3 > span{transition-delay:.24s}
   .mask.d4 > span{transition-delay:.36s}
@@ -236,7 +235,7 @@
   .m15 .copy .play:hover{transform:scale(1.08)}
 
   /* ===================== M2 — STORY ===================== */
-  .m2-bg{background:linear-gradient(180deg,#fff,#fafafa)}
+  .m2-bg{background:transparent}
   .story-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;border-radius:0;overflow:visible;background:transparent;min-height:auto;box-shadow:none;align-items:center}
   .story-row .img{position:relative;overflow:hidden}
   .story-row .img img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform 2s cubic-bezier(.2,.7,.2,1)}
@@ -877,7 +876,7 @@
   .m35 .layer p{margin-top:18px;font-size:17px;line-height:1.5;color:var(--ink-2)}
 
   /* ===================== MODULE 4: FACTS ===================== */
-  .m4-bg{background:linear-gradient(180deg,#fff 0%,#fff8f3 100%)}
+  .m4-bg{background:transparent}
 
   /* M4.1 — Big numbers grid with counter animation */
   .m41{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);max-width:1280px;margin:0 auto}
@@ -938,7 +937,7 @@
   @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
   /* ===================== MODULE 5: REVIEWS ===================== */
-  .m5-bg{background:#f4f6f8}
+  .m5-bg{background:transparent}
 
   /* M5.1 — Glass cards on gradient */
   .m51-stage{position:relative;padding:80px 24px;background:linear-gradient(135deg,var(--brand-soft) 0%,var(--brand-2) 50%,var(--brand-3) 100%);border-radius:32px;max-width:calc(100% - 48px);margin:0 auto;overflow:hidden}
@@ -1022,7 +1021,6 @@
   }
 
 
-/* === SECTION 2: WA_CSS_FRAMEWORK === */
 /* ═══ WANELO v9 — inherits theme typography ═══ */
 .wa-page{max-width:100%;margin:0 auto;padding:0}
 .wa-page img{max-width:720px;height:auto;border-radius:12px;display:block;margin:1.5rem auto}
