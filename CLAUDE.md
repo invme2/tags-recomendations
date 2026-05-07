@@ -105,8 +105,7 @@ tags-recomendations/
   (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
   unknown persona/intent/gender/age, empty embed_text)
 - ✅ `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт пользователя (обогащение через Claude API + FAISS-related)
-- ✅ `pipeline/Shopify_Pipeline.ipynb` (18 ячеек, +cell для page_builder fetch) проходит `notebook_smoke`. Stage 4 writer теперь имеет два пути: modular (Opus 4.7 picks layout+palette+text → `assemble_page`) и legacy (Sonnet 4.5, фоллбэк через `USE_MODULAR_HTML=False`).
-- ✅ `pipeline/page_builder.py` — модульная сборка product-page HTML из 9 модулей (hero1/hero2/m13/m16/m21/m22/m32/m41/m51) с инъекцией 5-цветной палитры. 23 unit-теста (`pipeline/tests/test_page_builder.py`).
+- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт content+briefs) → ImageGen(gpt-image-2: 5 gallery + N metafield) → Shopify push.
 - ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячеечная дефинированность только на module-level scope (не лезет в тела функций — иначе 75 false-positive)
 - ✅ `pipeline/tools/extract_cells.py`, `apply_patch.py` — работают
 - ✅ `tools/health_check.py` — на реальных данных всё зелёное

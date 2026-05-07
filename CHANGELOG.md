@@ -6,6 +6,27 @@
 
 ## [Unreleased]
 
+### Removed
+- **Dead code purge** (~50KB / 21 functions / 1 cell). Notebook shrank from
+  18 cells / 9 code cells / 249K chars → 17 cells / 8 code cells / 200K chars.
+  Removed:
+    - Cell 13 entirely: page_builder fetch (assemble_page/MODULE_CATALOG never
+      called after JSON refactor)
+    - `pipeline/page_builder.py` + `pipeline/tests/test_page_builder.py`
+    - `WRITER_SYSTEM_PROMPT` (~230 lines), `WA_CSS_FRAMEWORK` (~135 lines),
+      `WA_SNIPPET_LIQUID`, `_legacy_html_instructions` — leftover from old
+      HTML-in-metafield approach
+    - `USE_MODULAR_HTML` toggle + `PAGE_BUILDER_URL` constant
+    - Duplicate function definitions (validate_scrape, ping_google_sitemap,
+      kw_score, tier_keywords, shopify_set_merchant_extended) — second defs
+      were already winning at runtime, first defs deleted
+    - Dead helpers never called: build_howto_schema, build_video_schema,
+      build_review_schemas, build_shipping_return_schema, build_schema_jsonld,
+      build_faq_schema, validate_html, validate_meta, sanitize_html,
+      seo_image_filename
+    - Test cleanup: 16 page_builder-specific tests + 6 metafield_prep tests
+      (both targeted dead HTML-pipeline code) → kept 8 theme-asset tests
+
 ### Changed
 - **Pricing: gpt-image-2 cost table replaces gpt-image-1 estimate.** The cost
   map is now size-aware and matches the official pricing (medium 1024² = $0.053,
