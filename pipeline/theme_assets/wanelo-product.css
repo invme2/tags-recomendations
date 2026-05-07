@@ -1,18 +1,11 @@
 /* WANELO Product Page Framework (merged)
- * Regenerated: 2026-05-07T08:07:44
+ * Regenerated: 2026-05-07T08:59:47
  * Section 1: BASE_CSS — modular module styles (.hero1/.hero2/.m13...m57)
- *            from pipeline/page_builder.py — used as design reference for the
- *            free-form writer + as fallback styles when writer composes own HTML.
- * Section 2: WA_CSS_FRAMEWORK — composable helpers (.wa-grid/.wa-benefit/
- *            .wa-step/.wa-faq/.wa-cta/.wa-card/.wa-link/etc.) — used freely
- *            by writer alongside modular classes.
- * Per-product palette tokens come inline via <style>:root{...}</style> in
- * each product's metafield.
+ * Section 2: WA_CSS_FRAMEWORK — composable helpers (.wa-grid/.wa-benefit/etc)
+ * Per-product palette tokens come inline via <style>:root{...}</style>.
  */
 
-/* ============================================================ */
-/* ============= SECTION 1 — BASE_CSS (modular) =============== */
-/* ============================================================ */
+/* === SECTION 1 — BASE_CSS (modular) === */
 
   /* ============================================================ */
   /* ====================== THEME TOKENS ======================= */
@@ -991,6 +984,7 @@
   /* M5.4 — Vertical scroll wall */
   .m54{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto;height:680px;overflow:hidden;mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%)}
   .m54 .col{display:flex;flex-direction:column;gap:20px;animation:scroll-up 40s linear infinite}
+  .m54 .col.c1{animation-duration:40s}
   .m54 .col.c2{animation-duration:50s;animation-direction:reverse}
   .m54 .col.c3{animation-duration:60s}
   @keyframes scroll-up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
@@ -1031,9 +1025,7 @@
   }
 
 
-/* ============================================================ */
-/* ========== SECTION 2 — WA_CSS_FRAMEWORK (helpers) ========== */
-/* ============================================================ */
+/* === SECTION 2 — WA_CSS_FRAMEWORK (helpers) === */
 /* ═══ WANELO v9 — inherits theme typography ═══ */
 .wa-page{max-width:100%;margin:0 auto;padding:0}
 .wa-page img{max-width:720px;height:auto;border-radius:12px;display:block;margin:1.5rem auto}
