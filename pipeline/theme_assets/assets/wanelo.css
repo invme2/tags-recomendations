@@ -270,3 +270,79 @@
   transition:background .2s, border-color .2s, color .2s;
 }
 .wanelo-page .wanelo-interlinks__link:hover{background:var(--brand-soft);border-color:var(--brand-deep);color:var(--ink)}
+
+/* ============================================================
+   TEMPLATE VARIANTS — 5 visual presets selected per-product by Designer.
+   Picked via product.metafields.custom.palette.value.template ∈ {
+     editorial, minimal, warm, vibrant, luxury
+   }
+   Master section emits <div class="wanelo-page" data-template="...">.
+   Each template overrides typography / density / accents while preserving
+   the same module structure — products stay coherent internally, vary across.
+   ============================================================ */
+
+/* editorial — beauty / wellness / skincare / luxury skincare (DEFAULT)
+   Serif headings, generous gaps, quote-style accents. */
+.wanelo-page[data-template="editorial"] h1,
+.wanelo-page[data-template="editorial"] h2,
+.wanelo-page[data-template="editorial"] h3,
+.wanelo-page[data-template="editorial"] h4{
+  font-family:'Fraunces','Source Serif Pro',Georgia,serif;
+  letter-spacing:-.018em;
+  font-weight:500;
+}
+.wanelo-page[data-template="editorial"] em{font-style:italic;font-weight:inherit}
+.wanelo-page[data-template="editorial"] .wanelo-kicker{font-style:italic;letter-spacing:.05em}
+
+/* minimal — tech / electronics / productivity / gadgets
+   Tight letter-spacing, sharp corners, info-dense. */
+.wanelo-page[data-template="minimal"]{
+  --r-sm:4px;--r-md:6px;--r-lg:8px;--r-xl:10px;
+  --gap-section:80px;--gap-head:40px;
+  letter-spacing:-.022em;
+}
+.wanelo-page[data-template="minimal"] h1,
+.wanelo-page[data-template="minimal"] h2,
+.wanelo-page[data-template="minimal"] h3{font-weight:600;letter-spacing:-.03em}
+.wanelo-page[data-template="minimal"] .wanelo-kicker{font-family:'JetBrains Mono','SF Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.wanelo-page[data-template="minimal"] .wanelo-stats__cell{border:1px solid var(--line);border-radius:6px}
+
+/* warm — home / kitchen / lifestyle / pet / baby
+   Rounded everything, friendly weight, breathable. */
+.wanelo-page[data-template="warm"]{
+  --r-sm:18px;--r-md:28px;--r-lg:40px;--r-xl:56px;
+  --gap-section:100px;--gap-head:56px;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+}
+.wanelo-page[data-template="warm"] p{line-height:1.7}
+.wanelo-page[data-template="warm"] h1,
+.wanelo-page[data-template="warm"] h2{font-weight:600;letter-spacing:-.015em}
+.wanelo-page[data-template="warm"] .wanelo-features__card,
+.wanelo-page[data-template="warm"] .wanelo-stats__cell{border-radius:24px}
+
+/* vibrant — sport / fitness / kids / energy / outdoor
+   Bold weight, faster motion, high contrast. */
+.wanelo-page[data-template="vibrant"]{
+  --gap-section:90px;
+  font-family:'Manrope','Inter',sans-serif;
+}
+.wanelo-page[data-template="vibrant"] h1,
+.wanelo-page[data-template="vibrant"] h2{font-weight:800;letter-spacing:-.03em}
+.wanelo-page[data-template="vibrant"] .reveal{transition-duration:.6s}
+.wanelo-page[data-template="vibrant"] .wanelo-cta__btn,
+.wanelo-page[data-template="vibrant"] .button{font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+/* luxury — premium / jewelry / fragrance / designer / collectibles
+   Spaced caps, slow reveals, refined serifs. */
+.wanelo-page[data-template="luxury"]{
+  --gap-section:140px;--gap-head:80px;
+  font-family:'Cormorant Garamond','Playfair Display',Georgia,serif;
+  letter-spacing:0;
+}
+.wanelo-page[data-template="luxury"] h1,
+.wanelo-page[data-template="luxury"] h2{
+  font-family:'Playfair Display','DM Serif Display',Georgia,serif;
+  font-weight:400;letter-spacing:-.005em;
+}
+.wanelo-page[data-template="luxury"] .wanelo-kicker{letter-spacing:.32em;text-transform:uppercase;font-size:11px}
+.wanelo-page[data-template="luxury"] .reveal{transition-duration:1.4s}
