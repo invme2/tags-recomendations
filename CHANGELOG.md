@@ -6,6 +6,19 @@
 
 ## [Unreleased]
 
+### Added
+- **Admin-only `custom.source` metafield** — per-product EPROLO provenance
+  record visible only in Shopify Admin → Product → Metafields, never on
+  storefront. Stores `{platform, url, scraped_at, title, description (capped
+  5000 chars), cost_price_usd, image_urls{top[], desc[]}}`. Operator clicks
+  the URL to open the original EPROLO listing for any synced product. Cell 2:
+  metafield definition with `visible_to_storefront=False` (joins existing
+  `photo_pack` in `_admin_only` set); Cell 6 STEP 5 builds `_src_meta` dict
+  from scraped product before `metafieldsSet` batch and includes `'source'`
+  in `_wanelo_keys`. Total metafields per product: 21 content + 2 admin-only
+  = 23. Build wrapped in try/except so a failed source record never blocks
+  the rest of the batch. 12 new tests in `pipeline/tests/test_admin_source.py`.
+
 ### Removed
 - **gpt-image-2 image generation cut entirely.** User decision after API style
   inconsistency across briefs (single-prompt isolation in `images.edit` calls

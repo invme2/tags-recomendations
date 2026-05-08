@@ -91,17 +91,16 @@ def test_photo_pack_is_admin_only_in_loop(cells: dict) -> None:
 
 
 def test_other_metafields_remain_storefront_visible(cells: dict) -> None:
-    """All other metafields (hero, story, etc.) must remain visible to
+    """All content metafields (hero, story, etc.) must remain visible to
     Storefront API — Liquid theme reads them. The admin-only set must be
-    explicit and tight (only utility/internal fields)."""
+    explicit and tight (only utility/internal fields: photo_pack ZIP +
+    source EPROLO origin record)."""
     c2 = cells["b810afd7"]
-    # _admin_only set should contain ONLY photo_pack right now — anything else
-    # would silently break theme rendering. Use a regex to extract the set.
     m = re.search(r"_admin_only\s*=\s*\{([^}]+)\}", c2)
     assert m, "_admin_only set declaration not found"
     members = {s.strip().strip("'\"") for s in m.group(1).split(',') if s.strip()}
-    assert members == {"photo_pack"}, (
-        f"_admin_only must contain ONLY photo_pack; got {members}. "
+    assert members == {"photo_pack", "source"}, (
+        f"_admin_only must contain ONLY photo_pack + source; got {members}. "
         "Adding other keys would hide content metafields from Liquid."
     )
 
