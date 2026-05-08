@@ -1,6 +1,6 @@
 # WANELO Theme Setup — JSON-driven product pages
 
-Pipeline пишет до 21 JSON-метафилда на товар. Тема рендерит каждую секцию из своего метафилда через одну Liquid-секцию с 21 снипетом. Снеппеты с пустым метафилдом просто пропускаются (skip-if-blank gate), так что для каждого товара показывается только то что Designer счёл уместным (типично 11-13 секций из 21).
+Pipeline пишет до 22 JSON-метафилдов на товар. Тема рендерит каждую секцию из своего метафилда через одну Liquid-секцию с 21 снипетом. Снеппеты с пустым метафилдом просто пропускаются (skip-if-blank gate), так что для каждого товара показывается только то что Designer счёл уместным (типично 11-13 секций из 21 (плюс admin-only photo_pack)).
 
 ## Файловая структура
 
@@ -116,7 +116,7 @@ Anthropic + DataForSEO — оба должны быть с балансом, и�
 
 1. Открой ноутбук: [Open in Colab](https://colab.research.google.com/github/invme2/tags-recomendations/blob/claude/enrich-shopify-taxonomy-kMPmA/pipeline/Shopify_Pipeline.ipynb)
 2. `RESET_DB ✓` → выполни Cell 1 → загрузи CSV/Excel
-3. Cell 2 — увидишь `Metafield definitions ensured: 21`
+3. Cell 2 — увидишь `Metafield definitions ensured: 22`
 4. Cell 3-5.5 → как обычно
 5. Cell 6 — для каждого товара лог:
    ```
@@ -128,7 +128,7 @@ Anthropic + DataForSEO — оба должны быть с балансом, и�
        JSON OK: hero=True story=2 feat=3 stat=4 rev=12 faq=5 | $0.0234
        Tags: 8 valid
      → Shopify... Created: gid://shopify/...
-       Metafields: 12/21 written (~14000 chars total)  ← число 12 зависит от категории, optional модули скипаются
+       Metafields: 13/22 written (~14000 chars total)  ← число 12 зависит от категории, optional модули скипаются
        Gallery: N/N (EPROLO)
    ```
 
@@ -139,10 +139,10 @@ PIPELINE                                       SHOPIFY                          
 ─────────                                      ────────                           ─────────
 Strategy (Opus 4.7) — positioning per product
         ↓
-Designer (Sonnet 4.6) — writes up to 21 sections; FILL/SKIP per category;
+Designer (Sonnet 4.6) — writes up to 21 content sections + 1 utility (photo_pack ZIP URL); FILL/SKIP per category;
         picks image_url's directly from EPROLO photo list
         ↓
-Up to 21 custom.* JSON metafields              ──→ Shopify Admin Custom Data       ──→ 21 wanelo-*.liquid snippets
+Up to 22 custom.* JSON metafields              ──→ Shopify Admin Custom Data       ──→ 21 wanelo-*.liquid snippets
                                                                                     (skip-if-blank — невыделенные не рендерятся)
 EPROLO photos (top images)                    ──→ productCreateMedia (carousel)   ──→ /products/handle карусель
 
@@ -161,6 +161,6 @@ JS observer loads ONCE:               /assets/wanelo.js (~400 bytes)
 ## Если что-то не так
 
 - **Section добавлена но пусто** — пайплайн ещё не записал метафилды для этого товара. Запусти Cell 6.
-- **`Liquid error: Metafield not found`** — определение метафилда не создано. Проверь Cell 2 вывод `Metafield definitions ensured: 21`. Если меньше 21 — старая версия Cell 2, обнови ноутбук.
+- **`Liquid error: Metafield not found`** — определение метафилда не создано. Проверь Cell 2 вывод `Metafield definitions ensured: 22`. Если меньше 22 — старая версия Cell 2, обнови ноутбук.
 - **JSON-LD FAQPage не валиден** — скорее всего designer написал кавычки или \n в quotes. Liquid filter `| json` экранирует.
 - **Анимации не идут** — wanelo.js не загрузился. Проверь Network tab на наличие `wanelo.js → 200 OK`.

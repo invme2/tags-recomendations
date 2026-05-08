@@ -180,6 +180,39 @@ def test_designer_strategy_fields_referenced(cells: dict) -> None:
         assert field in c6
 
 
+def test_designer_parser_strips_jsonc_comments(cells: dict) -> None:
+    """Designer JSON parse must tolerate model-emitted // comments.
+    Schema example uses them as inline annotations; Sonnet sometimes mimics
+    in output, breaking strict json.loads. Pipeline strips + retries."""
+    c6 = cells["ce20f070"]
+    assert "_strip_jsonc_comments" in c6
+    assert "_parse_designer" in c6
+    # Parser tries strict → stripped → stripped+regex
+    for attempt in ('"strict"', '"stripped"', '"stripped+regex"'):
+        assert attempt in c6, f"Parser must include {attempt} attempt path"
+
+
+def test_designer_prompt_warns_no_jsonc_comments(cells: dict) -> None:
+    """Designer system prompt must warn that // comments in schema are
+    examples-only — actual output is strict JSON."""
+    c6 = cells["ce20f070"]
+    assert "// comments" in c6
+    assert "FOR YOUR REFERENCE ONLY" in c6 or "no // comments" in c6
+
+
+def test_step45_warns_on_out_of_range_source_index(cells: dict) -> None:
+    """STEP 4.5 must skip + warn when source_index is out of range,
+    NOT silently clamp to last photo."""
+    c6 = cells["ce20f070"]
+    assert "source_index=" in c6 and "out of range" in c6, (
+        "STEP 4.5 must print warning when source_index out of range"
+    )
+    # Verify there's no min(_src_idx_pp, len ...) silent clamp anymore
+    assert "_src_idx_pp = min(" not in c6, (
+        "STEP 4.5 must NOT silently clamp out-of-range indices"
+    )
+
+
 def test_designer_does_not_save_assets_json(cells: dict) -> None:
     c6 = cells["ce20f070"]
     assert "_assets_initial" not in c6, (
