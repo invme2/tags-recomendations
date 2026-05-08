@@ -384,3 +384,82 @@
 .wanelo-page .wanelo-compare__col-name{display:block;font-size:14px;color:var(--ink)}
 .wanelo-page .wanelo-compare__col-badge{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--brand-1);color:var(--ink)}
 .wanelo-page .wanelo-compare__cell{font-size:14px;color:var(--ink-2);font-weight:500}
+
+/* ============================================================
+   SIZE GUIDE — sizing chart with measurements
+   ============================================================ */
+.wanelo-page .wanelo-sizeguide{padding:64px 24px;margin:0 auto;max-width:900px}
+.wanelo-page .wanelo-sizeguide__wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--line)}
+.wanelo-page .wanelo-sizeguide__table{width:100%;border-collapse:collapse;font-size:14px}
+.wanelo-page .wanelo-sizeguide__table th,
+.wanelo-page .wanelo-sizeguide__table td{padding:12px 14px;text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.wanelo-page .wanelo-sizeguide__table th:last-child,
+.wanelo-page .wanelo-sizeguide__table td:last-child{border-right:0}
+.wanelo-page .wanelo-sizeguide__table tbody tr:last-child td{border-bottom:0}
+.wanelo-page .wanelo-sizeguide__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:140px}
+.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--brand-soft);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__cell{font-feature-settings:'tnum';color:var(--ink-2)}
+.wanelo-page .wanelo-sizeguide__unit{font-size:12px;color:var(--ink-3);font-weight:400}
+.wanelo-page .wanelo-sizeguide__note{margin-top:14px;font-size:13px;color:var(--ink-3);text-align:center;font-style:italic}
+
+/* ============================================================
+   CARE — wash/store/maintenance instructions
+   ============================================================ */
+.wanelo-page .wanelo-care{padding:64px 24px;margin:0 auto;max-width:1000px}
+.wanelo-page .wanelo-care__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.wanelo-page .wanelo-care__list{grid-template-columns:repeat(2,1fr);gap:18px}}
+@media(min-width:960px){.wanelo-page .wanelo-care__list{grid-template-columns:repeat(3,1fr)}}
+.wanelo-page .wanelo-care__item{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);
+}
+.wanelo-page .wanelo-care__glyph{font-size:24px;flex:0 0 auto;line-height:1}
+.wanelo-page .wanelo-care__body{display:flex;flex-direction:column;gap:2px;flex:1 1 auto}
+.wanelo-page .wanelo-care__label{font-size:14px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-care__note{font-size:13px;color:var(--ink-3)}
+
+/* ============================================================
+   DIMENSIONS — physical measurements with optional scale ref
+   ============================================================ */
+.wanelo-page .wanelo-dimensions{padding:64px 24px;margin:0 auto;max-width:900px;text-align:center}
+.wanelo-page .wanelo-dimensions__list{list-style:none;padding:0;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:32px;max-width:700px}
+.wanelo-page .wanelo-dimensions__item{display:flex;flex-direction:column;gap:4px;align-items:center;min-width:120px}
+.wanelo-page .wanelo-dimensions__axis{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.wanelo-page .wanelo-dimensions__value{font-size:28px;font-weight:500;color:var(--ink);font-feature-settings:'tnum'}
+.wanelo-page .wanelo-dimensions__scale-note{margin-top:24px;font-size:14px;color:var(--ink-2);font-style:italic}
+
+/* ============================================================
+   VARIANTS — color/pattern swatches
+   ============================================================ */
+.wanelo-page .wanelo-variants{padding:64px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-variants__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px}
+.wanelo-page .wanelo-variants__item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:14px 10px;border-radius:var(--r-md);
+  background:var(--bg-2);border:1px solid var(--line);
+  transition:transform .25s var(--ease), border-color .25s;
+}
+.wanelo-page .wanelo-variants__item:hover{border-color:var(--brand-deep);transform:translateY(-2px)}
+.wanelo-page .wanelo-variants__item--soldout{opacity:.55}
+.wanelo-page .wanelo-variants__swatch{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 0 0 2px var(--bg)}
+.wanelo-page .wanelo-variants__name{font-size:13px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-variants__soldout{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ============================================================
+   GIFT-OPTIONS — wrap, message card, occasion fit
+   ============================================================ */
+.wanelo-page .wanelo-giftoptions{padding:64px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-giftoptions__grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:760px){.wanelo-page .wanelo-giftoptions__grid{grid-template-columns:repeat(3,1fr);gap:24px}}
+.wanelo-page .wanelo-giftoptions__card{
+  padding:22px 22px;border-radius:var(--r-md);
+  background:var(--brand-soft);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:10px;
+}
+.wanelo-page .wanelo-giftoptions__icon{font-size:28px;line-height:1}
+.wanelo-page .wanelo-giftoptions__card h4{font-size:15px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-giftoptions__card h4 span{font-size:13px;font-weight:400;color:var(--ink-3)}
+.wanelo-page .wanelo-giftoptions__opts{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.wanelo-page .wanelo-giftoptions__opts li{font-size:13px;color:var(--ink-2);padding-left:14px;position:relative}
+.wanelo-page .wanelo-giftoptions__opts li::before{content:'·';position:absolute;left:4px;color:var(--ink-4);font-weight:700}
+.wanelo-page .wanelo-giftoptions__ships{margin-top:18px;font-size:13px;color:var(--ink-3);text-align:center}

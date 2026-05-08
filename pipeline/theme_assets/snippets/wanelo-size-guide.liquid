@@ -1,0 +1,44 @@
+{%- comment -%}
+  SIZE-GUIDE snippet — sizing chart with measurements per size label.
+  Reads product.metafields.custom.size_guide JSON:
+    {head: {kicker, h2, desc},
+     labels: ["S","M","L"],
+     rows: [{label: "Chest", values: ["86","92","98"], unit: "cm"}],
+     note: "Measurements taken flat..."}
+  Designer fills for: clothing, jewelry rings/chains, pet collars/harnesses,
+  baby/kids clothing, sports gear sizing.
+{%- endcomment -%}
+
+{%- assign sg = product.metafields.custom.size_guide.value -%}
+{%- if sg and sg.labels and sg.labels.size > 0 and sg.rows and sg.rows.size > 0 -%}
+<section class="wanelo-section wanelo-sizeguide reveal">
+  {%- if sg.head and sg.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if sg.head.kicker != blank -%}<div class="wanelo-kicker">{{ sg.head.kicker }}</div>{%- endif -%}
+      <h2>{{ sg.head.h2 }}</h2>
+      {%- if sg.head.desc != blank -%}<p class="desc">{{ sg.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <div class="wanelo-sizeguide__wrap">
+    <table class="wanelo-sizeguide__table">
+      <thead>
+        <tr>
+          <th class="wanelo-sizeguide__row-label"></th>
+          {%- for l in sg.labels -%}<th class="wanelo-sizeguide__col">{{ l }}</th>{%- endfor -%}
+        </tr>
+      </thead>
+      <tbody>
+        {%- for row in sg.rows -%}
+          <tr>
+            <td class="wanelo-sizeguide__row-label">
+              {{ row.label }}{%- if row.unit != blank -%} <span class="wanelo-sizeguide__unit">({{ row.unit }})</span>{%- endif -%}
+            </td>
+            {%- for v in row.values -%}<td class="wanelo-sizeguide__cell">{{ v }}</td>{%- endfor -%}
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+  {%- if sg.note != blank -%}<p class="wanelo-sizeguide__note">{{ sg.note }}</p>{%- endif -%}
+</section>
+{%- endif -%}

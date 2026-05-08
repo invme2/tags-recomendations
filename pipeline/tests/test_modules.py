@@ -23,10 +23,12 @@ CSS_PATH = ROOT / "pipeline" / "theme_assets" / "assets" / "wanelo.css"
 ALL_MODULES = [
     "hero", "story", "features", "stats", "reviews", "faq", "cta", "palette", "interlinks",
     "how_to", "specs", "whats_included", "ingredients", "timeline", "trust", "compare",
+    "size_guide", "care", "dimensions", "variants", "gift_options",
 ]
 
 OPTIONAL_MODULES = [
     "how_to", "specs", "whats_included", "ingredients", "timeline", "trust", "compare",
+    "size_guide", "care", "dimensions", "variants", "gift_options",
 ]
 
 # Snippet filenames use kebab-case for compound module names
@@ -41,6 +43,11 @@ SNIPPET_FILE = {
     "timeline": "wanelo-timeline",
     "trust": "wanelo-trust",
     "compare": "wanelo-compare",
+    "size_guide": "wanelo-size-guide",
+    "care": "wanelo-care",
+    "dimensions": "wanelo-dimensions",
+    "variants": "wanelo-variants",
+    "gift_options": "wanelo-gift-options",
 }
 
 
@@ -204,7 +211,8 @@ CATEGORY_MODULE_FIXTURES = {
         "filled": ["hero", "story", "features", "ingredients", "how_to",
                    "timeline", "stats", "reviews", "faq", "cta", "palette",
                    "interlinks", "trust"],
-        "skipped": ["specs", "whats_included", "compare"],
+        "skipped": ["specs", "whats_included", "compare",
+                    "size_guide", "care", "dimensions", "variants", "gift_options"],
         "ingredients": {
             "head": {"kicker": "KEY ACTIVES", "h2": "Clinical formulation", "desc": ""},
             "items": [
@@ -224,9 +232,10 @@ CATEGORY_MODULE_FIXTURES = {
     },
     "tech-smartwatch": {
         "filled": ["hero", "features", "specs", "stats", "reviews", "faq",
-                   "cta", "palette", "interlinks", "compare"],
+                   "cta", "palette", "interlinks", "compare", "care"],
         "skipped": ["story", "ingredients", "how_to", "timeline",
-                    "whats_included", "trust"],
+                    "whats_included", "trust",
+                    "size_guide", "dimensions", "variants", "gift_options"],
         "specs": {
             "head": {"kicker": "SPECIFICATIONS", "h2": "Built for the wrist", "desc": ""},
             "items": [
@@ -254,9 +263,10 @@ CATEGORY_MODULE_FIXTURES = {
         },
     },
     "kitchen-knife-set": {
-        "filled": ["hero", "story", "features", "specs", "whats_included",
+        "filled": ["hero", "story", "features", "specs", "whats_included", "care",
                    "stats", "reviews", "faq", "cta", "palette", "interlinks", "trust"],
-        "skipped": ["ingredients", "how_to", "timeline", "compare"],
+        "skipped": ["ingredients", "how_to", "timeline", "compare",
+                    "size_guide", "dimensions", "variants", "gift_options"],
         "whats_included": {
             "head": {"kicker": "WHAT'S IN THE BOX", "h2": "Your complete set", "desc": ""},
             "items": [
@@ -267,11 +277,21 @@ CATEGORY_MODULE_FIXTURES = {
                 {"glyph": "💎", "name": "Honing rod", "qty": "1", "note": "Diamond-tipped"},
             ],
         },
+        "care": {
+            "head": {"kicker": "BUILT TO LAST", "h2": "Care for your knives", "desc": ""},
+            "items": [
+                {"glyph": "🌊", "label": "Hand wash", "note": "warm water, mild soap"},
+                {"glyph": "🌬️", "label": "Dry immediately", "note": "no dishwasher"},
+                {"glyph": "💎", "label": "Hone weekly", "note": "use included rod"},
+                {"glyph": "🛏️", "label": "Store in block", "note": "blade-up if magnetic"},
+            ],
+        },
     },
     "supplement-vitamin-d": {
         "filled": ["hero", "story", "features", "ingredients", "how_to",
                    "stats", "reviews", "faq", "cta", "palette", "interlinks", "trust"],
-        "skipped": ["specs", "whats_included", "timeline", "compare"],
+        "skipped": ["specs", "whats_included", "timeline", "compare",
+                    "size_guide", "care", "dimensions", "variants", "gift_options"],
         "trust": {
             "head": {"kicker": "TESTED & VERIFIED", "h2": "Quality you can trust", "desc": ""},
             "certs": [
@@ -286,9 +306,69 @@ CATEGORY_MODULE_FIXTURES = {
         },
     },
     "gift-spa-set": {
-        "filled": ["hero", "story", "features", "whats_included",
+        "filled": ["hero", "story", "features", "whats_included", "gift_options",
                    "ingredients", "stats", "reviews", "faq", "cta", "palette", "interlinks"],
-        "skipped": ["specs", "how_to", "timeline", "trust", "compare"],
+        "skipped": ["specs", "how_to", "timeline", "trust", "compare",
+                    "size_guide", "care", "dimensions", "variants"],
+        "gift_options": {
+            "head": {"kicker": "GIFT-READY", "h2": "Make it special", "desc": ""},
+            "wrap": {"available": True, "price": "$5",
+                     "options": ["Kraft + linen ribbon", "Black + gold foil"]},
+            "card": {"available": True, "max_chars": 240,
+                     "examples": ["Happy birthday!", "Just because"]},
+            "occasions": ["Birthday", "Anniversary", "Mother's Day", "Self-care Sunday"],
+            "ships_with": "Standard packaging hidden inside",
+        },
+    },
+    "fashion-knit-sweater": {
+        "filled": ["hero", "story", "features", "size_guide", "care", "variants",
+                   "stats", "reviews", "faq", "cta", "palette", "interlinks"],
+        "skipped": ["specs", "how_to", "ingredients", "timeline",
+                    "whats_included", "trust", "compare", "dimensions", "gift_options"],
+        "size_guide": {
+            "head": {"kicker": "FIND YOUR FIT", "h2": "Size guide", "desc": ""},
+            "labels": ["XS", "S", "M", "L", "XL"],
+            "rows": [
+                {"label": "Chest", "values": ["86", "92", "98", "104", "110"], "unit": "cm"},
+                {"label": "Length", "values": ["62", "64", "66", "68", "70"], "unit": "cm"},
+                {"label": "Sleeve", "values": ["58", "60", "62", "64", "66"], "unit": "cm"},
+            ],
+            "note": "Measurements taken flat. Add 2cm for relaxed fit.",
+        },
+        "care": {
+            "head": {"kicker": "MADE TO LAST", "h2": "Care guide", "desc": ""},
+            "items": [
+                {"glyph": "🌊", "label": "Hand wash cold", "note": "wool detergent"},
+                {"glyph": "🌬️", "label": "Air dry flat", "note": "reshape while damp"},
+                {"glyph": "🚫", "label": "No bleach", "note": ""},
+                {"glyph": "🛏️", "label": "Store folded", "note": "with cedar block"},
+            ],
+        },
+        "variants": {
+            "head": {"kicker": "AVAILABLE IN", "h2": "Pick your shade", "desc": ""},
+            "items": [
+                {"name": "Sand", "color": "#d4b896", "available": True},
+                {"name": "Charcoal", "color": "#3a3a3a", "available": True},
+                {"name": "Forest", "color": "#3a4d3a", "available": False},
+            ],
+        },
+    },
+    "wall-art-print": {
+        "filled": ["hero", "story", "features", "dimensions", "variants",
+                   "stats", "reviews", "faq", "cta", "palette", "interlinks"],
+        "skipped": ["specs", "how_to", "ingredients", "timeline",
+                    "whats_included", "trust", "compare",
+                    "size_guide", "care", "gift_options"],
+        "dimensions": {
+            "head": {"kicker": "DIMENSIONS", "h2": "Built to fit your space", "desc": ""},
+            "items": [
+                {"axis": "Width", "value": "60 cm"},
+                {"axis": "Height", "value": "80 cm"},
+                {"axis": "Depth", "value": "2.5 cm"},
+                {"axis": "Weight", "value": "1.4 kg"},
+            ],
+            "scale_note": "Roughly the size of a folded throw blanket",
+        },
     },
 }
 
@@ -329,6 +409,10 @@ def test_category_fixture_module_payloads_are_valid(_=None) -> None:
         "compare":        {"columns": ["name"], "rows": ["label", "values"]},
         "whats_included": {"items": ["name"]},
         "trust":          {"certs": ["label"]},
+        "size_guide":     {"rows": ["label", "values"]},
+        "care":           {"items": ["label"]},
+        "dimensions":     {"items": ["axis", "value"]},
+        "variants":       {"items": ["name"]},
     }
     for cat, fx in CATEGORY_MODULE_FIXTURES.items():
         for module, payload_spec in fx_keys_required.items():

@@ -1,25 +1,22 @@
 {%- comment -%}
   WANELO Product Page — single section, renders the entire long-form
-  description from 9 Shopify metafields (each a JSON object).
+  description from up to 21 Shopify metafields (each a JSON object).
 
-  Add this section ONCE to your product template. The section reads
-  product metafields and renders 8 stacked sub-sections in this order:
+  Add this section ONCE to your product template. The section reads product
+  metafields and renders sub-sections in funnel order. All sections gate on
+  metafield content — empty metafield = section hidden. So a product without
+  FAQ simply skips it.
 
-    1. hero            (custom.hero)
-    2. story           (custom.story)
-    3. features        (custom.features)
-    4. stats           (custom.stats)
-    5. reviews         (custom.reviews)  — animated 3-column wall
-    6. faq             (custom.faq)      — accordion + JSON-LD FAQPage
-    7. cta             (custom.cta)
-    8. interlinks      (custom.interlinks) — collection pills
+  Always-on (9):  hero, story, features, stats, reviews, faq, cta, palette, interlinks
+  Optional (12): how_to, ingredients, timeline, specs, whats_included, compare, trust,
+                 size_guide, care, dimensions, variants, gift_options
 
-  Sections render only if their metafield has content — so a product
-  without FAQ (faq metafield empty) simply skips that section.
+  Designer fills only modules that fit the product (skincare → ingredients +
+  how_to + timeline; tech → specs + compare; clothing → size_guide + care +
+  variants; gift kit → whats_included + gift_options).
 
-  The pipeline (Shopify_Pipeline.ipynb) writes all 9 metafields per product
-  in JSON format. Per-product palette (custom.palette) is injected via
-  inline <style>:root{--brand-1:..}</style> from snippets/wanelo-palette.
+  Per-product palette (custom.palette) is injected via inline
+  <style>:root{--brand-1:..}</style> from snippets/wanelo-palette.
 
   Animations: assets/wanelo.js IntersectionObserver toggles `.in` class
   on `.reveal` and `.mask` elements when they enter viewport.
@@ -38,7 +35,12 @@
   {% render 'wanelo-timeline' %}
   {% render 'wanelo-stats' %}
   {% render 'wanelo-specs' %}
+  {% render 'wanelo-size-guide' %}
+  {% render 'wanelo-dimensions' %}
+  {% render 'wanelo-variants' %}
+  {% render 'wanelo-care' %}
   {% render 'wanelo-whats-included' %}
+  {% render 'wanelo-gift-options' %}
   {% render 'wanelo-compare' %}
   {% render 'wanelo-trust' %}
   {% render 'wanelo-reviews' %}

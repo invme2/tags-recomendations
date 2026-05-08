@@ -62,6 +62,11 @@ MODULE_SECTION_FIT = {
     "timeline":       {"1.1", "1.3", "22"},
     "trust":          {"1.2", "1.7", "1.8", "8", "19", "22", "7", "28"},
     "compare":        {"7", "1.6", "17", "23", "13", "27"},
+    "size_guide":     {"16", "25", "1.7", "1.8", "1.3", "18"},
+    "care":           {"8", "16", "25", "23", "1.5", "13", "21"},
+    "dimensions":     {"21", "3", "26", "15", "13", "1.5"},
+    "variants":       {"12", "16", "25", "1.5", "21", "4"},
+    "gift_options":   {"2", "5", "11", "10"},
 }
 
 # Modules that fit certain intents
@@ -71,6 +76,11 @@ MODULE_INTENT_FIT = {
     "trust":          {"intent:planned", "intent:upgrade", "intent:treat-yourself"},
     "timeline":       {"intent:problem-solver", "intent:planned"},
     "how_to":         {"intent:essentials", "intent:problem-solver"},
+    "gift_options":   {"intent:gift", "intent:seasonal"},
+    "size_guide":     {"intent:planned", "intent:research-buy"},
+    "variants":       {"intent:impulse", "intent:treat-yourself"},
+    "care":           {"intent:planned", "intent:upgrade"},
+    "dimensions":     {"intent:planned", "intent:research-buy"},
 }
 
 # Modules that fit certain personas (not exhaustive, just the strong fits)
@@ -87,6 +97,14 @@ MODULE_PERSONA_FIT = {
     "whats_included": {"persona:diy-maker", "persona:collector",
                        "persona:traveler", "persona:party-host"},
     "compare":        {"persona:techie", "persona:luxury-lover", "persona:minimalist"},
+    "size_guide":     {"persona:fashionista", "persona:fitness-junkie",
+                       "persona:pet-parent", "persona:busy-parent"},
+    "care":           {"persona:fashionista", "persona:luxury-lover",
+                       "persona:minimalist", "persona:eco-warrior"},
+    "dimensions":     {"persona:homebody", "persona:minimalist", "persona:plant-mom",
+                       "persona:bookworm", "persona:diy-maker"},
+    "variants":       {"persona:fashionista", "persona:creative", "persona:homebody"},
+    "gift_options":   {"persona:social-butterfly", "persona:nostalgic"},
 }
 
 ALL_OPTIONAL = list(MODULE_SECTION_FIT.keys())
@@ -144,11 +162,12 @@ def test_every_section_covered_by_optional_module(taxonomy: dict) -> None:
     sections_with_module = set()
     for sections in MODULE_SECTION_FIT.values():
         sections_with_module |= sections
-    uncovered = section_ids - sections_with_module - {"3", "4", "5", "9", "12",
-                                                       "16", "21", "24"}
-    # Above subtraction whitelists sections that really only benefit from
-    # universal modules (rooms/style/seasons/colors/wall-decor/photo-zone/
-    # clothing-scenarios — these are taxonomic rather than content-distinct).
+    # Whitelist: sections that are PURELY taxonomic — they classify products
+    # into bins (lifestyle/audience, photo-zone/party occasion) where the
+    # universal modules (hero/story/features/etc) carry all needed content.
+    # Most product-type sections are now covered by adding 5 niche modules
+    # (size_guide/care/dimensions/variants/gift_options).
+    uncovered = section_ids - sections_with_module - {"9", "24"}
     assert not uncovered, (
         f"Sections with no optional module fit (consider adding modules):\n"
         + "\n".join(f"  {sid}" for sid in sorted(uncovered))
@@ -190,12 +209,26 @@ def test_intent_has_dedicated_module(intent: str, modules: list) -> None:
 PERSONAS_REQUIRING_MODULE = {
     "persona:techie":           ["specs"],
     "persona:wellness-seeker":  ["ingredients", "timeline"],
-    "persona:eco-warrior":      ["ingredients", "trust"],
+    "persona:eco-warrior":      ["ingredients", "trust", "care"],
     "persona:fitness-junkie":   ["timeline", "specs"],
-    "persona:luxury-lover":     ["trust"],
+    "persona:luxury-lover":     ["trust", "care"],
     "persona:diy-maker":        ["how_to", "whats_included"],
     "persona:foodie":           ["ingredients"],
-    "persona:busy-parent":      ["trust"],
+    "persona:busy-parent":      ["trust", "size_guide"],
+    "persona:fashionista":      ["size_guide", "care", "variants"],
+    "persona:homebody":         ["dimensions", "variants"],
+    "persona:pet-parent":       ["size_guide"],
+}
+
+
+INTENTS_REQUIRING_MODULE_NEW = {
+    "intent:gift":           ["whats_included", "gift_options"],
+    "intent:bundle-deal":    ["whats_included"],
+    "intent:research-buy":   ["compare", "specs"],
+    "intent:upgrade":        ["compare"],
+    "intent:problem-solver": ["timeline"],
+    "intent:planned":        ["specs", "compare", "trust"],
+    "intent:seasonal":       ["gift_options"],
 }
 
 
