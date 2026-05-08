@@ -154,8 +154,11 @@ def test_designer_uses_image_url_not_id(cells: dict) -> None:
 
 
 def test_designer_no_brief_schema(cells: dict) -> None:
+    """Image-gen-era brief fields must remain dropped. visual_style is back
+    but for a DIFFERENT purpose: photo_pack ZIP for ChatGPT-UI workflow,
+    NOT for live API image generation."""
     c6 = cells["ce20f070"]
-    for sym in ("gallery_briefs", "metafield_briefs", "visual_style"):
+    for sym in ("gallery_briefs", "metafield_briefs"):
         assert sym not in c6, f"Designer schema should drop '{sym}'"
 
 
