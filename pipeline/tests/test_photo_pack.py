@@ -165,14 +165,25 @@ def test_designer_schema_has_visual_style(cells: dict) -> None:
 
 def test_designer_schema_has_photo_briefs(cells: dict) -> None:
     """Designer decides count + content of briefs (5-12). Each brief specifies
-    slot, source_index, concept, edit_instructions."""
+    slot, source_index, concept, edit_instructions, slot_context."""
     c6 = cells["ce20f070"]
     assert '"photo_briefs":' in c6, (
         "Designer JSON schema must have photo_briefs[] field"
     )
     # Brief shape keys
-    for key in ('"id":', '"slot":', '"source_index":', '"concept":', '"edit_instructions":'):
+    for key in ('"id":', '"slot":', '"source_index":', '"concept":',
+                '"edit_instructions":', '"slot_context":'):
         assert key in c6, f"photo_briefs schema missing key {key}"
+
+
+def test_designer_brief_has_slot_context(cells: dict) -> None:
+    """slot_context is mandatory — designer must explain what buyer-question
+    OR what page text the photo accompanies. Without it, the editor can't
+    tailor the image to the page narrative."""
+    c6 = cells["ce20f070"]
+    assert "slot_context" in c6
+    # Extraction or guidance must enforce it
+    assert "what TEXT the photo accompanies" in c6 or "slot_context MUST" in c6
 
 
 def test_designer_brief_slots_listed(cells: dict) -> None:
@@ -201,6 +212,132 @@ def test_designer_instructions_explain_quality_over_quantity(cells: dict) -> Non
     assert "QUALITY" in c6 or "quality" in c6
     # Count rule: 5-12 typical, designer-decided
     assert "5-12" in c6 or "5\\u201312" in c6
+
+
+# ============================================================
+# CAROUSEL CONVERSION FUNNEL — buyer-question per slot
+# ============================================================
+
+def test_designer_describes_carousel_conversion_funnel(cells: dict) -> None:
+    """Designer prompt must explain that the 5 carousel photos are a
+    conversion funnel — each answers a specific buyer question in <2s."""
+    c6 = cells["ce20f070"]
+    assert "CAROUSEL CONVERSION FUNNEL" in c6, (
+        "Designer prompt must include CAROUSEL CONVERSION FUNNEL section"
+    )
+    # Anchor inside the funnel block — the slots may also appear in schema
+    # example/enum elsewhere, so we scope our search to the funnel block.
+    funnel_start = c6.find("CAROUSEL CONVERSION FUNNEL")
+    funnel_end = c6.find("INLINE SLOT SEMANTICS", funnel_start)
+    assert funnel_end != -1, "INLINE SLOT SEMANTICS must follow CAROUSEL FUNNEL"
+    block = c6[funnel_start:funnel_end]
+    funnel_pairs = [
+        ("carousel-hero",      ["What IS it", "what is it"]),
+        ("carousel-lifestyle", ["Who uses it", "who uses"]),
+        ("carousel-in-use",    ["How does it work", "how does it work"]),
+        ("carousel-detail",    ["Is it quality", "is it quality"]),
+        ("carousel-scale",     ["How big", "how big"]),
+    ]
+    for slot, question_variants in funnel_pairs:
+        idx = block.find(slot)
+        assert idx != -1, f"funnel block missing slot '{slot}'"
+        window = block[idx:idx + 400]
+        has_question = any(v in window for v in question_variants)
+        assert has_question, (
+            f"slot '{slot}' must be paired with one of {question_variants} "
+            "in the funnel description"
+        )
+
+
+def test_designer_carousel_funnel_states_buyer_objection(cells: dict) -> None:
+    """Funnel should explicitly call out the buyer objection each slot removes."""
+    c6 = cells["ce20f070"]
+    # Should mention removing objections / building trust language
+    assert "objection" in c6.lower(), "carousel funnel must mention objections being removed"
+
+
+# ============================================================
+# INLINE SLOT SEMANTICS — match page narrative
+# ============================================================
+
+def test_designer_describes_inline_slot_semantics(cells: dict) -> None:
+    """Each inline-* slot must have its narrative role explained so designer
+    fills it correctly per page section. Scope check to INLINE SLOT SEMANTICS
+    block — slots may appear in schema/enum elsewhere with no description."""
+    c6 = cells["ce20f070"]
+    sem_start = c6.find("INLINE SLOT SEMANTICS")
+    assert sem_start != -1, "INLINE SLOT SEMANTICS section missing"
+    # Block ends at next major section header (RULE/OUTPUT/PALETTE/COPY/etc.)
+    sem_end = c6.find("OUTPUT:", sem_start)
+    if sem_end == -1: sem_end = sem_start + 4000
+    block = c6[sem_start:sem_end]
+    for slot, expected in [
+        ("inline-story-1", ["BEFORE", "PROBLEM", "before", "problem"]),
+        ("inline-story-2", ["DISCOVERY", "SOLUTION", "discovery", "solution"]),
+        ("inline-story-3", ["TRANSFORMATION", "RESULT", "transformation", "result"]),
+    ]:
+        idx = block.find(slot)
+        assert idx != -1, f"INLINE block missing slot '{slot}'"
+        window = block[idx:idx + 300]
+        assert any(e in window for e in expected), (
+            f"slot '{slot}' must be described as {expected[0]}/{expected[1]} state"
+        )
+
+
+def test_designer_inline_briefs_must_quote_actual_heading(cells: dict) -> None:
+    """Rule: inline brief's slot_context must quote the actual H2/h4 from
+    the corresponding section so the editor sees what TEXT it accompanies."""
+    c6 = cells["ce20f070"]
+    # Look for the rule statement
+    assert "quote the actual H2" in c6 or "MUST quote" in c6
+
+
+# ============================================================
+# prompt.txt surfaces funnel + slot_context per brief
+# ============================================================
+
+def test_prompt_txt_includes_funnel_reference(cells: dict) -> None:
+    """prompt.txt should have a Carousel funnel section so ChatGPT knows
+    each carousel photo answers a different buyer question."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_prompt_lines = [")
+    assert idx != -1
+    txt = c6[idx:idx + 6000]
+    assert "Carousel conversion funnel" in txt or "carousel conversion" in txt.lower()
+    assert "buyer-question" in txt.lower() or "buyer question" in txt.lower()
+
+
+def test_prompt_txt_per_brief_includes_slot_context(cells: dict) -> None:
+    """Per-brief section must surface slot_context so ChatGPT sees the
+    placement context for each photo."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_prompt_lines = [")
+    assert idx != -1
+    txt = c6[idx:idx + 6000]
+    assert "Slot context:" in txt or "slot_context" in txt
+    assert "_brief_pp.get('slot_context'" in c6, (
+        "STEP 4.5 must read brief.slot_context and include it per brief"
+    )
+
+
+def test_prompt_txt_inline_placement_block(cells: dict) -> None:
+    """prompt.txt should have a section explaining inline-* placement
+    inside the page narrative — so editor knows the photo isn't standalone."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_prompt_lines = [")
+    assert idx != -1
+    txt = c6[idx:idx + 6000]
+    assert "Inline placement" in txt or "match the page narrative" in txt.lower()
+
+
+def test_prompt_txt_workflow_mentions_carousel_priority(cells: dict) -> None:
+    """The model instruction line must call out that carousel-* photos
+    should prioritise the buyer-question over generic style."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_prompt_lines = [")
+    assert idx != -1
+    txt = c6[idx:idx + 6000]
+    assert "buyer-question" in txt.lower() or "prioritise" in txt.lower() or "prioritize" in txt.lower()
 
 
 # ============================================================
@@ -338,7 +475,8 @@ def test_prompt_txt_includes_per_brief_section(cells: dict) -> None:
     c6 = cells["ce20f070"]
     idx = c6.find("_prompt_lines = [")
     assert idx != -1
-    txt = c6[idx:idx + 3500]
+    # Per-brief block uses a wider window now (funnel + inline blocks pushed it later)
+    txt = c6[idx:idx + 8000]
     assert "Concept:" in txt
     assert "Edit instructions:" in txt
     assert "Source URL:" in txt
