@@ -61,23 +61,55 @@ def test_cell2_helper_uses_staged_uploads(cells: dict) -> None:
 
 
 # ============================================================
-# Cell 6: Designer outputs visual_style for ChatGPT prompt
+# Cell 6: Designer outputs visual_style + photo_briefs[]
 # ============================================================
 
 def test_designer_schema_has_visual_style(cells: dict) -> None:
     c6 = cells["ce20f070"]
     assert '"visual_style":' in c6, (
         "Designer JSON schema must have visual_style field "
-        "(used as photo-edit prompt in photo_pack ZIP)"
+        "(unified style anchor used in photo_pack prompt.txt)"
     )
+
+
+def test_designer_schema_has_photo_briefs(cells: dict) -> None:
+    """Designer decides count + content of briefs (5-12). Each brief specifies
+    slot, source_index, concept, edit_instructions."""
+    c6 = cells["ce20f070"]
+    assert '"photo_briefs":' in c6, (
+        "Designer JSON schema must have photo_briefs[] field"
+    )
+    # Brief shape keys
+    for key in ('"id":', '"slot":', '"source_index":', '"concept":', '"edit_instructions":'):
+        assert key in c6, f"photo_briefs schema missing key {key}"
+
+
+def test_designer_brief_slots_listed(cells: dict) -> None:
+    """Slot enum includes carousel-* and inline-* values for clear placement."""
+    c6 = cells["ce20f070"]
+    for slot in ("carousel-hero", "carousel-lifestyle", "carousel-detail",
+                 "inline-hero", "inline-story-1"):
+        assert slot in c6, f"slot enum missing '{slot}'"
 
 
 def test_designer_extracts_visual_style_into_meta(cells: dict) -> None:
-    """visual_style must be tucked into meta so STEP 4.5 can read it."""
     c6 = cells["ce20f070"]
-    assert "meta['visual_style']" in c6, (
-        "Designer step must save visual_style into meta dict"
-    )
+    assert "meta['visual_style']" in c6
+
+
+def test_designer_extracts_photo_briefs_into_meta(cells: dict) -> None:
+    """photo_briefs must be persisted in meta so STEP 4.5 can read them
+    after the designer step writes final_html."""
+    c6 = cells["ce20f070"]
+    assert "meta['photo_briefs']" in c6
+
+
+def test_designer_instructions_explain_quality_over_quantity(cells: dict) -> None:
+    """Goal: designer should pick FEWER strong briefs over many weak ones."""
+    c6 = cells["ce20f070"]
+    assert "QUALITY" in c6 or "quality" in c6
+    # Count rule: 5-12 typical, designer-decided
+    assert "5-12" in c6 or "5\\u201312" in c6
 
 
 # ============================================================
@@ -109,8 +141,36 @@ def test_step45_uses_zipfile(cells: dict) -> None:
     assert "writestr('prompt.txt'" in c6, (
         "ZIP must include prompt.txt — the ChatGPT edit-prompt"
     )
-    assert "writestr(f'photos/" in c6, (
-        "ZIP must include photos/ directory with EPROLO sources"
+    assert "f'photos/" in c6, (
+        "ZIP must include photos/ directory with descriptive filenames"
+    )
+
+
+def test_step45_drives_off_briefs(cells: dict) -> None:
+    """STEP 4.5 reads briefs from meta — does NOT bundle ALL EPROLO photos.
+    Quality > quantity: only briefed photos go into the ZIP."""
+    c6 = cells["ce20f070"]
+    assert "_photo_briefs_pp" in c6 or "photo_briefs" in c6
+    assert "_resolved" in c6, (
+        "STEP 4.5 must resolve briefs to source URLs (not bundle everything)"
+    )
+    # Must read briefs from meta, not just dump all _all_eprolo
+    assert "_meta_pp.get('photo_briefs')" in c6
+
+
+def test_step45_filenames_use_slot(cells: dict) -> None:
+    """Filenames in ZIP must include the brief's slot (e.g. 01-carousel-hero.jpg)
+    so user can drop them into Shopify product images correctly."""
+    c6 = cells["ce20f070"]
+    assert "_safe_slot" in c6, "STEP 4.5 must build descriptive filenames using slot"
+
+
+def test_step45_caps_briefs_at_30(cells: dict) -> None:
+    """Defensive cap so a runaway designer (e.g. emits 100 briefs) doesn't
+    create a huge ZIP that times out the upload."""
+    c6 = cells["ce20f070"]
+    assert "_resolved[:30]" in c6 or "[:30]" in c6, (
+        "STEP 4.5 should cap briefs at 30 to prevent oversized ZIPs"
     )
 
 
@@ -171,22 +231,23 @@ def test_photo_pack_in_wanelo_keys(cells: dict) -> None:
 # ============================================================
 
 def test_prompt_txt_contains_workflow_steps(cells: dict) -> None:
-    """prompt.txt must explain the ChatGPT-UI workflow so the user knows what to do."""
+    """prompt.txt must explain the ChatGPT-UI workflow per-brief."""
     c6 = cells["ce20f070"]
-    # Locate prompt_txt section by anchoring on '_prompt_txt = (' and the
-    # closing matched paren — search next ~3000 chars (large enough for prompt body).
-    idx = c6.find("_prompt_txt = (")
-    assert idx != -1, "_prompt_txt construction not found"
-    txt = c6[idx:idx + 3000]
-    assert "Visual style" in txt or "visual style" in txt, "missing 'Visual style'"
-    assert "ChatGPT" in txt, "missing 'ChatGPT' reference"
+    # Now built via "\n".join(_prompt_lines) — anchor on _prompt_lines list literal
+    idx = c6.find("_prompt_lines = [")
+    assert idx != -1, "_prompt_lines list not found"
+    txt = c6[idx:idx + 3500]
+    assert "visual style" in txt.lower(), "missing 'visual style' header"
+    assert "ChatGPT-UI" in txt or "ChatGPT" in txt
     assert "carousel" in txt.lower() or "gallery" in txt.lower()
 
 
-def test_prompt_txt_includes_source_urls(cells: dict) -> None:
-    """User may want originals — list source URLs in prompt.txt."""
+def test_prompt_txt_includes_per_brief_section(cells: dict) -> None:
+    """Each brief gets its own ### section with Concept/Edit/Source URL fields."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_txt = (")
+    idx = c6.find("_prompt_lines = [")
     assert idx != -1
-    txt = c6[idx:idx + 3000]
-    assert "Source URLs" in txt or "source URL" in txt.lower()
+    txt = c6[idx:idx + 3500]
+    assert "Concept:" in txt
+    assert "Edit instructions:" in txt
+    assert "Source URL:" in txt
