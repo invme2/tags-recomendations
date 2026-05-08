@@ -1,26 +1,41 @@
 # WANELO Theme Setup — JSON-driven product pages
 
-Pipeline пишет 9 JSON-метафилдов на товар. Тема рендерит каждую секцию из своего метафилда через одну Liquid-секцию с 9 снипетами.
+Pipeline пишет до 21 JSON-метафилда на товар. Тема рендерит каждую секцию из своего метафилда через одну Liquid-секцию с 21 снипетом. Снеппеты с пустым метафилдом просто пропускаются (skip-if-blank gate), так что для каждого товара показывается только то что Designer счёл уместным (типично 11-13 секций из 21).
 
 ## Файловая структура
 
 ```
 theme/
 ├── assets/
-│   ├── wanelo.css        ← скопировать целиком
-│   └── wanelo.js         ← скопировать целиком (~400 байт, IntersectionObserver)
+│   ├── wanelo.css        ← один файл, ~465 строк, всё оформление
+│   └── wanelo.js         ← ~400 байт, IntersectionObserver для анимаций
 ├── sections/
-│   └── wanelo-product-page.liquid   ← добавляешь в product.json
+│   └── wanelo-product-page.liquid   ← одна master-секция, рендерит 21 сниппет
 └── snippets/
-    ├── wanelo-palette.liquid        ← :root{--brand-*} per-product
-    ├── wanelo-hero.liquid           ← hero секция
-    ├── wanelo-story.liquid          ← story chapters
-    ├── wanelo-features.liquid       ← 3 features cards
-    ├── wanelo-stats.liquid          ← 4-cell stats grid
-    ├── wanelo-reviews.liquid        ← 12 mini-reviews, 3-col animated
-    ├── wanelo-faq.liquid            ← accordion + JSON-LD FAQPage schema
-    ├── wanelo-cta.liquid            ← centered CTA
-    └── wanelo-interlinks.liquid     ← collection pills
+    │ === Always-on (9): рендерятся для каждого товара
+    ├── wanelo-palette.liquid           ← :root{--brand-*} per-product
+    ├── wanelo-hero.liquid              ← hero блок (h1 + lead + image)
+    ├── wanelo-story.liquid             ← 1-3 главы alternating mirror
+    ├── wanelo-features.liquid          ← 3 features cards
+    ├── wanelo-stats.liquid             ← 4-cell stats grid
+    ├── wanelo-reviews.liquid           ← 9-12 mini-reviews, 3-col animated
+    ├── wanelo-faq.liquid               ← accordion + JSON-LD FAQPage
+    ├── wanelo-cta.liquid               ← centered CTA
+    ├── wanelo-interlinks.liquid        ← collection pills
+    │ === Optional content (7): designer заполняет если product fit
+    ├── wanelo-ingredients.liquid       ← chips ингредиентов (skincare/food)
+    ├── wanelo-how-to.liquid            ← 3-7 numbered steps (rituals/setup)
+    ├── wanelo-timeline.liquid          ← before/after milestones (transformations)
+    ├── wanelo-specs.liquid             ← spec table (electronics/jewelry)
+    ├── wanelo-whats-included.liquid    ← items in box (bundles/kits)
+    ├── wanelo-compare.liquid           ← vs alternatives (research-buy)
+    ├── wanelo-trust.liquid             ← certs + press (regulated/premium)
+    │ === Optional physical (5): новые niche модули
+    ├── wanelo-size-guide.liquid        ← размерная сетка (clothing/jewelry/pet)
+    ├── wanelo-care.liquid              ← care chips (fashion/jewelry/textiles)
+    ├── wanelo-dimensions.liquid        ← физ. размеры + scale-ref (decor/furniture)
+    ├── wanelo-variants.liquid          ← color swatches (fashion/accessories)
+    └── wanelo-gift-options.liquid      ← gift wrap + occasions
 ```
 
 ## Установка в тему (15 минут)
@@ -37,22 +52,25 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 - Открой [wanelo.css RAW](https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/assets/wanelo.css) → выдели всё (Ctrl+A) → копируй → вставь в Shopify → **Save**
 - Повтори для **wanelo.js** ([RAW URL](https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/assets/wanelo.js))
 
-### 3. Скопировать snippets (9 файлов)
+### 3. Скопировать snippets (21 файл)
 
-В разделе **Snippets**:
+В разделе **Snippets** для каждого: **Add a new snippet** → имя без `.liquid` → Done → вставь содержимое из RAW URL → Save.
 
-- **Add a new snippet** → name `wanelo-palette` → Done → вставь содержимое из [RAW](https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-palette.liquid) → Save
+Все RAW URL'ы — `https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/<name>.liquid`:
 
-Повтори для остальных 8 снипетов: `wanelo-hero`, `wanelo-story`, `wanelo-features`, `wanelo-stats`, `wanelo-reviews`, `wanelo-faq`, `wanelo-cta`, `wanelo-interlinks`. Все RAW URL'ы:
+**Always-on (9):**
+- `wanelo-palette` · `wanelo-hero` · `wanelo-story` · `wanelo-features`
+- `wanelo-stats` · `wanelo-reviews` · `wanelo-faq` · `wanelo-cta` · `wanelo-interlinks`
 
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-hero.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-story.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-features.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-stats.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-reviews.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-faq.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-cta.liquid
-- https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/wanelo-interlinks.liquid
+**Optional content (7):**
+- `wanelo-ingredients` · `wanelo-how-to` · `wanelo-timeline` · `wanelo-specs`
+- `wanelo-whats-included` · `wanelo-compare` · `wanelo-trust`
+
+**Optional physical (5):**
+- `wanelo-size-guide` · `wanelo-care` · `wanelo-dimensions` · `wanelo-variants`
+- `wanelo-gift-options`
+
+Совет: открой все 21 RAW в фоновых вкладках сразу — потом просто Ctrl+Tab между Shopify-редактором и каждой вкладкой.
 
 ### 4. Скопировать секцию
 
@@ -98,7 +116,7 @@ Anthropic + DataForSEO — оба должны быть с балансом, и�
 
 1. Открой ноутбук: [Open in Colab](https://colab.research.google.com/github/invme2/tags-recomendations/blob/claude/enrich-shopify-taxonomy-kMPmA/pipeline/Shopify_Pipeline.ipynb)
 2. `RESET_DB ✓` → выполни Cell 1 → загрузи CSV/Excel
-3. Cell 2 — увидишь `Metafield definitions ensured: 9`
+3. Cell 2 — увидишь `Metafield definitions ensured: 21`
 4. Cell 3-5.5 → как обычно
 5. Cell 6 — для каждого товара лог:
    ```
@@ -110,7 +128,7 @@ Anthropic + DataForSEO — оба должны быть с балансом, и�
        JSON OK: hero=True story=2 feat=3 stat=4 rev=12 faq=5 | $0.0234
        Tags: 8 valid
      → Shopify... Created: gid://shopify/...
-       Metafields: 9/9 written (8423 chars total)
+       Metafields: 12/21 written (~14000 chars total)  ← число 12 зависит от категории, optional модули скипаются
        Gallery: N/N (EPROLO)
    ```
 
@@ -121,9 +139,11 @@ PIPELINE                                       SHOPIFY                          
 ─────────                                      ────────                           ─────────
 Strategy (Opus 4.7) — positioning per product
         ↓
-Designer (Sonnet 4.6) — writes 9 content sections, picks EPROLO image_url's
+Designer (Sonnet 4.6) — writes up to 21 sections; FILL/SKIP per category;
+        picks image_url's directly from EPROLO photo list
         ↓
-9 custom.* JSON metafields                    ──→ Shopify Admin Custom Data       ──→ 9 wanelo-*.liquid snippets
+Up to 21 custom.* JSON metafields              ──→ Shopify Admin Custom Data       ──→ 21 wanelo-*.liquid snippets
+                                                                                    (skip-if-blank — невыделенные не рендерятся)
 EPROLO photos (top images)                    ──→ productCreateMedia (carousel)   ──→ /products/handle карусель
 
 CSS framework loads ONCE from theme:  /assets/wanelo.css (~30KB cached)
@@ -141,6 +161,6 @@ JS observer loads ONCE:               /assets/wanelo.js (~400 bytes)
 ## Если что-то не так
 
 - **Section добавлена но пусто** — пайплайн ещё не записал метафилды для этого товара. Запусти Cell 6.
-- **`Liquid error: Metafield not found`** — определение метафилда не создано. Проверь Cell 2 вывод `Metafield definitions ensured: 9`. Если 0 — `SHOPIFY_TOKEN` не работает.
+- **`Liquid error: Metafield not found`** — определение метафилда не создано. Проверь Cell 2 вывод `Metafield definitions ensured: 21`. Если меньше 21 — старая версия Cell 2, обнови ноутбук.
 - **JSON-LD FAQPage не валиден** — скорее всего designer написал кавычки или \n в quotes. Liquid filter `| json` экранирует.
 - **Анимации не идут** — wanelo.js не загрузился. Проверь Network tab на наличие `wanelo.js → 200 OK`.

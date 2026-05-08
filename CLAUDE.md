@@ -105,7 +105,8 @@ tags-recomendations/
   (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
   unknown persona/intent/gender/age, empty embed_text)
 - ✅ `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт пользователя (обогащение через Claude API + FAISS-related)
-- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт content+briefs) → ImageGen(gpt-image-2: 5 gallery + N metafield) → Shopify push.
+- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт **до 21 JSON-секции** с FILL/SKIP per category) → Shopify push (метафилды + EPROLO gallery).
+- ✅ Theme: 21 метафилд = 9 always-on + 12 optional. Файлы темы в `pipeline/theme_assets/` (1 master section + 21 snippet + wanelo.css ~465 строк + wanelo.js). Snippets с пустым метафилдом скипаются в Liquid, типичный товар получает 11-13 секций из 21.
 - ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячеечная дефинированность только на module-level scope (не лезет в тела функций — иначе 75 false-positive)
 - ✅ `pipeline/tools/extract_cells.py`, `apply_patch.py` — работают
 - ✅ `tools/health_check.py` — на реальных данных всё зелёное
