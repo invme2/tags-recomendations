@@ -61,6 +61,97 @@ def test_cell2_helper_uses_staged_uploads(cells: dict) -> None:
 
 
 # ============================================================
+# Admin-only access — photo_pack must NOT be exposed via Storefront API
+# ============================================================
+
+def test_definition_helper_supports_storefront_access(cells: dict) -> None:
+    """shopify_ensure_metafield_definition must accept a visible_to_storefront
+    flag and pass through to access.storefront in the GraphQL input."""
+    c2 = cells["b810afd7"]
+    assert "visible_to_storefront" in c2, (
+        "Helper signature must accept visible_to_storefront parameter"
+    )
+    assert '"storefront":' in c2 or "'storefront':" in c2, (
+        "Helper must build access.storefront field in MetafieldDefinitionInput"
+    )
+    assert '"NONE"' in c2 or "'NONE'" in c2, (
+        "Helper must use storefront=NONE for admin-only definitions"
+    )
+
+
+def test_photo_pack_is_admin_only_in_loop(cells: dict) -> None:
+    """Cell 2 loop must mark photo_pack as admin-only (visible_to_storefront=False)."""
+    c2 = cells["b810afd7"]
+    assert "_admin_only" in c2 and "'photo_pack'" in c2, (
+        "Cell 2 must declare _admin_only set containing 'photo_pack'"
+    )
+    assert "visible_to_storefront=(_k not in _admin_only)" in c2, (
+        "Loop must pass visible_to_storefront based on admin-only set membership"
+    )
+
+
+def test_other_metafields_remain_storefront_visible(cells: dict) -> None:
+    """All other metafields (hero, story, etc.) must remain visible to
+    Storefront API — Liquid theme reads them. The admin-only set must be
+    explicit and tight (only utility/internal fields)."""
+    c2 = cells["b810afd7"]
+    # _admin_only set should contain ONLY photo_pack right now — anything else
+    # would silently break theme rendering. Use a regex to extract the set.
+    m = re.search(r"_admin_only\s*=\s*\{([^}]+)\}", c2)
+    assert m, "_admin_only set declaration not found"
+    members = {s.strip().strip("'\"") for s in m.group(1).split(',') if s.strip()}
+    assert members == {"photo_pack"}, (
+        f"_admin_only must contain ONLY photo_pack; got {members}. "
+        "Adding other keys would hide content metafields from Liquid."
+    )
+
+
+# ============================================================
+# Customer-facing markup must NOT reference photo_pack
+# ============================================================
+
+def test_no_liquid_snippet_references_photo_pack() -> None:
+    """No Liquid snippet should read product.metafields.custom.photo_pack —
+    photo_pack is an admin utility, not page content."""
+    snippets_dir = ROOT / "pipeline" / "theme_assets" / "snippets"
+    for snippet_path in snippets_dir.glob("*.liquid"):
+        content = snippet_path.read_text(encoding="utf-8")
+        assert "photo_pack" not in content, (
+            f"{snippet_path.name}: must NOT reference photo_pack — "
+            "snippet would expose ZIP URL to storefront markup"
+        )
+
+
+def test_master_section_does_not_render_photo_pack() -> None:
+    """The master section must not include photo_pack in its render list."""
+    section = (ROOT / "pipeline" / "theme_assets" / "sections" /
+               "wanelo-product-page.liquid").read_text(encoding="utf-8")
+    assert "photo_pack" not in section, (
+        "Master section must NOT render photo_pack — utility-only metafield"
+    )
+    assert "photo-pack" not in section, (
+        "Master section must NOT render any photo-pack snippet"
+    )
+
+
+def test_body_html_does_not_include_photo_pack(cells: dict) -> None:
+    """Step 5 body_html (the product description shown above the metafields)
+    must not embed the photo_pack URL."""
+    c6 = cells["ce20f070"]
+    # Find the body_html assembly section
+    pat = re.compile(r"body_parts\s*=\s*\[(.*?)\]\s*\n", re.DOTALL)
+    m = pat.search(c6)
+    if m:
+        body = m.group(1)
+        assert "photo_pack" not in body, "body_html must not embed photo_pack"
+    # Also check body_html itself doesn't reference it
+    body_idx = c6.find("body_html = ")
+    if body_idx != -1:
+        chunk = c6[body_idx:body_idx + 500]
+        assert "photo_pack" not in chunk
+
+
+# ============================================================
 # Cell 6: Designer outputs visual_style + photo_briefs[]
 # ============================================================
 
