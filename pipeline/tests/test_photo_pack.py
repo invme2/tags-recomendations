@@ -361,6 +361,28 @@ def test_step45_triggers_on_html_ready(cells: dict) -> None:
     )
 
 
+def test_step45_caps_zip_at_50mb(cells: dict) -> None:
+    """ZIP must be capped at 50 MB to avoid Shopify staged-upload failure
+    on huge EPROLO photos. Briefs that push over the cap are dropped (in order)."""
+    c6 = cells["ce20f070"]
+    assert "_MAX_ZIP_BYTES = 50 * 1024 * 1024" in c6
+    assert "_photo_files_capped" in c6
+    assert "ZIP cap" in c6 and "dropping brief" in c6
+
+
+def test_designer_retries_on_parse_fail(cells: dict) -> None:
+    """If all 3 parse-fallback attempts fail (or yield empty), Designer
+    is called once more with error context to recover."""
+    c6 = cells["ce20f070"]
+    assert "PREVIOUS ATTEMPT FAILED" in c6, (
+        "Designer must retry once with error-context user message"
+    )
+    assert "_retry_user" in c6
+    assert "_r2_retry" in c6
+    # Cost from retry must be added to cost2 so per-product spend reflects reality
+    assert "cost2 += _r2_retry.usage" in c6
+
+
 def test_step45_uses_zipfile(cells: dict) -> None:
     """Pipeline packs in-memory ZIP using stdlib zipfile."""
     c6 = cells["ce20f070"]

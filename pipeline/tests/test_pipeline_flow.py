@@ -39,6 +39,7 @@ EXPECTED_STATUSES = [
     "vision_done",
     "strategy_done",
     "html_ready",
+    "pack_done",       # photo_pack ZIP step done (or skipped/failed gracefully)
     "done",
     "error",
 ]
@@ -69,7 +70,8 @@ def test_status_transitions_cover_each_step(cells: dict) -> None:
         ("pstatus == 'images_uploaded'",  "vision"),
         ("pstatus == 'vision_done'",      "strategy"),
         ("pstatus == 'strategy_done'",    "designer"),
-        ("pstatus == 'html_ready'",       "shopify"),
+        ("pstatus == 'html_ready'",       "photo_pack"),
+        ("pstatus == 'pack_done'",        "shopify"),
     ]
     for guard, label in transitions:
         assert guard in c6, f"Missing status guard '{guard}' (step: {label})"
@@ -248,13 +250,29 @@ def test_step5_no_assets_json_lookup(cells: dict) -> None:
     assert "_assets_pub" not in c6
 
 
-def test_step5_triggers_on_html_ready(cells: dict) -> None:
+def test_step5_triggers_on_pack_done(cells: dict) -> None:
+    """Step 5 (Shopify push) triggers on pack_done — STEP 4.5 (photo_pack)
+    sets pack_done unconditionally so Shopify always runs even if ZIP failed."""
     c6 = cells["ce20f070"]
     m = re.search(r"# ═══ STEP 5: Shopify.*?if pstatus == '(\w+)':", c6, re.DOTALL)
     assert m, "STEP 5 trigger not found"
-    assert m.group(1) == "html_ready", (
-        f"STEP 5 must trigger on html_ready (got '{m.group(1)}')"
+    assert m.group(1) == "pack_done", (
+        f"STEP 5 must trigger on pack_done (got '{m.group(1)}')"
     )
+
+
+def test_step45_unconditionally_advances_status(cells: dict) -> None:
+    """STEP 4.5 must advance pstatus to pack_done outside the try/except,
+    so a ZIP failure doesn't strand the product at html_ready forever."""
+    c6 = cells["ce20f070"]
+    pat = re.compile(
+        r"except Exception as _e_pp:.*?db_update_status\(pid, 'pack_done'\)",
+        re.DOTALL,
+    )
+    assert pat.search(c6), (
+        "STEP 4.5 must call db_update_status(pid, 'pack_done') AFTER the try/except"
+    )
+    assert "pstatus = 'pack_done'" in c6
 
 
 # ============================================================
