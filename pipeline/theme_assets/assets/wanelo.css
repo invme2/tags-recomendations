@@ -517,3 +517,42 @@
 .wanelo-sticky-atc.visible{transform:translateY(0)}
 .wanelo-sticky-arrow{font-size:13px;opacity:.6}
 @media(min-width:769px){.wanelo-sticky-atc{display:none}}
+
+/* ============================================================
+   COLLECTION → COLLECTION cross-links (SEO silo)
+   ============================================================ */
+.wanelo-coll-related{padding:48px 24px;margin:0 auto;max-width:1100px}
+.wanelo-coll-related__head{margin-bottom:20px;text-align:center}
+.wanelo-coll-related__head h2{font-size:24px;font-weight:600;color:var(--ink,#111);margin-top:6px}
+.wanelo-coll-related__list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+}
+.wanelo-coll-related__item a{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:999px;
+  background:var(--brand-soft,#fff5f0);
+  border:1px solid var(--line,#e5e7eb);
+  color:var(--ink,#111);
+  font-size:14px;font-weight:500;text-decoration:none;
+  transition:background .15s ease,transform .15s ease,border-color .15s ease;
+}
+.wanelo-coll-related__item a:hover{
+  background:var(--brand-1,#a6d8be);transform:translateY(-1px);
+  border-color:transparent;
+}
+.wanelo-coll-related__item.is-hub a{
+  background:var(--brand-deep,#aac9f5);color:#fff;font-weight:600;
+  border-color:transparent;
+}
+.wanelo-coll-related__hub{
+  font-size:10px;font-weight:700;letter-spacing:.08em;
+  padding:2px 7px;border-radius:4px;
+  background:rgba(255,255,255,.25);text-transform:uppercase;
+}
+/* Inline "Browse related" paragraph in collection description */
+.wanelo-coll-also{
+  margin-top:18px;font-size:14px;color:var(--ink-2,#444);
+}
+.wanelo-coll-also a{color:var(--brand-deep,#3a78d8);text-decoration:underline;text-underline-offset:2px}
+.wanelo-coll-also a:hover{text-decoration:none}

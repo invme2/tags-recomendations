@@ -1,0 +1,59 @@
+{%- comment -%}
+  WANELO Related Collections — collection-page section.
+
+  Renders a chip-row of related collections from
+  collection.metafields.custom.related_collections (JSON array set by
+  pipeline post-creation with reciprocity + hub detection).
+
+  Each chip carries varied anchor text (exact title / keyword phrase /
+  generic "explore X") so we don't over-optimize a single anchor —
+  Google penalty signal.
+
+  Hubs (top-15% by in-degree) get distinctive styling + a "HUB" badge —
+  buyer sees the parent category clearly, authority concentrates there.
+
+  Install: Online Store → Themes → Customize → Collection → Default
+  collection → Add section → "Wanelo Related Collections" → Save.
+
+  Empty metafield = section renders nothing (skip-if-blank gate), so it's
+  safe to leave installed even on collections without related data yet.
+{%- endcomment -%}
+
+{%- assign related = collection.metafields.custom.related_collections.value -%}
+{%- if related and related.size > 0 -%}
+{{ 'wanelo.css' | asset_url | stylesheet_tag }}
+<section class="wanelo-coll-related reveal" aria-label="Related collections">
+  <div class="wanelo-coll-related__head reveal">
+    <div class="wanelo-kicker">EXPLORE MORE</div>
+    <h2>Related collections</h2>
+  </div>
+  <ul class="wanelo-coll-related__list">
+    {%- for r in related -%}
+      <li class="wanelo-coll-related__item{% if r.is_hub %} is-hub{% endif %}">
+        <a href="/collections/{{ r.handle }}" rel="noopener">
+          {%- if r.is_hub -%}<span class="wanelo-coll-related__hub" aria-hidden="true">HUB</span> {% endif -%}
+          {{ r.anchor | default: r.title }}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+<script src="{{ 'wanelo.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Wanelo Related Collections",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders a chip-row of related collections from collection.metafields.custom.related_collections. Data is computed by the pipeline (Cell 4 cross-linking step) with reciprocity + hub detection. Empty metafield = section hidden, so safe to leave installed on all collections."
+    }
+  ],
+  "presets": [
+    { "name": "Wanelo Related Collections" }
+  ]
+}
+{% endschema %}

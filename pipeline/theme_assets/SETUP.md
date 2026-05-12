@@ -91,6 +91,17 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 
 Если у тебя там была кастомная Liquid-секция со старым кодом (рендеринг `product.metafields.custom.html_description` + JSON-LD) — **удалить её** (нажми трёхточечное меню секции → Remove). Иначе будет дублирование.
 
+### 7. Установить Related-Collections section на collection-страницы (для SEO)
+
+В разделе **Sections** в редакторе тем:
+- **Add a new section** → name `wanelo-collection-related` → Done → вставь содержимое из [RAW](https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/sections/wanelo-collection-related.liquid) → Save
+
+Подключить на collection-страницу:
+- Online Store → Themes → **Customize** → сверху селектор → выбери **"Collections → Default collection"**
+- В левой панели секций → **Add section** → найди **"Wanelo Related Collections"** → Add → перетащи вниз страницы (после product grid) → **Save**
+
+Пустой метафилд = секция скрывается, поэтому безопасно оставить установленной на всех коллекциях даже если данных ещё нет. Pipeline (Cell 4) после создания коллекций сам впишет данные в `custom.related_collections` и вшит inline-`<p>` с ссылками в description.
+
 ## ⚠ Перед прогоном — пополни 2 сервиса
 
 Anthropic + DataForSEO — оба должны быть с балансом, иначе прогон встанет посередине.

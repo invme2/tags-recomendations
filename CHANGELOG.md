@@ -7,6 +7,46 @@
 ## [Unreleased]
 
 ### Added
+- **Cross-collection SEO interlinking (silo structure)** — fills the
+  "collection → collection" link gap. Before, each collection page was a
+  dead end for Google (linked only to its own products). Now collections
+  link laterally, distributing authority across the silo:
+    - **Cell 2: `_compute_collection_related()` graph algorithm.** Scores
+      every pair by title_word × 3 + keyword × 2 + handle_word × 1 (with
+      plural-normalisation and word-level tokenisation so "fans" / "fan"
+      match). Picks top-k per collection (k=6 default).
+    - **Reciprocity:** A → B implies B → A — symmetric closure within a
+      cap of 8 entries per collection. SEO authority flows both ways.
+    - **Hub detection:** weighted in-degree on the NATURAL (pre-reciprocity)
+      adjacency identifies high-attraction nodes — typically broad
+      umbrella collections ("All Fans") that overlap with many spokes.
+      Top ~15% by weighted in-degree are flagged `is_hub: true`, sorted
+      first in each related list, rendered with distinctive "HUB" badge.
+    - **Anchor-text variety** — cycles through {exact title / 2-4 word
+      keyword / "explore X" generic} every 4 entries; hubs get "Shop all
+      <title>". Prevents over-optimization penalty.
+    - **`custom.related_collections` metafield (COLLECTION owner_type)** —
+      JSON array `[{handle, title, anchor, score, is_hub}]`. Written by
+      Cell 4's new post-creation cross-link step.
+    - **Inline-mention paragraph** appended to each collection's
+      descriptionHtml: `<p class="wanelo-coll-also">Browse related:
+      <a>...</a> · <a>...</a></p>`. 2 top related collections with varied
+      anchors, contextual text-flow link rather than UI chip. Idempotent
+      via `wanelo-coll-also` sentinel-class check.
+    - **`sections/wanelo-collection-related.liquid`** — operator-installable
+      section that renders chip-row of related collections on the collection
+      page (Customize → Collection → Add section). Empty-metafield gate so
+      safe to leave installed on all collections.
+    - **`wanelo.css`** — chip styling + hub-distinct variant + inline-paragraph
+      style.
+  Expected SEO impact: +20-40% organic over 3-6 months once Google crawls
+  the new link graph (lateral authority flow + reduced collection-page
+  dead-ends + topical clustering).
+  29 new tests in `pipeline/tests/test_collection_seo.py` including
+  synthetic algorithm correctness fixtures (basic overlap, reciprocity
+  guarantee, hub detection, anchor variety, score-descending sort,
+  no-self-links, empty input, single-collection).
+
 - **Conversion-optimization features for cold paid traffic** — five additions
   designed to lift CVR on the typical $15-30 EPROLO-driven product page from
   ~0.8% baseline to ~2-3% with all fixes applied:
