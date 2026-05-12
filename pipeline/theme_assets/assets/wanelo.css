@@ -463,3 +463,57 @@
 .wanelo-page .wanelo-giftoptions__opts li{font-size:13px;color:var(--ink-2);padding-left:14px;position:relative}
 .wanelo-page .wanelo-giftoptions__opts li::before{content:'·';position:absolute;left:4px;color:var(--ink-4);font-weight:700}
 .wanelo-page .wanelo-giftoptions__ships{margin-top:18px;font-size:13px;color:var(--ink-3);text-align:center}
+
+/* ============================================================
+   CONVERSION ADDS — trust line, inline CTA, guarantee, sticky ATC
+   ============================================================ */
+
+/* Trust line under H1 — above-fold trust signal */
+.wanelo-page .wanelo-hero__trust{
+  margin-top:14px;font-size:13px;font-weight:500;letter-spacing:.02em;
+  color:var(--ink-2);display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center;
+}
+
+/* Inline CTA mirror inside hero — multiple ATC hit points lift CVR */
+.wanelo-page .wanelo-hero__cta{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:24px;padding:14px 28px;
+  background:var(--brand-deep);color:#fff;
+  border:none;border-radius:var(--r-md);
+  font-size:15px;font-weight:600;letter-spacing:.02em;
+  text-decoration:none;cursor:pointer;
+  transition:transform .2s ease,background .2s ease;
+}
+.wanelo-page .wanelo-hero__cta:hover{transform:translateY(-1px);background:var(--brand-1)}
+.wanelo-page .wanelo-hero__cta:active{transform:translateY(0)}
+
+/* Risk-reversal block — sits right under hero */
+.wanelo-page .wanelo-guarantee{padding:32px 24px;margin:0 auto;max-width:1100px}
+.wanelo-page .wanelo-g-grid{
+  display:grid;grid-template-columns:1fr;gap:14px;
+}
+@media(min-width:760px){.wanelo-page .wanelo-g-grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+.wanelo-page .wanelo-g-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:18px 20px;border-radius:var(--r-md);
+  background:var(--brand-soft);border:1px solid var(--line);
+}
+.wanelo-page .wanelo-g-icon{font-size:24px;line-height:1;flex-shrink:0}
+.wanelo-page .wanelo-g-text strong{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.wanelo-page .wanelo-g-text p{font-size:13px;color:var(--ink-2);margin:0;line-height:1.45}
+
+/* Sticky mobile ATC — pinned to viewport bottom while ATC form is off-screen */
+.wanelo-sticky-atc{
+  position:fixed;left:0;right:0;bottom:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 20px 18px;
+  background:#fff;
+  border-top:1px solid rgba(0,0,0,.06);
+  box-shadow:0 -10px 30px rgba(0,0,0,.08);
+  color:#111;text-decoration:none;
+  font-size:16px;font-weight:600;letter-spacing:.02em;
+  transform:translateY(110%);transition:transform .25s ease;
+}
+.wanelo-sticky-atc.visible{transform:translateY(0)}
+.wanelo-sticky-arrow{font-size:13px;opacity:.6}
+@media(min-width:769px){.wanelo-sticky-atc{display:none}}

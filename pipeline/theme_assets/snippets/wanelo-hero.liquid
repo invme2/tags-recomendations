@@ -2,6 +2,13 @@
   HERO snippet — text + photo split.
   Reads product.metafields.custom.hero JSON:
     {kicker, h1, lead, image_url, image_alt}
+
+  Conversion adds:
+    - Trust line under H1 (uses shop.metafields.wanelo.trust_line, falls
+      back to a sensible default). Visible above the fold = trust signal
+      before buyer scrolls.
+    - Inline CTA "Add to cart →" button — anchors to #wanelo-atc (the
+      original Shopify product form). Multiple CTA hit points up CVR.
 {%- endcomment -%}
 
 {%- assign hero = product.metafields.custom.hero.value -%}
@@ -17,6 +24,15 @@
     {%- if hero.lead != blank -%}
       <p class="wanelo-hero__lead reveal delay-1">{{ hero.lead }}</p>
     {%- endif -%}
+
+    {%- assign trust_line = shop.metafields.wanelo.trust_line | default: '30-day returns · Free shipping over $50 · Secure checkout' -%}
+    <div class="wanelo-hero__trust reveal delay-2">{{ trust_line }}</div>
+
+    <a href="#wanelo-atc" class="wanelo-hero__cta reveal delay-2"
+       data-wanelo-atc-link>
+      {{- shop.metafields.wanelo.cta_label | default: 'Add to cart' -}}
+      <span aria-hidden="true"> →</span>
+    </a>
   </div>
   {%- if hero.image_url != blank -%}
     <div class="wanelo-hero__photo reveal">

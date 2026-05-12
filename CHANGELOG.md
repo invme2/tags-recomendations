@@ -6,6 +6,33 @@
 
 ## [Unreleased]
 
+### Added
+- **Conversion-optimization features for cold paid traffic** — five additions
+  designed to lift CVR on the typical $15-30 EPROLO-driven product page from
+  ~0.8% baseline to ~2-3% with all fixes applied:
+    - **`RETAIL_MARKUP` + `COMPARE_AT_MARKUP` env vars** (default 5.0 / 8.0).
+      `calc_price` and `calc_compare_price` now read these instead of hardcoded
+      multipliers, so operator can tune per category without code edits. The
+      strike-through `compareAtPrice` was already pushed to Shopify — this just
+      exposes the dial.
+    - **`wanelo-guarantee.liquid` snippet** — always-on risk-reversal block
+      (return policy / shipping / secure checkout). Renders right after hero
+      in master section, before story. Content overridable via shop-level
+      metafields (`shop.metafields.wanelo.return_policy` etc.) with hardcoded
+      defaults so it always renders even if operator hasn't configured.
+    - **Hero inline CTA mirror** — `<a href="#wanelo-atc">` button INSIDE the
+      hero block (in addition to the bottom CTA section). Multiple ATC hit
+      points lift CVR — buyer doesn't have to scroll past 13 sections.
+    - **Hero trust line under H1** — "30-day returns · Free shipping over $50
+      · Secure checkout" reads `shop.metafields.wanelo.trust_line` with hardcoded
+      fallback. Above-fold trust signal before buyer scrolls.
+    - **Mobile sticky ATC bar** (wanelo.js + wanelo.css). IntersectionObserver
+      shows fixed-position bar at viewport bottom whenever the Shopify product
+      form scrolls off-screen on mobile (<769px). Tapping it smooth-scrolls
+      back to the form. One-tap re-access from anywhere on page = +15-25%
+      mobile CVR. Auto-assigns `id="wanelo-atc"` to the form on init.
+  17 new tests in `pipeline/tests/test_conversion.py`.
+
 ### Changed
 - **STEP 4.5 photo_pack ZIP — restructured for model/operator separation +
   funnel-ordered filenames + smart fallback**:

@@ -7,9 +7,10 @@
   metafield content — empty metafield = section hidden. So a product without
   FAQ simply skips it.
 
-  Always-on (9):  hero, story, features, stats, reviews, faq, cta, palette, interlinks
-  Optional (12): how_to, ingredients, timeline, specs, whats_included, compare, trust,
-                 size_guide, care, dimensions, variants, gift_options
+  Always-on (10): hero, guarantee (risk-reversal), story, features, stats, reviews,
+                  faq, cta, palette, interlinks
+  Optional (12):  how_to, ingredients, timeline, specs, whats_included, compare, trust,
+                  size_guide, care, dimensions, variants, gift_options
 
   Designer fills only modules that fit the product (skincare → ingredients +
   how_to + timeline; tech → specs + compare; clothing → size_guide + care +
@@ -28,6 +29,7 @@
 <div class="wanelo-page" role="article">
 
   {% render 'wanelo-hero' %}
+  {% render 'wanelo-guarantee' %}
   {% render 'wanelo-story' %}
   {% render 'wanelo-features' %}
   {% render 'wanelo-ingredients' %}

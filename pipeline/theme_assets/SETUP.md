@@ -12,9 +12,10 @@ theme/
 ├── sections/
 │   └── wanelo-product-page.liquid   ← одна master-секция, рендерит 21 сниппет
 └── snippets/
-    │ === Always-on (9): рендерятся для каждого товара
+    │ === Always-on (10): рендерятся для каждого товара
     ├── wanelo-palette.liquid           ← :root{--brand-*} per-product
-    ├── wanelo-hero.liquid              ← hero блок (h1 + lead + image)
+    ├── wanelo-hero.liquid              ← hero блок (h1 + lead + image + inline CTA + trust line)
+    ├── wanelo-guarantee.liquid         ← risk-reversal: return / shipping / secure (shop-level config)
     ├── wanelo-story.liquid             ← 1-3 главы alternating mirror
     ├── wanelo-features.liquid          ← 3 features cards
     ├── wanelo-stats.liquid             ← 4-cell stats grid
@@ -58,8 +59,8 @@ Shopify Admin → **Online Store → Themes** → активная тема → 
 
 Все RAW URL'ы — `https://raw.githubusercontent.com/invme2/tags-recomendations/claude/enrich-shopify-taxonomy-kMPmA/pipeline/theme_assets/snippets/<name>.liquid`:
 
-**Always-on (9):**
-- `wanelo-palette` · `wanelo-hero` · `wanelo-story` · `wanelo-features`
+**Always-on (10):**
+- `wanelo-palette` · `wanelo-hero` · `wanelo-guarantee` · `wanelo-story` · `wanelo-features`
 - `wanelo-stats` · `wanelo-reviews` · `wanelo-faq` · `wanelo-cta` · `wanelo-interlinks`
 
 **Optional content (7):**
@@ -110,7 +111,27 @@ Anthropic + DataForSEO — оба должны быть с балансом, и�
 | `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET` | Admin API custom app credentials | да                         |
 | `DATAFORSEO_LOGIN` / `DATAFORSEO_PASSWORD`    | SEO keyword research              | да                         |
 | `GITHUB_TOKEN`      | если репо приватный — нужен для taxonomy fetch         | optional                   |
+| `RETAIL_MARKUP`     | retail price = cost × этот множитель (default 5.0)     | optional                   |
+| `COMPARE_AT_MARKUP` | strike-through price = cost × этот множитель (default 8.0) | optional                |
 
+## Shop-level metafields для wanelo-guarantee (настраивается ОДИН раз)
+
+Risk-reversal блок (`wanelo-guarantee`) рендерится для всех товаров. Тексты конфигурируются на уровне магазина (один раз), а не per-product. Без настройки используются разумные дефолты.
+
+Shopify Admin → **Settings → Custom data → Shop → Add definition** (namespace `wanelo`):
+
+| Key                | Type                    | Дефолт (если не задан)                            |
+|--------------------|-------------------------|---------------------------------------------------|
+| `return_policy`    | Single line text        | `30-day money-back`                               |
+| `return_note`      | Single line text        | `Not what you expected? Send it back, full refund.` |
+| `shipping`         | Single line text        | `Free shipping over $50`                          |
+| `shipping_note`    | Single line text        | `Fast delivery on US orders.`                     |
+| `secure_checkout`  | Single line text        | `Secure checkout`                                 |
+| `secure_note`      | Single line text        | `SSL encrypted. Apple Pay, Stripe, PayPal accepted.` |
+| `trust_line`       | Single line text        | `30-day returns · Free shipping over $50 · Secure checkout` (отображается под H1 hero) |
+| `cta_label`        | Single line text        | `Add to cart` (текст кнопки внутри hero)          |
+
+После создания definitions: **Settings → Custom data → Shop → Edit values** → впиши свои тексты.
 
 ## Запустить пайплайн
 
