@@ -867,3 +867,49 @@ def test_photo_download_logs_final_failure(cells: dict) -> None:
     assert "download failed after 3 attempts" in c6, (
         "Final-fail message must announce the brief id + 3-attempt failure"
     )
+
+
+# ============================================================
+# Resume safety — Step 4.5 must reload product from DB
+# ============================================================
+
+def test_step45_reloads_product_from_db(cells: dict) -> None:
+    """STEP 4.5 must SELECT scrape_json into `product` at entry — otherwise
+    a pipeline that resumes with pstatus='html_ready' (e.g. fresh Colab
+    session) hits NameError on `product.get('title')` and silently drops
+    the ZIP (NameError masked by outer try/except)."""
+    c6 = cells["ce20f070"]
+    # Find STEP 4.5 entry block
+    s45_start = c6.find("STEP 4.5: PHOTO PACK")
+    assert s45_start != -1
+    # Look at first 500 chars of the try block — product reload must be there
+    try_idx = c6.find("try:", s45_start)
+    assert try_idx != -1
+    entry_block = c6[try_idx:try_idx + 1500]
+    assert "product = json.loads(db.execute('SELECT scrape_json FROM products WHERE id=?'" in entry_block, (
+        "STEP 4.5 must reload product from scrape_json — resume safety"
+    )
+
+
+# ============================================================
+# Empty-photos edge case — must skip upload, not ship docs-only ZIP
+# ============================================================
+
+def test_step45_skips_upload_when_all_downloads_failed(cells: dict) -> None:
+    """If every brief's 3-retry download failed, _files_with_names is empty.
+    Must NOT ship a docs-only ZIP (operator would download a useless archive).
+    Raises sentinel _PhotoPackSkipped, caught separately so it isn't logged
+    as an error."""
+    c6 = cells["ce20f070"]
+    # Sentinel class declared inside STEP 4.5
+    assert "class _PhotoPackSkipped(Exception):" in c6, (
+        "STEP 4.5 must declare _PhotoPackSkipped sentinel class"
+    )
+    # Guard fires when _files_with_names is empty
+    assert "if not _files_with_names:" in c6, "Empty-list guard missing"
+    assert "all photo downloads failed" in c6, "Skip reason missing"
+    assert "raise _PhotoPackSkipped()" in c6, "Sentinel raise missing"
+    # Separate except branch keeps the skip out of the error log
+    assert "except _PhotoPackSkipped:" in c6, (
+        "Outer try/except must catch _PhotoPackSkipped before generic Exception"
+    )
