@@ -37,15 +37,23 @@ def test_cell2_creates_source_definition(cells: dict) -> None:
 
 
 def test_source_definition_is_json_type(cells: dict) -> None:
-    """Source metafield is a JSON object — same type as the rest."""
+    """Source metafield is a JSON object — same default type as the rest.
+    Only photo_pack is overridden to 'url'; source stays in the json default."""
     c2 = cells["b810afd7"]
-    # Block ends at `\n    ]` (4-space indent matching the list opening) —
-    # nested `]` inside description strings would break a naive .*?\] match.
     pat = re.compile(r"_wanelo_metafields\s*=\s*\[(.*?)\n\s{4}\]", re.DOTALL)
     m = pat.search(c2)
     assert m, "_wanelo_metafields list not found"
     assert "'source'" in m.group(1)
-    assert "type_name='json'" in c2
+    # Cell 2 uses _type_overrides for per-key type and defaults to 'json'.
+    # 'source' must NOT appear in the overrides — staying on the json default.
+    ov = re.search(r"_type_overrides\s*=\s*\{([^}]+)\}", c2)
+    assert ov, "_type_overrides dict not found"
+    assert "'source'" not in ov.group(1), (
+        "source must not be in _type_overrides — it should stay json"
+    )
+    assert "_type_overrides.get(_k, 'json')" in c2, (
+        "Loop must use _type_overrides.get with 'json' default"
+    )
 
 
 def test_source_is_admin_only(cells: dict) -> None:

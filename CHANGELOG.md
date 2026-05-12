@@ -6,6 +6,25 @@
 
 ## [Unreleased]
 
+### Changed
+- **`custom.photo_pack` metafield: type `json` → `url`** for one-click download
+  UX in Shopify Admin. Previously the metafield held a JSON wrapper dict
+  (`{url, size_kb, photo_count, ...}`) — Admin rendered it as raw JSON text
+  the operator had to copy-paste. Now it holds just the URL string, so Admin
+  renders a clickable hyperlink — single click opens the ZIP. Implementation:
+    - Cell 2: per-key `_type_overrides = {'photo_pack': 'url'}`; ensure-loop
+      now passes `type_name=_type_overrides.get(_k, 'json')`
+    - Cell 6 STEP 4.5: stores `_upload_res['url']` directly into
+      `sections['photo_pack']` (no wrapper dict)
+    - Cell 6 STEP 5 metafieldsSet loop: per-key `_mf_types` branch — url-typed
+      fields send the raw string and skip when value isn't a real `http*://`
+      URL (defensive: avoids Shopify rejection if upload failed earlier)
+  Hardening tests added: `test_body_html_assembly_never_uses_photo_pack`,
+  `test_theme_css_does_not_reference_photo_pack`,
+  `test_theme_js_does_not_reference_photo_pack`,
+  `test_no_hidden_attribute_renders_photo_pack` — proves photo_pack URL
+  never reaches any storefront HTML/CSS/JS, even as a hidden element.
+
 ### Added
 - **Admin-only `custom.source` metafield** — per-product EPROLO provenance
   record visible only in Shopify Admin → Product → Metafields, never on

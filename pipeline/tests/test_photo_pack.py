@@ -433,17 +433,26 @@ def test_step45_calls_upload_helper(cells: dict) -> None:
     )
 
 
-def test_step45_payload_shape(cells: dict) -> None:
-    """photo_pack metafield JSON must have url + size_kb + photo_count + created_at."""
+def test_step45_payload_is_plain_url(cells: dict) -> None:
+    """photo_pack metafield is now type 'url' — value is the raw URL string,
+    NOT a JSON dict. Shopify Admin renders it as a one-click download button."""
     c6 = cells["ce20f070"]
-    for field in ("'url':", "'size_kb':", "'photo_count':", "'created_at':", "'instructions':"):
-        assert field in c6, f"photo_pack payload missing field: {field}"
+    # Plain URL assignment into sections dict (no wrapper dict)
+    assert "['photo_pack'] = _upload_res['url']" in c6, (
+        "photo_pack must be stored as plain URL string (type 'url'), "
+        "not a wrapper dict — otherwise Admin can't render the clickable button"
+    )
+    # And the old dict shape must be gone — otherwise metafieldsSet would push
+    # a JSON-encoded dict to a url-typed field and Shopify would reject.
+    assert "_photo_pack = {" not in c6, (
+        "photo_pack dict literal must be removed — type is now 'url'"
+    )
 
 
 def test_step45_injects_into_final_html(cells: dict) -> None:
-    """photo_pack stored in sections dict so Step 5 metafieldsSet picks it up."""
+    """photo_pack URL stored in sections dict so Step 5 metafieldsSet picks it up."""
     c6 = cells["ce20f070"]
-    assert "['photo_pack'] = _photo_pack" in c6
+    assert "['photo_pack'] = _upload_res['url']" in c6
 
 
 def test_step45_failure_is_non_blocking(cells: dict) -> None:
@@ -501,3 +510,114 @@ def test_prompt_txt_includes_per_brief_section(cells: dict) -> None:
     assert "Concept:" in txt
     assert "Edit instructions:" in txt
     assert "Source URL:" in txt
+
+
+# ============================================================
+# photo_pack = type 'url' (one-click download button in Admin)
+# ============================================================
+
+def test_photo_pack_definition_uses_url_type(cells: dict) -> None:
+    """Cell 2 must register photo_pack with type 'url' (not 'json'). Shopify
+    Admin renders url-typed metafields as a clickable hyperlink — that's
+    the one-click download UX the operator gets."""
+    c2 = cells["b810afd7"]
+    pat = re.compile(r"_type_overrides\s*=\s*\{([^}]+)\}")
+    m = pat.search(c2)
+    assert m, "_type_overrides dict not found in Cell 2"
+    body = m.group(1)
+    assert "'photo_pack'" in body and "'url'" in body, (
+        "photo_pack must be mapped to 'url' in _type_overrides"
+    )
+
+
+def test_cell2_loop_uses_type_override_lookup(cells: dict) -> None:
+    """The Cell 2 ensure-loop must pass type_name=_type_overrides.get(_k, 'json')
+    — not the hardcoded 'json' it used to."""
+    c2 = cells["b810afd7"]
+    assert "type_name=_type_overrides.get(_k, 'json')" in c2, (
+        "Loop must look up per-key type via _type_overrides (json default)"
+    )
+
+
+def test_metafieldsset_special_cases_photo_pack_as_url(cells: dict) -> None:
+    """Step 5 metafieldsSet payload must send photo_pack with type='url' and a
+    plain-URL string value — sending a JSON-encoded dict to a url-typed field
+    would be rejected by Shopify."""
+    c6 = cells["ce20f070"]
+    assert "_mf_types = {'photo_pack': 'url'}" in c6, (
+        "Step 5 must declare per-key type override for photo_pack"
+    )
+    # The loop must branch on type and skip JSON-encoding for url-typed fields
+    assert 'if _t == \'url\':' in c6 or "if _t == 'url':" in c6, (
+        "metafieldsSet loop must special-case type 'url' to avoid json.dumps"
+    )
+
+
+def test_metafieldsset_skips_photo_pack_when_upload_failed(cells: dict) -> None:
+    """If ZIP upload failed earlier, photo_pack URL is absent — must skip
+    that entry rather than send empty/None value, which Shopify rejects."""
+    c6 = cells["ce20f070"]
+    assert "not isinstance(_v, str) or not _v.startswith('http')" in c6, (
+        "url-typed metafield entries must be skipped when value isn't a real URL"
+    )
+
+
+# ============================================================
+# Zero-leak: photo_pack URL must NEVER reach storefront HTML
+# ============================================================
+
+def test_body_html_assembly_never_uses_photo_pack(cells: dict) -> None:
+    """The product body_html string (= description shown in PDP <body>) is
+    assembled from short_desc + hero + pain_points. Must NOT pull from
+    sections['photo_pack'] or include the ZIP URL."""
+    c6 = cells["ce20f070"]
+    # Grab the body_html assembly block
+    idx = c6.find("body_parts = [")
+    assert idx != -1, "body_parts assembly not found in Cell 6"
+    body_block = c6[idx:idx + 1500]
+    assert "photo_pack" not in body_block, (
+        "body_html assembly block must NOT reference photo_pack"
+    )
+    assert "_upload_res" not in body_block, (
+        "body_html must not pull ZIP upload URL into the description"
+    )
+
+
+def test_theme_css_does_not_reference_photo_pack() -> None:
+    """wanelo.css must not reference photo_pack — no styles for it, ever
+    (would imply some snippet renders it)."""
+    css = (ROOT / "pipeline" / "theme_assets" / "assets" / "wanelo.css").read_text(encoding="utf-8")
+    assert "photo_pack" not in css and "photo-pack" not in css, (
+        "wanelo.css must not contain photo_pack styles"
+    )
+
+
+def test_theme_js_does_not_reference_photo_pack() -> None:
+    """wanelo.js (storefront JS) must not reference photo_pack — would imply
+    a runtime fetch of the admin-only ZIP URL."""
+    js_path = ROOT / "pipeline" / "theme_assets" / "assets" / "wanelo.js"
+    if js_path.exists():
+        js = js_path.read_text(encoding="utf-8")
+        assert "photo_pack" not in js and "photo-pack" not in js, (
+            "wanelo.js must not reference photo_pack"
+        )
+
+
+def test_no_hidden_attribute_renders_photo_pack() -> None:
+    """Catch any `hidden`, `display:none`, `aria-hidden`, or `data-photo-pack`
+    pattern in theme files — common ways developers accidentally embed an
+    admin-only URL invisibly in DOM, which view-source would still expose."""
+    pat = re.compile(
+        r"(hidden|display\s*:\s*none|aria-hidden|sr-only|visually-hidden)"
+        r"[^>]{0,200}(photo[_-]pack|photo_pack)",
+        re.IGNORECASE | re.DOTALL,
+    )
+    for sub in ("snippets", "sections", "assets"):
+        for f in (ROOT / "pipeline" / "theme_assets" / sub).glob("*"):
+            if not f.is_file():
+                continue
+            txt = f.read_text(encoding="utf-8", errors="ignore")
+            assert not pat.search(txt), (
+                f"{f.name}: appears to embed photo_pack in a hidden DOM element. "
+                "Admin-only data must never reach storefront HTML, even hidden."
+            )

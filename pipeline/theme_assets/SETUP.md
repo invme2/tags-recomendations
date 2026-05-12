@@ -1,6 +1,6 @@
 # WANELO Theme Setup — JSON-driven product pages
 
-Pipeline пишет до 23 JSON-метафилдов на товар. Тема рендерит каждую секцию из своего метафилда через одну Liquid-секцию с 21 снипетом. Снеппеты с пустым метафилдом просто пропускаются (skip-if-blank gate), так что для каждого товара показывается только то что Designer счёл уместным (типично 11-13 секций из 21, плюс 2 admin-only: `photo_pack` ZIP + `source` EPROLO origin — оба видны только в Shopify Admin → Product → Metafields).
+Pipeline пишет до 23 метафилдов на товар: 21 storefront-JSON-секций + 2 admin-only (`photo_pack` — type `url`, кликабельная кнопка скачивания ZIP в Admin; `source` — JSON с EPROLO-происхождением). Тема рендерит storefront-секции из метафилдов через одну Liquid-секцию с 21 снипетом. Снеппеты с пустым метафилдом просто пропускаются (skip-if-blank gate), так что для каждого товара показывается только то что Designer счёл уместным (типично 11-13 секций из 21). Admin-only метафилды видны ТОЛЬКО в Shopify Admin → Product → Metafields, никогда не попадают в storefront HTML (даже скрытыми элементами).
 
 ## Файловая структура
 
