@@ -321,12 +321,17 @@ def test_prompt_txt_per_brief_includes_slot_context(cells: dict) -> None:
 
 def test_prompt_txt_inline_placement_block(cells: dict) -> None:
     """prompt.txt should have a section explaining inline-* placement
-    inside the page narrative — so editor knows the photo isn't standalone."""
+    inside the page narrative — so editor knows the photo isn't standalone.
+    Lives at the end of prompt.txt under 'Reference: inline placement'."""
     c6 = cells["ce20f070"]
     idx = c6.find("_prompt_lines = [")
     assert idx != -1
-    txt = c6[idx:idx + 6000]
-    assert "Inline placement" in txt or "match the page narrative" in txt.lower()
+    # Look at the whole _prompt_lines block + Reference extends (8k window covers it).
+    txt = c6[idx:idx + 8000]
+    assert "inline placement" in txt.lower(), (
+        "prompt.txt must include an inline placement reference block"
+    )
+    assert "inline-*" in txt, "prompt.txt must explain inline-* slot behavior"
 
 
 def test_prompt_txt_workflow_mentions_carousel_priority(cells: dict) -> None:
@@ -365,7 +370,7 @@ def test_step45_caps_zip_at_50mb(cells: dict) -> None:
     on huge EPROLO photos. Briefs that push over the cap are dropped (in order)."""
     c6 = cells["ce20f070"]
     assert "_MAX_ZIP_BYTES = 50 * 1024 * 1024" in c6
-    assert "_photo_files_capped" in c6
+    assert "_files_capped" in c6
     assert "ZIP cap" in c6 and "dropping brief" in c6
 
 
@@ -488,28 +493,54 @@ def test_photo_pack_in_wanelo_keys(cells: dict) -> None:
 # Prompt.txt content quality
 # ============================================================
 
-def test_prompt_txt_contains_workflow_steps(cells: dict) -> None:
-    """prompt.txt must explain the ChatGPT-UI workflow per-brief."""
+def test_prompt_txt_contains_model_instructions(cells: dict) -> None:
+    """prompt.txt (model context) must have explicit 'Instructions for the
+    image model' section at the top with visual style + per-brief edits.
+    Operator-workflow language (ChatGPT-UI / Download / Shopify Admin) must
+    NOT live in prompt.txt — that's README.md territory."""
     c6 = cells["ce20f070"]
-    # Now built via "\n".join(_prompt_lines) — anchor on _prompt_lines list literal
     idx = c6.find("_prompt_lines = [")
     assert idx != -1, "_prompt_lines list not found"
     txt = c6[idx:idx + 3500]
+    assert "Instructions for the image model" in txt, (
+        "prompt.txt must have explicit model-instruction header"
+    )
     assert "visual style" in txt.lower(), "missing 'visual style' header"
-    assert "ChatGPT-UI" in txt or "ChatGPT" in txt
-    assert "carousel" in txt.lower() or "gallery" in txt.lower()
+    assert "carousel" in txt.lower(), "missing carousel mention"
+
+
+def test_prompt_txt_has_no_operator_workflow_language(cells: dict) -> None:
+    """prompt.txt must NOT include operator-workflow phrases like 'Open a NEW
+    chat', 'Download edited photos', 'In Shopify Admin'. Those live in
+    README.md and would confuse the model if uploaded as context."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_prompt_lines = [")
+    end = c6.find("_prompt_txt = ", idx)
+    assert idx != -1 and end != -1
+    prompt_block = c6[idx:end]
+    for forbidden in ("Open a NEW chat", "Download edited photos",
+                      "In Shopify Admin", "Drop edited"):
+        assert forbidden not in prompt_block, (
+            f"prompt.txt must NOT contain operator-only phrase: {forbidden!r}"
+        )
 
 
 def test_prompt_txt_includes_per_brief_section(cells: dict) -> None:
-    """Each brief gets its own ### section with Concept/Edit/Source URL fields."""
+    """Each brief gets its own ### section with Slot context / Concept /
+    Edit instructions. Source URL must NOT be in prompt.txt (lives in
+    manifest.json — operator-only audit data)."""
     c6 = cells["ce20f070"]
     idx = c6.find("_prompt_lines = [")
-    assert idx != -1
-    # Per-brief block uses a wider window now (funnel + inline blocks pushed it later)
-    txt = c6[idx:idx + 8000]
-    assert "Concept:" in txt
-    assert "Edit instructions:" in txt
-    assert "Source URL:" in txt
+    end = c6.find("_prompt_txt = ", idx)
+    assert idx != -1 and end != -1
+    prompt_block = c6[idx:end]
+    assert "Concept:" in prompt_block
+    assert "Edit instructions:" in prompt_block
+    assert "Slot context:" in prompt_block
+    # Source URL must NOT leak into prompt.txt — it's audit-only operator data.
+    assert "Source URL:" not in prompt_block, (
+        "Source URL must live in manifest.json, NOT prompt.txt (noise for model)"
+    )
 
 
 # ============================================================
@@ -621,3 +652,218 @@ def test_no_hidden_attribute_renders_photo_pack() -> None:
                 f"{f.name}: appears to embed photo_pack in a hidden DOM element. "
                 "Admin-only data must never reach storefront HTML, even hidden."
             )
+
+
+# ============================================================
+# Funnel-ordered filenames
+# ============================================================
+
+def test_briefs_sorted_by_funnel_position(cells: dict) -> None:
+    """Briefs must be sorted by carousel-funnel order before being numbered,
+    so filenames `01-..., 02-...` map to the slot order the operator should
+    use when dropping into Shopify carousel."""
+    c6 = cells["ce20f070"]
+    assert "_FUNNEL_ORDER = [" in c6, (
+        "STEP 4.5 must declare an explicit funnel order constant"
+    )
+    # Must contain at minimum the 5 carousel slots in conversion order
+    pat = re.compile(r"_FUNNEL_ORDER\s*=\s*\[(.*?)\]", re.DOTALL)
+    m = pat.search(c6)
+    assert m, "_FUNNEL_ORDER list not found"
+    body = m.group(1)
+    hero = body.find("'carousel-hero'")
+    lifestyle = body.find("'carousel-lifestyle'")
+    in_use = body.find("'carousel-in-use'")
+    detail = body.find("'carousel-detail'")
+    scale = body.find("'carousel-scale'")
+    assert hero < lifestyle < in_use < detail < scale, (
+        "carousel slots must be listed in conversion-funnel order: "
+        "hero → lifestyle → in-use → detail → scale"
+    )
+    # And the sort must actually be applied to _resolved
+    assert "_resolved.sort(" in c6, "_resolved list must be sorted before naming"
+    assert "_funnel_idx.get" in c6, "Sort key must use the funnel index lookup"
+
+
+def test_unknown_slots_sort_after_known(cells: dict) -> None:
+    """Slots not in the funnel must sort AFTER known ones (key=999), so the
+    carousel order isn't disrupted by an unexpected slot name."""
+    c6 = cells["ce20f070"]
+    assert "999" in c6, (
+        "Unknown slots must sort to the back via a large fallback index (999)"
+    )
+
+
+# ============================================================
+# README.md — operator workflow (separated from prompt.txt)
+# ============================================================
+
+def test_readme_md_is_written_to_zip(cells: dict) -> None:
+    """ZIP must include README.md so the operator has workflow docs separately
+    from the model-instruction prompt.txt."""
+    c6 = cells["ce20f070"]
+    assert "_zip.writestr('README.md'," in c6, (
+        "ZIP must include README.md (operator workflow)"
+    )
+    assert "_readme_lines = [" in c6, "_readme_lines list literal required"
+    assert '_zip.writestr(\'README.md\',     _readme_txt)' in c6 or \
+           "_zip.writestr('README.md', _readme_txt)" in c6
+
+
+def test_readme_explains_funnel_filename_order(cells: dict) -> None:
+    """README.md must explicitly tell the operator that filenames are
+    pre-sorted by conversion funnel — this is the whole point of #3."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_readme_lines = [")
+    assert idx != -1
+    end = c6.find("_readme_txt = ", idx)
+    assert end != -1
+    readme = c6[idx:end]
+    assert "FILENAME ORDER" in readme or "filename order" in readme.lower(), (
+        "README must instruct operator to use filename order"
+    )
+    assert "funnel" in readme.lower(), "README must mention the funnel sort"
+
+
+def test_readme_lists_inline_metafield_mapping(cells: dict) -> None:
+    """README must tell operator which metafield image_url field each
+    inline-* slot maps to."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_readme_lines = [")
+    end = c6.find("_readme_txt = ", idx)
+    readme = c6[idx:end]
+    assert "custom.hero.image_url" in readme
+    assert "custom.story.chapters" in readme
+
+
+def test_readme_tells_operator_not_to_upload_readme(cells: dict) -> None:
+    """README.md must warn that operator should NOT upload it as model context
+    (would confuse model with operator-workflow language)."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_readme_lines = [")
+    end = c6.find("_readme_txt = ", idx)
+    readme = c6[idx:end]
+    assert "do NOT upload" in readme or "operator only" in readme.lower() or \
+           "do not upload" in readme.lower(), (
+        "README must warn against uploading itself as model context"
+    )
+
+
+# ============================================================
+# manifest.json — audit trail (filename → EPROLO source URL)
+# ============================================================
+
+def test_manifest_json_is_written_to_zip(cells: dict) -> None:
+    """ZIP must include manifest.json with audit data (filename → source URL)."""
+    c6 = cells["ce20f070"]
+    assert "_zip.writestr('manifest.json'," in c6
+    assert "_manifest = {" in c6
+    assert "json.dumps(_manifest" in c6
+
+
+def test_manifest_includes_per_brief_audit_fields(cells: dict) -> None:
+    """Manifest must have filename / slot / source_url / source_index per
+    brief so the operator can verify which EPROLO photo each brief used."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_manifest = {")
+    end = c6.find("_manifest_txt = ", idx)
+    assert idx != -1 and end != -1
+    manifest_block = c6[idx:end]
+    for field in ("'filename'", "'slot'", "'source_url'", "'source_index'",
+                  "'concept'", "'edit_instructions'", "'slot_context'"):
+        assert field in manifest_block, (
+            f"manifest.json brief shape missing field {field}"
+        )
+
+
+def test_manifest_includes_visual_style_and_timestamp(cells: dict) -> None:
+    """Manifest header must record the visual_style and created_at so audit
+    can reconstruct what style was used when the ZIP was built."""
+    c6 = cells["ce20f070"]
+    idx = c6.find("_manifest = {")
+    end = c6.find("_manifest_txt = ", idx)
+    manifest_block = c6[idx:end]
+    assert "'visual_style'" in manifest_block
+    assert "'created_at'" in manifest_block
+    assert "'product_title'" in manifest_block
+
+
+# ============================================================
+# Smart visual_style fallback (palette + voice)
+# ============================================================
+
+def test_no_generic_editorial_fallback(cells: dict) -> None:
+    """The old hardcoded fallback 'Editorial product photography. Soft
+    north-light...' must be REMOVED — it conflicted with pastel section
+    palettes and produced inconsistent ZIP edits vs page."""
+    c6 = cells["ce20f070"]
+    assert "Pure white seamless or muted neutral background" not in c6, (
+        "Generic editorial fallback must be removed — built personalized "
+        "fallback from palette+voice instead"
+    )
+
+
+def test_visual_style_fallback_uses_palette(cells: dict) -> None:
+    """When Designer didn't emit visual_style, fallback must build from
+    palette + strategy.voice so the ZIP style matches the page palette."""
+    c6 = cells["ce20f070"]
+    assert "_palette_hex" in c6, "Fallback must inspect product palette"
+    assert "brand_soft" in c6 and "brand_deep" in c6, (
+        "Fallback must read brand_1/2/3/soft/deep from palette section"
+    )
+
+
+def test_visual_style_fallback_uses_strategy_voice(cells: dict) -> None:
+    """Fallback must read strategy.voice from DB and map it to a tone anchor
+    (warm-confidant → 'warm intimate framing', etc.)."""
+    c6 = cells["ce20f070"]
+    assert "strategy_json" in c6, "Fallback must read strategy_json from DB"
+    # voice tone anchors must be present
+    voice_anchors = ['warm-confidant', 'witty-irreverent', 'clinical-precise',
+                     'editorial-thoughtful', 'aspirational-luxury', 'down-to-earth-honest']
+    for v in voice_anchors:
+        assert v in c6, f"Fallback must map voice '{v}' to a tone anchor"
+
+
+def test_skips_zip_when_no_visual_style_and_no_fallback_data(cells: dict) -> None:
+    """If Designer emitted no visual_style AND no palette/voice exists,
+    must skip ZIP gracefully — never build with a generic fallback."""
+    c6 = cells["ce20f070"]
+    pat = re.compile(
+        r"if not _visual_style_pp:\s*\n\s*print\([^)]*Photo pack: skip"
+        r"[^)]*no visual_style",
+        re.DOTALL,
+    )
+    assert pat.search(c6), (
+        "STEP 4.5 must skip ZIP when no visual_style is available"
+    )
+
+
+# ============================================================
+# Photo download retry (transient EPROLO CDN errors)
+# ============================================================
+
+def test_photo_download_has_retry_loop(cells: dict) -> None:
+    """For 10K-product unattended runs, EPROLO CDN can blip — single failure
+    must NOT silently drop the brief. 3 attempts with exp backoff."""
+    c6 = cells["ce20f070"]
+    pat = re.compile(
+        r"for _att in range\(3\):.*?_c_dl_pp\.get\(_src_url_pp\)",
+        re.DOTALL,
+    )
+    assert pat.search(c6), (
+        "Photo download must use 3-attempt retry loop"
+    )
+    # exponential backoff (1s, 2s)
+    assert "2 ** _att" in c6 or "asyncio.sleep(2" in c6, (
+        "Retry must use exponential backoff between attempts"
+    )
+
+
+def test_photo_download_logs_final_failure(cells: dict) -> None:
+    """After all 3 attempts fail, the brief must be reported (not silently
+    dropped) so operator can investigate."""
+    c6 = cells["ce20f070"]
+    assert "download failed after 3 attempts" in c6, (
+        "Final-fail message must announce the brief id + 3-attempt failure"
+    )

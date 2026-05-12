@@ -7,6 +7,41 @@
 ## [Unreleased]
 
 ### Changed
+- **STEP 4.5 photo_pack ZIP — restructured for model/operator separation +
+  funnel-ordered filenames + smart fallback**:
+    - **`prompt.txt` now contains ONLY model instructions** — operator-workflow
+      language ("Open a NEW chat", "Drop edited photos in Shopify Admin")
+      removed. Top of file is an explicit `## Instructions for the image model`
+      block. References (carousel funnel + inline placement) moved to the end
+      of `prompt.txt` so per-brief edits appear right after the unified style
+      paragraph.
+    - **`README.md` added to ZIP** — operator workflow (open chat → upload
+      photos+prompt → download edited → drop into Shopify), filename-order
+      explanation, inline-* → metafield image_url mapping. Marked explicitly
+      operator-only so it doesn't get uploaded to the model.
+    - **`manifest.json` added to ZIP** — audit-only map of `filename → EPROLO
+      source_url` per brief + visual_style + created_at. Lets operator verify
+      which original photo each edit came from. Source URL removed from
+      `prompt.txt` (noise for image models, which don't fetch URLs).
+    - **Filenames sorted by carousel conversion funnel** — `_FUNNEL_ORDER`
+      constant; `_resolved.sort(key=_funnel_idx.get(..., 999))` before
+      numbering. Filenames `01-carousel-hero`, `02-carousel-lifestyle`, ...
+      so operator can drop them into Shopify carousel in filename order.
+      Unknown slots sort last (key=999), preserving Designer emission order.
+    - **Smart `visual_style` fallback** — generic editorial-photo fallback
+      removed (it clashed with pastel section palettes). New fallback builds
+      a personalized style line from `sections.palette` + `strategy.voice`
+      via voice→tone-anchor map (warm-confidant → "warm intimate framing",
+      etc.). If even palette/voice are absent → skip ZIP entirely (no
+      dishonest generic default).
+    - **Photo download retry** — 3 attempts with exp backoff (1s, 2s) instead
+      of silent skip on transient EPROLO CDN errors. Final failure logged
+      with brief id + attempt count.
+    - **Bug fix**: upload block was at wrong indent level (could NameError
+      on `_zip_bytes_pp` if `_resolved` empty — masked by outer try/except).
+      Now properly nested inside the build-ZIP branch.
+  16 new tests cover funnel sort + README + manifest + smart fallback + retry.
+
 - **`custom.photo_pack` metafield: type `json` → `url`** for one-click download
   UX in Shopify Admin. Previously the metafield held a JSON wrapper dict
   (`{url, size_kb, photo_count, ...}`) — Admin rendered it as raw JSON text
