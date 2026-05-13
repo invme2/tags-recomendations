@@ -253,3 +253,110 @@ def test_cell6_tears_down_shared_browser_after_loop(cells: dict) -> None:
     assert "await close_shared_browser_ctx()" in c6, (
         "Cell 6 must explicitly close the shared browser after the loop"
     )
+
+
+# ============================================================
+# Per-product concurrency — opt-in via BATCH_CONCURRENCY env var
+# ============================================================
+
+def test_cell1_declares_batch_concurrency_env_var(cells: dict) -> None:
+    """Cell 1 must expose BATCH_CONCURRENCY via env var with safe default."""
+    c1 = cells["477e495d"]
+    assert "BATCH_CONCURRENCY" in c1
+    assert "os.environ.get('BATCH_CONCURRENCY'" in c1
+
+
+def test_per_product_body_extracted_to_async_function(cells: dict) -> None:
+    """The 1400-line per-product body must live inside `async def _process_one(
+    pi, prod):` so it can be awaited serially or fed to gather()."""
+    c6 = cells["ce20f070"]
+    assert "async def _process_one(pi, prod):" in c6, (
+        "Per-product loop body must be extracted into _process_one()"
+    )
+
+
+def test_top_level_continues_converted_to_return(cells: dict) -> None:
+    """`continue` inside a function body is a SyntaxError. The three top-
+    level `continue` statements that used to skip to the next product
+    must now be `return`."""
+    c6 = cells["ce20f070"]
+    # The 'No EPROLO URL' and 'Already in Shopify' branches use return
+    assert "error_msg='No EPROLO URL'); return" in c6, (
+        "'No EPROLO URL' branch must use `return` (was `continue`)"
+    )
+    assert "Already in Shopify, skipping.'); return" in c6, (
+        "'Already in Shopify' branch must use `return` (was `continue`)"
+    )
+    assert "f'Scrape failed: {\", \".join(scrape_issues)}')\n                    return" in c6, (
+        "Scrape-failure branch must use `return` (was `continue`)"
+    )
+
+
+def test_dispatcher_serial_vs_concurrent_branches_exist(cells: dict) -> None:
+    """Cell 6 must dispatch on BATCH_CONCURRENCY — serial for-loop when ==1,
+    asyncio.Semaphore + gather when >1."""
+    c6 = cells["ce20f070"]
+    # Serial branch
+    assert "if BATCH_CONCURRENCY <= 1:" in c6
+    assert "await _process_one(_pi, _prod)" in c6, (
+        "Serial branch must call await _process_one(_pi, _prod)"
+    )
+    # Concurrent branch
+    assert "asyncio.Semaphore(BATCH_CONCURRENCY)" in c6
+    assert "asyncio.gather(" in c6
+
+
+def test_concurrent_branch_uses_per_task_log_buffer(cells: dict) -> None:
+    """Under concurrency >1, each task must redirect stdout to its own
+    io.StringIO via _TASK_LOG_BUF ContextVar so per-product log blocks
+    stay coherent. Single buffer flush at task end."""
+    c6 = cells["ce20f070"]
+    assert "_TASK_LOG_BUF.set(" in c6, (
+        "Concurrent branch must enable per-task buffer via _TASK_LOG_BUF.set"
+    )
+    assert "_TASK_LOG_BUF.reset(" in c6, (
+        "Concurrent branch must reset buffer token after task completes"
+    )
+    assert "_real_stdout.write(_buf.getvalue())" in c6, (
+        "Final flush must write buffered output to real stdout atomically"
+    )
+
+
+def test_concurrency_disables_buffering_after_run(cells: dict) -> None:
+    """After gather() completes, the buffering shim must be removed so
+    subsequent Cell-6-post-loop prints go straight to stdout."""
+    c6 = cells["ce20f070"]
+    pat = re.compile(
+        r"asyncio\.gather\([^)]*\).*?_disable_task_buffering\(\)",
+        re.DOTALL,
+    )
+    assert pat.search(c6), (
+        "Buffering must be disabled in a finally block around gather()"
+    )
+
+
+def test_cell2_provides_buffering_infrastructure(cells: dict) -> None:
+    """Cell 2 must expose _TASK_LOG_BUF (ContextVar), _BufferedStdout
+    (shim class), _enable_task_buffering / _disable_task_buffering helpers."""
+    c2 = cells["b810afd7"]
+    assert "_TASK_LOG_BUF" in c2
+    assert "ContextVar" in c2
+    assert "_BufferedStdout" in c2
+    assert "_enable_task_buffering" in c2
+    assert "_disable_task_buffering" in c2
+
+
+def test_buffering_only_redirects_when_in_task_context(cells: dict) -> None:
+    """Outside a task (i.e. _TASK_LOG_BUF.get() returns None), writes must
+    go to real stdout — otherwise pre-loop / post-loop prints would vanish
+    into nowhere."""
+    c2 = cells["b810afd7"]
+    # The class's write() method must check buf is None and fall back
+    pat = re.compile(
+        r"def write\(self, s\):.*?buf\s*=\s*_TASK_LOG_BUF\.get\(\).*?"
+        r"if buf is None:.*?_real_stdout\.write\(s\)",
+        re.DOTALL,
+    )
+    assert pat.search(c2), (
+        "_BufferedStdout.write must fall back to real stdout when no task ctx"
+    )
