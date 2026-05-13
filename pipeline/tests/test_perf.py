@@ -180,3 +180,76 @@ def test_vision_user_message_no_longer_holds_schema(cells: dict) -> None:
     assert 'f"Product: {safe_title}' in c6 or "f'Product: {safe_title}" in c6, (
         "Lean user content with f'Product: {safe_title}' must be present"
     )
+
+
+# ============================================================
+# Playwright browser reuse — saves ~1.5s/scrape × 10K = ~4h
+# ============================================================
+
+def test_shared_browser_ctx_helpers_defined(cells: dict) -> None:
+    """Cell 2 must define get_shared_browser_ctx() and
+    close_shared_browser_ctx() — lazy-init + explicit teardown for the
+    module-level Playwright state."""
+    c2 = cells["b810afd7"]
+    assert "async def get_shared_browser_ctx(" in c2, (
+        "get_shared_browser_ctx() helper missing in Cell 2"
+    )
+    assert "async def close_shared_browser_ctx(" in c2, (
+        "close_shared_browser_ctx() helper missing in Cell 2"
+    )
+    assert "_PW_STATE" in c2, "Module-level _PW_STATE dict missing"
+
+
+def test_scrape_eprolo_accepts_ctx_arg(cells: dict) -> None:
+    """scrape_eprolo must accept optional ctx= so callers can share a
+    Playwright context across calls. Default `None` falls back to the
+    shared module-level ctx via lazy init."""
+    c2 = cells["b810afd7"]
+    assert "async def scrape_eprolo(url, ctx=None):" in c2, (
+        "scrape_eprolo signature must be `async def scrape_eprolo(url, ctx=None):`"
+    )
+
+
+def test_scrape_eprolo_no_longer_launches_chromium_per_call(cells: dict) -> None:
+    """The function must NOT contain `async with async_playwright()` or
+    `await p.chromium.launch(` — those would re-spawn Chromium on every
+    scrape, defeating the reuse."""
+    c2 = cells["b810afd7"]
+    # Find the scrape_eprolo function body
+    start = c2.find("async def scrape_eprolo(url, ctx=None):")
+    assert start != -1
+    # Body ends at the next top-level `async def` / `def` / blank-line
+    # heuristic — function is ~250 lines so check first 12000 chars
+    body = c2[start:start + 12000]
+    # Look for the next async def to bound the body
+    next_def = body.find("\nasync def ", 50)
+    if next_def != -1:
+        body = body[:next_def]
+    assert "async with async_playwright()" not in body, (
+        "scrape_eprolo body still does `async with async_playwright()` — "
+        "would re-launch Chromium per call"
+    )
+    assert "chromium.launch(" not in body, (
+        "scrape_eprolo body still calls chromium.launch — must reuse shared ctx"
+    )
+
+
+def test_scrape_eprolo_closes_page_in_finally(cells: dict) -> None:
+    """Each call still creates a NEW page on the shared ctx — must close
+    that page on every exit path so we don't leak page objects."""
+    c2 = cells["b810afd7"]
+    start = c2.find("async def scrape_eprolo(url, ctx=None):")
+    body = c2[start:start + 12000]
+    assert "await page.close()" in body, (
+        "scrape_eprolo must close the per-call page in a finally block"
+    )
+
+
+def test_cell6_tears_down_shared_browser_after_loop(cells: dict) -> None:
+    """End of Cell 6 must call close_shared_browser_ctx() so Chromium
+    is freed before the post-loop work runs (sitemap ping etc.) and so
+    re-running Cell 6 picks up a fresh browser."""
+    c6 = cells["ce20f070"]
+    assert "await close_shared_browser_ctx()" in c6, (
+        "Cell 6 must explicitly close the shared browser after the loop"
+    )
