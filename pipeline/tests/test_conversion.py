@@ -34,10 +34,13 @@ def test_cell1_declares_retail_markup_env_vars(cells: dict) -> None:
     c1 = cells["477e495d"]
     assert "RETAIL_MARKUP" in c1, "RETAIL_MARKUP env var declaration missing"
     assert "COMPARE_AT_MARKUP" in c1, "COMPARE_AT_MARKUP env var declaration missing"
-    assert "os.environ.get('RETAIL_MARKUP'" in c1, (
-        "RETAIL_MARKUP must read from os.environ.get with a default"
+    # Either the direct os.environ.get pattern OR via the _safe_env_float helper
+    assert ("_safe_env_float('RETAIL_MARKUP'" in c1
+            or "os.environ.get('RETAIL_MARKUP'" in c1), (
+        "RETAIL_MARKUP must be read from env (directly or via _safe_env_float)"
     )
-    assert "os.environ.get('COMPARE_AT_MARKUP'" in c1
+    assert ("_safe_env_float('COMPARE_AT_MARKUP'" in c1
+            or "os.environ.get('COMPARE_AT_MARKUP'" in c1)
 
 
 def test_calc_price_uses_retail_markup_constant(cells: dict) -> None:

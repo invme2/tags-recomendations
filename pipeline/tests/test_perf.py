@@ -260,10 +260,14 @@ def test_cell6_tears_down_shared_browser_after_loop(cells: dict) -> None:
 # ============================================================
 
 def test_cell1_declares_batch_concurrency_env_var(cells: dict) -> None:
-    """Cell 1 must expose BATCH_CONCURRENCY via env var with safe default."""
+    """Cell 1 must expose BATCH_CONCURRENCY via env var (directly or
+    through the _safe_env_int helper that survives malformed values)."""
     c1 = cells["477e495d"]
     assert "BATCH_CONCURRENCY" in c1
-    assert "os.environ.get('BATCH_CONCURRENCY'" in c1
+    assert ("_safe_env_int('BATCH_CONCURRENCY'" in c1
+            or "os.environ.get('BATCH_CONCURRENCY'" in c1), (
+        "BATCH_CONCURRENCY must be read from env (directly or via _safe_env_int)"
+    )
 
 
 def test_per_product_body_extracted_to_async_function(cells: dict) -> None:
@@ -360,3 +364,173 @@ def test_buffering_only_redirects_when_in_task_context(cells: dict) -> None:
     assert pat.search(c2), (
         "_BufferedStdout.write must fall back to real stdout when no task ctx"
     )
+
+
+# ============================================================
+# AsyncAnthropic — real concurrency (not sync-blocking-in-async)
+# ============================================================
+
+def test_async_anthropic_client_declared(cells: dict) -> None:
+    """Cell 2 must declare client_async = anthropic.AsyncAnthropic(...).
+    Without this, BATCH_CONCURRENCY>1 still serialises AI calls (the
+    sync `client.messages.create()` blocks the event loop)."""
+    c2 = cells["b810afd7"]
+    assert "client_async" in c2
+    assert "anthropic.AsyncAnthropic(" in c2, (
+        "Must use anthropic.AsyncAnthropic for true async I/O"
+    )
+
+
+def test_loop_uses_await_client_async(cells: dict) -> None:
+    """The per-product AI calls (Vision / Strategy / Designer + retries)
+    must use `await client_async.messages.create(...)` — not the sync
+    `client.messages.create(...)` which blocks the event loop."""
+    c6 = cells["ce20f070"]
+    # Count async vs sync call sites in Cell 6
+    n_async = c6.count("await client_async.messages.create")
+    n_sync = c6.count("client.messages.create")
+    assert n_async >= 5, (
+        f"Expected ≥5 await client_async.messages.create call sites in Cell 6; "
+        f"got {n_async}"
+    )
+    assert n_sync == 0, (
+        f"Cell 6 must NOT call sync client.messages.create (would block "
+        f"event loop under concurrency). Found {n_sync} sync call(s)."
+    )
+
+
+def test_sync_client_still_used_in_sync_contexts(cells: dict) -> None:
+    """Sync `client` must remain for the smoke-tests in Cell 2 and the
+    sync helpers `_call_claude` / `generate_collection_html` — those run
+    in non-async contexts and can't `await`."""
+    c2 = cells["b810afd7"]
+    # Both clients must exist at module level
+    assert "client = anthropic.Anthropic(" in c2
+    # generate_collection_html uses sync client (it's not async)
+    assert "client.messages.create" in c2
+
+
+# ============================================================
+# Sanitization for EPROLO scraped data → prompts
+# ============================================================
+
+def test_sanitize_helper_declared(cells: dict) -> None:
+    """A _sanitize_for_prompt() helper must exist — used to scrub EPROLO
+    scrape data (title / description / specs) before feeding into prompts,
+    defending against prompt-injection payloads in product titles."""
+    c2 = cells["b810afd7"]
+    assert "def _sanitize_for_prompt(" in c2
+    # Must strip control chars + length cap
+    assert "max_len" in c2
+    # Zero-width chars are a common injection vector
+    assert "200B" in c2 or "200b" in c2 or "zero-width" in c2.lower()
+
+
+def test_vision_title_runs_through_sanitizer(cells: dict) -> None:
+    """The product title fed to Vision must pass through _sanitize_for_prompt
+    — otherwise a malicious title can leak into the cached system prompt."""
+    c6 = cells["ce20f070"]
+    assert "safe_title = _sanitize_for_prompt(" in c6, (
+        "Vision user content must build safe_title via _sanitize_for_prompt"
+    )
+
+
+# ============================================================
+# Safe env-var helpers — malformed values don't crash batch
+# ============================================================
+
+def test_safe_env_helpers_defined(cells: dict) -> None:
+    """Cell 1 must define _safe_env_float / _safe_env_int — wrappers that
+    fall back to default on ValueError so a typo'd Colab Secret can't
+    crash the entire batch."""
+    c1 = cells["477e495d"]
+    assert "def _safe_env_float(" in c1
+    assert "def _safe_env_int(" in c1
+
+
+def test_safe_env_helpers_catch_valueerror(cells: dict) -> None:
+    """The helper must catch ValueError / TypeError and print a warning."""
+    c1 = cells["477e495d"]
+    # ValueError / TypeError handling
+    assert "ValueError" in c1
+    assert "is not" in c1, "Warning message must explain why fallback fires"
+
+
+def test_retail_markup_uses_safe_helper(cells: dict) -> None:
+    """RETAIL_MARKUP / COMPARE_AT_MARKUP / BATCH_CONCURRENCY must all
+    flow through the safe wrappers."""
+    c1 = cells["477e495d"]
+    assert "_safe_env_float('RETAIL_MARKUP'" in c1
+    assert "_safe_env_float('COMPARE_AT_MARKUP'" in c1
+    assert "_safe_env_int('BATCH_CONCURRENCY'" in c1
+
+
+# ============================================================
+# Anthropic spend cap + cache-hit verification
+# ============================================================
+
+def test_max_anthropic_budget_env_var(cells: dict) -> None:
+    """Cell 1 must declare MAX_ANTHROPIC_BUDGET via _safe_env_float
+    so runaway spend (typo'd CSV size, retry storm) is bounded."""
+    c1 = cells["477e495d"]
+    assert "MAX_ANTHROPIC_BUDGET" in c1
+    assert "_safe_env_float('MAX_ANTHROPIC_BUDGET'" in c1
+
+
+def test_cost_tracker_declared(cells: dict) -> None:
+    """Cell 2 must declare _anthropic_cost_tracker dict + helpers
+    _track_anthropic_response + _check_anthropic_budget."""
+    c2 = cells["b810afd7"]
+    assert "_anthropic_cost_tracker" in c2
+    assert "def _track_anthropic_response(" in c2
+    assert "def _check_anthropic_budget(" in c2
+    # Sentinel exception for the budget breach path
+    assert "_AnthropicBudgetExceeded" in c2
+
+
+def test_cost_tracker_records_cache_tokens(cells: dict) -> None:
+    """The tracker must capture cache_read_input_tokens AND
+    cache_creation_input_tokens AND fresh input_tokens — three buckets
+    are needed to compute the cache hit ratio."""
+    c2 = cells["b810afd7"]
+    assert "cache_read_input_tokens" in c2
+    assert "cache_creation_input_tokens" in c2
+    assert "'fresh_in'" in c2
+
+
+def test_every_ai_call_tracked(cells: dict) -> None:
+    """Each messages.create call site in Cell 6 must follow with a
+    _track_anthropic_response() call so the tracker stays in sync."""
+    c6 = cells["ce20f070"]
+    # The 5 call sites: vision (1 inside if-else, both paths same r1), strategy, designer primary, designer retry
+    # _track is called per (response, cost) tuple
+    n_track = c6.count("_track_anthropic_response(")
+    assert n_track >= 4, (
+        f"Expected ≥4 _track_anthropic_response() invocations; got {n_track}"
+    )
+
+
+def test_budget_checked_before_expensive_ai_calls(cells: dict) -> None:
+    """Each of the 3 main AI steps (Vision / Strategy / Designer) must
+    call _check_anthropic_budget() so the breach raises BEFORE the
+    expensive request fires."""
+    c6 = cells["ce20f070"]
+    # Find the budget check inside each step
+    n_check = c6.count("_check_anthropic_budget()")
+    assert n_check >= 3, (
+        f"Expected ≥3 budget-check call sites (Vision / Strategy / Designer); "
+        f"got {n_check}"
+    )
+
+
+def test_end_of_batch_summary_prints_cache_ratio(cells: dict) -> None:
+    """The end-of-batch summary must print the cache hit ratio so we can
+    verify prompt caching is actually working (silent breakage of
+    cache_control would otherwise cost ~10× more)."""
+    c6 = cells["ce20f070"]
+    assert "cache hit" in c6.lower(), (
+        "End-of-batch summary must print cache hit ratio"
+    )
+    assert "_anthropic_cost_tracker" in c6
+    # Warning when cache ratio is suspiciously low
+    assert "verify cache_control" in c6 or "cache hit ratio low" in c6

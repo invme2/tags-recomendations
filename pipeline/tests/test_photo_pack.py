@@ -383,8 +383,13 @@ def test_designer_retries_on_parse_fail(cells: dict) -> None:
     )
     assert "_retry_user" in c6
     assert "_r2_retry" in c6
-    # Cost from retry must be added to cost2 so per-product spend reflects reality
-    assert "cost2 += _r2_retry.usage" in c6
+    # Cost from retry must be added to cost2 so per-product spend reflects reality.
+    # Phase 2 introduced an intermediate `_retry_cost_d` so the tracker gets
+    # the per-retry slice; both forms are acceptable.
+    assert ("cost2 += _r2_retry.usage" in c6
+            or "cost2 += _retry_cost_d" in c6), (
+        "Designer retry cost must accumulate into cost2"
+    )
 
 
 def test_step45_uses_zipfile(cells: dict) -> None:
