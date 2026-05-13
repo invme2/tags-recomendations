@@ -131,3 +131,52 @@ def test_base64_cleanup_persists_via_db_commit(cells: dict) -> None:
     assert "db.commit()" in window, (
         "Base64 cleanup block must call db.commit() to persist"
     )
+
+
+# ============================================================
+# Vision prompt caching — system block with cache_control
+# ============================================================
+
+def test_vision_system_prompt_defined_in_cell5(cells: dict) -> None:
+    """The static Vision schema must live in a VISION_SYSTEM_PROMPT constant
+    in Cell 5 (alongside STRATEGY_SYSTEM_PROMPT) so it's reusable + cacheable."""
+    c5 = cells["ea617348"]
+    assert "VISION_SYSTEM_PROMPT" in c5, (
+        "VISION_SYSTEM_PROMPT constant must be defined in Cell 5"
+    )
+    # The schema must include the key fields the call expects
+    assert '"accent":' in c5
+    assert '"palette":' in c5
+    assert '"packaging_text":' in c5
+
+
+def test_vision_call_uses_cached_system_block(cells: dict) -> None:
+    """Vision messages.create must pass system=[{...,cache_control:ephemeral}]
+    pointing at VISION_SYSTEM_PROMPT — otherwise the static schema gets
+    re-sent as fresh input on every product (no cache savings)."""
+    c6 = cells["ce20f070"]
+    pat = re.compile(
+        r'max_tokens=2000,\s*timeout=\d+(?:\.\d+)?,\s*\n\s*'
+        r'system=\[\{[^\]]*VISION_SYSTEM_PROMPT[^\]]*cache_control[^\]]*ephemeral',
+        re.DOTALL,
+    )
+    matches = pat.findall(c6)
+    assert len(matches) >= 2, (
+        f"Both Vision call sites must use system=VISION_SYSTEM_PROMPT with "
+        f"cache_control:ephemeral; found {len(matches)}"
+    )
+
+
+def test_vision_user_message_no_longer_holds_schema(cells: dict) -> None:
+    """The huge inline `vision_prompt = f\"...{safe_title}...\"` block must
+    be GONE from Cell 6 — schema moved to system. Only the `Product:
+    {safe_title}` line should remain in user content."""
+    c6 = cells["ce20f070"]
+    assert 'vision_prompt = f"""' not in c6 and \
+           "vision_prompt = f'''" not in c6, (
+        "Inline vision_prompt f-string must be removed (schema is now in "
+        "VISION_SYSTEM_PROMPT, cached via system block)"
+    )
+    assert 'f"Product: {safe_title}' in c6 or "f'Product: {safe_title}" in c6, (
+        "Lean user content with f'Product: {safe_title}' must be present"
+    )
