@@ -1,27 +1,11 @@
 {%- comment -%}
   WANELO Product Page — single section, renders the entire long-form
   description from up to 21 Shopify metafields (each a JSON object).
-
-  Add this section ONCE to your product template. The section reads product
-  metafields and renders sub-sections in funnel order. All sections gate on
-  metafield content — empty metafield = section hidden. So a product without
-  FAQ simply skips it.
-
-  Always-on (10): hero, guarantee (risk-reversal), story, features, stats, reviews,
-                  faq, cta, palette, interlinks
-  Optional (12):  how_to, ingredients, timeline, specs, whats_included, compare, trust,
-                  size_guide, care, dimensions, variants, gift_options
-
-  Designer fills only modules that fit the product (skincare → ingredients +
-  how_to + timeline; tech → specs + compare; clothing → size_guide + care +
-  variants; gift kit → whats_included + gift_options).
-
-  Per-product palette (custom.palette) is injected via inline
-  <style>:root{--brand-1:..}</style> from snippets/wanelo-palette.
-
-  Animations: assets/wanelo.js IntersectionObserver toggles `.in` class
-  on `.reveal` and `.mask` elements when they enter viewport.
 {%- endcomment -%}
+
+{%- comment -%} Font preconnect — saves ~80-150ms on cold first paint {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 {{ 'wanelo.css' | asset_url | stylesheet_tag }}
 {% render 'wanelo-palette' %}
@@ -29,7 +13,6 @@
 <div class="wanelo-page" role="article">
 
   {% render 'wanelo-hero' %}
-  {% render 'wanelo-guarantee' %}
   {% render 'wanelo-story' %}
   {% render 'wanelo-features' %}
   {% render 'wanelo-ingredients' %}
@@ -50,9 +33,8 @@
   {% render 'wanelo-cta' %}
   {% render 'wanelo-interlinks' %}
 
+  <script src="{{ 'wanelo.js' | asset_url }}" defer></script>
 </div>
-
-<script src="{{ 'wanelo.js' | asset_url }}" defer></script>
 
 {% schema %}
 {

@@ -1,58 +1,83 @@
-// WANELO storefront JS — reveal-on-scroll + mobile sticky ATC.
-// Two concerns kept in one file (~1 KB minified) so theme only loads
-// one extra asset.
+/* wanelo.js — sticky ATC + reveal-on-scroll + section rail */
 (function () {
-  if (!('IntersectionObserver' in window)) return;
+  'use strict';
+  const page = document.querySelector('.wanelo-page');
+  if (!page) return;
 
-  // ── Reveal-on-scroll: adds .in to .reveal / .mask when entering viewport.
-  var revealIO = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        revealIO.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('.wanelo-page .reveal, .wanelo-page .mask').forEach(function (el) {
-    revealIO.observe(el);
-  });
+  const prefersReducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Mobile sticky ATC: when the real product form scrolls off-screen on
-  // mobile (<769px), pin a CTA bar to the bottom of the viewport. Tapping it
-  // smooth-scrolls back to the form. One-tap re-access from anywhere on
-  // page = +15-25% mobile CVR.
-  function setupStickyAtc() {
-    if (window.matchMedia('(min-width: 769px)').matches) return;
-    var form = document.querySelector('form[action*="/cart/add"]');
-    if (!form) return;
-    if (!form.id) form.id = 'wanelo-atc';
-
-    var bar = document.createElement('a');
-    bar.className = 'wanelo-sticky-atc';
-    bar.href = '#' + form.id;
-    bar.setAttribute('aria-label', 'Jump to add to cart');
-    bar.innerHTML = '<span class="wanelo-sticky-label">Add to cart</span>'
-      + '<span class="wanelo-sticky-arrow" aria-hidden="true">↑</span>';
-    document.body.appendChild(bar);
-
-    bar.addEventListener('click', function (ev) {
-      ev.preventDefault();
-      var target = document.getElementById(form.id);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-
-    var stickyIO = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) bar.classList.remove('visible');
-        else bar.classList.add('visible');
+  /* ---------- Reveal-on-scroll ---------- */
+  const revealTargets = page.querySelectorAll('.reveal, .mask');
+  if (prefersReducedMotion) {
+    revealTargets.forEach(el => el.classList.add('in'));
+  } else if ('IntersectionObserver' in window) {
+    const revealIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          revealIO.unobserve(e.target);
+        }
       });
-    }, { threshold: 0.05 });
-    stickyIO.observe(form);
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    revealTargets.forEach(el => revealIO.observe(el));
+  } else {
+    revealTargets.forEach(el => el.classList.add('in'));
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupStickyAtc);
-  } else {
-    setupStickyAtc();
+  /* ---------- Section-progress rail (desktop only) ---------- */
+  if (window.matchMedia('(min-width: 1100px)').matches && !prefersReducedMotion) {
+    const sections = page.querySelectorAll(':scope > section');
+    if (sections.length > 1) {
+      const rail = document.createElement('div');
+      rail.className = 'wanelo-rail';
+      rail.setAttribute('aria-hidden', 'true');
+      sections.forEach(() => {
+        const dot = document.createElement('span');
+        dot.className = 'wanelo-rail__dot';
+        rail.appendChild(dot);
+      });
+      page.appendChild(rail);
+      const dots = rail.querySelectorAll('.wanelo-rail__dot');
+      const railIO = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const idx = Array.prototype.indexOf.call(sections, e.target);
+            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+          }
+        });
+      }, { threshold: 0.4 });
+      sections.forEach(s => railIO.observe(s));
+    }
   }
+
+  /* ---------- Sticky mobile ATC ---------- */
+  const atcAnchor = document.getElementById('wanelo-atc') ||
+                    document.querySelector('product-form, [data-product-form], form[action*="/cart/add"]');
+  if (atcAnchor && window.matchMedia('(max-width: 768px)').matches) {
+    if (!atcAnchor.id) atcAnchor.id = 'wanelo-atc';
+    const sticky = document.createElement('a');
+    sticky.href = '#wanelo-atc';
+    sticky.className = 'wanelo-sticky-atc';
+    sticky.setAttribute('data-wanelo-atc-link', '');
+    sticky.innerHTML = 'Add to cart <span class="wanelo-sticky-arrow">↑</span>';
+    document.body.appendChild(sticky);
+    const stickyIO = new IntersectionObserver(entries => {
+      entries.forEach(e => sticky.classList.toggle('visible', !e.isIntersecting));
+    }, { threshold: 0 });
+    stickyIO.observe(atcAnchor);
+  }
+
+  /* ---------- Smooth-scroll for any [data-wanelo-atc-link] ---------- */
+  document.querySelectorAll('[data-wanelo-atc-link]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+  });
 })();

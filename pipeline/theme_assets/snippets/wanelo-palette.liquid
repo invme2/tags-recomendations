@@ -7,7 +7,7 @@
 
 {%- assign palette = product.metafields.custom.palette.value -%}
 {%- if palette -%}
-<style>
+<style data-wanelo-palette>
   .wanelo-page{
     {%- if palette.brand_1 %}--brand-1: {{ palette.brand_1 }};{% endif -%}
     {%- if palette.brand_2 %}--brand-2: {{ palette.brand_2 }};{% endif -%}
