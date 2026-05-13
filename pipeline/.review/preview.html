@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wanelo PDP — Full 21-module preview (Editorial Pastel)</title>
+<!-- The actual CSS the pipeline ships. Edit pipeline/theme_assets/assets/wanelo.css and refresh. -->
+<link rel="stylesheet" href="../theme_assets/assets/wanelo.css">
+<style>
+  /* Throwaway page chrome — not part of theme */
+  body{margin:0;background:#faf9f6;font-family:'Inter',sans-serif;color:#14140f}
+  .preview-bar{
+    position:sticky;top:0;z-index:1000;
+    background:#14140f;color:#faf9f6;padding:12px 24px;
+    display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+    font-size:13px;letter-spacing:.02em;
+  }
+  .preview-bar strong{font-weight:600}
+  .preview-bar select{
+    background:#1f1f1a;color:#faf9f6;border:1px solid #3a3a35;
+    padding:6px 12px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;
+  }
+  .preview-bar a{color:#b59cd0;text-decoration:underline;text-underline-offset:2px}
+  .palette-pip{
+    display:inline-block;width:14px;height:14px;border-radius:50%;
+    margin-right:4px;vertical-align:middle;border:1px solid rgba(255,255,255,.2);
+  }
+  .module-label{
+    position:relative;
+    margin:80px auto 0;max-width:1180px;padding:0 24px;
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:11px;font-weight:600;letter-spacing:.12em;
+    color:#9a9a95;text-transform:uppercase;
+    border-top:1px dashed rgba(20,20,15,.15);padding-top:18px;
+  }
+  .module-label::before{
+    content:attr(data-n);
+    background:#14140f;color:#fff;
+    padding:2px 8px;border-radius:4px;margin-right:10px;
+    font-weight:700;
+  }
+  .always-on::before{background:#6b7a5a}
+  .optional::before{background:#d18b3a}
+  .footer-note{
+    text-align:center;padding:80px 24px;color:#6b6b66;font-size:13px;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+  <strong>Wanelo PDP preview</strong>
+  <span>· All 21 modules · Editorial Pastel system</span>
+  <label>
+    Palette:
+    <select id="palette-picker">
+      <option value="lavender" selected>Lavender (default)</option>
+      <option value="peach">Peach</option>
+      <option value="sage">Sage</option>
+      <option value="blush">Blush</option>
+      <option value="butter">Butter</option>
+    </select>
+  </label>
+  <span>· Edit <code>pipeline/theme_assets/assets/wanelo.css</code> and refresh</span>
+</div>
+
+<!-- ─────────── PALETTE SWATCHES (always present in Liquid via wanelo-palette) ─────────── -->
+<style id="palette-style" data-wanelo-palette>
+  .wanelo-page{
+    --brand-1:    #c8b6e2;
+    --brand-2:    #d8e6d5;
+    --brand-3:    #f5e6d3;
+    --brand-soft: #f0e8f8;
+    --brand-deep: #b59cd0;
+  }
+</style>
+
+<div class="wanelo-page" role="article">
+
+  <!-- ═══ 1. HERO (always-on) ═══ -->
+  <div class="module-label always-on" data-n="01">Hero · always-on</div>
+  <section class="wanelo-hero reveal in">
+    <div class="wanelo-hero__copy">
+      <div class="wanelo-kicker reveal in">INVISIBLE BREEZE</div>
+      <h1><span class="mask in"><span>Wear the wind.</span></span></h1>
+      <p class="wanelo-hero__lead reveal in delay-1">Bladeless neck fan that runs 4-12 hours. Quiet enough for meetings, comfortable enough to forget you have it on.</p>
+      <a href="#wanelo-atc" class="wanelo-hero__cta reveal in delay-2" data-wanelo-atc-link>Take it home — $24.90 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="wanelo-hero__photo reveal in">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&q=80" alt="Mint neck fan product hero" loading="eager" fetchpriority="high">
+    </div>
+  </section>
+
+  <!-- ═══ 2. STORY (always-on) ═══ -->
+  <div class="module-label always-on" data-n="02">Story · always-on · 3 chapters</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">THE SHIFT</div>
+      <h2>Cool air, <em>no hair drama</em></h2>
+      <p class="desc">From sweaty commute frustration to a silent personal climate you forgot you were wearing.</p>
+    </div>
+    <div class="wanelo-story-row reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Commuter waiting" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE PROBLEM</div>
+        <h3>Handheld fans <em>tire your arm</em></h3>
+        <p>Five minutes in, your wrist hates you. Office fans dry your eyes. AC ices your colleagues.</p>
+      </div>
+    </div>
+    <div class="wanelo-story-row mirror reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1574027542338-98e75acfd385?w=800&q=80" alt="Bladeless detail close-up" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE DISCOVERY</div>
+        <h3>Bladeless means <em>safe + silent</em></h3>
+        <p>No blades = no hair-pulling, no buzz over Zoom. The airflow comes from a smooth duct — like a tiny invisible wind tunnel.</p>
+      </div>
+    </div>
+    <div class="wanelo-story-row reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" alt="Hands-free on bike" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE RESULT</div>
+        <h3>Hands-free cooling that <em>follows you</em></h3>
+        <p>Commutes feel ten degrees cooler. Office stays focus-friendly. Garden hours stretch into evenings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3. FEATURES (always-on) ═══ -->
+  <div class="module-label always-on" data-n="03">Features · always-on · 3 cards (2-4 allowed)</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">WHY THIS ONE</div>
+      <h2>The <em>essentials</em></h2>
+    </div>
+    <div class="wanelo-features reveal in">
+      <div class="wanelo-features__grid">
+        <div class="wanelo-features__card reveal in delay-1">
+          <div class="wanelo-features__glyph">∅</div>
+          <div class="wanelo-features__meta">BLADELESS</div>
+          <h4>Safe over loose <em>hair</em></h4>
+          <p>Smooth inner duct directs airflow without spinning blades — no chunks pulled, no fingers warned.</p>
+        </div>
+        <div class="wanelo-features__card reveal in delay-2">
+          <div class="wanelo-features__glyph">⚡</div>
+          <div class="wanelo-features__meta">4-12 HOURS</div>
+          <h4>All-day <em>battery</em></h4>
+          <p>4000mAh USB-C cell runs 4 hours at full blast, 12 hours on whisper mode. Tops up in 2h.</p>
+        </div>
+        <div class="wanelo-features__card reveal in delay-3">
+          <div class="wanelo-features__glyph">♪</div>
+          <div class="wanelo-features__meta">3 SPEEDS</div>
+          <h4>Whisper to <em>wind</em></h4>
+          <p>Low (35dB — quieter than a fridge) for meetings, high (52dB) for commutes. Dial on the right side.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. INGREDIENTS (optional) ═══ -->
+  <div class="module-label optional" data-n="04">Ingredients · optional · skincare/food</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">WHAT'S INSIDE</div>
+      <h2>The <em>formula</em></h2>
+    </div>
+    <ul class="wanelo-ingredients__list reveal in">
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">HERO</span><span class="wanelo-ingredients__name">Hyaluronic Acid</span><span class="wanelo-ingredients__role">deep hydrator</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Niacinamide</span><span class="wanelo-ingredients__role">pore refiner</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Vitamin C 10%</span><span class="wanelo-ingredients__role">antioxidant</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">CLINICAL</span><span class="wanelo-ingredients__name">Bakuchiol</span><span class="wanelo-ingredients__role">retinol alternative</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Squalane</span><span class="wanelo-ingredients__role">barrier seal</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Ceramide NP</span><span class="wanelo-ingredients__role">moisture lock</span></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 5. HOW-TO (optional) ═══ -->
+  <div class="module-label optional" data-n="05">How-To · optional · 3-7 numbered steps</div>
+  <section class="wanelo-section wanelo-howto reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">GETTING STARTED</div>
+      <h2>3 minutes to first <em>breeze</em></h2>
+    </div>
+    <ol class="wanelo-howto__list">
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">1</span><div class="wanelo-howto__body"><h4>Charge it 2 hours</h4><p>USB-C cable in the box. Light pulses while charging, solid when full.</p></div></li>
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">2</span><div class="wanelo-howto__body"><h4>Hang on neck</h4><p>Rounded hook slips around back of neck. No clip to fiddle with.</p></div></li>
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">3</span><div class="wanelo-howto__body"><h4>Dial up</h4><p>Right-side dial: 0 → 1 (low) → 2 (mid) → 3 (high). Long-press dial to switch from cool to oscillating.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- ═══ 6. TIMELINE (optional) ═══ -->
+  <div class="module-label optional" data-n="06">Timeline · optional · transformation milestones</div>
+  <section class="wanelo-section wanelo-timeline reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">YOUR JOURNEY</div>
+      <h2>Week by <em>week</em></h2>
+    </div>
+    <ol class="wanelo-timeline__list">
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 1</span><div class="wanelo-timeline__body"><h4>Visible refresh</h4><p>Skin feels plumper after the first application — hyaluronic acid pulls 1000× its weight in moisture.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Week 2</span><div class="wanelo-timeline__body"><h4>Smoother texture</h4><p>Niacinamide refines pores; surface feels softer under the fingertip.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 30</span><div class="wanelo-timeline__body"><h4>Brightness emerges</h4><p>Vitamin C accumulation lifts dullness; tone reads more even in selfies.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 60</span><div class="wanelo-timeline__body"><h4>The compliment</h4><p>Someone asks what you're using. Bakuchiol's retinol-alternative effect on fine lines becomes the conversation.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- ═══ 7. STATS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="07">Stats · always-on · 4 cells (3-5 allowed)</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">BY THE NUMBERS</div>
+      <h2>The <em>figures</em></h2>
+    </div>
+    <div class="wanelo-stats reveal in">
+      <div class="wanelo-stats__grid">
+        <div class="wanelo-stats__cell reveal in delay-1"><div class="wanelo-kicker">BATTERY</div><div class="wanelo-stats__num">12<em>h</em></div><div class="wanelo-stats__lbl">on low setting</div></div>
+        <div class="wanelo-stats__cell reveal in delay-2"><div class="wanelo-kicker">WEIGHT</div><div class="wanelo-stats__num">220<em>g</em></div><div class="wanelo-stats__lbl">lighter than a phone</div></div>
+        <div class="wanelo-stats__cell reveal in delay-3"><div class="wanelo-kicker">NOISE</div><div class="wanelo-stats__num">35<em>dB</em></div><div class="wanelo-stats__lbl">quieter than a fridge</div></div>
+        <div class="wanelo-stats__cell reveal in"><div class="wanelo-kicker">RECHARGE</div><div class="wanelo-stats__num">2<em>h</em></div><div class="wanelo-stats__lbl">USB-C fast charge</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8. SPECS (optional) ═══ -->
+  <div class="module-label optional" data-n="08">Specs · optional · 6-12 row table</div>
+  <section class="wanelo-section wanelo-specs reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">TECHNICAL</div>
+      <h2>Under the <em>hood</em></h2>
+    </div>
+    <dl class="wanelo-specs__table">
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Battery</dt><dd class="wanelo-specs__value">4000mAh Li-ion</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (low)</dt><dd class="wanelo-specs__value">12 hours</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (high)</dt><dd class="wanelo-specs__value">4 hours</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Charge time</dt><dd class="wanelo-specs__value">2 hours (USB-C)</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (low)</dt><dd class="wanelo-specs__value">35 dB</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (high)</dt><dd class="wanelo-specs__value">52 dB</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Weight</dt><dd class="wanelo-specs__value">220 g</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Material</dt><dd class="wanelo-specs__value">ABS plastic</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Includes</dt><dd class="wanelo-specs__value">Fan, USB-C cable, manual</dd></div>
+    </dl>
+  </section>
+
+  <!-- ═══ 9. SIZE GUIDE (optional) ═══ -->
+  <div class="module-label optional" data-n="09">Size Guide · optional · clothing/jewelry/pet</div>
+  <section class="wanelo-section wanelo-sizeguide reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">FIND YOUR FIT</div>
+      <h2>Get the <em>fit</em></h2>
+    </div>
+    <div class="wanelo-sizeguide__wrap">
+      <table class="wanelo-sizeguide__table">
+        <thead><tr><th class="wanelo-sizeguide__row-label"></th><th class="wanelo-sizeguide__col">XS</th><th class="wanelo-sizeguide__col">S</th><th class="wanelo-sizeguide__col">M</th><th class="wanelo-sizeguide__col">L</th><th class="wanelo-sizeguide__col">XL</th></tr></thead>
+        <tbody>
+          <tr><td class="wanelo-sizeguide__row-label">Chest <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">81</td><td class="wanelo-sizeguide__cell">86</td><td class="wanelo-sizeguide__cell">92</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">107</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Waist <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">65</td><td class="wanelo-sizeguide__cell">70</td><td class="wanelo-sizeguide__cell">76</td><td class="wanelo-sizeguide__cell">83</td><td class="wanelo-sizeguide__cell">91</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Hip <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">88</td><td class="wanelo-sizeguide__cell">93</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">106</td><td class="wanelo-sizeguide__cell">114</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="wanelo-sizeguide__note">Measurements taken flat across — double for full circumference.</p>
+  </section>
+
+  <!-- ═══ 10. DIMENSIONS (optional) ═══ -->
+  <div class="module-label optional" data-n="10">Dimensions · optional · decor/furniture/lighting</div>
+  <section class="wanelo-section wanelo-dimensions reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">ACTUAL SIZE</div>
+      <h2>In your <em>space</em></h2>
+    </div>
+    <ul class="wanelo-dimensions__list">
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Height</span><span class="wanelo-dimensions__value">32 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Width</span><span class="wanelo-dimensions__value">18 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Depth</span><span class="wanelo-dimensions__value">14 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Weight</span><span class="wanelo-dimensions__value">220 g</span></li>
+    </ul>
+    <p class="wanelo-dimensions__scale-note">Roughly the size of a hardcover book lying flat.</p>
+  </section>
+
+  <!-- ═══ 11. VARIANTS (optional) ═══ -->
+  <div class="module-label optional" data-n="11">Variants · optional · color swatches</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">PICK YOUR LOOK</div>
+      <h2>Five <em>shades</em></h2>
+    </div>
+    <ul class="wanelo-variants__list reveal in">
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#ffffff"></span><span class="wanelo-variants__name">White</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#f5b8c8"></span><span class="wanelo-variants__name">Pink</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#a6d8be"></span><span class="wanelo-variants__name">Mint</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#c4b09a"></span><span class="wanelo-variants__name">Sand</span></li>
+      <li class="wanelo-variants__item wanelo-variants__item--soldout"><span class="wanelo-variants__swatch" style="background:#222222"></span><span class="wanelo-variants__name">Black</span><span class="wanelo-variants__soldout">Sold out</span></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 12. CARE (optional) ═══ -->
+  <div class="module-label optional" data-n="12">Care · optional · fashion/jewelry/textiles</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">TAKING CARE</div>
+      <h2>Keep it <em>good</em></h2>
+    </div>
+    <ul class="wanelo-care__list reveal in">
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⌒</span><div class="wanelo-care__body"><span class="wanelo-care__label">Wipe weekly</span><span class="wanelo-care__note">Dry microfiber inside the air duct. No water inside.</span></div></li>
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⚡</span><div class="wanelo-care__body"><span class="wanelo-care__label">Charge before storage</span><span class="wanelo-care__note">Don't store empty for &gt;1 month.</span></div></li>
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">☼</span><div class="wanelo-care__body"><span class="wanelo-care__label">Avoid heat</span><span class="wanelo-care__note">Don't leave in hot car (&gt;50°C) — battery degrades.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 13. WHAT'S INCLUDED (optional) ═══ -->
+  <div class="module-label optional" data-n="13">What's Included · optional · bundles/kits</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">IN THE BOX</div>
+      <h2>Everything you <em>get</em></h2>
+    </div>
+    <ul class="wanelo-whatsincluded__list reveal in">
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌖</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Bladeless neck fan</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">in your chosen color</span></div></li>
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">↯</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">USB-C charge cable</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">1m braided</span></div></li>
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌘</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Quick-start manual</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">5 languages</span></div></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 14. GIFT OPTIONS (optional) ═══ -->
+  <div class="module-label optional" data-n="14">Gift Options · optional · gift-intent products</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">GIFT-READY</div>
+      <h2>For <em>gifting</em></h2>
+    </div>
+    <div class="wanelo-giftoptions__grid reveal in">
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">⌘</div>
+        <h4>Gift wrap <span>· $5</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Kraft + linen ribbon</li>
+          <li>Cream + gold foil</li>
+          <li>Sage + dried bloom</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">✉</div>
+        <h4>Personal message <span>· up to 240 chars</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>"Happy birthday — stay cool."</li>
+          <li>"For the office hero."</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">✦</div>
+        <h4>Perfect for</h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Birthday</li>
+          <li>Father's Day</li>
+          <li>House-warming</li>
+          <li>New job</li>
+        </ul>
+      </div>
+    </div>
+    <p class="wanelo-giftoptions__ships">Ships in unbranded outer packaging — receiver sees only your message inside.</p>
+  </section>
+
+  <!-- ═══ 15. COMPARE (optional) ═══ -->
+  <div class="module-label optional" data-n="15">Compare · optional · vs alternatives matrix</div>
+  <section class="wanelo-section wanelo-compare reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">SIDE BY SIDE</div>
+      <h2>Why <em>this one</em></h2>
+    </div>
+    <div class="wanelo-compare__wrap">
+      <table class="wanelo-compare__table">
+        <thead><tr>
+          <th class="wanelo-compare__row-label"></th>
+          <th class="wanelo-compare__col wanelo-compare__col--badge"><span class="wanelo-compare__col-name">This fan</span><span class="wanelo-compare__col-badge">Best</span></th>
+          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Handheld mini</span></th>
+          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Desk fan</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="wanelo-compare__row-label">Hands-free</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">✓</td></tr>
+          <tr><td class="wanelo-compare__row-label">Portable</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td></tr>
+          <tr><td class="wanelo-compare__row-label">Bladeless</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">rare</td></tr>
+          <tr><td class="wanelo-compare__row-label">Battery life</td><td class="wanelo-compare__cell">12h</td><td class="wanelo-compare__cell">3-6h</td><td class="wanelo-compare__cell">AC plug</td></tr>
+          <tr><td class="wanelo-compare__row-label">Quiet on low</td><td class="wanelo-compare__cell">35dB</td><td class="wanelo-compare__cell">40-50dB</td><td class="wanelo-compare__cell">45-55dB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ 16. TRUST (optional) ═══ -->
+  <div class="module-label optional" data-n="16">Trust · optional · certs + press mentions</div>
+  <section class="wanelo-section wanelo-trust reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">VERIFIED</div>
+      <h2>Independent <em>proof</em></h2>
+    </div>
+    <ul class="wanelo-trust__certs">
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">CE Certified</span><span class="wanelo-trust__sub">Lab-tested 2025</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">FCC Approved</span><span class="wanelo-trust__sub">No EMI risk</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">UL Battery Safe</span><span class="wanelo-trust__sub">Tested to UL 2056</span></li>
+    </ul>
+    <div class="wanelo-trust__press">
+      <div class="wanelo-trust__press-label">As seen on</div>
+      <ul class="wanelo-trust__press-list">
+        <li class="wanelo-trust__press-item">Wired <span>· "tiny invisible wind tunnel"</span></li>
+        <li class="wanelo-trust__press-item">Gear Patrol <span>· staff pick 2025</span></li>
+        <li class="wanelo-trust__press-item">The Strategist <span>· best for commutes</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ 17. REVIEWS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="17">Reviews · always-on · 9-12 mini-quotes</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">BUYERS SAY</div>
+      <h2>In their <em>words</em></h2>
+    </div>
+    <div class="wanelo-reviews reveal in">
+      <div class="wanelo-reviews__wall">
+        <div class="wanelo-reviews__col c1">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Garden work in 90° suddenly fine. Hair stays put.</p><div class="wanelo-reviews__who">Priya (Toronto)</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
+        </div>
+        <div class="wanelo-reviews__col c2">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it on a 12-hour flight. <em>Game changer.</em></p><div class="wanelo-reviews__who">Tomás (Lisbon)</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
+        </div>
+        <div class="wanelo-reviews__col c3">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Light, quiet, looks decent. Three for three.</p><div class="wanelo-reviews__who">Sara R., first-time buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 18. FAQ (always-on) ═══ -->
+  <div class="module-label always-on" data-n="18">FAQ · always-on · 4-7 q/a + JSON-LD</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">QUICK ANSWERS</div>
+      <h2>Before you <em>buy</em></h2>
+    </div>
+    <div class="wanelo-faq reveal in">
+      <details><summary>Will it actually cool me down?</summary><div class="wanelo-faq__answer">It moves air across your skin, which speeds evaporation. So yes — measurably cooler within seconds, especially at neck.</div></details>
+      <details open><summary>How long does the battery really last?</summary><div class="wanelo-faq__answer">Low: 12h. Mid: 7h. High: 4h. Mixed real-world use: ~6-8h.</div></details>
+      <details><summary>Is it loud in meetings?</summary><div class="wanelo-faq__answer">On low (35dB) it's quieter than a refrigerator and won't trigger mic background noise filters.</div></details>
+      <details><summary>Will it tangle long hair?</summary><div class="wanelo-faq__answer">No — the airflow comes from an enclosed duct, not exposed blades. Hair stays out.</div></details>
+      <details><summary>Can I wear it on a bike?</summary><div class="wanelo-faq__answer">Yes — it stays put on the neck via the rounded hook. Tested up to ~15 mph.</div></details>
+    </div>
+  </section>
+
+  <!-- ═══ 19. CTA (always-on) ═══ -->
+  <div class="module-label always-on" data-n="19">CTA · always-on · final conversion card</div>
+  <section class="wanelo-section">
+    <div class="wanelo-cta reveal in">
+      <div class="wanelo-kicker">READY TO COMMIT</div>
+      <h2>Ditch the sweat. <em>Wear the wind.</em></h2>
+      <p>Bladeless. 4-12 hours. Hands-free. Available in five pastel shades.</p>
+      <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>Take it home — $24.90</a>
+    </div>
+  </section>
+
+  <!-- ═══ 20. INTERLINKS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="20">Interlinks · always-on · collection pills</div>
+  <section class="wanelo-section">
+    <div class="wanelo-interlinks reveal in">
+      <h3>Explore more</h3>
+      <div class="wanelo-interlinks__list">
+        <a class="wanelo-interlinks__link" href="#">Personal cooling</a>
+        <a class="wanelo-interlinks__link" href="#">Outdoor essentials</a>
+        <a class="wanelo-interlinks__link" href="#">Commute kit</a>
+        <a class="wanelo-interlinks__link" href="#">Summer 2026</a>
+        <a class="wanelo-interlinks__link" href="#">Wearable tech</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 21. PALETTE (always-on, injected at top, listed last for completeness) ═══ -->
+  <div class="module-label always-on" data-n="21">Palette · always-on · injected as :root CSS variables (see &lt;style data-wanelo-palette&gt; at top)</div>
+
+  <p class="footer-note">21 modules · skip-if-blank · operator typically sees 11-13 per product · per-product palette via <code>:root</code> CSS variables · Editorial Pastel system</p>
+</div>
+
+<!-- Mobile sticky ATC bar — wanelo.js usually injects, here static for preview -->
+<a href="#wanelo-atc" class="wanelo-sticky-atc visible" style="display:none" id="sticky-preview">Add to cart <span class="wanelo-sticky-arrow">↑</span></a>
+
+<!-- Section progress rail — desktop ≥1100px -->
+<div class="wanelo-rail" aria-hidden="true">
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot active"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+</div>
+
+<script>
+  // Palette picker — swaps the per-product :root CSS variables.
+  const PALETTES = {
+    lavender: {brand_1:'#c8b6e2', brand_2:'#d8e6d5', brand_3:'#f5e6d3', brand_soft:'#f0e8f8', brand_deep:'#b59cd0'},
+    peach:    {brand_1:'#ffd4ba', brand_2:'#ffe2c8', brand_3:'#f7e0d0', brand_soft:'#fff0e3', brand_deep:'#e89968'},
+    sage:     {brand_1:'#c5d8c0', brand_2:'#e0e8d4', brand_3:'#f0eed5', brand_soft:'#eaf0e6', brand_deep:'#7a9a72'},
+    blush:    {brand_1:'#f0c8c8', brand_2:'#fad8d8', brand_3:'#f7e0d8', brand_soft:'#faecec', brand_deep:'#c87878'},
+    butter:   {brand_1:'#f5e6a8', brand_2:'#f7edc4', brand_3:'#f0e0c0', brand_soft:'#faf3d8', brand_deep:'#c8a040'},
+  };
+  document.getElementById('palette-picker').addEventListener('change', e => {
+    const p = PALETTES[e.target.value];
+    document.getElementById('palette-style').textContent =
+      `.wanelo-page{--brand-1:${p.brand_1};--brand-2:${p.brand_2};--brand-3:${p.brand_3};--brand-soft:${p.brand_soft};--brand-deep:${p.brand_deep};}`;
+  });
+</script>
+
+</body>
+</html>

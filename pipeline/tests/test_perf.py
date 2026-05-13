@@ -534,3 +534,65 @@ def test_end_of_batch_summary_prints_cache_ratio(cells: dict) -> None:
     assert "_anthropic_cost_tracker" in c6
     # Warning when cache ratio is suspiciously low
     assert "verify cache_control" in c6 or "cache hit ratio low" in c6
+
+
+# ============================================================
+# Tier 3 hygiene — module-level constants + silent-truncation warnings
+# ============================================================
+
+def test_funnel_order_is_module_level(cells: dict) -> None:
+    """_PHOTO_FUNNEL_ORDER + _PHOTO_FUNNEL_IDX must live in Cell 2 (module
+    level) so they aren't rebuilt every per-product loop iteration and
+    tests can reason about them independently of Cell 6."""
+    c2 = cells["b810afd7"]
+    assert "_PHOTO_FUNNEL_ORDER" in c2
+    assert "_PHOTO_FUNNEL_IDX" in c2
+
+
+def test_funnel_order_not_redefined_in_cell6(cells: dict) -> None:
+    """Local `_FUNNEL_ORDER = [...]` inside the loop body must be GONE —
+    Cell 6 reads the module-level constant instead."""
+    c6 = cells["ce20f070"]
+    assert "_FUNNEL_ORDER = [" not in c6, (
+        "Local funnel-order definition must be removed; use module-level "
+        "_PHOTO_FUNNEL_ORDER from Cell 2"
+    )
+
+
+def test_photo_pack_skipped_is_module_level(cells: dict) -> None:
+    """_PhotoPackSkipped class must be defined ONCE at module level
+    (Cell 2), not re-created per iteration. Identity stability also
+    matters for any external `isinstance` checks."""
+    c2 = cells["b810afd7"]
+    assert "class _PhotoPackSkipped(Exception):" in c2, (
+        "Cell 2 must declare module-level _PhotoPackSkipped"
+    )
+    c6 = cells["ce20f070"]
+    # Cell 6 must NOT redefine it inside the loop
+    assert "class _PhotoPackSkipped" not in c6, (
+        "Local class _PhotoPackSkipped definition must be removed from Cell 6"
+    )
+
+
+def test_eprolo_photos_truncation_warned(cells: dict) -> None:
+    """When EPROLO returns more than 14 photos, Designer only sees the
+    first 14 (token-budget cap). Operator must see a warning so they
+    know photos 15+ are silently dropped for source_index selection."""
+    c6 = cells["ce20f070"]
+    assert "len(_all_eprolo_d) > 14" in c6, (
+        "Cell 6 must check for >14 EPROLO photos"
+    )
+    assert "Designer sees first 14" in c6 or "Photos 15-" in c6, (
+        "Must print explicit warning when EPROLO cap is hit"
+    )
+
+
+def test_source_image_urls_truncation_warned(cells: dict) -> None:
+    """custom.source caps top/desc image_urls at 50. EPROLO occasionally
+    returns 60-80 desc URLs — operator must see truncation."""
+    c6 = cells["ce20f070"]
+    # Either a clear print message or a count comparison
+    assert ("truncated" in c6 and "image_urls" in c6) or \
+           "custom.source image_urls truncated" in c6, (
+        "Must warn when image_urls > 50 cap is hit"
+    )

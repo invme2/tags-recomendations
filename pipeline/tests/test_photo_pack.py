@@ -666,15 +666,15 @@ def test_no_hidden_attribute_renders_photo_pack() -> None:
 def test_briefs_sorted_by_funnel_position(cells: dict) -> None:
     """Briefs must be sorted by carousel-funnel order before being numbered,
     so filenames `01-..., 02-...` map to the slot order the operator should
-    use when dropping into Shopify carousel."""
-    c6 = cells["ce20f070"]
-    assert "_FUNNEL_ORDER = [" in c6, (
-        "STEP 4.5 must declare an explicit funnel order constant"
+    use when dropping into Shopify carousel. The funnel order lives at
+    module level (Cell 2) as `_PHOTO_FUNNEL_ORDER`."""
+    c2 = cells["b810afd7"]
+    assert "_PHOTO_FUNNEL_ORDER = [" in c2, (
+        "Cell 2 must declare module-level _PHOTO_FUNNEL_ORDER"
     )
-    # Must contain at minimum the 5 carousel slots in conversion order
-    pat = re.compile(r"_FUNNEL_ORDER\s*=\s*\[(.*?)\]", re.DOTALL)
-    m = pat.search(c6)
-    assert m, "_FUNNEL_ORDER list not found"
+    pat = re.compile(r"_PHOTO_FUNNEL_ORDER\s*=\s*\[(.*?)\]", re.DOTALL)
+    m = pat.search(c2)
+    assert m, "_PHOTO_FUNNEL_ORDER list not found"
     body = m.group(1)
     hero = body.find("'carousel-hero'")
     lifestyle = body.find("'carousel-lifestyle'")
@@ -685,9 +685,12 @@ def test_briefs_sorted_by_funnel_position(cells: dict) -> None:
         "carousel slots must be listed in conversion-funnel order: "
         "hero → lifestyle → in-use → detail → scale"
     )
-    # And the sort must actually be applied to _resolved
+    # And Cell 6 must apply the sort using the module-level index
+    c6 = cells["ce20f070"]
     assert "_resolved.sort(" in c6, "_resolved list must be sorted before naming"
-    assert "_funnel_idx.get" in c6, "Sort key must use the funnel index lookup"
+    assert "_PHOTO_FUNNEL_IDX.get" in c6, (
+        "Sort key must use the module-level _PHOTO_FUNNEL_IDX lookup"
+    )
 
 
 def test_unknown_slots_sort_after_known(cells: dict) -> None:
@@ -903,12 +906,13 @@ def test_step45_reloads_product_from_db(cells: dict) -> None:
 def test_step45_skips_upload_when_all_downloads_failed(cells: dict) -> None:
     """If every brief's 3-retry download failed, _files_with_names is empty.
     Must NOT ship a docs-only ZIP (operator would download a useless archive).
-    Raises sentinel _PhotoPackSkipped, caught separately so it isn't logged
-    as an error."""
+    Raises sentinel _PhotoPackSkipped (module-level class in Cell 2),
+    caught separately so it isn't logged as an error."""
+    c2 = cells["b810afd7"]
     c6 = cells["ce20f070"]
-    # Sentinel class declared inside STEP 4.5
-    assert "class _PhotoPackSkipped(Exception):" in c6, (
-        "STEP 4.5 must declare _PhotoPackSkipped sentinel class"
+    # Sentinel class is module-level (Cell 2) for stable identity
+    assert "class _PhotoPackSkipped(Exception):" in c2, (
+        "Cell 2 must declare module-level _PhotoPackSkipped sentinel class"
     )
     # Guard fires when _files_with_names is empty
     assert "if not _files_with_names:" in c6, "Empty-list guard missing"

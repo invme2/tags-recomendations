@@ -149,10 +149,14 @@ def test_source_meta_includes_cost_price(cells: dict) -> None:
 def test_source_build_is_non_blocking(cells: dict) -> None:
     """If the source dict build itself fails (weird scrape JSON), the
     pipeline must still push the rest of the metafields — provenance is
-    a nice-to-have, not a blocker."""
+    a nice-to-have, not a blocker.
+
+    Tier 3 inserted a truncation-warning print between the dict and the
+    _sections['source'] assignment, so the regex tolerates either form.
+    """
     c6 = cells["ce20f070"]
     pat = re.compile(
-        r"_src_meta\s*=\s*\{.*?\}\s*\n\s*_sections\['source'\]\s*=\s*_src_meta.*?except Exception",
+        r"_src_meta\s*=\s*\{.*?\}.*?_sections\['source'\]\s*=\s*_src_meta.*?except Exception",
         re.DOTALL,
     )
     assert pat.search(c6), (
