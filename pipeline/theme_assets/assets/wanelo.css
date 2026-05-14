@@ -428,14 +428,19 @@
    TIMELINE
    ============================================================ */
 .wanelo-page .wanelo-timeline__list{list-style:none;padding:0;margin:0;position:relative;max-width:var(--max-w-narrow);margin-inline:auto}
-.wanelo-page .wanelo-timeline__list::before{content:'';position:absolute;left:80px;top:8px;bottom:8px;width:1px;background:var(--line)}
-@media(max-width:640px){.wanelo-page .wanelo-timeline__list::before{left:20px}}
+.wanelo-page .wanelo-timeline__list::before{content:'';position:absolute;left:132px;top:8px;bottom:8px;width:1px;background:var(--line)}
 .wanelo-page .wanelo-timeline__step{display:grid;grid-template-columns:120px 1fr;gap:var(--space-5);align-items:flex-start;padding:var(--space-4) 0;position:relative}
-@media(max-width:640px){.wanelo-page .wanelo-timeline__step{grid-template-columns:56px 1fr;gap:var(--space-3)}}
-.wanelo-page .wanelo-timeline__when{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-deep);padding-top:6px}
+.wanelo-page .wanelo-timeline__when{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-deep);padding-top:6px;text-align:right;padding-right:var(--space-2)}
 .wanelo-page .wanelo-timeline__body{padding-left:var(--space-4);position:relative}
-.wanelo-page .wanelo-timeline__body::before{content:'';position:absolute;left:-22px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--brand-deep);box-shadow:0 0 0 4px var(--bg)}
-@media(max-width:640px){.wanelo-page .wanelo-timeline__body::before{left:-30px}}
+.wanelo-page .wanelo-timeline__body::before{content:'';position:absolute;left:-17px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--brand-deep);box-shadow:0 0 0 4px var(--bg)}
+@media(max-width:640px){
+  /* Mobile: switch to block — rail on far left, WHEN above body, no horizontal overlap */
+  .wanelo-page .wanelo-timeline__step{display:block;padding-left:32px;padding-block:var(--space-4)}
+  .wanelo-page .wanelo-timeline__when{display:block;text-align:left;padding-top:0;padding-right:0;margin-bottom:6px}
+  .wanelo-page .wanelo-timeline__body{padding-left:0}
+  .wanelo-page .wanelo-timeline__list::before{left:8px}
+  .wanelo-page .wanelo-timeline__body::before{left:-29px;top:6px}
+}
 .wanelo-page .wanelo-timeline__body h4{font-size:17px;font-weight:600;margin-bottom:var(--space-1);color:var(--ink)}
 .wanelo-page .wanelo-timeline__body p{font-size:15px;line-height:1.6;color:var(--ink-2)}
 
