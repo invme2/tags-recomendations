@@ -39,6 +39,10 @@
       });
       page.appendChild(rail);
       const dots = rail.querySelectorAll('.wanelo-rail__dot');
+      // Position each dot proportionally along the rail track so 21
+      // sections fit visually on a 280px-tall line rather than stacking.
+      const total = sections.length - 1 || 1;
+      dots.forEach((d, i) => { d.style.top = ((i / total) * 100) + '%'; });
       const railIO = new IntersectionObserver(entries => {
         entries.forEach(e => {
           if (e.isIntersecting) {

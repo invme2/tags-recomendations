@@ -492,18 +492,20 @@
 <!-- Mobile sticky ATC bar — wanelo.js usually injects, here static for preview -->
 <a href="#wanelo-atc" class="wanelo-sticky-atc visible" style="display:none" id="sticky-preview">Add to cart <span class="wanelo-sticky-arrow">↑</span></a>
 
-<!-- Section progress rail — desktop ≥1100px -->
+<!-- Section progress rail — desktop ≥1100px. JS positions each dot
+     proportionally along the 280px track; here pre-positioned for the
+     static preview. -->
 <div class="wanelo-rail" aria-hidden="true">
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot active"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot" style="top:0%"></span>
+  <span class="wanelo-rail__dot" style="top:11%"></span>
+  <span class="wanelo-rail__dot" style="top:22%"></span>
+  <span class="wanelo-rail__dot active" style="top:33%"></span>
+  <span class="wanelo-rail__dot" style="top:44%"></span>
+  <span class="wanelo-rail__dot" style="top:55%"></span>
+  <span class="wanelo-rail__dot" style="top:66%"></span>
+  <span class="wanelo-rail__dot" style="top:77%"></span>
+  <span class="wanelo-rail__dot" style="top:88%"></span>
+  <span class="wanelo-rail__dot" style="top:100%"></span>
 </div>
 
 <script>

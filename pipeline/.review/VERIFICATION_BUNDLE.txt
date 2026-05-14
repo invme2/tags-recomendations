@@ -128,6 +128,23 @@ traffic CVR on $15-30 EPROLO products.
 <style>
 /* ============================================================
    WANELO Product Page — Editorial Pastel system (2026)
+
+
+=================================================================
+### FILE: pipeline/.review/preview-inline.html (SELF-CONTAINED)
+=================================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wanelo PDP — Full 21-module preview (Editorial Pastel)</title>
+<!-- The actual CSS the pipeline ships. Edit pipeline/theme_assets/assets/wanelo.css and refresh. -->
+<!-- wanelo.css inlined for self-contained rendering -->
+<style>
+/* ============================================================
+   WANELO Product Page — Editorial Pastel system (2026)
    Single asset file. Replaces assets/wanelo.css in full.
    Per-product palette injected by snippets/wanelo-palette.liquid.
    CTAs inherit theme button tokens (--btn-primary-*).
@@ -151,8 +168,9 @@ traffic CVR on $15-30 EPROLO products.
   --line:   rgba(20,20,15,.08);
   --line-2: rgba(20,20,15,.04);
   --bg:     #ffffff;
-  --bg-2:   #faf9f6;
-  --bg-3:   #f4f2ec;
+  --bg-2:   #f4f2ec;   /* warm-white off-white — 5% delta against #fff so
+                           4n+3 section alternation actually reads as pacing */
+  --bg-3:   #ebe8e0;   /* deepest neutral, used by accents/hovers */
 
   /* 8px spacing scale — single source of truth */
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
@@ -582,8 +600,15 @@ traffic CVR on $15-30 EPROLO products.
 .wanelo-page .wanelo-trust__press{margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--line)}
 .wanelo-page .wanelo-trust__press-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-3)}
 .wanelo-page .wanelo-trust__press-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--space-5);justify-content:center;align-items:center}
-.wanelo-page .wanelo-trust__press-item{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:18px;color:var(--ink-2)}
-.wanelo-page .wanelo-trust__press-item span{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-4);font-style:normal}
+.wanelo-page .wanelo-trust__press-item{
+  font-family:'Inter',sans-serif;
+  font-weight:600;font-size:17px;letter-spacing:-.015em;color:var(--ink);
+  display:inline-flex;align-items:baseline;gap:var(--space-2);
+}
+.wanelo-page .wanelo-trust__press-item span{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:14px;color:var(--ink-3);
+}
 
 /* ============================================================
    COMPARE
@@ -614,7 +639,8 @@ traffic CVR on $15-30 EPROLO products.
 .wanelo-page .wanelo-sizeguide__table td:last-child{border-right:0}
 .wanelo-page .wanelo-sizeguide__table tbody tr:last-child td{border-bottom:0}
 .wanelo-page .wanelo-sizeguide__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:140px}
-.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--brand-soft);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--bg-2);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__table thead th{border-bottom:1px solid var(--brand-deep)}
 .wanelo-page .wanelo-sizeguide__cell{font-feature-settings:'tnum';color:var(--ink-2)}
 .wanelo-page .wanelo-sizeguide__unit{font-size:11px;color:var(--ink-3);font-weight:400}
 .wanelo-page .wanelo-sizeguide__note{margin-top:var(--space-3);font-size:13px;color:var(--ink-3);text-align:center;font-family:'Fraunces',serif;font-style:italic;max-width:var(--max-w-narrow);margin-inline:auto}
@@ -647,7 +673,11 @@ traffic CVR on $15-30 EPROLO products.
 /* ============================================================
    VARIANTS — swatches
    ============================================================ */
-.wanelo-page .wanelo-variants__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:var(--space-3);max-width:var(--max-w);margin-inline:auto}
+.wanelo-page .wanelo-variants__list{
+  list-style:none;padding:0;margin:0;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:var(--space-3);max-width:var(--max-w);margin-inline:auto;
+}
 .wanelo-page .wanelo-variants__item{
   display:flex;flex-direction:column;align-items:center;gap:var(--space-2);
   padding:var(--space-3);border-radius:var(--r-md);
@@ -657,8 +687,12 @@ traffic CVR on $15-30 EPROLO products.
 }
 .wanelo-page .wanelo-variants__item:hover{border-color:var(--ink);transform:translateY(-2px)}
 .wanelo-page .wanelo-variants__item--soldout{opacity:.5;cursor:not-allowed}
-.wanelo-page .wanelo-variants__swatch{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 0 0 3px var(--bg)}
-.wanelo-page .wanelo-variants__name{font-size:13px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-variants__swatch{
+  width:56px;height:56px;border-radius:50%;
+  border:1px solid var(--line);
+  box-shadow:inset 0 0 0 4px var(--bg), 0 1px 2px rgba(20,20,15,.06);
+}
+.wanelo-page .wanelo-variants__name{font-size:14px;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
 .wanelo-page .wanelo-variants__soldout{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 
 /* ============================================================
@@ -702,19 +736,33 @@ traffic CVR on $15-30 EPROLO products.
 
 /* ============================================================
    SECTION-PROGRESS RAIL — desktop ≥1100px
+   Single thin vertical track with dots positioned proportionally
+   along it (positions set inline via wanelo.js). 21 stacked items
+   would be too dense — this reads as orientation chrome, not nav.
    ============================================================ */
 .wanelo-rail{
-  position:fixed;left:18px;top:50%;transform:translateY(-50%);
-  display:none;flex-direction:column;gap:8px;z-index:50;
-  pointer-events:none;
-}
-@media(min-width:1100px){.wanelo-rail{display:flex}}
-.wanelo-rail__dot{
-  width:3px;height:18px;border-radius:2px;
+  position:fixed;left:24px;top:50%;
+  transform:translateY(-50%);
+  display:none;
+  width:1px;height:280px;
   background:var(--line);
-  transition:background .3s cubic-bezier(.2,.7,.2,1), height .3s cubic-bezier(.2,.7,.2,1);
+  z-index:50;pointer-events:none;
 }
-.wanelo-rail__dot.active{background:var(--ink);height:28px}
+@media(min-width:1100px){.wanelo-rail{display:block}}
+.wanelo-rail__dot{
+  display:block;
+  position:absolute;left:50%;transform:translateX(-50%);
+  width:1px;height:6px;
+  background:var(--line);
+  transition:background .3s cubic-bezier(.2,.7,.2,1),
+             height .3s cubic-bezier(.2,.7,.2,1),
+             width .3s cubic-bezier(.2,.7,.2,1);
+}
+.wanelo-rail__dot.active{
+  width:3px;height:24px;
+  background:var(--ink);
+  border-radius:2px;
+}
 
 /* ============================================================
    COLLECTION → COLLECTION cross-links
@@ -1232,18 +1280,20 @@ traffic CVR on $15-30 EPROLO products.
 <!-- Mobile sticky ATC bar — wanelo.js usually injects, here static for preview -->
 <a href="#wanelo-atc" class="wanelo-sticky-atc visible" style="display:none" id="sticky-preview">Add to cart <span class="wanelo-sticky-arrow">↑</span></a>
 
-<!-- Section progress rail — desktop ≥1100px -->
+<!-- Section progress rail — desktop ≥1100px. JS positions each dot
+     proportionally along the 280px track; here pre-positioned for the
+     static preview. -->
 <div class="wanelo-rail" aria-hidden="true">
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot active"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
-  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot" style="top:0%"></span>
+  <span class="wanelo-rail__dot" style="top:11%"></span>
+  <span class="wanelo-rail__dot" style="top:22%"></span>
+  <span class="wanelo-rail__dot active" style="top:33%"></span>
+  <span class="wanelo-rail__dot" style="top:44%"></span>
+  <span class="wanelo-rail__dot" style="top:55%"></span>
+  <span class="wanelo-rail__dot" style="top:66%"></span>
+  <span class="wanelo-rail__dot" style="top:77%"></span>
+  <span class="wanelo-rail__dot" style="top:88%"></span>
+  <span class="wanelo-rail__dot" style="top:100%"></span>
 </div>
 
 <script>
@@ -2319,8 +2369,9 @@ traffic CVR on $15-30 EPROLO products.
   --line:   rgba(20,20,15,.08);
   --line-2: rgba(20,20,15,.04);
   --bg:     #ffffff;
-  --bg-2:   #faf9f6;
-  --bg-3:   #f4f2ec;
+  --bg-2:   #f4f2ec;   /* warm-white off-white — 5% delta against #fff so
+                           4n+3 section alternation actually reads as pacing */
+  --bg-3:   #ebe8e0;   /* deepest neutral, used by accents/hovers */
 
   /* 8px spacing scale — single source of truth */
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
@@ -2750,8 +2801,15 @@ traffic CVR on $15-30 EPROLO products.
 .wanelo-page .wanelo-trust__press{margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--line)}
 .wanelo-page .wanelo-trust__press-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-3)}
 .wanelo-page .wanelo-trust__press-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--space-5);justify-content:center;align-items:center}
-.wanelo-page .wanelo-trust__press-item{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:18px;color:var(--ink-2)}
-.wanelo-page .wanelo-trust__press-item span{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-4);font-style:normal}
+.wanelo-page .wanelo-trust__press-item{
+  font-family:'Inter',sans-serif;
+  font-weight:600;font-size:17px;letter-spacing:-.015em;color:var(--ink);
+  display:inline-flex;align-items:baseline;gap:var(--space-2);
+}
+.wanelo-page .wanelo-trust__press-item span{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:14px;color:var(--ink-3);
+}
 
 /* ============================================================
    COMPARE
@@ -2782,7 +2840,8 @@ traffic CVR on $15-30 EPROLO products.
 .wanelo-page .wanelo-sizeguide__table td:last-child{border-right:0}
 .wanelo-page .wanelo-sizeguide__table tbody tr:last-child td{border-bottom:0}
 .wanelo-page .wanelo-sizeguide__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:140px}
-.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--brand-soft);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--bg-2);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__table thead th{border-bottom:1px solid var(--brand-deep)}
 .wanelo-page .wanelo-sizeguide__cell{font-feature-settings:'tnum';color:var(--ink-2)}
 .wanelo-page .wanelo-sizeguide__unit{font-size:11px;color:var(--ink-3);font-weight:400}
 .wanelo-page .wanelo-sizeguide__note{margin-top:var(--space-3);font-size:13px;color:var(--ink-3);text-align:center;font-family:'Fraunces',serif;font-style:italic;max-width:var(--max-w-narrow);margin-inline:auto}
@@ -2815,7 +2874,11 @@ traffic CVR on $15-30 EPROLO products.
 /* ============================================================
    VARIANTS — swatches
    ============================================================ */
-.wanelo-page .wanelo-variants__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:var(--space-3);max-width:var(--max-w);margin-inline:auto}
+.wanelo-page .wanelo-variants__list{
+  list-style:none;padding:0;margin:0;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:var(--space-3);max-width:var(--max-w);margin-inline:auto;
+}
 .wanelo-page .wanelo-variants__item{
   display:flex;flex-direction:column;align-items:center;gap:var(--space-2);
   padding:var(--space-3);border-radius:var(--r-md);
@@ -2825,8 +2888,12 @@ traffic CVR on $15-30 EPROLO products.
 }
 .wanelo-page .wanelo-variants__item:hover{border-color:var(--ink);transform:translateY(-2px)}
 .wanelo-page .wanelo-variants__item--soldout{opacity:.5;cursor:not-allowed}
-.wanelo-page .wanelo-variants__swatch{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 0 0 3px var(--bg)}
-.wanelo-page .wanelo-variants__name{font-size:13px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-variants__swatch{
+  width:56px;height:56px;border-radius:50%;
+  border:1px solid var(--line);
+  box-shadow:inset 0 0 0 4px var(--bg), 0 1px 2px rgba(20,20,15,.06);
+}
+.wanelo-page .wanelo-variants__name{font-size:14px;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
 .wanelo-page .wanelo-variants__soldout{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 
 /* ============================================================
@@ -2870,19 +2937,33 @@ traffic CVR on $15-30 EPROLO products.
 
 /* ============================================================
    SECTION-PROGRESS RAIL — desktop ≥1100px
+   Single thin vertical track with dots positioned proportionally
+   along it (positions set inline via wanelo.js). 21 stacked items
+   would be too dense — this reads as orientation chrome, not nav.
    ============================================================ */
 .wanelo-rail{
-  position:fixed;left:18px;top:50%;transform:translateY(-50%);
-  display:none;flex-direction:column;gap:8px;z-index:50;
-  pointer-events:none;
-}
-@media(min-width:1100px){.wanelo-rail{display:flex}}
-.wanelo-rail__dot{
-  width:3px;height:18px;border-radius:2px;
+  position:fixed;left:24px;top:50%;
+  transform:translateY(-50%);
+  display:none;
+  width:1px;height:280px;
   background:var(--line);
-  transition:background .3s cubic-bezier(.2,.7,.2,1), height .3s cubic-bezier(.2,.7,.2,1);
+  z-index:50;pointer-events:none;
 }
-.wanelo-rail__dot.active{background:var(--ink);height:28px}
+@media(min-width:1100px){.wanelo-rail{display:block}}
+.wanelo-rail__dot{
+  display:block;
+  position:absolute;left:50%;transform:translateX(-50%);
+  width:1px;height:6px;
+  background:var(--line);
+  transition:background .3s cubic-bezier(.2,.7,.2,1),
+             height .3s cubic-bezier(.2,.7,.2,1),
+             width .3s cubic-bezier(.2,.7,.2,1);
+}
+.wanelo-rail__dot.active{
+  width:3px;height:24px;
+  background:var(--ink);
+  border-radius:2px;
+}
 
 /* ============================================================
    COLLECTION → COLLECTION cross-links
@@ -2959,6 +3040,10 @@ traffic CVR on $15-30 EPROLO products.
       });
       page.appendChild(rail);
       const dots = rail.querySelectorAll('.wanelo-rail__dot');
+      // Position each dot proportionally along the rail track so 21
+      // sections fit visually on a 280px-tall line rather than stacking.
+      const total = sections.length - 1 || 1;
+      dots.forEach((d, i) => { d.style.top = ((i / total) * 100) + '%'; });
       const railIO = new IntersectionObserver(entries => {
         entries.forEach(e => {
           if (e.isIntersecting) {
@@ -3003,6 +3088,4 @@ traffic CVR on $15-30 EPROLO products.
 })();
 
 
-=================================================================
-### END OF BUNDLE — ready for verification
-=================================================================
+### END OF BUNDLE
