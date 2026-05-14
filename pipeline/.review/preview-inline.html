@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wanelo PDP — Full 21-module preview (Editorial Pastel)</title>
+<!-- The actual CSS the pipeline ships. Edit pipeline/theme_assets/assets/wanelo.css and refresh. -->
+<!-- wanelo.css inlined for self-contained rendering -->
+<style>
+/* ============================================================
+   WANELO Product Page — Editorial Pastel system (2026)
+   Single asset file. Replaces assets/wanelo.css in full.
+   Per-product palette injected by snippets/wanelo-palette.liquid.
+   CTAs inherit theme button tokens (--btn-primary-*).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300;1,9..144,400&display=swap');
+
+/* ---- Default palette (overridden per-product via inline <style>) ---- */
+.wanelo-page{
+  --brand-1:    #c8b6e2;
+  --brand-2:    #d8e6d5;
+  --brand-3:    #f5e6d3;
+  --brand-soft: #f0e8f8;
+  --brand-deep: #b59cd0;
+
+  /* Neutrals — neutral-warm for editorial feel */
+  --ink:    #14140f;
+  --ink-2:  #3a3a35;
+  --ink-3:  #6b6b66;
+  --ink-4:  #9a9a95;
+  --line:   rgba(20,20,15,.08);
+  --line-2: rgba(20,20,15,.04);
+  --bg:     #ffffff;
+  --bg-2:   #faf9f6;
+  --bg-3:   #f4f2ec;
+
+  /* 8px spacing scale — single source of truth */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --space-9: 80px; --space-10: 96px; --space-11: 120px; --space-12: 160px;
+
+  /* Section rhythm — half of old --gap-section, so 21 modules don't feel infinite */
+  --pad-section-y: clamp(56px, 8vw, 96px);
+  --pad-section-x: clamp(20px, 4vw, 40px);
+  --pad-head:      clamp(32px, 5vw, 56px);
+  --max-w:         1180px;
+  --max-w-narrow:  860px;
+
+  /* Radii — tightened (28-36px reads as 2022) */
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px;
+
+  /* Elevation — flat hairline + one soft shadow, no glassmorphism */
+  --shadow-1: 0 1px 2px rgba(20,20,15,.04), 0 4px 12px rgba(20,20,15,.05);
+  --shadow-2: 0 1px 2px rgba(20,20,15,.04), 0 12px 32px rgba(20,20,15,.06);
+
+  --ease:     cubic-bezier(.2,.7,.2,1);
+  --ease-out: cubic-bezier(.16,1,.3,1);
+
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-feature-settings:'ss01','cv11';
+  color:var(--ink);
+  letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+.wanelo-page *,.wanelo-page *::before,.wanelo-page *::after{box-sizing:border-box}
+.wanelo-page h1,.wanelo-page h2,.wanelo-page h3,.wanelo-page h4{margin:0;text-wrap:balance;font-weight:600}
+.wanelo-page p{margin:0;text-wrap:pretty}
+.wanelo-page img{display:block;max-width:100%}
+.wanelo-page a{color:inherit;text-decoration:none}
+
+/* ---- Focus rings (was missing) ---- */
+.wanelo-page a:focus-visible,
+.wanelo-page button:focus-visible,
+.wanelo-page summary:focus-visible,
+.wanelo-page [tabindex]:focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+/* ---- Editorial em — used for AI-emphasised words ---- */
+.wanelo-page em{
+  font-family:'Fraunces',ui-serif,serif;
+  font-style:italic;
+  font-weight:300;
+  font-optical-sizing:auto;
+  letter-spacing:-.015em;
+}
+
+/* ---- Reveal-on-scroll (kept) ---- */
+.wanelo-page .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease), transform .9s var(--ease)}
+.wanelo-page .reveal.in{opacity:1;transform:none}
+.wanelo-page .delay-1{transition-delay:.08s}
+.wanelo-page .delay-2{transition-delay:.16s}
+.wanelo-page .delay-3{transition-delay:.24s}
+
+/* ---- Mask reveal ---- */
+.wanelo-page .mask{display:inline-block;overflow:hidden;vertical-align:bottom;line-height:1.05;padding-bottom:.04em}
+.wanelo-page .mask > span{display:inline-block;transform:translateY(110%);transition:transform 1s var(--ease)}
+.wanelo-page .mask.in > span,.wanelo-page .in .mask > span{transform:none}
+
+/* ---- prefers-reduced-motion (was missing) ---- */
+@media (prefers-reduced-motion: reduce){
+  .wanelo-page .reveal,
+  .wanelo-page .mask > span{transition:none !important;transform:none !important;opacity:1 !important}
+  .wanelo-page .wanelo-reviews__col{animation:none !important}
+  .wanelo-page .wanelo-hero__photo img{transform:none !important}
+}
+
+/* ---- Page rhythm — alternate bg every 4 sections ---- */
+.wanelo-page{background:var(--bg)}
+.wanelo-page .wanelo-section,
+.wanelo-page section[class*="wanelo-"]{padding-block:var(--pad-section-y);padding-inline:var(--pad-section-x)}
+.wanelo-page section[class*="wanelo-"]:nth-of-type(4n+3){background:var(--bg-2)}
+
+/* ---- Module head ---- */
+.wanelo-page .wanelo-head{max-width:var(--max-w-narrow);margin:0 auto var(--pad-head);text-align:center}
+.wanelo-page .wanelo-head::before{content:"";display:block;width:32px;height:1px;background:var(--ink);opacity:.18;margin:0 auto 24px}
+.wanelo-page .wanelo-kicker{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.wanelo-page .wanelo-head h2{margin-top:14px;font-size:clamp(32px,5vw,56px);font-weight:600;letter-spacing:-.028em;line-height:1.05}
+.wanelo-page .wanelo-head h2 em{font-weight:300}
+.wanelo-page .wanelo-head .desc{margin:16px auto 0;font-size:17px;line-height:1.55;color:var(--ink-2);max-width:520px}
+
+/* ============================================================
+   HERO — generous, editorial. Pastel only on the photo column.
+   ============================================================ */
+.wanelo-page .wanelo-hero{
+  position:relative;
+  display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,4vw,64px);align-items:center;
+  padding:clamp(40px,6vw,88px) clamp(20px,4vw,56px);
+  background:var(--bg);
+  margin:0;
+}
+.wanelo-page .wanelo-hero__copy{max-width:560px;display:flex;flex-direction:column;gap:var(--space-4)}
+.wanelo-page .wanelo-hero__copy .wanelo-kicker{color:var(--brand-deep);font-weight:700}
+.wanelo-page .wanelo-hero h1{
+  font-family:'Fraunces',ui-serif,serif;font-weight:300;font-style:normal;
+  font-size:clamp(44px,7vw,88px);
+  line-height:.95;letter-spacing:-.035em;color:var(--ink);
+  font-optical-sizing:auto;
+}
+.wanelo-page .wanelo-hero h1 em{font-weight:300;color:var(--brand-deep)}
+.wanelo-page .wanelo-hero__lead{margin-top:var(--space-2);font-size:19px;line-height:1.5;color:var(--ink-2);max-width:480px}
+.wanelo-page .wanelo-hero__photo{
+  aspect-ratio:4/5;border-radius:var(--r-lg);overflow:hidden;
+  background:var(--brand-soft);
+  position:relative;
+}
+.wanelo-page .wanelo-hero__photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 1.8s var(--ease)}
+.wanelo-page .wanelo-hero__photo.in img{transform:scale(1)}
+@media(max-width:900px){
+  .wanelo-page .wanelo-hero{grid-template-columns:1fr;gap:var(--space-6);padding:var(--space-7) var(--space-5)}
+  .wanelo-page .wanelo-hero__photo{order:-1;aspect-ratio:4/3}
+}
+
+/* ---- Inline hero CTA — inherits theme button tokens, ink fallback ---- */
+.wanelo-page .wanelo-hero__cta{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-3);align-self:flex-start;
+  padding:14px 24px;
+  background:var(--btn-primary-bg-color, var(--ink));
+  color:var(--btn-primary-color, #fff);
+  border:1px solid var(--btn-primary-bg-color, var(--ink));
+  border-radius:var(--rounded-radius, 999px);
+  font-family:inherit;font-size:15px;font-weight:600;letter-spacing:-.005em;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:transform .2s var(--ease), background var(--transition, .2s), box-shadow .2s, color .2s, border-color .2s;
+  box-shadow:0 1px 2px rgba(20,20,15,.06), 0 4px 14px rgba(20,20,15,.12);
+}
+.wanelo-page .wanelo-hero__cta:hover{
+  transform:translateY(-1px);
+  background:var(--btn-primary-hover-bg-color, #000);
+  color:var(--btn-primary-hover-color, #fff);
+  border-color:var(--btn-primary-hover-bg-color, #000);
+  box-shadow:0 2px 4px rgba(20,20,15,.08), 0 8px 20px rgba(20,20,15,.18);
+}
+
+/* ============================================================
+   STORY — alternating photo/text rows
+   ============================================================ */
+.wanelo-page .wanelo-story-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-radius:var(--r-lg);overflow:hidden;
+  background:var(--bg);min-height:440px;
+  box-shadow:var(--shadow-1);
+  border:1px solid var(--line);
+  max-width:var(--max-w);margin:0 auto;
+}
+.wanelo-page .wanelo-story-row + .wanelo-story-row{margin-top:var(--space-6)}
+.wanelo-page .wanelo-story-row__img{position:relative;overflow:hidden;background:var(--brand-soft)}
+.wanelo-page .wanelo-story-row__img img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 1.6s var(--ease)}
+.wanelo-page .wanelo-story-row.in .wanelo-story-row__img img{transform:scale(1)}
+.wanelo-page .wanelo-story-row__copy{padding:clamp(32px,4vw,56px);display:flex;flex-direction:column;justify-content:center;gap:var(--space-3)}
+.wanelo-page .wanelo-story-row__copy .wanelo-kicker{color:var(--brand-deep)}
+.wanelo-page .wanelo-story-row h3{font-size:clamp(26px,3.5vw,40px);font-weight:600;letter-spacing:-.025em;line-height:1.1}
+.wanelo-page .wanelo-story-row p{font-size:17px;line-height:1.55;color:var(--ink-2)}
+.wanelo-page .wanelo-story-row.mirror .wanelo-story-row__img{order:2}
+@media(max-width:900px){
+  .wanelo-page .wanelo-story-row{grid-template-columns:1fr;min-height:0}
+  .wanelo-page .wanelo-story-row.mirror .wanelo-story-row__img{order:0}
+  .wanelo-page .wanelo-story-row__copy{padding:var(--space-6)}
+  .wanelo-page .wanelo-story-row__img{aspect-ratio:4/3}
+}
+
+/* ============================================================
+   FEATURES — flat cards, hairline + shadow. No glassmorphism.
+   ============================================================ */
+.wanelo-page .wanelo-features{max-width:var(--max-w);margin:0 auto}
+.wanelo-page .wanelo-features__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+.wanelo-page .wanelo-features__card{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  padding:var(--space-6);
+  display:flex;flex-direction:column;gap:var(--space-3);min-height:260px;
+  box-shadow:var(--shadow-1);
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.wanelo-page .wanelo-features__card:hover{transform:translateY(-3px);box-shadow:var(--shadow-2)}
+.wanelo-page .wanelo-features__glyph{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--brand-soft);
+  color:var(--brand-deep);font-family:'Fraunces',serif;font-style:italic;font-size:20px;font-weight:300;
+  display:flex;align-items:center;justify-content:center;
+}
+.wanelo-page .wanelo-features__meta{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--brand-deep);text-transform:uppercase}
+.wanelo-page .wanelo-features__card h4{font-size:22px;font-weight:600;letter-spacing:-.018em;line-height:1.2;color:var(--ink)}
+.wanelo-page .wanelo-features__card p{font-size:15px;line-height:1.55;color:var(--ink-2);margin-top:auto}
+@media(max-width:760px){.wanelo-page .wanelo-features__grid{grid-template-columns:1fr}}
+
+/* ============================================================
+   STATS — 2×2 → 1col under 640px
+   ============================================================ */
+.wanelo-page .wanelo-stats__grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+  border-top:1px solid var(--line);border-left:1px solid var(--line);
+  max-width:var(--max-w-narrow);margin:0 auto;
+  border-radius:var(--r-md);overflow:hidden;
+}
+.wanelo-page .wanelo-stats__cell{
+  padding:var(--space-7) var(--space-6);
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:var(--space-3);
+  background:var(--bg);
+}
+.wanelo-page .wanelo-stats__cell .wanelo-kicker{color:var(--ink-3)}
+.wanelo-page .wanelo-stats__num{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(48px,6vw,84px);letter-spacing:-.04em;line-height:.95;color:var(--ink);
+  font-feature-settings:'tnum';
+}
+.wanelo-page .wanelo-stats__num em{color:var(--brand-deep);font-size:.5em;vertical-align:baseline;margin-left:4px}
+.wanelo-page .wanelo-stats__lbl{font-size:15px;line-height:1.5;color:var(--ink-2)}
+@media(max-width:640px){
+  .wanelo-page .wanelo-stats__grid{grid-template-columns:1fr}
+  .wanelo-page .wanelo-stats__cell{padding:var(--space-6) var(--space-5)}
+}
+
+/* ============================================================
+   REVIEWS — 3-column wall, clean hairline cards
+   ============================================================ */
+.wanelo-page .wanelo-reviews{max-width:var(--max-w);margin:0 auto}
+.wanelo-page .wanelo-reviews__wall{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);
+  height:540px;overflow:hidden;
+  -webkit-mask:linear-gradient(180deg,transparent 0%,#000 8%,#000 92%,transparent 100%);
+  mask:linear-gradient(180deg,transparent 0%,#000 8%,#000 92%,transparent 100%);
+}
+.wanelo-page .wanelo-reviews__col{display:flex;flex-direction:column;gap:var(--space-4);animation:wanelo-scroll 40s linear infinite;will-change:transform}
+.wanelo-page .wanelo-reviews__col.c2{animation-duration:48s;animation-direction:reverse}
+.wanelo-page .wanelo-reviews__col.c3{animation-duration:44s}
+.wanelo-page .wanelo-reviews__wall:hover .wanelo-reviews__col{animation-play-state:paused}
+.wanelo-page .wanelo-reviews__card{
+  background:var(--bg);
+  border:1px solid var(--line);border-radius:var(--r-md);padding:var(--space-5) var(--space-5);
+  flex-shrink:0;
+  box-shadow:var(--shadow-1);
+}
+.wanelo-page .wanelo-reviews__stars{color:var(--brand-deep);font-size:13px;letter-spacing:2px;margin-bottom:var(--space-2);font-weight:600}
+.wanelo-page .wanelo-reviews__quote{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:16px;line-height:1.5;color:var(--ink);margin-bottom:var(--space-3);
+}
+.wanelo-page .wanelo-reviews__quote em{font-style:italic;color:var(--brand-deep);background:none;padding:0}
+.wanelo-page .wanelo-reviews__who{font-size:13px;color:var(--ink-3);font-weight:500;font-family:'Inter',sans-serif;font-style:normal}
+@keyframes wanelo-scroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+@media(max-width:760px){
+  .wanelo-page .wanelo-reviews__wall{grid-template-columns:1fr;height:480px}
+  .wanelo-page .wanelo-reviews__col.c3{display:none}
+}
+@media(max-width:480px){.wanelo-page .wanelo-reviews__col.c2{display:none}}
+
+/* ============================================================
+   FAQ — CSS-drawn cross
+   ============================================================ */
+.wanelo-page .wanelo-faq{max-width:var(--max-w-narrow);margin:0 auto}
+.wanelo-page .wanelo-faq details{padding:var(--space-5) 0;border-bottom:1px solid var(--line)}
+.wanelo-page .wanelo-faq details:first-of-type{border-top:1px solid var(--line)}
+.wanelo-page .wanelo-faq summary{
+  font-size:18px;font-weight:600;cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);
+  letter-spacing:-.012em;color:var(--ink);
+  transition:color .2s;
+}
+.wanelo-page .wanelo-faq summary:hover{color:var(--brand-deep)}
+.wanelo-page .wanelo-faq summary::-webkit-details-marker{display:none}
+.wanelo-page .wanelo-faq summary::after{
+  content:"";width:14px;height:14px;flex-shrink:0;
+  background:
+    linear-gradient(var(--ink-3),var(--ink-3)) center/100% 1.5px no-repeat,
+    linear-gradient(var(--ink-3),var(--ink-3)) center/1.5px 100% no-repeat;
+  transition:transform .3s var(--ease);
+}
+.wanelo-page .wanelo-faq details[open] summary::after{transform:rotate(90deg);background:linear-gradient(var(--ink),var(--ink)) center/100% 1.5px no-repeat}
+.wanelo-page .wanelo-faq__answer{margin-top:var(--space-3);font-size:16px;line-height:1.6;color:var(--ink-2);max-width:640px}
+
+/* ============================================================
+   CTA — final card. Inherits theme tokens.
+   ============================================================ */
+.wanelo-page .wanelo-cta{
+  padding:clamp(48px,7vw,88px) var(--space-6);text-align:center;
+  background:linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 100%);
+  border-radius:var(--r-xl);
+  margin:0 auto;max-width:var(--max-w);
+  border:1px solid var(--line);
+}
+.wanelo-page .wanelo-cta .wanelo-kicker{color:var(--brand-deep)}
+.wanelo-page .wanelo-cta h2{margin-top:var(--space-3);font-size:clamp(28px,4.5vw,48px);font-weight:600;letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+.wanelo-page .wanelo-cta h2 em{font-weight:300}
+.wanelo-page .wanelo-cta p{margin:var(--space-4) auto 0;font-size:17px;line-height:1.55;color:var(--ink-2);max-width:480px}
+.wanelo-page .wanelo-cta__button{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-6);
+  padding:18px 36px;
+  border:1px solid var(--btn-primary-bg-color, var(--ink));
+  border-radius:var(--rounded-radius, 999px);
+  background:var(--btn-primary-bg-color, var(--ink));
+  color:var(--btn-primary-color, #fff);
+  font-size:16px;font-weight:600;letter-spacing:-.005em;
+  white-space:nowrap;
+  box-shadow:0 1px 2px rgba(20,20,15,.06), 0 6px 18px rgba(20,20,15,.16);
+  transition:transform .25s var(--ease), background var(--transition, .25s), color .25s, border-color .25s, box-shadow .25s;
+}
+.wanelo-page .wanelo-cta__button:hover{
+  transform:translateY(-2px);
+  background:var(--btn-primary-hover-bg-color, #000);
+  color:var(--btn-primary-hover-color, #fff);
+  border-color:var(--btn-primary-hover-bg-color, #000);
+  box-shadow:0 2px 4px rgba(20,20,15,.08), 0 12px 28px rgba(20,20,15,.22);
+}
+
+/* ============================================================
+   INTERLINKS — pills
+   ============================================================ */
+.wanelo-page .wanelo-interlinks{text-align:center;max-width:var(--max-w);margin:0 auto}
+.wanelo-page .wanelo-interlinks h3{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-5)}
+.wanelo-page .wanelo-interlinks__list{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-2)}
+.wanelo-page .wanelo-interlinks__link{
+  display:inline-block;padding:10px 18px;border-radius:var(--rounded-radius, 999px);
+  border:1px solid var(--line);background:var(--bg);
+  font-size:14px;font-weight:500;color:var(--ink-2);
+  transition:background .2s, border-color .2s, color .2s, transform .2s;
+}
+.wanelo-page .wanelo-interlinks__link:hover{background:var(--brand-soft);border-color:var(--brand-deep);color:var(--ink);transform:translateY(-1px)}
+
+/* ============================================================
+   HOW-TO — numbered steps
+   ============================================================ */
+.wanelo-page .wanelo-howto__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:var(--space-5);max-width:var(--max-w);margin-inline:auto}
+@media(min-width:760px){.wanelo-page .wanelo-howto__list{grid-template-columns:repeat(2,1fr);gap:var(--space-6) var(--space-7)}}
+.wanelo-page .wanelo-howto__step{display:flex;gap:var(--space-4);align-items:flex-start}
+.wanelo-page .wanelo-howto__n{
+  flex:0 0 48px;width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);color:var(--ink);
+  border:1px solid var(--line);
+  font-family:'Fraunces',serif;font-weight:300;font-size:22px;font-feature-settings:'tnum';
+}
+.wanelo-page .wanelo-howto__body h4{font-size:18px;font-weight:600;margin-bottom:var(--space-1);color:var(--ink);letter-spacing:-.012em}
+.wanelo-page .wanelo-howto__body p{font-size:15px;line-height:1.6;color:var(--ink-2)}
+
+/* ============================================================
+   SPECS
+   ============================================================ */
+.wanelo-page .wanelo-specs__table{display:grid;grid-template-columns:1fr;gap:0;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;max-width:var(--max-w-narrow);margin-inline:auto}
+.wanelo-page .wanelo-specs__row{display:grid;grid-template-columns:1fr 1.6fr;gap:0;border-bottom:1px solid var(--line);margin:0;padding:0;transition:background .2s}
+.wanelo-page .wanelo-specs__row:last-child{border-bottom:0}
+.wanelo-page .wanelo-specs__row:hover{background:var(--bg-2)}
+.wanelo-page .wanelo-specs__label{padding:var(--space-4) var(--space-5);font-size:13px;font-weight:600;color:var(--ink-3);margin:0;text-transform:uppercase;letter-spacing:.08em}
+.wanelo-page .wanelo-specs__value{padding:var(--space-4) var(--space-5);font-size:15px;color:var(--ink);margin:0;font-feature-settings:'tnum'}
+@media(max-width:560px){
+  .wanelo-page .wanelo-specs__row{grid-template-columns:1fr}
+  .wanelo-page .wanelo-specs__label{padding:var(--space-3) var(--space-4);background:var(--bg-2)}
+  .wanelo-page .wanelo-specs__value{padding:var(--space-3) var(--space-4)}
+}
+
+/* ============================================================
+   WHAT'S INCLUDED
+   ============================================================ */
+.wanelo-page .wanelo-whatsincluded__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:var(--space-3);max-width:var(--max-w);margin-inline:auto}
+@media(min-width:640px){.wanelo-page .wanelo-whatsincluded__list{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.wanelo-page .wanelo-whatsincluded__list{grid-template-columns:repeat(3,1fr)}}
+.wanelo-page .wanelo-whatsincluded__item{
+  display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);
+  transition:border-color .2s, transform .2s;
+}
+.wanelo-page .wanelo-whatsincluded__item:hover{border-color:var(--brand-deep);transform:translateY(-1px)}
+.wanelo-page .wanelo-whatsincluded__glyph{font-size:22px;flex:0 0 auto;line-height:1}
+.wanelo-page .wanelo-whatsincluded__body{display:flex;flex-direction:column;gap:2px;flex:1 1 auto}
+.wanelo-page .wanelo-whatsincluded__name{font-size:15px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-whatsincluded__qty{font-size:13px;font-weight:500;color:var(--ink-3);font-feature-settings:'tnum'}
+.wanelo-page .wanelo-whatsincluded__note{font-size:13px;color:var(--ink-3)}
+
+/* ============================================================
+   INGREDIENTS — chips
+   ============================================================ */
+.wanelo-page .wanelo-ingredients__list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;max-width:var(--max-w);margin-inline:auto}
+.wanelo-page .wanelo-ingredients__chip{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  padding:8px 14px;border-radius:var(--rounded-radius, 999px);
+  background:var(--bg);border:1px solid var(--line);
+  transition:border-color .2s, background .2s;
+}
+.wanelo-page .wanelo-ingredients__chip:hover{border-color:var(--brand-deep);background:var(--brand-soft)}
+.wanelo-page .wanelo-ingredients__badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-deep);padding:2px 6px;border-radius:4px;background:var(--brand-soft)}
+.wanelo-page .wanelo-ingredients__name{font-size:14px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-ingredients__role{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:14px;color:var(--ink-3)}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.wanelo-page .wanelo-timeline__list{list-style:none;padding:0;margin:0;position:relative;max-width:var(--max-w-narrow);margin-inline:auto}
+.wanelo-page .wanelo-timeline__list::before{content:'';position:absolute;left:80px;top:8px;bottom:8px;width:1px;background:var(--line)}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__list::before{left:20px}}
+.wanelo-page .wanelo-timeline__step{display:grid;grid-template-columns:120px 1fr;gap:var(--space-5);align-items:flex-start;padding:var(--space-4) 0;position:relative}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__step{grid-template-columns:56px 1fr;gap:var(--space-3)}}
+.wanelo-page .wanelo-timeline__when{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-deep);padding-top:6px}
+.wanelo-page .wanelo-timeline__body{padding-left:var(--space-4);position:relative}
+.wanelo-page .wanelo-timeline__body::before{content:'';position:absolute;left:-22px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--brand-deep);box-shadow:0 0 0 4px var(--bg)}
+@media(max-width:640px){.wanelo-page .wanelo-timeline__body::before{left:-30px}}
+.wanelo-page .wanelo-timeline__body h4{font-size:17px;font-weight:600;margin-bottom:var(--space-1);color:var(--ink)}
+.wanelo-page .wanelo-timeline__body p{font-size:15px;line-height:1.6;color:var(--ink-2)}
+
+/* ============================================================
+   TRUST — certs + press
+   ============================================================ */
+.wanelo-page .wanelo-trust{text-align:center;max-width:var(--max-w);margin:0 auto}
+.wanelo-page .wanelo-trust__certs{list-style:none;padding:0;margin:0 0 var(--space-6);display:flex;flex-wrap:wrap;gap:var(--space-3);justify-content:center}
+.wanelo-page .wanelo-trust__cert{
+  display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  padding:var(--space-4) var(--space-5);border-radius:var(--r-md);
+  background:var(--bg);border:1px solid var(--line);
+  min-width:140px;
+}
+.wanelo-page .wanelo-trust__label{font-size:14px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-trust__sub{font-size:12px;color:var(--ink-3)}
+.wanelo-page .wanelo-trust__press{margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--line)}
+.wanelo-page .wanelo-trust__press-label{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-3)}
+.wanelo-page .wanelo-trust__press-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--space-5);justify-content:center;align-items:center}
+.wanelo-page .wanelo-trust__press-item{font-family:'Fraunces',serif;font-weight:300;font-style:italic;font-size:18px;color:var(--ink-2)}
+.wanelo-page .wanelo-trust__press-item span{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-4);font-style:normal}
+
+/* ============================================================
+   COMPARE
+   ============================================================ */
+.wanelo-page .wanelo-compare__wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--line);max-width:var(--max-w);margin-inline:auto}
+.wanelo-page .wanelo-compare__table{width:100%;border-collapse:collapse;font-size:14px}
+.wanelo-page .wanelo-compare__table th,
+.wanelo-page .wanelo-compare__table td{padding:var(--space-4);text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.wanelo-page .wanelo-compare__table th:last-child,
+.wanelo-page .wanelo-compare__table td:last-child{border-right:0}
+.wanelo-page .wanelo-compare__table tbody tr:last-child td{border-bottom:0}
+.wanelo-page .wanelo-compare__table tbody tr:hover td{background:var(--bg-2)}
+.wanelo-page .wanelo-compare__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:160px}
+.wanelo-page .wanelo-compare__col{font-weight:600;background:var(--bg-2);position:relative;padding-block:var(--space-5) !important}
+.wanelo-page .wanelo-compare__col--badge{background:var(--brand-soft)}
+.wanelo-page .wanelo-compare__col-name{display:block;font-size:14px;color:var(--ink)}
+.wanelo-page .wanelo-compare__col-badge{display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--ink);color:#fff}
+.wanelo-page .wanelo-compare__cell{font-size:15px;color:var(--ink-2);font-weight:500}
+
+/* ============================================================
+   SIZE GUIDE
+   ============================================================ */
+.wanelo-page .wanelo-sizeguide__wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--line);max-width:var(--max-w-narrow);margin-inline:auto}
+.wanelo-page .wanelo-sizeguide__table{width:100%;border-collapse:collapse;font-size:14px}
+.wanelo-page .wanelo-sizeguide__table th,
+.wanelo-page .wanelo-sizeguide__table td{padding:var(--space-3) var(--space-4);text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.wanelo-page .wanelo-sizeguide__table th:last-child,
+.wanelo-page .wanelo-sizeguide__table td:last-child{border-right:0}
+.wanelo-page .wanelo-sizeguide__table tbody tr:last-child td{border-bottom:0}
+.wanelo-page .wanelo-sizeguide__row-label{text-align:left !important;font-weight:500;color:var(--ink);background:var(--bg-2);min-width:140px}
+.wanelo-page .wanelo-sizeguide__col{font-weight:600;background:var(--brand-soft);color:var(--ink)}
+.wanelo-page .wanelo-sizeguide__cell{font-feature-settings:'tnum';color:var(--ink-2)}
+.wanelo-page .wanelo-sizeguide__unit{font-size:11px;color:var(--ink-3);font-weight:400}
+.wanelo-page .wanelo-sizeguide__note{margin-top:var(--space-3);font-size:13px;color:var(--ink-3);text-align:center;font-family:'Fraunces',serif;font-style:italic;max-width:var(--max-w-narrow);margin-inline:auto}
+
+/* ============================================================
+   CARE
+   ============================================================ */
+.wanelo-page .wanelo-care__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:var(--space-3);max-width:var(--max-w);margin-inline:auto}
+@media(min-width:640px){.wanelo-page .wanelo-care__list{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.wanelo-page .wanelo-care__list{grid-template-columns:repeat(3,1fr)}}
+.wanelo-page .wanelo-care__item{
+  display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);
+}
+.wanelo-page .wanelo-care__glyph{font-size:22px;flex:0 0 auto;line-height:1;color:var(--brand-deep)}
+.wanelo-page .wanelo-care__body{display:flex;flex-direction:column;gap:2px;flex:1 1 auto}
+.wanelo-page .wanelo-care__label{font-size:14px;font-weight:600;color:var(--ink)}
+.wanelo-page .wanelo-care__note{font-size:13px;color:var(--ink-3)}
+
+/* ============================================================
+   DIMENSIONS
+   ============================================================ */
+.wanelo-page .wanelo-dimensions{text-align:center}
+.wanelo-page .wanelo-dimensions__list{list-style:none;padding:0;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-7);max-width:680px}
+.wanelo-page .wanelo-dimensions__item{display:flex;flex-direction:column;gap:var(--space-1);align-items:center;min-width:100px}
+.wanelo-page .wanelo-dimensions__axis{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.wanelo-page .wanelo-dimensions__value{font-family:'Fraunces',serif;font-weight:300;font-size:32px;color:var(--ink);font-feature-settings:'tnum'}
+.wanelo-page .wanelo-dimensions__scale-note{margin-top:var(--space-5);font-size:14px;color:var(--ink-2);font-family:'Fraunces',serif;font-style:italic;font-weight:300}
+
+/* ============================================================
+   VARIANTS — swatches
+   ============================================================ */
+.wanelo-page .wanelo-variants__list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:var(--space-3);max-width:var(--max-w);margin-inline:auto}
+.wanelo-page .wanelo-variants__item{
+  display:flex;flex-direction:column;align-items:center;gap:var(--space-2);
+  padding:var(--space-3);border-radius:var(--r-md);
+  background:var(--bg);border:1px solid var(--line);
+  transition:transform .25s var(--ease), border-color .25s;
+  cursor:pointer;
+}
+.wanelo-page .wanelo-variants__item:hover{border-color:var(--ink);transform:translateY(-2px)}
+.wanelo-page .wanelo-variants__item--soldout{opacity:.5;cursor:not-allowed}
+.wanelo-page .wanelo-variants__swatch{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 0 0 3px var(--bg)}
+.wanelo-page .wanelo-variants__name{font-size:13px;font-weight:500;color:var(--ink)}
+.wanelo-page .wanelo-variants__soldout{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ============================================================
+   GIFT-OPTIONS
+   ============================================================ */
+.wanelo-page .wanelo-giftoptions__grid{display:grid;grid-template-columns:1fr;gap:var(--space-4);max-width:var(--max-w);margin-inline:auto}
+@media(min-width:760px){.wanelo-page .wanelo-giftoptions__grid{grid-template-columns:repeat(3,1fr);gap:var(--space-5)}}
+.wanelo-page .wanelo-giftoptions__card{
+  padding:var(--space-5);border-radius:var(--r-md);
+  background:var(--bg);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:var(--space-3);
+  box-shadow:var(--shadow-1);
+}
+.wanelo-page .wanelo-giftoptions__icon{font-size:28px;line-height:1;color:var(--brand-deep)}
+.wanelo-page .wanelo-giftoptions__card h4{font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.012em}
+.wanelo-page .wanelo-giftoptions__card h4 span{font-size:13px;font-weight:400;color:var(--ink-3)}
+.wanelo-page .wanelo-giftoptions__opts{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.wanelo-page .wanelo-giftoptions__opts li{font-size:14px;color:var(--ink-2);padding-left:14px;position:relative;line-height:1.5}
+.wanelo-page .wanelo-giftoptions__opts li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--brand-deep);position:absolute;left:0;top:9px}
+.wanelo-page .wanelo-giftoptions__ships{margin-top:var(--space-4);font-size:13px;color:var(--ink-3);text-align:center;font-family:'Fraunces',serif;font-style:italic;max-width:var(--max-w);margin-inline:auto}
+
+/* ============================================================
+   STICKY MOBILE ATC — inherits theme button tokens
+   ============================================================ */
+.wanelo-sticky-atc{
+  position:fixed;left:var(--space-3);right:var(--space-3);bottom:var(--space-3);z-index:9999;
+  display:flex;align-items:center;justify-content:center;gap:var(--space-2);
+  padding:16px 24px;
+  background:var(--btn-primary-bg-color, var(--ink, #14140f));
+  color:var(--btn-primary-color, #fff);
+  border-radius:var(--rounded-radius, 999px);
+  box-shadow:0 4px 12px rgba(0,0,0,.16), 0 16px 40px rgba(0,0,0,.18);
+  text-decoration:none;
+  font-family:'Inter',sans-serif;
+  font-size:16px;font-weight:600;letter-spacing:-.005em;
+  transform:translateY(calc(100% + 24px));transition:transform .3s cubic-bezier(.2,.7,.2,1);
+}
+.wanelo-sticky-atc.visible{transform:translateY(0)}
+.wanelo-sticky-arrow{font-size:14px;opacity:.7}
+@media(min-width:769px){.wanelo-sticky-atc{display:none}}
+
+/* ============================================================
+   SECTION-PROGRESS RAIL — desktop ≥1100px
+   ============================================================ */
+.wanelo-rail{
+  position:fixed;left:18px;top:50%;transform:translateY(-50%);
+  display:none;flex-direction:column;gap:8px;z-index:50;
+  pointer-events:none;
+}
+@media(min-width:1100px){.wanelo-rail{display:flex}}
+.wanelo-rail__dot{
+  width:3px;height:18px;border-radius:2px;
+  background:var(--line);
+  transition:background .3s cubic-bezier(.2,.7,.2,1), height .3s cubic-bezier(.2,.7,.2,1);
+}
+.wanelo-rail__dot.active{background:var(--ink);height:28px}
+
+/* ============================================================
+   COLLECTION → COLLECTION cross-links
+   ============================================================ */
+.wanelo-coll-related{padding:var(--space-8) var(--space-5);margin:0 auto;max-width:var(--max-w)}
+.wanelo-coll-related__head{margin-bottom:var(--space-5);text-align:center}
+.wanelo-coll-related__head h2{font-size:24px;font-weight:600;color:var(--ink);margin-top:6px;letter-spacing:-.02em}
+.wanelo-coll-related__list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center}
+.wanelo-coll-related__item a{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  padding:10px 18px;border-radius:var(--rounded-radius, 999px);
+  background:var(--bg);border:1px solid var(--line);
+  color:var(--ink);font-size:14px;font-weight:500;
+  transition:background .15s, transform .15s, border-color .15s;
+}
+.wanelo-coll-related__item a:hover{background:var(--brand-soft);transform:translateY(-1px);border-color:var(--brand-deep)}
+.wanelo-coll-related__item.is-hub a{background:var(--btn-primary-bg-color, var(--ink));color:var(--btn-primary-color, #fff);border-color:transparent}
+.wanelo-coll-related__item.is-hub a:hover{background:var(--btn-primary-hover-bg-color, #000)}
+.wanelo-coll-related__hub{font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.18);text-transform:uppercase}
+
+/* Inline "Browse related: <a> · <a>" paragraph appended to collection
+   bodyHtml by the pipeline (Cell 4 cross-link step). Styled as text,
+   not a UI button. */
+.wanelo-coll-also{
+  margin-top:18px;font-size:14px;color:var(--ink-2);
+  font-family:'Fraunces',ui-serif,serif;font-style:italic;font-weight:300;
+}
+.wanelo-coll-also a{color:var(--brand-deep);text-decoration:underline;text-underline-offset:2px}
+.wanelo-coll-also a:hover{text-decoration:none}
+
+</style>
+<style>
+  /* Throwaway page chrome — not part of theme */
+  body{margin:0;background:#faf9f6;font-family:'Inter',sans-serif;color:#14140f}
+  .preview-bar{
+    position:sticky;top:0;z-index:1000;
+    background:#14140f;color:#faf9f6;padding:12px 24px;
+    display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+    font-size:13px;letter-spacing:.02em;
+  }
+  .preview-bar strong{font-weight:600}
+  .preview-bar select{
+    background:#1f1f1a;color:#faf9f6;border:1px solid #3a3a35;
+    padding:6px 12px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;
+  }
+  .preview-bar a{color:#b59cd0;text-decoration:underline;text-underline-offset:2px}
+  .palette-pip{
+    display:inline-block;width:14px;height:14px;border-radius:50%;
+    margin-right:4px;vertical-align:middle;border:1px solid rgba(255,255,255,.2);
+  }
+  .module-label{
+    position:relative;
+    margin:80px auto 0;max-width:1180px;padding:0 24px;
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:11px;font-weight:600;letter-spacing:.12em;
+    color:#9a9a95;text-transform:uppercase;
+    border-top:1px dashed rgba(20,20,15,.15);padding-top:18px;
+  }
+  .module-label::before{
+    content:attr(data-n);
+    background:#14140f;color:#fff;
+    padding:2px 8px;border-radius:4px;margin-right:10px;
+    font-weight:700;
+  }
+  .always-on::before{background:#6b7a5a}
+  .optional::before{background:#d18b3a}
+  .footer-note{
+    text-align:center;padding:80px 24px;color:#6b6b66;font-size:13px;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+  <strong>Wanelo PDP preview</strong>
+  <span>· All 21 modules · Editorial Pastel system</span>
+  <label>
+    Palette:
+    <select id="palette-picker">
+      <option value="lavender" selected>Lavender (default)</option>
+      <option value="peach">Peach</option>
+      <option value="sage">Sage</option>
+      <option value="blush">Blush</option>
+      <option value="butter">Butter</option>
+    </select>
+  </label>
+  <span>· Edit <code>pipeline/theme_assets/assets/wanelo.css</code> and refresh</span>
+</div>
+
+<!-- ─────────── PALETTE SWATCHES (always present in Liquid via wanelo-palette) ─────────── -->
+<style id="palette-style" data-wanelo-palette>
+  .wanelo-page{
+    --brand-1:    #c8b6e2;
+    --brand-2:    #d8e6d5;
+    --brand-3:    #f5e6d3;
+    --brand-soft: #f0e8f8;
+    --brand-deep: #b59cd0;
+  }
+</style>
+
+<div class="wanelo-page" role="article">
+
+  <!-- ═══ 1. HERO (always-on) ═══ -->
+  <div class="module-label always-on" data-n="01">Hero · always-on</div>
+  <section class="wanelo-hero reveal in">
+    <div class="wanelo-hero__copy">
+      <div class="wanelo-kicker reveal in">INVISIBLE BREEZE</div>
+      <h1><span class="mask in"><span>Wear the wind.</span></span></h1>
+      <p class="wanelo-hero__lead reveal in delay-1">Bladeless neck fan that runs 4-12 hours. Quiet enough for meetings, comfortable enough to forget you have it on.</p>
+      <a href="#wanelo-atc" class="wanelo-hero__cta reveal in delay-2" data-wanelo-atc-link>Take it home — $24.90 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="wanelo-hero__photo reveal in">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&q=80" alt="Mint neck fan product hero" loading="eager" fetchpriority="high">
+    </div>
+  </section>
+
+  <!-- ═══ 2. STORY (always-on) ═══ -->
+  <div class="module-label always-on" data-n="02">Story · always-on · 3 chapters</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">THE SHIFT</div>
+      <h2>Cool air, <em>no hair drama</em></h2>
+      <p class="desc">From sweaty commute frustration to a silent personal climate you forgot you were wearing.</p>
+    </div>
+    <div class="wanelo-story-row reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Commuter waiting" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE PROBLEM</div>
+        <h3>Handheld fans <em>tire your arm</em></h3>
+        <p>Five minutes in, your wrist hates you. Office fans dry your eyes. AC ices your colleagues.</p>
+      </div>
+    </div>
+    <div class="wanelo-story-row mirror reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1574027542338-98e75acfd385?w=800&q=80" alt="Bladeless detail close-up" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE DISCOVERY</div>
+        <h3>Bladeless means <em>safe + silent</em></h3>
+        <p>No blades = no hair-pulling, no buzz over Zoom. The airflow comes from a smooth duct — like a tiny invisible wind tunnel.</p>
+      </div>
+    </div>
+    <div class="wanelo-story-row reveal in">
+      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" alt="Hands-free on bike" loading="lazy"></div>
+      <div class="wanelo-story-row__copy">
+        <div class="wanelo-kicker">THE RESULT</div>
+        <h3>Hands-free cooling that <em>follows you</em></h3>
+        <p>Commutes feel ten degrees cooler. Office stays focus-friendly. Garden hours stretch into evenings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3. FEATURES (always-on) ═══ -->
+  <div class="module-label always-on" data-n="03">Features · always-on · 3 cards (2-4 allowed)</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">WHY THIS ONE</div>
+      <h2>The <em>essentials</em></h2>
+    </div>
+    <div class="wanelo-features reveal in">
+      <div class="wanelo-features__grid">
+        <div class="wanelo-features__card reveal in delay-1">
+          <div class="wanelo-features__glyph">∅</div>
+          <div class="wanelo-features__meta">BLADELESS</div>
+          <h4>Safe over loose <em>hair</em></h4>
+          <p>Smooth inner duct directs airflow without spinning blades — no chunks pulled, no fingers warned.</p>
+        </div>
+        <div class="wanelo-features__card reveal in delay-2">
+          <div class="wanelo-features__glyph">⚡</div>
+          <div class="wanelo-features__meta">4-12 HOURS</div>
+          <h4>All-day <em>battery</em></h4>
+          <p>4000mAh USB-C cell runs 4 hours at full blast, 12 hours on whisper mode. Tops up in 2h.</p>
+        </div>
+        <div class="wanelo-features__card reveal in delay-3">
+          <div class="wanelo-features__glyph">♪</div>
+          <div class="wanelo-features__meta">3 SPEEDS</div>
+          <h4>Whisper to <em>wind</em></h4>
+          <p>Low (35dB — quieter than a fridge) for meetings, high (52dB) for commutes. Dial on the right side.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. INGREDIENTS (optional) ═══ -->
+  <div class="module-label optional" data-n="04">Ingredients · optional · skincare/food</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">WHAT'S INSIDE</div>
+      <h2>The <em>formula</em></h2>
+    </div>
+    <ul class="wanelo-ingredients__list reveal in">
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">HERO</span><span class="wanelo-ingredients__name">Hyaluronic Acid</span><span class="wanelo-ingredients__role">deep hydrator</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Niacinamide</span><span class="wanelo-ingredients__role">pore refiner</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Vitamin C 10%</span><span class="wanelo-ingredients__role">antioxidant</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">CLINICAL</span><span class="wanelo-ingredients__name">Bakuchiol</span><span class="wanelo-ingredients__role">retinol alternative</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Squalane</span><span class="wanelo-ingredients__role">barrier seal</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Ceramide NP</span><span class="wanelo-ingredients__role">moisture lock</span></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 5. HOW-TO (optional) ═══ -->
+  <div class="module-label optional" data-n="05">How-To · optional · 3-7 numbered steps</div>
+  <section class="wanelo-section wanelo-howto reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">GETTING STARTED</div>
+      <h2>3 minutes to first <em>breeze</em></h2>
+    </div>
+    <ol class="wanelo-howto__list">
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">1</span><div class="wanelo-howto__body"><h4>Charge it 2 hours</h4><p>USB-C cable in the box. Light pulses while charging, solid when full.</p></div></li>
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">2</span><div class="wanelo-howto__body"><h4>Hang on neck</h4><p>Rounded hook slips around back of neck. No clip to fiddle with.</p></div></li>
+      <li class="wanelo-howto__step"><span class="wanelo-howto__n">3</span><div class="wanelo-howto__body"><h4>Dial up</h4><p>Right-side dial: 0 → 1 (low) → 2 (mid) → 3 (high). Long-press dial to switch from cool to oscillating.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- ═══ 6. TIMELINE (optional) ═══ -->
+  <div class="module-label optional" data-n="06">Timeline · optional · transformation milestones</div>
+  <section class="wanelo-section wanelo-timeline reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">YOUR JOURNEY</div>
+      <h2>Week by <em>week</em></h2>
+    </div>
+    <ol class="wanelo-timeline__list">
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 1</span><div class="wanelo-timeline__body"><h4>Visible refresh</h4><p>Skin feels plumper after the first application — hyaluronic acid pulls 1000× its weight in moisture.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Week 2</span><div class="wanelo-timeline__body"><h4>Smoother texture</h4><p>Niacinamide refines pores; surface feels softer under the fingertip.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 30</span><div class="wanelo-timeline__body"><h4>Brightness emerges</h4><p>Vitamin C accumulation lifts dullness; tone reads more even in selfies.</p></div></li>
+      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 60</span><div class="wanelo-timeline__body"><h4>The compliment</h4><p>Someone asks what you're using. Bakuchiol's retinol-alternative effect on fine lines becomes the conversation.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- ═══ 7. STATS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="07">Stats · always-on · 4 cells (3-5 allowed)</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">BY THE NUMBERS</div>
+      <h2>The <em>figures</em></h2>
+    </div>
+    <div class="wanelo-stats reveal in">
+      <div class="wanelo-stats__grid">
+        <div class="wanelo-stats__cell reveal in delay-1"><div class="wanelo-kicker">BATTERY</div><div class="wanelo-stats__num">12<em>h</em></div><div class="wanelo-stats__lbl">on low setting</div></div>
+        <div class="wanelo-stats__cell reveal in delay-2"><div class="wanelo-kicker">WEIGHT</div><div class="wanelo-stats__num">220<em>g</em></div><div class="wanelo-stats__lbl">lighter than a phone</div></div>
+        <div class="wanelo-stats__cell reveal in delay-3"><div class="wanelo-kicker">NOISE</div><div class="wanelo-stats__num">35<em>dB</em></div><div class="wanelo-stats__lbl">quieter than a fridge</div></div>
+        <div class="wanelo-stats__cell reveal in"><div class="wanelo-kicker">RECHARGE</div><div class="wanelo-stats__num">2<em>h</em></div><div class="wanelo-stats__lbl">USB-C fast charge</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8. SPECS (optional) ═══ -->
+  <div class="module-label optional" data-n="08">Specs · optional · 6-12 row table</div>
+  <section class="wanelo-section wanelo-specs reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">TECHNICAL</div>
+      <h2>Under the <em>hood</em></h2>
+    </div>
+    <dl class="wanelo-specs__table">
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Battery</dt><dd class="wanelo-specs__value">4000mAh Li-ion</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (low)</dt><dd class="wanelo-specs__value">12 hours</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (high)</dt><dd class="wanelo-specs__value">4 hours</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Charge time</dt><dd class="wanelo-specs__value">2 hours (USB-C)</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (low)</dt><dd class="wanelo-specs__value">35 dB</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (high)</dt><dd class="wanelo-specs__value">52 dB</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Weight</dt><dd class="wanelo-specs__value">220 g</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Material</dt><dd class="wanelo-specs__value">ABS plastic</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Includes</dt><dd class="wanelo-specs__value">Fan, USB-C cable, manual</dd></div>
+    </dl>
+  </section>
+
+  <!-- ═══ 9. SIZE GUIDE (optional) ═══ -->
+  <div class="module-label optional" data-n="09">Size Guide · optional · clothing/jewelry/pet</div>
+  <section class="wanelo-section wanelo-sizeguide reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">FIND YOUR FIT</div>
+      <h2>Get the <em>fit</em></h2>
+    </div>
+    <div class="wanelo-sizeguide__wrap">
+      <table class="wanelo-sizeguide__table">
+        <thead><tr><th class="wanelo-sizeguide__row-label"></th><th class="wanelo-sizeguide__col">XS</th><th class="wanelo-sizeguide__col">S</th><th class="wanelo-sizeguide__col">M</th><th class="wanelo-sizeguide__col">L</th><th class="wanelo-sizeguide__col">XL</th></tr></thead>
+        <tbody>
+          <tr><td class="wanelo-sizeguide__row-label">Chest <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">81</td><td class="wanelo-sizeguide__cell">86</td><td class="wanelo-sizeguide__cell">92</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">107</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Waist <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">65</td><td class="wanelo-sizeguide__cell">70</td><td class="wanelo-sizeguide__cell">76</td><td class="wanelo-sizeguide__cell">83</td><td class="wanelo-sizeguide__cell">91</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Hip <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">88</td><td class="wanelo-sizeguide__cell">93</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">106</td><td class="wanelo-sizeguide__cell">114</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="wanelo-sizeguide__note">Measurements taken flat across — double for full circumference.</p>
+  </section>
+
+  <!-- ═══ 10. DIMENSIONS (optional) ═══ -->
+  <div class="module-label optional" data-n="10">Dimensions · optional · decor/furniture/lighting</div>
+  <section class="wanelo-section wanelo-dimensions reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">ACTUAL SIZE</div>
+      <h2>In your <em>space</em></h2>
+    </div>
+    <ul class="wanelo-dimensions__list">
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Height</span><span class="wanelo-dimensions__value">32 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Width</span><span class="wanelo-dimensions__value">18 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Depth</span><span class="wanelo-dimensions__value">14 cm</span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Weight</span><span class="wanelo-dimensions__value">220 g</span></li>
+    </ul>
+    <p class="wanelo-dimensions__scale-note">Roughly the size of a hardcover book lying flat.</p>
+  </section>
+
+  <!-- ═══ 11. VARIANTS (optional) ═══ -->
+  <div class="module-label optional" data-n="11">Variants · optional · color swatches</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">PICK YOUR LOOK</div>
+      <h2>Five <em>shades</em></h2>
+    </div>
+    <ul class="wanelo-variants__list reveal in">
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#ffffff"></span><span class="wanelo-variants__name">White</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#f5b8c8"></span><span class="wanelo-variants__name">Pink</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#a6d8be"></span><span class="wanelo-variants__name">Mint</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#c4b09a"></span><span class="wanelo-variants__name">Sand</span></li>
+      <li class="wanelo-variants__item wanelo-variants__item--soldout"><span class="wanelo-variants__swatch" style="background:#222222"></span><span class="wanelo-variants__name">Black</span><span class="wanelo-variants__soldout">Sold out</span></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 12. CARE (optional) ═══ -->
+  <div class="module-label optional" data-n="12">Care · optional · fashion/jewelry/textiles</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">TAKING CARE</div>
+      <h2>Keep it <em>good</em></h2>
+    </div>
+    <ul class="wanelo-care__list reveal in">
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⌒</span><div class="wanelo-care__body"><span class="wanelo-care__label">Wipe weekly</span><span class="wanelo-care__note">Dry microfiber inside the air duct. No water inside.</span></div></li>
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⚡</span><div class="wanelo-care__body"><span class="wanelo-care__label">Charge before storage</span><span class="wanelo-care__note">Don't store empty for &gt;1 month.</span></div></li>
+      <li class="wanelo-care__item"><span class="wanelo-care__glyph">☼</span><div class="wanelo-care__body"><span class="wanelo-care__label">Avoid heat</span><span class="wanelo-care__note">Don't leave in hot car (&gt;50°C) — battery degrades.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 13. WHAT'S INCLUDED (optional) ═══ -->
+  <div class="module-label optional" data-n="13">What's Included · optional · bundles/kits</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">IN THE BOX</div>
+      <h2>Everything you <em>get</em></h2>
+    </div>
+    <ul class="wanelo-whatsincluded__list reveal in">
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌖</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Bladeless neck fan</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">in your chosen color</span></div></li>
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">↯</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">USB-C charge cable</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">1m braided</span></div></li>
+      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌘</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Quick-start manual</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">5 languages</span></div></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 14. GIFT OPTIONS (optional) ═══ -->
+  <div class="module-label optional" data-n="14">Gift Options · optional · gift-intent products</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">GIFT-READY</div>
+      <h2>For <em>gifting</em></h2>
+    </div>
+    <div class="wanelo-giftoptions__grid reveal in">
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">⌘</div>
+        <h4>Gift wrap <span>· $5</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Kraft + linen ribbon</li>
+          <li>Cream + gold foil</li>
+          <li>Sage + dried bloom</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">✉</div>
+        <h4>Personal message <span>· up to 240 chars</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>"Happy birthday — stay cool."</li>
+          <li>"For the office hero."</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">✦</div>
+        <h4>Perfect for</h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Birthday</li>
+          <li>Father's Day</li>
+          <li>House-warming</li>
+          <li>New job</li>
+        </ul>
+      </div>
+    </div>
+    <p class="wanelo-giftoptions__ships">Ships in unbranded outer packaging — receiver sees only your message inside.</p>
+  </section>
+
+  <!-- ═══ 15. COMPARE (optional) ═══ -->
+  <div class="module-label optional" data-n="15">Compare · optional · vs alternatives matrix</div>
+  <section class="wanelo-section wanelo-compare reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">SIDE BY SIDE</div>
+      <h2>Why <em>this one</em></h2>
+    </div>
+    <div class="wanelo-compare__wrap">
+      <table class="wanelo-compare__table">
+        <thead><tr>
+          <th class="wanelo-compare__row-label"></th>
+          <th class="wanelo-compare__col wanelo-compare__col--badge"><span class="wanelo-compare__col-name">This fan</span><span class="wanelo-compare__col-badge">Best</span></th>
+          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Handheld mini</span></th>
+          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Desk fan</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="wanelo-compare__row-label">Hands-free</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">✓</td></tr>
+          <tr><td class="wanelo-compare__row-label">Portable</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td></tr>
+          <tr><td class="wanelo-compare__row-label">Bladeless</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">rare</td></tr>
+          <tr><td class="wanelo-compare__row-label">Battery life</td><td class="wanelo-compare__cell">12h</td><td class="wanelo-compare__cell">3-6h</td><td class="wanelo-compare__cell">AC plug</td></tr>
+          <tr><td class="wanelo-compare__row-label">Quiet on low</td><td class="wanelo-compare__cell">35dB</td><td class="wanelo-compare__cell">40-50dB</td><td class="wanelo-compare__cell">45-55dB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ 16. TRUST (optional) ═══ -->
+  <div class="module-label optional" data-n="16">Trust · optional · certs + press mentions</div>
+  <section class="wanelo-section wanelo-trust reveal in">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">VERIFIED</div>
+      <h2>Independent <em>proof</em></h2>
+    </div>
+    <ul class="wanelo-trust__certs">
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">CE Certified</span><span class="wanelo-trust__sub">Lab-tested 2025</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">FCC Approved</span><span class="wanelo-trust__sub">No EMI risk</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">UL Battery Safe</span><span class="wanelo-trust__sub">Tested to UL 2056</span></li>
+    </ul>
+    <div class="wanelo-trust__press">
+      <div class="wanelo-trust__press-label">As seen on</div>
+      <ul class="wanelo-trust__press-list">
+        <li class="wanelo-trust__press-item">Wired <span>· "tiny invisible wind tunnel"</span></li>
+        <li class="wanelo-trust__press-item">Gear Patrol <span>· staff pick 2025</span></li>
+        <li class="wanelo-trust__press-item">The Strategist <span>· best for commutes</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ 17. REVIEWS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="17">Reviews · always-on · 9-12 mini-quotes</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">BUYERS SAY</div>
+      <h2>In their <em>words</em></h2>
+    </div>
+    <div class="wanelo-reviews reveal in">
+      <div class="wanelo-reviews__wall">
+        <div class="wanelo-reviews__col c1">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Garden work in 90° suddenly fine. Hair stays put.</p><div class="wanelo-reviews__who">Priya (Toronto)</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
+        </div>
+        <div class="wanelo-reviews__col c2">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it on a 12-hour flight. <em>Game changer.</em></p><div class="wanelo-reviews__who">Tomás (Lisbon)</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
+        </div>
+        <div class="wanelo-reviews__col c3">
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Light, quiet, looks decent. Three for three.</p><div class="wanelo-reviews__who">Sara R., first-time buyer</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 18. FAQ (always-on) ═══ -->
+  <div class="module-label always-on" data-n="18">FAQ · always-on · 4-7 q/a + JSON-LD</div>
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal in">
+      <div class="wanelo-kicker">QUICK ANSWERS</div>
+      <h2>Before you <em>buy</em></h2>
+    </div>
+    <div class="wanelo-faq reveal in">
+      <details><summary>Will it actually cool me down?</summary><div class="wanelo-faq__answer">It moves air across your skin, which speeds evaporation. So yes — measurably cooler within seconds, especially at neck.</div></details>
+      <details open><summary>How long does the battery really last?</summary><div class="wanelo-faq__answer">Low: 12h. Mid: 7h. High: 4h. Mixed real-world use: ~6-8h.</div></details>
+      <details><summary>Is it loud in meetings?</summary><div class="wanelo-faq__answer">On low (35dB) it's quieter than a refrigerator and won't trigger mic background noise filters.</div></details>
+      <details><summary>Will it tangle long hair?</summary><div class="wanelo-faq__answer">No — the airflow comes from an enclosed duct, not exposed blades. Hair stays out.</div></details>
+      <details><summary>Can I wear it on a bike?</summary><div class="wanelo-faq__answer">Yes — it stays put on the neck via the rounded hook. Tested up to ~15 mph.</div></details>
+    </div>
+  </section>
+
+  <!-- ═══ 19. CTA (always-on) ═══ -->
+  <div class="module-label always-on" data-n="19">CTA · always-on · final conversion card</div>
+  <section class="wanelo-section">
+    <div class="wanelo-cta reveal in">
+      <div class="wanelo-kicker">READY TO COMMIT</div>
+      <h2>Ditch the sweat. <em>Wear the wind.</em></h2>
+      <p>Bladeless. 4-12 hours. Hands-free. Available in five pastel shades.</p>
+      <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>Take it home — $24.90</a>
+    </div>
+  </section>
+
+  <!-- ═══ 20. INTERLINKS (always-on) ═══ -->
+  <div class="module-label always-on" data-n="20">Interlinks · always-on · collection pills</div>
+  <section class="wanelo-section">
+    <div class="wanelo-interlinks reveal in">
+      <h3>Explore more</h3>
+      <div class="wanelo-interlinks__list">
+        <a class="wanelo-interlinks__link" href="#">Personal cooling</a>
+        <a class="wanelo-interlinks__link" href="#">Outdoor essentials</a>
+        <a class="wanelo-interlinks__link" href="#">Commute kit</a>
+        <a class="wanelo-interlinks__link" href="#">Summer 2026</a>
+        <a class="wanelo-interlinks__link" href="#">Wearable tech</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 21. PALETTE (always-on, injected at top, listed last for completeness) ═══ -->
+  <div class="module-label always-on" data-n="21">Palette · always-on · injected as :root CSS variables (see &lt;style data-wanelo-palette&gt; at top)</div>
+
+  <p class="footer-note">21 modules · skip-if-blank · operator typically sees 11-13 per product · per-product palette via <code>:root</code> CSS variables · Editorial Pastel system</p>
+</div>
+
+<!-- Mobile sticky ATC bar — wanelo.js usually injects, here static for preview -->
+<a href="#wanelo-atc" class="wanelo-sticky-atc visible" style="display:none" id="sticky-preview">Add to cart <span class="wanelo-sticky-arrow">↑</span></a>
+
+<!-- Section progress rail — desktop ≥1100px -->
+<div class="wanelo-rail" aria-hidden="true">
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot active"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+  <span class="wanelo-rail__dot"></span>
+</div>
+
+<script>
+  // Palette picker — swaps the per-product :root CSS variables.
+  const PALETTES = {
+    lavender: {brand_1:'#c8b6e2', brand_2:'#d8e6d5', brand_3:'#f5e6d3', brand_soft:'#f0e8f8', brand_deep:'#b59cd0'},
+    peach:    {brand_1:'#ffd4ba', brand_2:'#ffe2c8', brand_3:'#f7e0d0', brand_soft:'#fff0e3', brand_deep:'#e89968'},
+    sage:     {brand_1:'#c5d8c0', brand_2:'#e0e8d4', brand_3:'#f0eed5', brand_soft:'#eaf0e6', brand_deep:'#7a9a72'},
+    blush:    {brand_1:'#f0c8c8', brand_2:'#fad8d8', brand_3:'#f7e0d8', brand_soft:'#faecec', brand_deep:'#c87878'},
+    butter:   {brand_1:'#f5e6a8', brand_2:'#f7edc4', brand_3:'#f0e0c0', brand_soft:'#faf3d8', brand_deep:'#c8a040'},
+  };
+  document.getElementById('palette-picker').addEventListener('change', e => {
+    const p = PALETTES[e.target.value];
+    document.getElementById('palette-style').textContent =
+      `.wanelo-page{--brand-1:${p.brand_1};--brand-2:${p.brand_2};--brand-3:${p.brand_3};--brand-soft:${p.brand_soft};--brand-deep:${p.brand_deep};}`;
+  });
+</script>
+
+</body>
+</html>
