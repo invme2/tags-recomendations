@@ -1,0 +1,33 @@
+{%- comment -%}
+  CARE snippet — how to clean/maintain/store the product.
+  Reads product.metafields.custom.care JSON:
+    {head: {kicker, h2, desc},
+     items: [{glyph: "🌊", label: "Hand wash", note: "cold water"}]}
+  Designer fills 3-6 items for: fashion/jewelry/textiles/leather/kitchen tools/decor.
+{%- endcomment -%}
+
+{%- assign care = product.metafields.custom.care.value -%}
+{%- if care and care.items and care.items.size > 0 -%}
+<section class="wanelo-section wanelo-care reveal">
+  {%- if care.head and care.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if care.head.kicker != blank -%}<div class="wanelo-kicker">{{ care.head.kicker }}</div>{%- endif -%}
+      <h2>{{ care.head.h2 }}</h2>
+      {%- if care.head.desc != blank -%}<p class="desc">{{ care.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ul class="wanelo-care__list">
+    {%- for item in care.items -%}
+      {%- if item.label != blank -%}
+        <li class="wanelo-care__item">
+          {%- if item.glyph != blank -%}<span class="wanelo-care__glyph">{{ item.glyph }}</span>{%- endif -%}
+          <div class="wanelo-care__body">
+            <span class="wanelo-care__label">{{ item.label }}</span>
+            {%- if item.note != blank -%}<span class="wanelo-care__note">{{ item.note }}</span>{%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

@@ -107,7 +107,7 @@ Pipeline ссылается на taxonomy через raw-URL вида
 
 ## ADR-005: Schema для taxonomy на старте — черновая, до доставки источника
 **Дата:** 2026-05-05
-**Статус:** Provisional (требует ревизии после доставки `taxonomy.json`)
+**Статус:** Superseded by ADR-006
 
 **Контекст.** На момент bootstrap-сессии оригинальный `taxonomy.json`
 пользователя недоступен (Windows-temp путь, Linux-окружение Claude его не
@@ -129,3 +129,60 @@ Pipeline ссылается на taxonomy через raw-URL вида
 2. Дополнить схему недостающими обязательными полями.
 3. Возможно ужесточить `additionalProperties`.
 4. Зафиксировать новым ADR со ссылкой «supersedes ADR-005».
+
+→ **Выполнено в ADR-006** (2026-05-05).
+
+---
+
+## ADR-006: Реальная схема taxonomy v3.2 (supersedes ADR-005)
+**Дата:** 2026-05-05
+**Статус:** Accepted
+
+**Контекст.** Пользователь доставил оригинальный `taxonomy.json` v3.2: 765
+кластеров, 36 sections, 27 personas, 14 intents, 9 demos. Структура оказалась
+существенно богаче черновой схемы из ADR-005:
+
+- Кластер имеет **19 полей** (черновик знал 6): `tag, section_id, section,
+  section_title_en, section_title_ru, title_en, title_ru, description,
+  embed_text, typical_products, personas, intents, demos, related, synonyms,
+  shopify_collection_hints, status, priority, source`.
+- Master-списки `personas/intents/demos` — это **списки объектов**, не строк.
+- `cluster.demos` — это **объект** `{primary_gender, ages[]}`, а не список.
+- Появился новый top-level раздел `sections[]` (id/slug/title_en).
+- Tag-namespace: `cluster:`, `persona:`, `intent:`, `demo:`.
+- Demo имеет `type ∈ {gender, age}`.
+
+**Решение.** Полностью переписать `taxonomy/schema.json` под реальную
+структуру (Draft-07, обязательные поля по 100% coverage из реальных данных,
+паттерны на namespaced-теги). Расширить `validate_taxonomy.py` девятью
+бизнес-правилами:
+1. Уникальность `tag` среди clusters / personas / intents / demos.
+2. Уникальность `section.id` и `section.slug`.
+3. `cluster.section_id` ∈ master sections.id.
+4. `cluster.section` (slug) ∈ master sections.slug.
+5. `cluster.related[]` ⊂ master cluster tags.
+6. `cluster.personas[]` ⊂ master persona tags.
+7. `cluster.intents[]` ⊂ master intent tags.
+8. `cluster.demos.primary_gender` (если непустой) — demo с `type='gender'`.
+9. `cluster.demos.ages[]` — demos с `type='age'`.
+
+Контрактный pytest-тест `test_real_taxonomy_validates` гарантирует, что
+реальный `taxonomy.json` всегда проходит схему — если кто-то поменяет
+схему, ломая прод-данные, CI блокирует merge.
+
+**Альтернативы.**
+- Оставить `additionalProperties: true` везде: проще, но не ловит опечатки в
+  именах полей при ручных правках. Я выбрал permissive (`additionalProperties: true`)
+  на верхнем уровне (`stats` — informational, может расти) и на уровне cluster
+  (новые поля могут добавляться по мере эволюции v3.x), но строгие required-списки.
+- Выводить схему автоматически из `taxonomy.json` через `genson`: даёт точно
+  совпадающую схему, но теряет смысловые ограничения (паттерны namespaced-тегов,
+  `type ∈ {gender, age}`, `status ∈ {approved, draft}`).
+
+**Последствия.**
+- Любая правка `taxonomy.json` (как ручная, так и через `enrich_taxonomy.py`)
+  обязана пройти `validate_taxonomy.py` до коммита.
+- Если `enrich_taxonomy.py` начнёт добавлять новые поля (например,
+  `description_ru`), требуется обновить схему — иначе `additionalProperties: true`
+  пропустит, но контрактный тест останется зелёным (а опечатки не словит).
+  Поэтому при добавлении полей — обновляем схему вручную.

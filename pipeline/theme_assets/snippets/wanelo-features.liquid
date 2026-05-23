@@ -1,0 +1,32 @@
+{%- comment -%}
+  FEATURES snippet — 3-card glass grid on pastel gradient.
+  Reads product.metafields.custom.features JSON:
+    {head: {kicker, h2, desc}, items: [{glyph, meta, h4, p}]}
+  Designer should provide 3 items.
+{%- endcomment -%}
+
+{%- assign features = product.metafields.custom.features.value -%}
+{%- if features and features.items and features.items.size > 0 -%}
+<section class="wanelo-section">
+  {%- if features.head and features.head.h2 != blank -%}
+    <div class="wanelo-head reveal">
+      {%- if features.head.kicker != blank -%}<div class="wanelo-kicker">{{ features.head.kicker }}</div>{%- endif -%}
+      <h2>{{ features.head.h2 }}</h2>
+      {%- if features.head.desc != blank -%}<p class="desc">{{ features.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-features reveal">
+    <div class="wanelo-features__grid">
+      {%- for item in features.items limit: 3 -%}
+        <div class="wanelo-features__card reveal delay-{{ forloop.index0 | plus: 1 }}">
+          {%- if item.glyph != blank -%}<div class="wanelo-features__glyph">{{ item.glyph }}</div>{%- endif -%}
+          {%- if item.meta != blank -%}<div class="wanelo-features__meta">{{ item.meta }}</div>{%- endif -%}
+          {%- if item.h4 != blank -%}<h4>{{ item.h4 }}</h4>{%- endif -%}
+          {%- if item.p != blank -%}<p>{{ item.p }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}

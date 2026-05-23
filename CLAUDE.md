@@ -36,19 +36,20 @@ tags-recomendations/
 │   ├── validate-taxonomy.yml       ← CI: pytest + схема taxonomy
 │   └── smoke-pipeline.yml          ← CI: nbformat-валидация ноутбука
 ├── taxonomy/
-│   ├── taxonomy.json               ← источник истины (НЕ доставлен пока)
-│   ├── schema.json                 ← JSON Schema (черновая, см. DECISIONS ADR-005)
-│   ├── data/                       ← черновые источники (.md, .py)
+│   ├── taxonomy.json               ← источник истины (765 кластеров, v3.2)
+│   ├── schema.json                 ← JSON Schema под реальную структуру (ADR-006)
+│   ├── data/
+│   │   └── v3.1-README.md          ← оригинальный README пользователя
 │   ├── tools/
-│   │   ├── validate_taxonomy.py    ← ✅ работает
+│   │   ├── validate_taxonomy.py    ← ✅ полная схема + 9 бизнес-правил
 │   │   ├── build_taxonomy.py       ← ⏳ stub (NotImplementedError)
-│   │   ├── enrich_taxonomy.py      ← ⏳ ждём доставки от пользователя
+│   │   ├── enrich_taxonomy.py      ← ✅ реальный скрипт обогащения через Claude API
 │   │   ├── stats.py                ← ⏳ stub
 │   │   └── export_to_csv.py        ← ⏳ stub
 │   └── tests/
-│       └── test_taxonomy.py        ← ✅ тестирует валидатор на синтетике
+│       └── test_taxonomy.py        ← ✅ синтетика + контрактный тест на реальный taxonomy.json
 ├── pipeline/
-│   ├── Shopify_Pipeline.ipynb      ← главный артефакт (НЕ доставлен пока)
+│   ├── Shopify_Pipeline.ipynb      ← ✅ доставлен (17 ячеек, 8 code, ~310KB)
 │   ├── PATCHES.md                  ← журнал точечных правок ноутбука
 │   ├── .snapshots/                 ← бекапы перед опасными правками
 │   └── tools/
@@ -80,6 +81,8 @@ tags-recomendations/
 - Тесты: `python -m pytest taxonomy/tests/ -v` (форма `python -m` гарантирует, что pytest подхватит `jsonschema`/`nbformat` из того же интерпретатора)
 - Snapshot ноутбука: `cp pipeline/Shopify_Pipeline.ipynb pipeline/.snapshots/$(date +%Y%m%d_%H%M%S).ipynb`
 - Установка dev-deps: `pip install -r requirements-dev.txt`
+- Gap-тест на придуманных продуктах: `python taxonomy/tools/gap_test.py --self-test`
+- Gap-тест на твоём каталоге: `python taxonomy/tools/gap_test.py --products catalog.csv --json report.json`
 
 ## Стандарт начала сессии
 1. `cat CLAUDE.md && git log --oneline -20 && git status`
@@ -95,22 +98,30 @@ tags-recomendations/
 
 ## Что СЕЙЧАС работает (не трогай без причины)
 - ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING)
-- ✅ `tools/health_check.py` — общий чек, корректно репортит отсутствие источников
-- ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + дубли + ссылочная целостность + непустой `embed_text`
-- ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячейные имена
-- ✅ `pipeline/tools/extract_cells.py` — `.ipynb` → плоский `.py`
-- ✅ `pipeline/tools/apply_patch.py` — точечный str_replace через nbformat
-- ✅ `taxonomy/tests/test_taxonomy.py` — тесты валидатора на синтетике
+- ✅ `taxonomy.json` (790 кластеров: 430 v3.1 approved + 335 v3.2 draft + **25 v3.3 draft, gap-fill итерации 1+2**, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
+- ✅ `taxonomy/tools/gap_test.py` — matching тестовых продуктов (или CSV-каталога) против таксономии через cosine; auto-fallback `sentence-transformers/MiniLM` → `sklearn TfidfVectorizer` (sandbox блокирует huggingface.co)
+- ✅ `taxonomy/schema.json` отражает реальную структуру (ADR-006, supersedes ADR-005)
+- ✅ `taxonomy/tools/validate_taxonomy.py` — JSON Schema + 9 бизнес-правил
+  (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
+  unknown persona/intent/gender/age, empty embed_text)
+- ✅ `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт пользователя (обогащение через Claude API + FAISS-related)
+- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт **до 21 JSON-секции** с FILL/SKIP per category) → Shopify push (метафилды + EPROLO gallery).
+- ✅ Theme: 21 storefront-метафилда (9 always-on + 12 optional) + 2 admin-only (`photo_pack` ZIP, `source` EPROLO origin record) = 23 total. Файлы темы в `pipeline/theme_assets/` (1 master section + 21 snippet + wanelo.css ~465 строк + wanelo.js). Snippets с пустым метафилдом скипаются в Liquid, типичный товар получает 11-13 секций из 21. Admin-only метафилды видны только в Shopify Admin → Product → Metafields, никогда не попадают в storefront markup.
+- ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячеечная дефинированность только на module-level scope (не лезет в тела функций — иначе 75 false-positive)
+- ✅ `pipeline/tools/extract_cells.py`, `apply_patch.py` — работают
+- ✅ `tools/health_check.py` — на реальных данных всё зелёное
+- ✅ `taxonomy/tests/test_taxonomy.py` — 15/15: синтетика покрывает все классы ошибок + контрактный тест на реальный `taxonomy.json`
 - ✅ CI: `validate-taxonomy.yml` + `smoke-pipeline.yml`
 
 ## Что СЕЙЧАС сломано / в работе
-- ⏳ Стартовые файлы пользователя (`taxonomy.json`, `enrich_taxonomy.py`,
-  `Shopify_Pipeline_v9_with_taxonomy.ipynb`, старый `README.md`) **не доставлены**
-  в рабочую папку — лежат на Windows-temp у пользователя, Linux-окружению Claude
-  недоступны. Ждём способ доставки (коммит с локальной машины / inline / URL).
-- ⏳ `taxonomy/schema.json` — **черновая**, написана по описанию из bootstrap-промпта
-  (см. ADR-005). Должна быть сверена с реальной структурой `taxonomy.json` и
-  при необходимости ужесточена.
 - ⏳ `taxonomy/tools/build_taxonomy.py`, `stats.py`, `export_to_csv.py` —
   заглушки с `raise NotImplementedError`. Реализуем по запросу.
-- ⏳ `taxonomy/tools/enrich_taxonomy.py` — пока пусто, ждём оригинал от пользователя.
+- ⏳ Gap-analysis ещё не делали — требуется дамп каталога EPROLO или Shopify (см. предложение по `gap_analysis.py`).
+- ⏳ В реальном `taxonomy.json` все 783 кластера имеют пустые
+  `personas/intents/demos/related/synonyms/title_ru/description/shopify_collection_hints` —
+  это работа `enrich_taxonomy.py`. После прогона валидатор должен снова пройти.
+- ⏳ 18 новых v3.3-кластеров (gap-fill итерация 1) — `status: draft`,
+  ждут ревью пользователем и (после ревью) промоута в `approved`.
+- ⏳ Реальный gap-анализ против каталога EPROLO/Shopify ещё не делали —
+  нужен дамп каталога. Текущая итерация — только внутренний структурный
+  + индустриальные эвристики (см. CHANGELOG раздел «Gap-analysis итерация 1»).

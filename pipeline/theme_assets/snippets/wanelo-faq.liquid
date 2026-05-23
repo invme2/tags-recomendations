@@ -1,0 +1,53 @@
+{%- comment -%}
+  FAQ snippet — accordion of question/answer pairs.
+  Reads product.metafields.custom.faq JSON:
+    {head: {kicker, h2, desc}, items: [{q, a}]}
+  Each item renders as <details><summary>…</summary>…</details>.
+  JSON-LD FAQPage schema also auto-emitted for Google rich snippets.
+{%- endcomment -%}
+
+{%- assign faq = product.metafields.custom.faq.value -%}
+{%- if faq and faq.items and faq.items.size > 0 -%}
+<section class="wanelo-section">
+  {%- if faq.head and faq.head.h2 != blank -%}
+    <div class="wanelo-head reveal">
+      {%- if faq.head.kicker != blank -%}<div class="wanelo-kicker">{{ faq.head.kicker }}</div>{%- endif -%}
+      <h2>{{ faq.head.h2 }}</h2>
+      {%- if faq.head.desc != blank -%}<p class="desc">{{ faq.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-faq reveal">
+    {%- for item in faq.items -%}
+      {%- if item.q != blank and item.a != blank -%}
+        <details>
+          <summary>{{ item.q }}</summary>
+          <div class="wanelo-faq__answer">{{ item.a }}</div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{%- comment -%} JSON-LD FAQPage schema for Google rich snippets {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for item in faq.items -%}
+      {%- if item.q != blank and item.a != blank -%}
+      {
+        "@type": "Question",
+        "name": {{ item.q | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ item.a | json }}
+        }
+      }{%- unless forloop.last %},{% endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}

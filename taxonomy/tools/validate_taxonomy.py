@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Валидация taxonomy.json.
+"""Валидация taxonomy.json (схема v3.x).
 
 Проверки:
 1. JSON Schema (taxonomy/schema.json).
-2. Уникальность `tag` среди кластеров.
-3. Все `related[]` ссылаются на существующие `tag`.
-4. `embed_text` непуст и не состоит из пробелов.
-5. Если на верхнем уровне есть master-списки `personas`/`intents`/`demos`,
-   все значения этих полей в кластерах должны входить в master.
+2. Уникальность `tag` среди clusters / personas / intents / demos.
+3. Уникальность section.id и section.slug.
+4. cluster.section_id и cluster.section ссылаются на существующие sections.
+5. cluster.related[] ссылается на существующие cluster:* теги.
+6. cluster.personas[] ⊂ master persona tags.
+7. cluster.intents[] ⊂ master intent tags.
+8. cluster.demos.primary_gender (если непустой) ∈ master demos с type='gender'.
+9. cluster.demos.ages[] ⊂ master demos с type='age'.
+10. cluster.embed_text непустой и не из пробелов.
 
-Exit codes: 0 — всё ок; 1 — ошибки валидации; 2 — нет источника.
+Exit codes: 0 — ок; 1 — ошибки валидации; 2 — нет источника.
 """
 
 from __future__ import annotations
@@ -31,73 +35,93 @@ def load_json(path: Path) -> Any:
         return json.load(f)
 
 
-def validate(taxonomy: Any, schema: dict) -> list[str]:
-    errors: list[str] = []
-
+def _schema_errors(taxonomy: Any, schema: dict) -> list[str]:
+    out: list[str] = []
     validator = jsonschema.Draft7Validator(schema)
     for err in sorted(validator.iter_errors(taxonomy), key=lambda e: list(e.absolute_path)):
         loc = "/".join(str(p) for p in err.absolute_path) or "<root>"
-        errors.append(f"[schema] {loc}: {err.message}")
+        out.append(f"[schema] {loc}: {err.message}")
+    return out
 
+
+def _check_unique(items: list[dict], key: str, kind: str) -> tuple[list[str], dict[str, int]]:
+    seen: dict[str, int] = {}
+    errors: list[str] = []
+    for i, item in enumerate(items):
+        if not isinstance(item, dict):
+            continue
+        v = item.get(key)
+        if not isinstance(v, str):
+            continue
+        if v in seen:
+            errors.append(f"[duplicate-{kind}] {key}='{v}' встречается в [{seen[v]}] и [{i}]")
+        else:
+            seen[v] = i
+    return errors, seen
+
+
+def validate(taxonomy: Any, schema: dict) -> list[str]:
+    errors: list[str] = _schema_errors(taxonomy, schema)
     if not isinstance(taxonomy, dict):
         return errors
-    clusters = taxonomy.get("clusters")
-    if not isinstance(clusters, list):
-        return errors
 
-    seen_tags: dict[str, int] = {}
-    for i, cluster in enumerate(clusters):
-        if not isinstance(cluster, dict):
-            continue
-        tag = cluster.get("tag")
-        if not isinstance(tag, str):
-            continue
-        if tag in seen_tags:
-            errors.append(
-                f"[duplicate-tag] '{tag}' встречается в clusters[{seen_tags[tag]}] и clusters[{i}]"
-            )
-        else:
-            seen_tags[tag] = i
+    clusters = taxonomy.get("clusters") or []
+    sections = taxonomy.get("sections") or []
+    personas = taxonomy.get("personas") or []
+    intents = taxonomy.get("intents") or []
+    demos = taxonomy.get("demos") or []
 
-    valid_tags = set(seen_tags)
-    for i, cluster in enumerate(clusters):
-        if not isinstance(cluster, dict):
-            continue
-        related = cluster.get("related", [])
-        if not isinstance(related, list):
-            continue
-        for ref in related:
-            if isinstance(ref, str) and ref not in valid_tags:
-                errors.append(
-                    f"[broken-related] clusters[{i}].related ссылается на несуществующий tag '{ref}'"
-                )
+    cluster_errs, cluster_tags = _check_unique(clusters, "tag", "cluster-tag")
+    persona_errs, persona_tags = _check_unique(personas, "tag", "persona-tag")
+    intent_errs, intent_tags = _check_unique(intents, "tag", "intent-tag")
+    demo_errs, demo_tags = _check_unique(demos, "tag", "demo-tag")
+    section_id_errs, section_ids = _check_unique(sections, "id", "section-id")
+    section_slug_errs, section_slugs = _check_unique(sections, "slug", "section-slug")
+    errors += (cluster_errs + persona_errs + intent_errs + demo_errs
+               + section_id_errs + section_slug_errs)
 
-    for i, cluster in enumerate(clusters):
-        if not isinstance(cluster, dict):
+    valid_cluster_tags = set(cluster_tags)
+    valid_persona_tags = set(persona_tags)
+    valid_intent_tags = set(intent_tags)
+    gender_tags = {d["tag"] for d in demos if isinstance(d, dict) and d.get("type") == "gender"}
+    age_tags = {d["tag"] for d in demos if isinstance(d, dict) and d.get("type") == "age"}
+
+    for i, c in enumerate(clusters):
+        if not isinstance(c, dict):
             continue
-        text = cluster.get("embed_text")
+        ctag = c.get("tag", f"index={i}")
+
+        sid = c.get("section_id")
+        if isinstance(sid, str) and sid not in section_ids:
+            errors.append(f"[broken-section-id] cluster '{ctag}' ссылается на section_id='{sid}', которого нет")
+        sslug = c.get("section")
+        if isinstance(sslug, str) and sslug not in section_slugs:
+            errors.append(f"[broken-section-slug] cluster '{ctag}' ссылается на section='{sslug}', которого нет")
+
+        for ref in c.get("related", []) or []:
+            if isinstance(ref, str) and ref not in valid_cluster_tags:
+                errors.append(f"[broken-related] cluster '{ctag}' ссылается на '{ref}', которого нет")
+
+        for ref in c.get("personas", []) or []:
+            if isinstance(ref, str) and ref not in valid_persona_tags:
+                errors.append(f"[unknown-persona] cluster '{ctag}' использует '{ref}', нет в master personas")
+
+        for ref in c.get("intents", []) or []:
+            if isinstance(ref, str) and ref not in valid_intent_tags:
+                errors.append(f"[unknown-intent] cluster '{ctag}' использует '{ref}', нет в master intents")
+
+        cd = c.get("demos") or {}
+        if isinstance(cd, dict):
+            pg = cd.get("primary_gender", "")
+            if isinstance(pg, str) and pg and pg not in gender_tags:
+                errors.append(f"[unknown-gender] cluster '{ctag}' primary_gender='{pg}' не gender-demo")
+            for age in cd.get("ages", []) or []:
+                if isinstance(age, str) and age not in age_tags:
+                    errors.append(f"[unknown-age] cluster '{ctag}' age='{age}' не age-demo")
+
+        text = c.get("embed_text")
         if isinstance(text, str) and not text.strip():
-            tag = cluster.get("tag", f"index={i}")
-            errors.append(f"[empty-embed-text] cluster '{tag}' имеет пустой embed_text")
-
-    for field in ("personas", "intents", "demos"):
-        master = taxonomy.get(field)
-        if not isinstance(master, list):
-            continue
-        master_set = {x for x in master if isinstance(x, str)}
-        for i, cluster in enumerate(clusters):
-            if not isinstance(cluster, dict):
-                continue
-            values = cluster.get(field, [])
-            if not isinstance(values, list):
-                continue
-            for v in values:
-                if isinstance(v, str) and v not in master_set:
-                    tag = cluster.get("tag", f"index={i}")
-                    errors.append(
-                        f"[unknown-{field[:-1]}] cluster '{tag}' использует '{v}', "
-                        f"которого нет в master-списке {field}"
-                    )
+            errors.append(f"[empty-embed-text] cluster '{ctag}' имеет пустой embed_text")
 
     return errors
 
@@ -105,9 +129,7 @@ def validate(taxonomy: Any, schema: dict) -> list[str]:
 def main() -> int:
     if not TAXONOMY_PATH.exists():
         print(f"⏳ taxonomy.json отсутствует ({TAXONOMY_PATH}). Источник ещё не доставлен.")
-        print("   Это не ошибка валидации, но и не успех. Вернёт exit code 2.")
         return 2
-
     if not SCHEMA_PATH.exists():
         print(f"❌ schema.json отсутствует ({SCHEMA_PATH}).")
         return 1
@@ -118,12 +140,19 @@ def main() -> int:
     errors = validate(taxonomy, schema)
     if errors:
         print(f"❌ Найдено {len(errors)} ошибок:")
-        for e in errors:
+        for e in errors[:50]:
             print(f"  - {e}")
+        if len(errors) > 50:
+            print(f"  ... и ещё {len(errors) - 50}")
         return 1
 
-    n_clusters = len(taxonomy.get("clusters", [])) if isinstance(taxonomy, dict) else 0
-    print(f"✅ taxonomy.json валиден. Кластеров: {n_clusters}.")
+    n = len(taxonomy.get("clusters", []))
+    s = len(taxonomy.get("sections", []))
+    p = len(taxonomy.get("personas", []))
+    i = len(taxonomy.get("intents", []))
+    dm = len(taxonomy.get("demos", []))
+    print(f"✅ taxonomy.json валиден. Кластеров: {n}, sections: {s}, "
+          f"personas: {p}, intents: {i}, demos: {dm}.")
     return 0
 
 

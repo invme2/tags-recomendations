@@ -1,0 +1,33 @@
+{%- comment -%}
+  WHATS-INCLUDED snippet — list of items in the box/bundle.
+  Reads product.metafields.custom.whats_included JSON:
+    {head: {kicker, h2, desc}, items: [{glyph, name, qty, note}]}
+  Designer fills 3-8 items for: bundles, kits, gift sets, hobby starter packs.
+{%- endcomment -%}
+
+{%- assign incl = product.metafields.custom.whats_included.value -%}
+{%- if incl and incl.items and incl.items.size > 0 -%}
+<section class="wanelo-section wanelo-whatsincluded reveal">
+  {%- if incl.head and incl.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if incl.head.kicker != blank -%}<div class="wanelo-kicker">{{ incl.head.kicker }}</div>{%- endif -%}
+      <h2>{{ incl.head.h2 }}</h2>
+      {%- if incl.head.desc != blank -%}<p class="desc">{{ incl.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ul class="wanelo-whatsincluded__list">
+    {%- for item in incl.items -%}
+      {%- if item.name != blank -%}
+        <li class="wanelo-whatsincluded__item">
+          {%- if item.glyph != blank -%}<span class="wanelo-whatsincluded__glyph">{{ item.glyph }}</span>{%- endif -%}
+          <div class="wanelo-whatsincluded__body">
+            <span class="wanelo-whatsincluded__name">{{ item.name }}</span>
+            {%- if item.qty != blank -%}<span class="wanelo-whatsincluded__qty">×{{ item.qty }}</span>{%- endif -%}
+            {%- if item.note != blank -%}<span class="wanelo-whatsincluded__note">{{ item.note }}</span>{%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

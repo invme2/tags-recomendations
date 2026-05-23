@@ -1,0 +1,34 @@
+{%- comment -%}
+  DIMENSIONS snippet — physical size + visual scale reference.
+  Reads product.metafields.custom.dimensions JSON:
+    {head: {kicker, h2, desc},
+     items: [{axis: "Height", value: "32 cm"}, ...],
+     scale_note: "Roughly the size of a hardcover book"}
+  Designer fills for: wall decor, furniture, organization, lighting, transport.
+{%- endcomment -%}
+
+{%- assign dim = product.metafields.custom.dimensions.value -%}
+{%- if dim and dim.items and dim.items.size > 0 -%}
+<section class="wanelo-section wanelo-dimensions reveal">
+  {%- if dim.head and dim.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if dim.head.kicker != blank -%}<div class="wanelo-kicker">{{ dim.head.kicker }}</div>{%- endif -%}
+      <h2>{{ dim.head.h2 }}</h2>
+      {%- if dim.head.desc != blank -%}<p class="desc">{{ dim.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ul class="wanelo-dimensions__list">
+    {%- for item in dim.items -%}
+      {%- if item.axis != blank -%}
+        <li class="wanelo-dimensions__item">
+          <span class="wanelo-dimensions__axis">{{ item.axis }}</span>
+          <span class="wanelo-dimensions__value">{{ item.value }}</span>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+  {%- if dim.scale_note != blank -%}
+    <p class="wanelo-dimensions__scale-note">{{ dim.scale_note }}</p>
+  {%- endif -%}
+</section>
+{%- endif -%}

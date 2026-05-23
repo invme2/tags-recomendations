@@ -1,0 +1,54 @@
+{%- comment -%}
+  WANELO Product Page — single section, renders the entire long-form
+  description from up to 21 Shopify metafields (each a JSON object).
+{%- endcomment -%}
+
+{%- comment -%} Font preconnect — saves ~80-150ms on cold first paint {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+{{ 'wanelo.css' | asset_url | stylesheet_tag }}
+{% render 'wanelo-palette' %}
+{% render 'wanelo-product-schema' %}
+
+<div class="wanelo-page" role="article">
+
+  {% render 'wanelo-hero' %}
+  {% render 'wanelo-story' %}
+  {% render 'wanelo-features' %}
+  {% render 'wanelo-ingredients' %}
+  {% render 'wanelo-how-to' %}
+  {% render 'wanelo-timeline' %}
+  {% render 'wanelo-stats' %}
+  {% render 'wanelo-specs' %}
+  {% render 'wanelo-size-guide' %}
+  {% render 'wanelo-dimensions' %}
+  {% render 'wanelo-variants' %}
+  {% render 'wanelo-care' %}
+  {% render 'wanelo-whats-included' %}
+  {% render 'wanelo-gift-options' %}
+  {% render 'wanelo-compare' %}
+  {% render 'wanelo-trust' %}
+  {% render 'wanelo-reviews' %}
+  {% render 'wanelo-faq' %}
+  {% render 'wanelo-cta' %}
+  {% render 'wanelo-interlinks' %}
+
+  <script src="{{ 'wanelo.js' | asset_url }}" defer></script>
+</div>
+
+{% schema %}
+{
+  "name": "Wanelo Product Page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders the long-form product description from JSON metafields. Add this section once to your product template. All sections gate on metafield content — empty metafield = section hidden."
+    }
+  ],
+  "presets": [
+    { "name": "Wanelo Product Page" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,47 @@
+{%- comment -%}
+  COMPARE snippet — vs alternatives feature matrix (3-column table).
+  Reads product.metafields.custom.compare JSON:
+    {head: {kicker, h2, desc},
+     columns: [{name, badge}],      // typically 2-3: this, alt-1, alt-2
+     rows:    [{label, values: ["✓", "✗", "✗"]}]}   // values map by index
+  Designer fills 4-7 rows for: research-buy intent, premium positioning,
+  upgrade messaging vs basic version.
+{%- endcomment -%}
+
+{%- assign cmp = product.metafields.custom.compare.value -%}
+{%- if cmp and cmp.columns and cmp.columns.size > 0 and cmp.rows and cmp.rows.size > 0 -%}
+<section class="wanelo-section wanelo-compare reveal">
+  {%- if cmp.head and cmp.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if cmp.head.kicker != blank -%}<div class="wanelo-kicker">{{ cmp.head.kicker }}</div>{%- endif -%}
+      <h2>{{ cmp.head.h2 }}</h2>
+      {%- if cmp.head.desc != blank -%}<p class="desc">{{ cmp.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <div class="wanelo-compare__wrap">
+    <table class="wanelo-compare__table">
+      <thead>
+        <tr>
+          <th class="wanelo-compare__row-label"></th>
+          {%- for col in cmp.columns -%}
+            <th class="wanelo-compare__col {%- if col.badge != blank %} wanelo-compare__col--badge{%- endif %}">
+              <span class="wanelo-compare__col-name">{{ col.name }}</span>
+              {%- if col.badge != blank -%}<span class="wanelo-compare__col-badge">{{ col.badge }}</span>{%- endif -%}
+            </th>
+          {%- endfor -%}
+        </tr>
+      </thead>
+      <tbody>
+        {%- for row in cmp.rows -%}
+          <tr>
+            <td class="wanelo-compare__row-label">{{ row.label }}</td>
+            {%- for v in row.values -%}
+              <td class="wanelo-compare__cell">{{ v }}</td>
+            {%- endfor -%}
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+</section>
+{%- endif -%}

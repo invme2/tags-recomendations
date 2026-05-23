@@ -1,0 +1,50 @@
+{%- comment -%}
+  TRUST snippet — certifications + press mentions.
+  Reads product.metafields.custom.trust JSON:
+    {head: {kicker, h2, desc}, certs: [{label, sub}], press: [{label, sub}]}
+{%- endcomment -%}
+
+{%- assign trust = product.metafields.custom.trust.value -%}
+{%- if trust -%}
+  {%- assign certs = trust.certs | default: empty -%}
+  {%- assign press = trust.press | default: empty -%}
+  {%- assign has_certs = false -%}
+  {%- if certs != empty and certs.size > 0 -%}{%- assign has_certs = true -%}{%- endif -%}
+  {%- assign has_press = false -%}
+  {%- if press != empty and press.size > 0 -%}{%- assign has_press = true -%}{%- endif -%}
+  {%- if has_certs or has_press -%}
+  <section class="wanelo-section wanelo-trust reveal">
+    {%- if trust.head and trust.head.h2 != blank -%}
+      <div class="wanelo-head">
+        {%- if trust.head.kicker != blank -%}<div class="wanelo-kicker">{{ trust.head.kicker }}</div>{%- endif -%}
+        <h2>{{ trust.head.h2 }}</h2>
+        {%- if trust.head.desc != blank -%}<p class="desc">{{ trust.head.desc }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+    {%- if has_certs -%}
+      <ul class="wanelo-trust__certs">
+        {%- for c in certs -%}
+          {%- if c.label != blank -%}
+            <li class="wanelo-trust__cert">
+              <span class="wanelo-trust__label">{{ c.label }}</span>
+              {%- if c.sub != blank -%}<span class="wanelo-trust__sub">{{ c.sub }}</span>{%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if has_press -%}
+      <div class="wanelo-trust__press">
+        <div class="wanelo-trust__press-label">As seen on</div>
+        <ul class="wanelo-trust__press-list">
+          {%- for p in press -%}
+            {%- if p.label != blank -%}
+              <li class="wanelo-trust__press-item">{{ p.label }}{%- if p.sub != blank -%} <span>· {{ p.sub }}</span>{%- endif -%}</li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </section>
+  {%- endif -%}
+{%- endif -%}

@@ -1,0 +1,19 @@
+{%- comment -%}
+  Inject per-product palette CSS variables.
+  Reads product.metafields.custom.palette JSON: {brand_1, brand_2, brand_3, brand_soft, brand_deep}
+  Outputs <style>.wanelo-page{--brand-1:...;--brand-2:...;...}</style>
+  Falls back to defaults from wanelo.css if palette empty.
+{%- endcomment -%}
+
+{%- assign palette = product.metafields.custom.palette.value -%}
+{%- if palette -%}
+<style data-wanelo-palette>
+  .wanelo-page{
+    {%- if palette.brand_1 %}--brand-1: {{ palette.brand_1 }};{% endif -%}
+    {%- if palette.brand_2 %}--brand-2: {{ palette.brand_2 }};{% endif -%}
+    {%- if palette.brand_3 %}--brand-3: {{ palette.brand_3 }};{% endif -%}
+    {%- if palette.brand_soft %}--brand-soft: {{ palette.brand_soft }};{% endif -%}
+    {%- if palette.brand_deep %}--brand-deep: {{ palette.brand_deep }};{% endif -%}
+  }
+</style>
+{%- endif -%}

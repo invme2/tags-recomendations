@@ -1,0 +1,31 @@
+{%- comment -%}
+  INGREDIENTS snippet — chips/badges of ingredient or material list.
+  Reads product.metafields.custom.ingredients JSON:
+    {head: {kicker, h2, desc}, items: [{name, role, badge}]}
+  Designer fills 4-10 chips for: skincare actives, food, supplements,
+  candle scents, fabric blends.
+{%- endcomment -%}
+
+{%- assign ing = product.metafields.custom.ingredients.value -%}
+{%- if ing and ing.items and ing.items.size > 0 -%}
+<section class="wanelo-section wanelo-ingredients reveal">
+  {%- if ing.head and ing.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if ing.head.kicker != blank -%}<div class="wanelo-kicker">{{ ing.head.kicker }}</div>{%- endif -%}
+      <h2>{{ ing.head.h2 }}</h2>
+      {%- if ing.head.desc != blank -%}<p class="desc">{{ ing.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <ul class="wanelo-ingredients__list">
+    {%- for item in ing.items -%}
+      {%- if item.name != blank -%}
+        <li class="wanelo-ingredients__chip">
+          {%- if item.badge != blank -%}<span class="wanelo-ingredients__badge">{{ item.badge }}</span>{%- endif -%}
+          <span class="wanelo-ingredients__name">{{ item.name }}</span>
+          {%- if item.role != blank -%}<span class="wanelo-ingredients__role">{{ item.role }}</span>{%- endif -%}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

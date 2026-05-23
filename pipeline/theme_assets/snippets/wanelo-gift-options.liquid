@@ -1,0 +1,68 @@
+{%- comment -%}
+  GIFT-OPTIONS snippet — gift wrap + message card + occasion fit.
+  Reads product.metafields.custom.gift_options JSON:
+    {head: {kicker, h2, desc},
+     wrap: {available: true, price: "$5", options: ["Kraft + linen ribbon"]},
+     card: {available: true, max_chars: 240, examples: ["Happy birthday!"]},
+     occasions: ["Birthday", "Anniversary", "Mother's Day"],
+     ships_with: "Standard packaging hidden inside"}
+  Designer fills for: products in gifts-by-recipient (section 2), specific
+  events (5/11), bundle-types (10), or anything tagged intent:gift.
+{%- endcomment -%}
+
+{%- assign go = product.metafields.custom.gift_options.value -%}
+{%- assign has_wrap = false -%}
+{%- if go and go.wrap and go.wrap.available -%}{%- assign has_wrap = true -%}{%- endif -%}
+{%- assign has_card = false -%}
+{%- if go and go.card and go.card.available -%}{%- assign has_card = true -%}{%- endif -%}
+{%- assign has_occ = false -%}
+{%- if go and go.occasions and go.occasions.size > 0 -%}{%- assign has_occ = true -%}{%- endif -%}
+{%- if has_wrap or has_card or has_occ -%}
+<section class="wanelo-section wanelo-giftoptions reveal">
+  {%- if go.head and go.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if go.head.kicker != blank -%}<div class="wanelo-kicker">{{ go.head.kicker }}</div>{%- endif -%}
+      <h2>{{ go.head.h2 }}</h2>
+      {%- if go.head.desc != blank -%}<p class="desc">{{ go.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+  <div class="wanelo-giftoptions__grid">
+    {%- if has_wrap -%}
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">🎁</div>
+        <h4>Gift wrap{%- if go.wrap.price != blank -%} <span>· {{ go.wrap.price }}</span>{%- endif -%}</h4>
+        {%- if go.wrap.options and go.wrap.options.size > 0 -%}
+          <ul class="wanelo-giftoptions__opts">
+            {%- for opt in go.wrap.options -%}<li>{{ opt }}</li>{%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    {%- if has_card -%}
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">💌</div>
+        <h4>Personal message
+          {%- if go.card.max_chars -%} <span>· up to {{ go.card.max_chars }} chars</span>{%- endif -%}
+        </h4>
+        {%- if go.card.examples and go.card.examples.size > 0 -%}
+          <ul class="wanelo-giftoptions__opts">
+            {%- for ex in go.card.examples -%}<li>"{{ ex }}"</li>{%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    {%- if has_occ -%}
+      <div class="wanelo-giftoptions__card">
+        <div class="wanelo-giftoptions__icon">🌟</div>
+        <h4>Perfect for</h4>
+        <ul class="wanelo-giftoptions__opts">
+          {%- for occ in go.occasions -%}<li>{{ occ }}</li>{%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if go.ships_with != blank -%}
+    <p class="wanelo-giftoptions__ships">📦 {{ go.ships_with }}</p>
+  {%- endif -%}
+</section>
+{%- endif -%}

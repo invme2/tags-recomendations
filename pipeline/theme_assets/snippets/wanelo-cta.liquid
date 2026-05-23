@@ -1,0 +1,22 @@
+{%- comment -%}
+  CTA snippet — centered call-to-action card.
+  Reads product.metafields.custom.cta JSON:
+    {kicker, h2, p, button_label}
+  Button links to add-to-cart anchor (#wanelo-atc) — same target as
+  hero CTA and sticky mobile ATC. wanelo.js attaches smooth-scroll
+  + analytics via [data-wanelo-atc-link].
+{%- endcomment -%}
+
+{%- assign cta = product.metafields.custom.cta.value -%}
+{%- if cta and cta.h2 != blank -%}
+<section class="wanelo-section">
+  <div class="wanelo-cta reveal">
+    {%- if cta.kicker != blank -%}<div class="wanelo-kicker">{{ cta.kicker }}</div>{%- endif -%}
+    <h2>{{ cta.h2 }}</h2>
+    {%- if cta.p != blank -%}<p>{{ cta.p }}</p>{%- endif -%}
+    {%- if cta.button_label != blank -%}
+      <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>{{ cta.button_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
