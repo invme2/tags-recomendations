@@ -1,12 +1,11 @@
 {%- comment -%}
-  SIZE-GUIDE snippet — sizing chart with measurements per size label.
+  SIZE-GUIDE snippet — Apple-Shop grid. Single hairline border, white
+  cells, no zebra, no shadows. Column headers black on bg-2, uppercase tracked.
   Reads product.metafields.custom.size_guide JSON:
     {head: {kicker, h2, desc},
      labels: ["S","M","L"],
      rows: [{label: "Chest", values: ["86","92","98"], unit: "cm"}],
      note: "Measurements taken flat..."}
-  Designer fills for: clothing, jewelry rings/chains, pet collars/harnesses,
-  baby/kids clothing, sports gear sizing.
 {%- endcomment -%}
 
 {%- assign sg = product.metafields.custom.size_guide.value -%}

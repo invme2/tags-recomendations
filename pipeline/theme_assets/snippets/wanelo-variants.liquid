@@ -1,10 +1,9 @@
 {%- comment -%}
-  VARIANTS snippet — color/pattern swatches grid.
+  VARIANTS snippet — Apple-flat color chips (single row, swatch + name).
   Reads product.metafields.custom.variants JSON:
     {head: {kicker, h2, desc},
      items: [{name: "Sand", color: "#d4b896", available: true}]}
-  Designer fills for: fashion, accessories, decor, anything sold in colors.
-  This is PURELY VISUAL — Shopify product variants live elsewhere.
+  Purely visual — Shopify product variants live elsewhere.
 {%- endcomment -%}
 
 {%- assign vr = product.metafields.custom.variants.value -%}
@@ -20,7 +19,7 @@
   <ul class="wanelo-variants__list">
     {%- for item in vr.items -%}
       {%- if item.name != blank -%}
-        <li class="wanelo-variants__item {%- unless item.available %} wanelo-variants__item--soldout{% endunless -%}">
+        <li class="wanelo-variants__item{%- unless item.available %} wanelo-variants__item--soldout{% endunless -%}">
           <span class="wanelo-variants__swatch" style="background:{{ item.color | default: '#cccccc' }}"></span>
           <span class="wanelo-variants__name">{{ item.name }}</span>
           {%- unless item.available -%}<span class="wanelo-variants__soldout">Sold out</span>{%- endunless -%}

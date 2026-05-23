@@ -1,10 +1,10 @@
 {%- comment -%}
-  REVIEWS snippet — 3-column animated wall (m54 style).
+  REVIEWS snippet — 3-column animated wall (markup unchanged from prior).
   Reads product.metafields.custom.reviews JSON:
     {head: {kicker, h2, desc}, items: [{stars, quote, author, meta}]}
-  Designer should provide 9-12 items. Pipeline distributes across 3 columns
-  (positions 0,3,6,9 → c1; 1,4,7,10 → c2; 2,5,8,11 → c3) and duplicates each
-  column for seamless infinite scroll.
+  Designer provides 9-12 items; positions 0,3,6,9 → c1; 1,4,7,10 → c2;
+  2,5,8,11 → c3. Columns duplicated for seamless infinite scroll.
+  Card styling now reads from --sec-panel (flips on dark sections).
 {%- endcomment -%}
 
 {%- assign reviews = product.metafields.custom.reviews.value -%}
@@ -25,7 +25,6 @@
         {%- if col_index == 1 %}{%- assign col_class = 'c2' -%}{%- endif -%}
         {%- if col_index == 2 %}{%- assign col_class = 'c3' -%}{%- endif -%}
         <div class="wanelo-reviews__col {{ col_class }}">
-          {%- comment -%} render twice for seamless infinite scroll {%- endcomment -%}
           {%- for n in (1..2) -%}
             {%- for item in reviews.items -%}
               {%- assign rev_rem = forloop.index0 | modulo: 3 -%}

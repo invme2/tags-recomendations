@@ -1,0 +1,60 @@
+{%- comment -%}
+  CLINICAL-EVIDENCE snippet — scientific backing for claims. Distinct
+  from `trust` (press/awards) and `safety` (warnings).
+
+  JSON schema:
+    "clinical_evidence": {
+      "head": {kicker, h2, desc},
+      "claims": [{stat, claim, study_size, study_type, study_year}],
+      "mechanism": "Microcurrent at 200-400 µA triggers ATP production…",
+      "disclaimer": "Results may vary. Not a treatment for any medical condition."
+    }
+
+  Visual: each claim as a big stat numeral + claim text + small study
+  metadata footnote. Mechanism paragraph below. Small muted disclaimer.
+{%- endcomment -%}
+
+{%- assign ce = product.metafields.custom.clinical_evidence.value -%}
+{%- assign has_claims = false -%}
+{%- if ce and ce.claims and ce.claims.size > 0 -%}{%- assign has_claims = true -%}{%- endif -%}
+{%- assign has_mech = false -%}
+{%- if ce and ce.mechanism != blank -%}{%- assign has_mech = true -%}{%- endif -%}
+
+{%- if has_claims or has_mech -%}
+<section class="wanelo-section wanelo-clinical-evidence reveal">
+  {%- if ce.head and ce.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if ce.head.kicker != blank -%}<div class="wanelo-kicker">{{ ce.head.kicker }}</div>{%- endif -%}
+      <h2>{{ ce.head.h2 }}</h2>
+      {%- if ce.head.desc != blank -%}<p class="desc">{{ ce.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_claims -%}
+    <ul class="wanelo-clinical-evidence__claims">
+      {%- for c in ce.claims -%}
+        <li class="wanelo-clinical-evidence__claim reveal delay-{{ forloop.index0 | plus: 1 }}">
+          {%- if c.stat != blank -%}<div class="wanelo-clinical-evidence__stat">{{ c.stat }}</div>{%- endif -%}
+          {%- if c.claim != blank -%}<p class="wanelo-clinical-evidence__text">{{ c.claim }}</p>{%- endif -%}
+          <ul class="wanelo-clinical-evidence__meta">
+            {%- if c.study_size != blank -%}<li>{{ c.study_size }}</li>{%- endif -%}
+            {%- if c.study_type != blank -%}<li>{{ c.study_type }}</li>{%- endif -%}
+            {%- if c.study_year -%}<li>{{ c.study_year }}</li>{%- endif -%}
+          </ul>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_mech -%}
+    <div class="wanelo-clinical-evidence__mechanism">
+      <span class="wanelo-kicker">How it works</span>
+      <p>{{ ce.mechanism }}</p>
+    </div>
+  {%- endif -%}
+
+  {%- if ce.disclaimer != blank -%}
+    <p class="wanelo-clinical-evidence__disclaimer">{{ ce.disclaimer }}</p>
+  {%- endif -%}
+</section>
+{%- endif -%}

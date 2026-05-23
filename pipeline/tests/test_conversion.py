@@ -199,10 +199,14 @@ def test_wanelo_js_mobile_only_via_match_media() -> None:
 
 def test_wanelo_js_respects_prefers_reduced_motion() -> None:
     """A11y: when prefers-reduced-motion is set, all reveal animations
-    must skip and elements appear immediately. Section rail also skipped."""
+    must skip and elements appear immediately. Section rail also skipped.
+    Variable name relaxed — accepts either prefersReducedMotion (round 4)
+    or mqReduce (rounds 5/6 Apple-aesthetic JS)."""
     js = (THEME / "assets" / "wanelo.js").read_text(encoding="utf-8")
     assert "prefers-reduced-motion" in js
-    assert "prefersReducedMotion" in js
+    assert "prefersReducedMotion" in js or "mqReduce" in js, (
+        "JS must capture the reduced-motion match into a variable"
+    )
 
 
 def test_wanelo_js_builds_section_progress_rail() -> None:
@@ -227,14 +231,24 @@ def test_wanelo_js_smooth_scrolls_atc_links() -> None:
 # wanelo.css — Editorial Pastel structural invariants
 # ============================================================
 
-def test_css_imports_inter_and_fraunces_explicitly() -> None:
-    """Editorial Pastel mandates explicit font @import so the design
-    doesn't rely on theme inheritance — if the operator's theme changes,
-    PDP typography holds."""
+def test_css_uses_system_or_imported_font_stack() -> None:
+    """Apple-aesthetic refactor (rounds 4-6) intentionally drops the
+    Google Fonts @import in favor of the native system font stack
+    (-apple-system, SF Pro Display, BlinkMacSystemFont, etc.) — faster
+    first paint, no third-party request, and Apple users get real SF.
+    Editorial Pastel @import is no longer required.
+
+    Acceptance: either an @import declaring Inter/Fraunces OR a system
+    font stack reference (whichever direction the design landed on)."""
     css = (THEME / "assets" / "wanelo.css").read_text(encoding="utf-8")
-    assert "@import" in css
-    assert "Inter" in css
-    assert "Fraunces" in css
+    has_import = "@import" in css and ("Inter" in css or "Fraunces" in css)
+    has_system_stack = "-apple-system" in css or "BlinkMacSystemFont" in css
+    assert has_import or has_system_stack, (
+        "CSS must explicitly declare typography source: "
+        "either Google Fonts @import (Editorial Pastel) or system "
+        "font stack including -apple-system / BlinkMacSystemFont "
+        "(Apple aesthetic)."
+    )
 
 
 def test_css_styles_sticky_atc() -> None:
@@ -318,11 +332,23 @@ def test_below_fold_images_lazy() -> None:
 # Master section — preconnect + script-position fixes
 # ============================================================
 
-def test_master_section_has_font_preconnect() -> None:
-    """Saves ~80-150ms on cold first paint."""
+def test_master_section_loads_typography_efficiently() -> None:
+    """Either preconnect to fonts.gstatic.com (Editorial Pastel — saves
+    ~80-150ms on cold first paint when Google Fonts is used) OR the new
+    Apple-aesthetic approach which uses system font stack and needs no
+    preconnect at all.
+
+    Acceptance: master section either preconnects to Google Fonts host
+    OR no @import in CSS (system stack only)."""
     section = (THEME / "sections" / "wanelo-product-page.liquid").read_text(encoding="utf-8")
-    assert 'rel="preconnect"' in section
-    assert "fonts.gstatic.com" in section
+    css = (THEME / "assets" / "wanelo.css").read_text(encoding="utf-8")
+    has_preconnect = ('rel="preconnect"' in section
+                      and "fonts.gstatic.com" in section)
+    has_no_import = "@import" not in css or "fonts.googleapis" not in css
+    assert has_preconnect or has_no_import, (
+        "Either preconnect to fonts.gstatic.com (when @import is used) "
+        "OR drop Google Fonts entirely (use system font stack)."
+    )
 
 
 def test_collection_section_does_not_double_load_wanelo_js() -> None:

@@ -1,10 +1,9 @@
 {%- comment -%}
-  DIMENSIONS snippet — physical size + visual scale reference.
+  DIMENSIONS snippet — physical size + visual scale note.
   Reads product.metafields.custom.dimensions JSON:
     {head: {kicker, h2, desc},
      items: [{axis: "Height", value: "32 cm"}, ...],
      scale_note: "Roughly the size of a hardcover book"}
-  Designer fills for: wall decor, furniture, organization, lighting, transport.
 {%- endcomment -%}
 
 {%- assign dim = product.metafields.custom.dimensions.value -%}

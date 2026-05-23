@@ -2,8 +2,8 @@
   FAQ snippet — accordion of question/answer pairs.
   Reads product.metafields.custom.faq JSON:
     {head: {kicker, h2, desc}, items: [{q, a}]}
-  Each item renders as <details><summary>…</summary>…</details>.
-  JSON-LD FAQPage schema also auto-emitted for Google rich snippets.
+  JSON-LD FAQPage schema auto-emitted for Google rich snippets.
+  Typography only — markup unchanged from prior version.
 {%- endcomment -%}
 
 {%- assign faq = product.metafields.custom.faq.value -%}
@@ -29,7 +29,6 @@
   </div>
 </section>
 
-{%- comment -%} JSON-LD FAQPage schema for Google rich snippets {%- endcomment -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

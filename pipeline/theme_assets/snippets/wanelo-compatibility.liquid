@@ -1,0 +1,85 @@
+{%- comment -%}
+  COMPATIBILITY snippet — works-with matrix for tech / smart-home /
+  beauty replaceables / fitness wearables.
+
+  JSON schema:
+    "compatibility": {
+      "head": {kicker, h2, desc},
+      "platforms": [{name: "iOS", version: "16.0+", logo_hint: "apple"}],
+      "accessories": [{name, sku, fit_note}],
+      "incompatibility_warnings": ["Does NOT work with Samsung Galaxy Fit"]
+    }
+
+  logo_hint maps to a wanelo-icon-{hint} symbol when one exists
+  (apple / android / applewatch / bluetooth). Missing hint = no glyph,
+  text-only chip — graceful fallback.
+{%- endcomment -%}
+
+{%- assign comp = product.metafields.custom.compatibility.value -%}
+{%- assign has_plat = false -%}
+{%- if comp and comp.platforms and comp.platforms.size > 0 -%}{%- assign has_plat = true -%}{%- endif -%}
+{%- assign has_acc = false -%}
+{%- if comp and comp.accessories and comp.accessories.size > 0 -%}{%- assign has_acc = true -%}{%- endif -%}
+{%- assign has_warn = false -%}
+{%- if comp and comp.incompatibility_warnings and comp.incompatibility_warnings.size > 0 -%}{%- assign has_warn = true -%}{%- endif -%}
+
+{%- if has_plat or has_acc or has_warn -%}
+<section class="wanelo-section wanelo-compatibility reveal">
+  {%- if comp.head and comp.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if comp.head.kicker != blank -%}<div class="wanelo-kicker">{{ comp.head.kicker }}</div>{%- endif -%}
+      <h2>{{ comp.head.h2 }}</h2>
+      {%- if comp.head.desc != blank -%}<p class="desc">{{ comp.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_plat -%}
+    <ul class="wanelo-compatibility__platforms">
+      {%- for p in comp.platforms -%}
+        {%- if p.name != blank -%}
+          <li class="wanelo-compatibility__platform">
+            {%- if p.logo_hint != blank -%}
+              <span class="wanelo-compatibility__logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ p.logo_hint }}"></use></svg>
+              </span>
+            {%- endif -%}
+            <span class="wanelo-compatibility__platform-name">{{ p.name }}</span>
+            {%- if p.version != blank -%}
+              <span class="wanelo-compatibility__platform-version">{{ p.version }}</span>
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_acc -%}
+    <div class="wanelo-compatibility__accessories">
+      <div class="wanelo-compatibility__sub-label">Accessories &amp; replacements</div>
+      <ul class="wanelo-compatibility__accessory-list">
+        {%- for a in comp.accessories -%}
+          {%- if a.name != blank -%}
+            <li class="wanelo-compatibility__accessory">
+              <div class="wanelo-compatibility__accessory-name">{{ a.name }}</div>
+              {%- if a.fit_note != blank -%}
+                <div class="wanelo-compatibility__accessory-note">{{ a.fit_note }}</div>
+              {%- endif -%}
+              {%- if a.sku != blank -%}
+                <div class="wanelo-compatibility__accessory-sku">{{ a.sku }}</div>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  {%- if has_warn -%}
+    <ul class="wanelo-compatibility__warnings">
+      {%- for w in comp.incompatibility_warnings -%}
+        <li class="wanelo-compatibility__warning">{{ w }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</section>
+{%- endif -%}

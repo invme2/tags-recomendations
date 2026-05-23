@@ -1,8 +1,11 @@
 {%- comment -%}
   Inject per-product palette CSS variables.
-  Reads product.metafields.custom.palette JSON: {brand_1, brand_2, brand_3, brand_soft, brand_deep}
-  Outputs <style>.wanelo-page{--brand-1:...;--brand-2:...;...}</style>
+  Reads product.metafields.custom.palette JSON:
+    {brand_1, brand_2, brand_3, brand_soft, brand_deep}
   Falls back to defaults from wanelo.css if palette empty.
+  NOTE: under the Apple refactor these variables drive ACCENTS only
+  (eyebrow color, hairline accent under hero, link underlines) — they
+  are no longer used as section background fills.
 {%- endcomment -%}
 
 {%- assign palette = product.metafields.custom.palette.value -%}

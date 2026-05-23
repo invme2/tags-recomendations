@@ -1,13 +1,14 @@
 {%- comment -%}
-  GIFT-OPTIONS snippet — gift wrap + message card + occasion fit.
+  GIFT-OPTIONS snippet — Apple-flat cards w/ inline SVG icons.
   Reads product.metafields.custom.gift_options JSON:
     {head: {kicker, h2, desc},
      wrap: {available: true, price: "$5", options: ["Kraft + linen ribbon"]},
      card: {available: true, max_chars: 240, examples: ["Happy birthday!"]},
      occasions: ["Birthday", "Anniversary", "Mother's Day"],
      ships_with: "Standard packaging hidden inside"}
-  Designer fills for: products in gifts-by-recipient (section 2), specific
-  events (5/11), bundle-types (10), or anything tagged intent:gift.
+  Icons (gift / message / calendar) drawn from wanelo-icons.liquid.
+  ZERO emoji in default markup — operator JSON wrap.options / examples
+  may still contain author-supplied glyphs and that's fine.
 {%- endcomment -%}
 
 {%- assign go = product.metafields.custom.gift_options.value -%}
@@ -29,7 +30,9 @@
   <div class="wanelo-giftoptions__grid">
     {%- if has_wrap -%}
       <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">🎁</div>
+        <span class="wanelo-giftoptions__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><use href="#wanelo-icon-gift"></use></svg>
+        </span>
         <h4>Gift wrap{%- if go.wrap.price != blank -%} <span>· {{ go.wrap.price }}</span>{%- endif -%}</h4>
         {%- if go.wrap.options and go.wrap.options.size > 0 -%}
           <ul class="wanelo-giftoptions__opts">
@@ -40,7 +43,9 @@
     {%- endif -%}
     {%- if has_card -%}
       <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">💌</div>
+        <span class="wanelo-giftoptions__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><use href="#wanelo-icon-message"></use></svg>
+        </span>
         <h4>Personal message
           {%- if go.card.max_chars -%} <span>· up to {{ go.card.max_chars }} chars</span>{%- endif -%}
         </h4>
@@ -53,7 +58,9 @@
     {%- endif -%}
     {%- if has_occ -%}
       <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">🌟</div>
+        <span class="wanelo-giftoptions__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><use href="#wanelo-icon-calendar"></use></svg>
+        </span>
         <h4>Perfect for</h4>
         <ul class="wanelo-giftoptions__opts">
           {%- for occ in go.occasions -%}<li>{{ occ }}</li>{%- endfor -%}
@@ -62,7 +69,7 @@
     {%- endif -%}
   </div>
   {%- if go.ships_with != blank -%}
-    <p class="wanelo-giftoptions__ships">📦 {{ go.ships_with }}</p>
+    <p class="wanelo-giftoptions__ships">{{ go.ships_with }}</p>
   {%- endif -%}
 </section>
 {%- endif -%}

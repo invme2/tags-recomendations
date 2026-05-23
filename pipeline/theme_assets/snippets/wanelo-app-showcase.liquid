@@ -1,0 +1,88 @@
+{%- comment -%}
+  APP-SHOWCASE snippet — companion app screens + features. Distinct
+  from `compatibility` (platform support).
+
+  JSON schema:
+    "app_showcase": {
+      "head": {kicker, h2, desc},
+      "app_name": "Wanelo Mirror",
+      "store_links": [{store: "App Store"|"Google Play", url}],
+      "screens": [{caption, image_url}],
+      "features": ["Auto-detect skin concerns", ...]
+    }
+
+  Visual: 3 phone-screen mockups in a row with captions below. Store
+  badges as inline SVG monoglyphs (no remote brand-logo fetch).
+{%- endcomment -%}
+
+{%- assign app = product.metafields.custom.app_showcase.value -%}
+{%- assign has_screens = false -%}
+{%- if app and app.screens and app.screens.size > 0 -%}{%- assign has_screens = true -%}{%- endif -%}
+{%- assign has_features = false -%}
+{%- if app and app.features and app.features.size > 0 -%}{%- assign has_features = true -%}{%- endif -%}
+{%- assign has_store = false -%}
+{%- if app and app.store_links and app.store_links.size > 0 -%}{%- assign has_store = true -%}{%- endif -%}
+
+{%- if has_screens or has_features or has_store -%}
+<section class="wanelo-section wanelo-app-showcase reveal">
+  {%- if app.head and app.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if app.head.kicker != blank -%}<div class="wanelo-kicker">{{ app.head.kicker }}</div>{%- endif -%}
+      <h2>{{ app.head.h2 }}</h2>
+      {%- if app.head.desc != blank -%}<p class="desc">{{ app.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_screens -%}
+    <ul class="wanelo-app-showcase__screens">
+      {%- for s in app.screens -%}
+        <li class="wanelo-app-showcase__screen reveal delay-{{ forloop.index0 | plus: 1 }}">
+          <div class="wanelo-app-showcase__phone">
+            {%- if s.image_url != blank -%}
+              <img src="{{ s.image_url }}" alt="{{ s.caption | escape }}" loading="lazy" decoding="async">
+            {%- endif -%}
+          </div>
+          {%- if s.caption != blank -%}
+            <div class="wanelo-app-showcase__caption">{{ s.caption }}</div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_features -%}
+    <ul class="wanelo-app-showcase__features">
+      {%- for f in app.features -%}
+        <li class="wanelo-app-showcase__feature">
+          <span class="wanelo-app-showcase__feature-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg>
+          </span>
+          <span>{{ f }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_store -%}
+    <div class="wanelo-app-showcase__stores">
+      {%- for link in app.store_links -%}
+        {%- if link.url != blank -%}
+          {%- assign icon = 'appstore' -%}
+          {%- if link.store contains 'Google' or link.store contains 'Play' -%}
+            {%- assign icon = 'googleplay' -%}
+          {%- endif -%}
+          <a class="wanelo-app-showcase__store" href="{{ link.url }}" rel="noopener" target="_blank">
+            <span class="wanelo-app-showcase__store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ icon }}"></use></svg>
+            </span>
+            <span class="wanelo-app-showcase__store-text">
+              <span class="wanelo-app-showcase__store-pre">Download on</span>
+              <span class="wanelo-app-showcase__store-name">{{ link.store }}</span>
+            </span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}

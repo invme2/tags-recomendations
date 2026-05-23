@@ -1,8 +1,10 @@
 {%- comment -%}
-  WHATS-INCLUDED snippet — list of items in the box/bundle.
+  WHATS-INCLUDED snippet — items in box / bundle.
   Reads product.metafields.custom.whats_included JSON:
-    {head: {kicker, h2, desc}, items: [{glyph, name, qty, note}]}
-  Designer fills 3-8 items for: bundles, kits, gift sets, hobby starter packs.
+    {head: {kicker, h2, desc}, items: [{icon, name, qty, note}]}
+  item.icon is one of the keys in wanelo-icons.liquid (typically check,
+  gem, bolt, ribbon, etc). Old `glyph` field still accepted but ignored
+  by default; pipeline can migrate glyph → icon mapping per category.
 {%- endcomment -%}
 
 {%- assign incl = product.metafields.custom.whats_included.value -%}
@@ -19,7 +21,15 @@
     {%- for item in incl.items -%}
       {%- if item.name != blank -%}
         <li class="wanelo-whatsincluded__item">
-          {%- if item.glyph != blank -%}<span class="wanelo-whatsincluded__glyph">{{ item.glyph }}</span>{%- endif -%}
+          {%- if item.icon != blank -%}
+            <span class="wanelo-whatsincluded__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ item.icon }}"></use></svg>
+            </span>
+          {%- else -%}
+            <span class="wanelo-whatsincluded__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg>
+            </span>
+          {%- endif -%}
           <div class="wanelo-whatsincluded__body">
             <span class="wanelo-whatsincluded__name">{{ item.name }}</span>
             {%- if item.qty != blank -%}<span class="wanelo-whatsincluded__qty">×{{ item.qty }}</span>{%- endif -%}

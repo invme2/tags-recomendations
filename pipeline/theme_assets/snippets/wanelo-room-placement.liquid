@@ -1,0 +1,68 @@
+{%- comment -%}
+  ROOM-PLACEMENT snippet — visual scale + room-fit for furniture /
+  decor / lighting. Distinct from `dimensions` (numbers only).
+
+  JSON schema:
+    "room_placement": {
+      "head": {kicker, h2, desc},
+      "best_for_rooms": ["Living room", "Reading nook"],
+      "scale_photos": [{image_url, caption}],
+      "pairs_well_with": ["Mid-century lounge chairs", ...]
+    }
+{%- endcomment -%}
+
+{%- assign rp = product.metafields.custom.room_placement.value -%}
+{%- assign has_rooms = false -%}
+{%- if rp and rp.best_for_rooms and rp.best_for_rooms.size > 0 -%}{%- assign has_rooms = true -%}{%- endif -%}
+{%- assign has_photos = false -%}
+{%- if rp and rp.scale_photos and rp.scale_photos.size > 0 -%}{%- assign has_photos = true -%}{%- endif -%}
+{%- assign has_pairs = false -%}
+{%- if rp and rp.pairs_well_with and rp.pairs_well_with.size > 0 -%}{%- assign has_pairs = true -%}{%- endif -%}
+
+{%- if has_rooms or has_photos or has_pairs -%}
+<section class="wanelo-section wanelo-room-placement reveal">
+  {%- if rp.head and rp.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if rp.head.kicker != blank -%}<div class="wanelo-kicker">{{ rp.head.kicker }}</div>{%- endif -%}
+      <h2>{{ rp.head.h2 }}</h2>
+      {%- if rp.head.desc != blank -%}<p class="desc">{{ rp.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_rooms -%}
+    <ul class="wanelo-room-placement__rooms">
+      {%- for r in rp.best_for_rooms -%}
+        <li class="wanelo-room-placement__room">{{ r }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_photos -%}
+    <ul class="wanelo-room-placement__photos">
+      {%- for p in rp.scale_photos -%}
+        <li class="wanelo-room-placement__photo">
+          {%- if p.image_url != blank -%}
+            <div class="wanelo-room-placement__img">
+              <img src="{{ p.image_url }}" alt="{{ p.caption | escape }}" loading="lazy" decoding="async">
+            </div>
+          {%- endif -%}
+          {%- if p.caption != blank -%}
+            <p class="wanelo-room-placement__caption">{{ p.caption }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_pairs -%}
+    <div class="wanelo-room-placement__pairs">
+      <span class="wanelo-kicker">Pairs well with</span>
+      <ul>
+        {%- for item in rp.pairs_well_with -%}
+          <li>{{ item }}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}

@@ -1,0 +1,60 @@
+{%- comment -%}
+  PROTOCOL snippet — ongoing usage rhythm/regimen. Distinct from
+  `how_to` (one-time setup) and `timeline` (transformation milestones).
+  Answers "how often / how long / in what sequence".
+
+  FILL for: beauty devices (treatment schedule), supplements (cycles +
+            dosage timing), fitness (workout program), wellness rituals.
+  SKIP for: one-time-use products, decor, accessories.
+
+  JSON schema:
+    "protocol": {
+      "head": {kicker, h2, desc},
+      "schedule": [{phase, frequency, duration, intensity, note}],
+      "total_commitment": "8 weeks active + ongoing"
+    }
+{%- endcomment -%}
+
+{%- assign proto = product.metafields.custom.protocol.value -%}
+{%- if proto and proto.schedule and proto.schedule.size > 0 -%}
+<section class="wanelo-section wanelo-protocol reveal">
+  {%- if proto.head and proto.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if proto.head.kicker != blank -%}<div class="wanelo-kicker">{{ proto.head.kicker }}</div>{%- endif -%}
+      <h2>{{ proto.head.h2 }}</h2>
+      {%- if proto.head.desc != blank -%}<p class="desc">{{ proto.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ol class="wanelo-protocol__list">
+    {%- for phase in proto.schedule -%}
+      <li class="wanelo-protocol__phase">
+        <span class="wanelo-protocol__when">{{ phase.phase }}</span>
+        <div class="wanelo-protocol__body">
+          <dl class="wanelo-protocol__meta">
+            {%- if phase.frequency != blank -%}
+              <div><dt>Frequency</dt><dd>{{ phase.frequency }}</dd></div>
+            {%- endif -%}
+            {%- if phase.duration != blank -%}
+              <div><dt>Duration</dt><dd>{{ phase.duration }}</dd></div>
+            {%- endif -%}
+            {%- if phase.intensity != blank -%}
+              <div><dt>Intensity</dt><dd>{{ phase.intensity }}</dd></div>
+            {%- endif -%}
+          </dl>
+          {%- if phase.note != blank -%}
+            <p class="wanelo-protocol__note">{{ phase.note }}</p>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+
+  {%- if proto.total_commitment != blank -%}
+    <p class="wanelo-protocol__total">
+      <span class="wanelo-kicker">Total commitment</span>
+      <span>{{ proto.total_commitment }}</span>
+    </p>
+  {%- endif -%}
+</section>
+{%- endif -%}

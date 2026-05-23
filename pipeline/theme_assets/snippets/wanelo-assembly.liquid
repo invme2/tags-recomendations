@@ -1,0 +1,95 @@
+{%- comment -%}
+  ASSEMBLY snippet — what to expect when the box arrives. Distinct
+  from `how_to` (daily usage) and `whats_included` (parts list).
+
+  JSON schema:
+    "assembly": {
+      "head": {kicker, h2, desc},
+      "time_minutes": 15,
+      "difficulty": "Easy" | "Moderate" | "Advanced",
+      "person_count": 1 | 2,
+      "tools_required": [{name, included, optional}],
+      "warnings": ["Floor must be level. Use felt pads on hardwood."]
+    }
+{%- endcomment -%}
+
+{%- assign asm = product.metafields.custom.assembly.value -%}
+{%- assign has_stats = false -%}
+{%- if asm and asm.time_minutes -%}{%- assign has_stats = true -%}{%- endif -%}
+{%- if asm and asm.difficulty != blank -%}{%- assign has_stats = true -%}{%- endif -%}
+{%- if asm and asm.person_count -%}{%- assign has_stats = true -%}{%- endif -%}
+{%- assign has_tools = false -%}
+{%- if asm and asm.tools_required and asm.tools_required.size > 0 -%}{%- assign has_tools = true -%}{%- endif -%}
+{%- assign has_warn = false -%}
+{%- if asm and asm.warnings and asm.warnings.size > 0 -%}{%- assign has_warn = true -%}{%- endif -%}
+
+{%- if has_stats or has_tools or has_warn -%}
+<section class="wanelo-section wanelo-assembly reveal">
+  {%- if asm.head and asm.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if asm.head.kicker != blank -%}<div class="wanelo-kicker">{{ asm.head.kicker }}</div>{%- endif -%}
+      <h2>{{ asm.head.h2 }}</h2>
+      {%- if asm.head.desc != blank -%}<p class="desc">{{ asm.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_stats -%}
+    <div class="wanelo-assembly__stats">
+      {%- if asm.time_minutes -%}
+        <div class="wanelo-assembly__stat">
+          <div class="wanelo-assembly__stat-num">{{ asm.time_minutes }}<em>min</em></div>
+          <div class="wanelo-assembly__stat-lbl">Build time</div>
+        </div>
+      {%- endif -%}
+      {%- if asm.difficulty != blank -%}
+        <div class="wanelo-assembly__stat">
+          <div class="wanelo-assembly__stat-num wanelo-assembly__stat-num--text">{{ asm.difficulty }}</div>
+          <div class="wanelo-assembly__stat-lbl">Difficulty</div>
+        </div>
+      {%- endif -%}
+      {%- if asm.person_count -%}
+        <div class="wanelo-assembly__stat">
+          <div class="wanelo-assembly__stat-num">{{ asm.person_count }}<em>person{% if asm.person_count != 1 %}s{% endif %}</em></div>
+          <div class="wanelo-assembly__stat-lbl">To assemble</div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_tools -%}
+    <div class="wanelo-assembly__tools">
+      <div class="wanelo-assembly__sub-label">Tools required</div>
+      <ul class="wanelo-assembly__tool-list">
+        {%- for t in asm.tools_required -%}
+          {%- if t.name != blank -%}
+            <li class="wanelo-assembly__tool{%- if t.included %} is-included{%- endif %}{%- if t.optional %} is-optional{%- endif %}">
+              <span class="wanelo-assembly__tool-mark" aria-hidden="true">
+                {%- if t.included -%}
+                  <svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 24 24"><use href="#wanelo-icon-info"></use></svg>
+                {%- endif -%}
+              </span>
+              <span class="wanelo-assembly__tool-name">{{ t.name }}</span>
+              <span class="wanelo-assembly__tool-state">
+                {%- if t.included -%}Included
+                {%- elsif t.optional -%}Optional
+                {%- else -%}Bring your own
+                {%- endif -%}
+              </span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  {%- if has_warn -%}
+    <ul class="wanelo-assembly__warnings">
+      {%- for w in asm.warnings -%}
+        <li class="wanelo-assembly__warning">{{ w }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</section>
+{%- endif -%}

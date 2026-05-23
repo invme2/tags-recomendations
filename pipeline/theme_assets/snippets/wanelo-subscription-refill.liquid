@@ -1,0 +1,82 @@
+{%- comment -%}
+  SUBSCRIPTION-REFILL snippet — Subscribe & Save messaging for
+  consumables. PURELY VISUAL — actual subscription cart flow is the
+  operator's job (Recharge / Skio / Shopify Subscriptions handle it).
+
+  JSON schema:
+    "subscription_refill": {
+      "head": {kicker, h2, desc},
+      "lasts_days": 60,
+      "default_refill_interval_days": 60,
+      "discount_percent": 15,
+      "perks": ["Skip or cancel anytime", "First-month pause if you have leftovers"],
+      "savings_per_year_usd": 64,
+      "best_for_buyer_text": "Daily users — saves ~$5/month."
+    }
+
+  Visual: centered card with two big toggle cards (One-time / Subscribe),
+  big save% number, lasts-days + interval inline, perks as a check row.
+  CTA inherits --btn-primary-*.
+{%- endcomment -%}
+
+{%- assign sub = product.metafields.custom.subscription_refill.value -%}
+{%- if sub and sub.discount_percent -%}
+<section class="wanelo-section wanelo-subscription-refill reveal">
+  {%- if sub.head and sub.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if sub.head.kicker != blank -%}<div class="wanelo-kicker">{{ sub.head.kicker }}</div>{%- endif -%}
+      <h2>{{ sub.head.h2 }}</h2>
+      {%- if sub.head.desc != blank -%}<p class="desc">{{ sub.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-subscription-refill__toggle" data-subscription-toggle role="group" aria-label="Purchase type">
+    <button type="button" class="wanelo-subscription-refill__option" data-option="onetime">
+      <span class="wanelo-subscription-refill__option-label">One-time</span>
+      <span class="wanelo-subscription-refill__option-detail">No commitment</span>
+    </button>
+    <button type="button" class="wanelo-subscription-refill__option is-active" data-option="subscribe">
+      <span class="wanelo-subscription-refill__option-flag">Save {{ sub.discount_percent }}%</span>
+      <span class="wanelo-subscription-refill__option-label">Subscribe</span>
+      <span class="wanelo-subscription-refill__option-detail">
+        {%- if sub.default_refill_interval_days -%}Every {{ sub.default_refill_interval_days }} days{%- else -%}Auto-refill{%- endif -%}
+      </span>
+    </button>
+  </div>
+
+  <div class="wanelo-subscription-refill__details">
+    <div class="wanelo-subscription-refill__big">
+      <span class="wanelo-subscription-refill__big-num">{{ sub.discount_percent }}<em>%</em></span>
+      <span class="wanelo-subscription-refill__big-lbl">off every refill</span>
+    </div>
+    <ul class="wanelo-subscription-refill__meta">
+      {%- if sub.lasts_days -%}
+        <li><span class="wanelo-kicker">Lasts</span><span>{{ sub.lasts_days }} days</span></li>
+      {%- endif -%}
+      {%- if sub.default_refill_interval_days -%}
+        <li><span class="wanelo-kicker">Refill</span><span>Every {{ sub.default_refill_interval_days }} days</span></li>
+      {%- endif -%}
+      {%- if sub.savings_per_year_usd -%}
+        <li><span class="wanelo-kicker">You save</span><span>${{ sub.savings_per_year_usd }}/year</span></li>
+      {%- endif -%}
+    </ul>
+  </div>
+
+  {%- if sub.perks and sub.perks.size > 0 -%}
+    <ul class="wanelo-subscription-refill__perks">
+      {%- for p in sub.perks -%}
+        <li class="wanelo-subscription-refill__perk">
+          <span class="wanelo-subscription-refill__perk-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg>
+          </span>
+          <span>{{ p }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if sub.best_for_buyer_text != blank -%}
+    <p class="wanelo-subscription-refill__best-for">{{ sub.best_for_buyer_text }}</p>
+  {%- endif -%}
+</section>
+{%- endif -%}

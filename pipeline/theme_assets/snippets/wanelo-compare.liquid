@@ -1,11 +1,9 @@
 {%- comment -%}
-  COMPARE snippet — vs alternatives feature matrix (3-column table).
+  COMPARE snippet — Apple-Shop spec grid. Clean hairlines, no shadows.
   Reads product.metafields.custom.compare JSON:
     {head: {kicker, h2, desc},
-     columns: [{name, badge}],      // typically 2-3: this, alt-1, alt-2
-     rows:    [{label, values: ["✓", "✗", "✗"]}]}   // values map by index
-  Designer fills 4-7 rows for: research-buy intent, premium positioning,
-  upgrade messaging vs basic version.
+     columns: [{name, badge}],
+     rows:    [{label, values: ["✓","✗","✗"]}]}
 {%- endcomment -%}
 
 {%- assign cmp = product.metafields.custom.compare.value -%}
@@ -24,7 +22,7 @@
         <tr>
           <th class="wanelo-compare__row-label"></th>
           {%- for col in cmp.columns -%}
-            <th class="wanelo-compare__col {%- if col.badge != blank %} wanelo-compare__col--badge{%- endif %}">
+            <th class="wanelo-compare__col{%- if col.badge != blank %} wanelo-compare__col--badge{%- endif %}">
               <span class="wanelo-compare__col-name">{{ col.name }}</span>
               {%- if col.badge != blank -%}<span class="wanelo-compare__col-badge">{{ col.badge }}</span>{%- endif -%}
             </th>

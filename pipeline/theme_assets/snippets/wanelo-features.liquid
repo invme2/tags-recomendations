@@ -1,7 +1,10 @@
 {%- comment -%}
-  FEATURES snippet — 3-card glass grid on pastel gradient.
+  FEATURES snippet — 3-card grid with numeric counters (01/02/03) OR
+  inline SVG icons from wanelo-icons.liquid.
   Reads product.metafields.custom.features JSON:
-    {head: {kicker, h2, desc}, items: [{glyph, meta, h4, p}]}
+    {head: {kicker, h2, desc}, items: [{icon, meta, h4, p}]}
+  - item.icon (optional) → renders SVG <use href="#wanelo-icon-{icon}">.
+  - If item.icon is blank, the auto-generated 01/02/03 numeral takes over.
   Designer should provide 3 items.
 {%- endcomment -%}
 
@@ -16,11 +19,17 @@
     </div>
   {%- endif -%}
 
-  <div class="wanelo-features reveal">
+  <div class="wanelo-features__wrap reveal">
     <div class="wanelo-features__grid">
       {%- for item in features.items limit: 3 -%}
         <div class="wanelo-features__card reveal delay-{{ forloop.index0 | plus: 1 }}">
-          {%- if item.glyph != blank -%}<div class="wanelo-features__glyph">{{ item.glyph }}</div>{%- endif -%}
+          {%- if item.icon != blank -%}
+            <span class="wanelo-features__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ item.icon }}"></use></svg>
+            </span>
+          {%- else -%}
+            <div class="wanelo-features__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</div>
+          {%- endif -%}
           {%- if item.meta != blank -%}<div class="wanelo-features__meta">{{ item.meta }}</div>{%- endif -%}
           {%- if item.h4 != blank -%}<h4>{{ item.h4 }}</h4>{%- endif -%}
           {%- if item.p != blank -%}<p>{{ item.p }}</p>{%- endif -%}

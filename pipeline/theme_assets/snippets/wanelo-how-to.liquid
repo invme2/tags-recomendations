@@ -1,9 +1,8 @@
 {%- comment -%}
-  HOW-TO snippet — numbered steps for using/setting up the product.
+  HOW-TO snippet — numbered steps. Apple-style large numeral kicker
+  (01 / 02 / 03), not a circular badge.
   Reads product.metafields.custom.how_to JSON:
     {head: {kicker, h2, desc}, items: [{n: 1, h4, p}]}
-  Designer fills 3-7 steps for: rituals, recipes, electronics setup, hobbies.
-  Skip-if-blank: if items empty, section doesn't render.
 {%- endcomment -%}
 
 {%- assign howto = product.metafields.custom.how_to.value -%}
@@ -19,7 +18,8 @@
   <ol class="wanelo-howto__list">
     {%- for step in howto.items -%}
       <li class="wanelo-howto__step">
-        <span class="wanelo-howto__n">{{ step.n | default: forloop.index }}</span>
+        {%- assign step_n = step.n | default: forloop.index -%}
+        <span class="wanelo-howto__n">{{ step_n | prepend: '0' | slice: -2, 2 }}</span>
         <div class="wanelo-howto__body">
           {%- if step.h4 != blank -%}<h4>{{ step.h4 }}</h4>{%- endif -%}
           {%- if step.p != blank -%}<p>{{ step.p }}</p>{%- endif -%}

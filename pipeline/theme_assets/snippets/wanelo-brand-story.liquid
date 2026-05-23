@@ -1,0 +1,83 @@
+{%- comment -%}
+  BRAND-STORY snippet — COMPANY narrative (origin / values / founder).
+  Distinct from `story` (PRODUCT narrative).
+
+  FILL for: premium / indie / artisan / eco / family-business products.
+  SKIP for: commodity / dropship / unbranded.
+
+  JSON schema:
+    "brand_story": {
+      "head": {kicker, h2, desc},
+      "founded": {year, city, founder},
+      "mission": "Skincare that respects skin as much as skin respects the planet.",
+      "values": [{label, detail}],
+      "founder_quote": {text, author},
+      "founder_image_url": ""
+    }
+
+  Visual: editorial pull-quote, optional small circular founder photo,
+  values as a 2-3 column hairline-separated list.
+{%- endcomment -%}
+
+{%- assign bs = product.metafields.custom.brand_story.value -%}
+{%- assign has_mission = false -%}
+{%- if bs and bs.mission != blank -%}{%- assign has_mission = true -%}{%- endif -%}
+{%- assign has_quote = false -%}
+{%- if bs and bs.founder_quote and bs.founder_quote.text != blank -%}{%- assign has_quote = true -%}{%- endif -%}
+{%- assign has_values = false -%}
+{%- if bs and bs.values and bs.values.size > 0 -%}{%- assign has_values = true -%}{%- endif -%}
+{%- assign has_founded = false -%}
+{%- if bs and bs.founded -%}{%- assign has_founded = true -%}{%- endif -%}
+
+{%- if has_mission or has_quote or has_values or has_founded -%}
+<section class="wanelo-section wanelo-brand-story reveal">
+  {%- if bs.head and bs.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if bs.head.kicker != blank -%}<div class="wanelo-kicker">{{ bs.head.kicker }}</div>{%- endif -%}
+      <h2>{{ bs.head.h2 }}</h2>
+      {%- if bs.head.desc != blank -%}<p class="desc">{{ bs.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_founded -%}
+    <ul class="wanelo-brand-story__founded">
+      {%- if bs.founded.city != blank -%}
+        <li><span class="wanelo-kicker">From</span><span>{{ bs.founded.city }}</span></li>
+      {%- endif -%}
+      {%- if bs.founded.year -%}
+        <li><span class="wanelo-kicker">Since</span><span>{{ bs.founded.year }}</span></li>
+      {%- endif -%}
+      {%- if bs.founded.founder != blank -%}
+        <li><span class="wanelo-kicker">By</span><span>{{ bs.founded.founder }}</span></li>
+      {%- endif -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_quote -%}
+    <figure class="wanelo-brand-story__quote">
+      {%- if bs.founder_image_url != blank -%}
+        <img class="wanelo-brand-story__photo" src="{{ bs.founder_image_url }}" alt="{{ bs.founder_quote.author | escape }}" loading="lazy" decoding="async">
+      {%- endif -%}
+      <blockquote>"{{ bs.founder_quote.text }}"</blockquote>
+      {%- if bs.founder_quote.author != blank -%}
+        <figcaption>— {{ bs.founder_quote.author }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- elsif has_mission -%}
+    <p class="wanelo-brand-story__mission">{{ bs.mission }}</p>
+  {%- endif -%}
+
+  {%- if has_values -%}
+    <ul class="wanelo-brand-story__values">
+      {%- for v in bs.values -%}
+        {%- if v.label != blank -%}
+          <li class="wanelo-brand-story__value">
+            <h4>{{ v.label }}</h4>
+            {%- if v.detail != blank -%}<p>{{ v.detail }}</p>{%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</section>
+{%- endif -%}

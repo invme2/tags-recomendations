@@ -1,21 +1,29 @@
 {%- comment -%}
-  CTA snippet — centered call-to-action card.
+  CTA snippet — Apple-style BLACK final-section call-to-action.
   Reads product.metafields.custom.cta JSON:
-    {kicker, h2, p, button_label}
-  Button links to add-to-cart anchor (#wanelo-atc) — same target as
-  hero CTA and sticky mobile ATC. wanelo.js attaches smooth-scroll
-  + analytics via [data-wanelo-atc-link].
+    {kicker, h2, p, button_label, secondary_label, secondary_href}
+  Primary button links to #wanelo-atc — same target as hero + sticky mobile.
+  Inherits --btn-primary-* tokens. The CSS rule .wanelo-cta forces black
+  background regardless of the 5n+1 alternation so the final chapter
+  always reads as the closing punctuation of the page.
 {%- endcomment -%}
 
 {%- assign cta = product.metafields.custom.cta.value -%}
 {%- if cta and cta.h2 != blank -%}
-<section class="wanelo-section">
-  <div class="wanelo-cta reveal">
+<section class="wanelo-section wanelo-cta">
+  <div class="wanelo-cta__inner reveal">
     {%- if cta.kicker != blank -%}<div class="wanelo-kicker">{{ cta.kicker }}</div>{%- endif -%}
     <h2>{{ cta.h2 }}</h2>
     {%- if cta.p != blank -%}<p>{{ cta.p }}</p>{%- endif -%}
     {%- if cta.button_label != blank -%}
-      <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>{{ cta.button_label }}</a>
+      <div class="wanelo-cta__ctas">
+        <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>{{ cta.button_label }}</a>
+        {%- if cta.secondary_label != blank -%}
+          <a href="{{ cta.secondary_href | default: '#wanelo-faq' }}" class="wanelo-cta__button-secondary">
+            {{ cta.secondary_label }} <span aria-hidden="true">→</span>
+          </a>
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
 </section>

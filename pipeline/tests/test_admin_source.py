@@ -177,16 +177,17 @@ def test_source_in_wanelo_keys(cells: dict) -> None:
     )
 
 
-def test_wanelo_keys_total_is_23(cells: dict) -> None:
-    """Sanity: _wanelo_keys should now have exactly 23 entries (21 content
-    + photo_pack + source)."""
+def test_wanelo_keys_total_is_37(cells: dict) -> None:
+    """Sanity: after round 5+6 expansion _wanelo_keys has 37 entries
+    (21 original storefront + 6 round-5 + 8 round-6 + palette + 2 admin)."""
     c6 = cells["ce20f070"]
     pat = re.compile(r"_wanelo_keys\s*=\s*\[(.*?)\]", re.DOTALL)
     m = pat.search(c6)
     assert m
     keys = re.findall(r"'(\w+)'", m.group(1))
-    assert len(keys) == 23, f"expected 23 metafield keys, got {len(keys)}: {keys}"
+    assert len(keys) == 37, f"expected 37 metafield keys, got {len(keys)}: {keys}"
     assert keys.count("source") == 1
+    assert keys.count("photo_pack") == 1
 
 
 # ============================================================

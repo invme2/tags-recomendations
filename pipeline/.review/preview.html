@@ -1,528 +1,1116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wanelo PDP — Full 21-module preview (Editorial Pastel)</title>
-<!-- The actual CSS the pipeline ships. Edit pipeline/theme_assets/assets/wanelo.css and refresh. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wanelo PDP — Apple Aesthetic Preview</title>
 <link rel="stylesheet" href="../theme_assets/assets/wanelo.css">
 <style>
-  /* Throwaway page chrome — not part of theme */
-  body{margin:0;background:#faf9f6;font-family:'Inter',sans-serif;color:#14140f}
-  .preview-bar{
-    position:sticky;top:0;z-index:1000;
-    background:#14140f;color:#faf9f6;padding:12px 24px;
-    display:flex;align-items:center;gap:24px;flex-wrap:wrap;
-    font-size:13px;letter-spacing:.02em;
-  }
-  .preview-bar strong{font-weight:600}
-  .preview-bar select{
-    background:#1f1f1a;color:#faf9f6;border:1px solid #3a3a35;
-    padding:6px 12px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;
-  }
-  .preview-bar a{color:#b59cd0;text-decoration:underline;text-underline-offset:2px}
-  .palette-pip{
-    display:inline-block;width:14px;height:14px;border-radius:50%;
-    margin-right:4px;vertical-align:middle;border:1px solid rgba(255,255,255,.2);
-  }
-  .module-label{
-    position:relative;
-    margin:80px auto 0;max-width:1180px;padding:0 24px;
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:11px;font-weight:600;letter-spacing:.12em;
-    color:#9a9a95;text-transform:uppercase;
-    border-top:1px dashed rgba(20,20,15,.15);padding-top:18px;
-  }
-  .module-label::before{
-    content:attr(data-n);
-    background:#14140f;color:#fff;
-    padding:2px 8px;border-radius:4px;margin-right:10px;
-    font-weight:700;
-  }
-  .always-on::before{background:#6b7a5a}
-  .optional::before{background:#d18b3a}
-  .footer-note{
-    text-align:center;padding:80px 24px;color:#6b6b66;font-size:13px;
-    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
-  }
+/* Review chrome — NOT part of the storefront. Sits on top so reviewers
+   can swap per-product palette and CTA tokens against a live page. */
+:root{color-scheme:light}
+html,body{margin:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif}
+.review-toolbar{
+  position:sticky;top:0;z-index:1000;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:10px 20px;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  font-size:12px;color:#1d1d1f;
+}
+.review-toolbar__title{font-weight:600;letter-spacing:-.01em;margin-right:auto;font-size:13px}
+.review-toolbar__title small{color:#6e6e73;font-weight:400;margin-left:8px}
+.review-toolbar__group{display:flex;align-items:center;gap:8px}
+.review-toolbar__label{font-size:11px;font-weight:600;color:#6e6e73;letter-spacing:.06em;text-transform:uppercase}
+.review-toolbar__btn{
+  padding:6px 12px;border-radius:999px;border:0;cursor:pointer;
+  background:#f5f5f7;color:#1d1d1f;font:inherit;font-size:12px;font-weight:500;
+  transition:background .15s;
+}
+.review-toolbar__btn:hover{background:#e8e8ed}
+.review-toolbar__btn.is-active{background:#1d1d1f;color:#fff}
+.review-toolbar__color{
+  width:24px;height:24px;border-radius:50%;border:2px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,.12);cursor:pointer;padding:0;
+}
+.review-toolbar__color.is-active{box-shadow:0 0 0 2px #1d1d1f}
+.review-toolbar input[type=color]{
+  width:32px;height:24px;border:0;background:none;cursor:pointer;padding:0;
+}
+.review-vp{display:flex;gap:4px}
 </style>
 </head>
 <body>
 
-<div class="preview-bar">
-  <strong>Wanelo PDP preview</strong>
-  <span>· All 21 modules · Editorial Pastel system</span>
-  <label>
-    Palette:
-    <select id="palette-picker">
-      <option value="lavender" selected>Lavender (default)</option>
-      <option value="peach">Peach</option>
-      <option value="sage">Sage</option>
-      <option value="blush">Blush</option>
-      <option value="butter">Butter</option>
-    </select>
-  </label>
-  <span>· Edit <code>pipeline/theme_assets/assets/wanelo.css</code> and refresh</span>
+<!-- ===================== REVIEW TOOLBAR ===================== -->
+<div class="review-toolbar" role="toolbar" aria-label="Preview controls">
+  <div class="review-toolbar__title">Wanelo PDP <small>Apple aesthetic · all 34 modules · round 6</small></div>
+
+  <div class="review-toolbar__group">
+    <span class="review-toolbar__label">Palette</span>
+    <button class="review-toolbar__color is-active" data-palette="default" style="background:#0071e3" title="Default (Apple blue)" aria-label="Default palette"></button>
+    <button class="review-toolbar__color" data-palette="lavender" style="background:#b59cd0" title="Lavender" aria-label="Lavender palette"></button>
+    <button class="review-toolbar__color" data-palette="peach" style="background:#e89b7a" title="Peach" aria-label="Peach palette"></button>
+    <button class="review-toolbar__color" data-palette="sage" style="background:#7aa37a" title="Sage" aria-label="Sage palette"></button>
+    <button class="review-toolbar__color" data-palette="blush" style="background:#d48b96" title="Blush" aria-label="Blush palette"></button>
+    <button class="review-toolbar__color" data-palette="butter" style="background:#d4b54a" title="Butter" aria-label="Butter palette"></button>
+  </div>
+
+  <div class="review-toolbar__group">
+    <span class="review-toolbar__label">CTA bg</span>
+    <input type="color" id="ctaColor" value="#0071e3" title="--btn-primary-bg-color">
+    <button class="review-toolbar__btn" id="ctaReset" type="button">Reset</button>
+  </div>
 </div>
 
-<!-- ─────────── PALETTE SWATCHES (always present in Liquid via wanelo-palette) ─────────── -->
-<style id="palette-style" data-wanelo-palette>
-  .wanelo-page{
-    --brand-1:    #c8b6e2;
-    --brand-2:    #d8e6d5;
-    --brand-3:    #f5e6d3;
-    --brand-soft: #f0e8f8;
-    --brand-deep: #b59cd0;
-  }
-</style>
+{% include 'wanelo-icons.body.html' %}
 
+<!-- ===================== PRODUCT PAGE ===================== -->
 <div class="wanelo-page" role="article">
 
-  <!-- ═══ 1. HERO (always-on) ═══ -->
-  <div class="module-label always-on" data-n="01">Hero · always-on</div>
-  <section class="wanelo-hero reveal in">
+  <!-- ============= 1. HERO ============= -->
+  <section class="wanelo-hero reveal">
     <div class="wanelo-hero__copy">
-      <div class="wanelo-kicker reveal in">INVISIBLE BREEZE</div>
-      <h1><span class="mask in"><span>Wear the wind.</span></span></h1>
-      <p class="wanelo-hero__lead reveal in delay-1">Bladeless neck fan that runs 4-12 hours. Quiet enough for meetings, comfortable enough to forget you have it on.</p>
-      <a href="#wanelo-atc" class="wanelo-hero__cta reveal in delay-2" data-wanelo-atc-link>Take it home — $24.90 <span aria-hidden="true">→</span></a>
+      <span class="wanelo-hero__accent" aria-hidden="true"></span>
+      <div class="wanelo-kicker">Atelier 01 · Linen Shirt</div>
+      <h1>The shirt that gets better.</h1>
+      <p class="wanelo-hero__lead reveal delay-1">Garment-washed Belgian linen with mother-of-pearl buttons. Cut to wear loose, layered, or alone.</p>
+      <div class="wanelo-hero__ctas reveal delay-2">
+        <a href="#wanelo-atc" class="wanelo-hero__cta" data-wanelo-atc-link>Add to bag — $148</a>
+        <a href="#wanelo-features" class="wanelo-hero__cta-secondary">Learn more <span aria-hidden="true">→</span></a>
+      </div>
     </div>
-    <div class="wanelo-hero__photo reveal in">
-      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&q=80" alt="Mint neck fan product hero" loading="eager" fetchpriority="high">
+    <div class="wanelo-hero__photo reveal" data-parallax="0.25">
+      <div class="ph ph--hero" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- ═══ 2. STORY (always-on) ═══ -->
-  <div class="module-label always-on" data-n="02">Story · always-on · 3 chapters</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">THE SHIFT</div>
-      <h2>Cool air, <em>no hair drama</em></h2>
-      <p class="desc">From sweaty commute frustration to a silent personal climate you forgot you were wearing.</p>
+  <!-- ============= 2. TARGET PROFILE (NEW) ============= -->
+  <section class="wanelo-section wanelo-target-profile reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Who it's for</div>
+      <h2>Made for the way you actually dress.</h2>
     </div>
-    <div class="wanelo-story-row reveal in">
-      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Commuter waiting" loading="lazy"></div>
-      <div class="wanelo-story-row__copy">
-        <div class="wanelo-kicker">THE PROBLEM</div>
-        <h3>Handheld fans <em>tire your arm</em></h3>
-        <p>Five minutes in, your wrist hates you. Office fans dry your eyes. AC ices your colleagues.</p>
+    <ul class="wanelo-target-profile__tags">
+      <li class="wanelo-target-profile__tag"><span class="wanelo-target-profile__tag-label">Style</span><span class="wanelo-target-profile__tag-value">Relaxed</span></li>
+      <li class="wanelo-target-profile__tag"><span class="wanelo-target-profile__tag-label">Climate</span><span class="wanelo-target-profile__tag-value">Spring – Autumn</span></li>
+      <li class="wanelo-target-profile__tag"><span class="wanelo-target-profile__tag-label">Ages</span><span class="wanelo-target-profile__tag-value">All</span></li>
+    </ul>
+    <div class="wanelo-target-profile__grid">
+      <div class="wanelo-target-profile__col wanelo-target-profile__col--yes">
+        <div class="wanelo-target-profile__col-label">Made for you if</div>
+        <ul class="wanelo-target-profile__list">
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><div><span class="wanelo-target-profile__item-label">You own three white tees and wear them out</span><span class="wanelo-target-profile__item-detail">This is your fourth.</span></div></li>
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><div><span class="wanelo-target-profile__item-label">You don't iron things</span><span class="wanelo-target-profile__item-detail">Linen wrinkles. That's a feature.</span></div></li>
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><div><span class="wanelo-target-profile__item-label">You buy one thing a season</span><span class="wanelo-target-profile__item-detail">Make it this one.</span></div></li>
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><div><span class="wanelo-target-profile__item-label">You travel light</span><span class="wanelo-target-profile__item-detail">Rolls to the size of a paperback.</span></div></li>
+        </ul>
       </div>
-    </div>
-    <div class="wanelo-story-row mirror reveal in">
-      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1574027542338-98e75acfd385?w=800&q=80" alt="Bladeless detail close-up" loading="lazy"></div>
-      <div class="wanelo-story-row__copy">
-        <div class="wanelo-kicker">THE DISCOVERY</div>
-        <h3>Bladeless means <em>safe + silent</em></h3>
-        <p>No blades = no hair-pulling, no buzz over Zoom. The airflow comes from a smooth duct — like a tiny invisible wind tunnel.</p>
-      </div>
-    </div>
-    <div class="wanelo-story-row reveal in">
-      <div class="wanelo-story-row__img"><img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" alt="Hands-free on bike" loading="lazy"></div>
-      <div class="wanelo-story-row__copy">
-        <div class="wanelo-kicker">THE RESULT</div>
-        <h3>Hands-free cooling that <em>follows you</em></h3>
-        <p>Commutes feel ten degrees cooler. Office stays focus-friendly. Garden hours stretch into evenings.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ 3. FEATURES (always-on) ═══ -->
-  <div class="module-label always-on" data-n="03">Features · always-on · 3 cards (2-4 allowed)</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">WHY THIS ONE</div>
-      <h2>The <em>essentials</em></h2>
-    </div>
-    <div class="wanelo-features reveal in">
-      <div class="wanelo-features__grid">
-        <div class="wanelo-features__card reveal in delay-1">
-          <div class="wanelo-features__glyph">∅</div>
-          <div class="wanelo-features__meta">BLADELESS</div>
-          <h4>Safe over loose <em>hair</em></h4>
-          <p>Smooth inner duct directs airflow without spinning blades — no chunks pulled, no fingers warned.</p>
-        </div>
-        <div class="wanelo-features__card reveal in delay-2">
-          <div class="wanelo-features__glyph">⚡</div>
-          <div class="wanelo-features__meta">4-12 HOURS</div>
-          <h4>All-day <em>battery</em></h4>
-          <p>4000mAh USB-C cell runs 4 hours at full blast, 12 hours on whisper mode. Tops up in 2h.</p>
-        </div>
-        <div class="wanelo-features__card reveal in delay-3">
-          <div class="wanelo-features__glyph">♪</div>
-          <div class="wanelo-features__meta">3 SPEEDS</div>
-          <h4>Whisper to <em>wind</em></h4>
-          <p>Low (35dB — quieter than a fridge) for meetings, high (52dB) for commutes. Dial on the right side.</p>
-        </div>
+      <div class="wanelo-target-profile__col wanelo-target-profile__col--no">
+        <div class="wanelo-target-profile__col-label">Not the right fit if</div>
+        <ul class="wanelo-target-profile__list">
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark wanelo-target-profile__mark--no" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-x"></use></svg></span><div><span class="wanelo-target-profile__item-label">You need everything pressed</span></div></li>
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark wanelo-target-profile__mark--no" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-x"></use></svg></span><div><span class="wanelo-target-profile__item-label">You prefer synthetic blends</span></div></li>
+          <li class="wanelo-target-profile__item"><span class="wanelo-target-profile__mark wanelo-target-profile__mark--no" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-x"></use></svg></span><div><span class="wanelo-target-profile__item-label">You live somewhere it never gets above 10°C</span></div></li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 4. INGREDIENTS (optional) ═══ -->
-  <div class="module-label optional" data-n="04">Ingredients · optional · skincare/food</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">WHAT'S INSIDE</div>
-      <h2>The <em>formula</em></h2>
+  <!-- ============= 3. BRAND STORY (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-brand-story reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Who made this</div>
+      <h2>From Porto, since 2018.</h2>
     </div>
-    <ul class="wanelo-ingredients__list reveal in">
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">HERO</span><span class="wanelo-ingredients__name">Hyaluronic Acid</span><span class="wanelo-ingredients__role">deep hydrator</span></li>
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Niacinamide</span><span class="wanelo-ingredients__role">pore refiner</span></li>
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Vitamin C 10%</span><span class="wanelo-ingredients__role">antioxidant</span></li>
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">CLINICAL</span><span class="wanelo-ingredients__name">Bakuchiol</span><span class="wanelo-ingredients__role">retinol alternative</span></li>
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Squalane</span><span class="wanelo-ingredients__role">barrier seal</span></li>
-      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Ceramide NP</span><span class="wanelo-ingredients__role">moisture lock</span></li>
+    <ul class="wanelo-brand-story__founded">
+      <li><span class="wanelo-kicker">From</span><span>Porto, Portugal</span></li>
+      <li><span class="wanelo-kicker">Since</span><span>2018</span></li>
+      <li><span class="wanelo-kicker">By</span><span>Inês &amp; Marco Ferreira</span></li>
+    </ul>
+    <figure class="wanelo-brand-story__quote">
+      <blockquote>"We started Atelier because everything we wanted to wear was either disposable or extortionate. We built the loom of a brand that could last — yours and ours."</blockquote>
+      <figcaption>— Inês Ferreira, co-founder</figcaption>
+    </figure>
+    <ul class="wanelo-brand-story__values">
+      <li class="wanelo-brand-story__value"><h4>Small batches</h4><p>We make 240 of each colour per season. When they're gone, they're gone — we don't warehouse.</p></li>
+      <li class="wanelo-brand-story__value"><h4>Repair, not replace</h4><p>Every Atelier piece can be returned for repair at cost, forever. Buttons, seams, hems.</p></li>
+      <li class="wanelo-brand-story__value"><h4>Pay the makers</h4><p>Our atelier in Porto is family-owned. We share 4% of revenue with the team, not just the founders.</p></li>
     </ul>
   </section>
 
-  <!-- ═══ 5. HOW-TO (optional) ═══ -->
-  <div class="module-label optional" data-n="05">How-To · optional · 3-7 numbered steps</div>
-  <section class="wanelo-section wanelo-howto reveal in">
-    <div class="wanelo-head">
-      <div class="wanelo-kicker">GETTING STARTED</div>
-      <h2>3 minutes to first <em>breeze</em></h2>
+  <!-- ============= 3. STORY ============= -->
+  <section class="wanelo-section wanelo-story">
+    <div class="wanelo-head reveal">
+      <div class="wanelo-kicker">Three years of refinement</div>
+      <h2>Built around the way you wear it.</h2>
+      <p class="desc">We started with one rule: nothing on the shirt should age badly. Then we redesigned every part.</p>
     </div>
-    <ol class="wanelo-howto__list">
-      <li class="wanelo-howto__step"><span class="wanelo-howto__n">1</span><div class="wanelo-howto__body"><h4>Charge it 2 hours</h4><p>USB-C cable in the box. Light pulses while charging, solid when full.</p></div></li>
-      <li class="wanelo-howto__step"><span class="wanelo-howto__n">2</span><div class="wanelo-howto__body"><h4>Hang on neck</h4><p>Rounded hook slips around back of neck. No clip to fiddle with.</p></div></li>
-      <li class="wanelo-howto__step"><span class="wanelo-howto__n">3</span><div class="wanelo-howto__body"><h4>Dial up</h4><p>Right-side dial: 0 → 1 (low) → 2 (mid) → 3 (high). Long-press dial to switch from cool to oscillating.</p></div></li>
-    </ol>
-  </section>
 
-  <!-- ═══ 6. TIMELINE (optional) ═══ -->
-  <div class="module-label optional" data-n="06">Timeline · optional · transformation milestones</div>
-  <section class="wanelo-section wanelo-timeline reveal in">
-    <div class="wanelo-head">
-      <div class="wanelo-kicker">YOUR JOURNEY</div>
-      <h2>Week by <em>week</em></h2>
+    <div class="wanelo-story-row reveal is-sticky">
+      <div class="wanelo-story-row__inner">
+        <div class="wanelo-story-row__img"><div class="ph ph--story-1" aria-hidden="true"></div></div>
+        <div class="wanelo-story-row__copy">
+          <div class="wanelo-kicker">The flax</div>
+          <h3>Grown in the same five fields. Every season.</h3>
+          <p>European flax fibre, harvested by hand and rain-retted in the field. The longest, finest fibres in the world — the only ones we use.</p>
+        </div>
+      </div>
     </div>
-    <ol class="wanelo-timeline__list">
-      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 1</span><div class="wanelo-timeline__body"><h4>Visible refresh</h4><p>Skin feels plumper after the first application — hyaluronic acid pulls 1000× its weight in moisture.</p></div></li>
-      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Week 2</span><div class="wanelo-timeline__body"><h4>Smoother texture</h4><p>Niacinamide refines pores; surface feels softer under the fingertip.</p></div></li>
-      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 30</span><div class="wanelo-timeline__body"><h4>Brightness emerges</h4><p>Vitamin C accumulation lifts dullness; tone reads more even in selfies.</p></div></li>
-      <li class="wanelo-timeline__step"><span class="wanelo-timeline__when">Day 60</span><div class="wanelo-timeline__body"><h4>The compliment</h4><p>Someone asks what you're using. Bakuchiol's retinol-alternative effect on fine lines becomes the conversation.</p></div></li>
-    </ol>
-  </section>
 
-  <!-- ═══ 7. STATS (always-on) ═══ -->
-  <div class="module-label always-on" data-n="07">Stats · always-on · 4 cells (3-5 allowed)</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">BY THE NUMBERS</div>
-      <h2>The <em>figures</em></h2>
+    <div class="wanelo-story-row reveal is-sticky mirror">
+      <div class="wanelo-story-row__inner">
+        <div class="wanelo-story-row__img"><div class="ph ph--story-2" aria-hidden="true"></div></div>
+        <div class="wanelo-story-row__copy">
+          <div class="wanelo-kicker">The weave</div>
+          <h3>240 hours on a 1962 loom.</h3>
+          <p>Woven in Kortrijk on a shuttle loom older than every person on the line. Slower, denser, softer. You feel it the first time you put it on.</p>
+        </div>
+      </div>
     </div>
-    <div class="wanelo-stats reveal in">
-      <div class="wanelo-stats__grid">
-        <div class="wanelo-stats__cell reveal in delay-1"><div class="wanelo-kicker">BATTERY</div><div class="wanelo-stats__num">12<em>h</em></div><div class="wanelo-stats__lbl">on low setting</div></div>
-        <div class="wanelo-stats__cell reveal in delay-2"><div class="wanelo-kicker">WEIGHT</div><div class="wanelo-stats__num">220<em>g</em></div><div class="wanelo-stats__lbl">lighter than a phone</div></div>
-        <div class="wanelo-stats__cell reveal in delay-3"><div class="wanelo-kicker">NOISE</div><div class="wanelo-stats__num">35<em>dB</em></div><div class="wanelo-stats__lbl">quieter than a fridge</div></div>
-        <div class="wanelo-stats__cell reveal in"><div class="wanelo-kicker">RECHARGE</div><div class="wanelo-stats__num">2<em>h</em></div><div class="wanelo-stats__lbl">USB-C fast charge</div></div>
+
+    <div class="wanelo-story-row reveal is-sticky">
+      <div class="wanelo-story-row__inner">
+        <div class="wanelo-story-row__img"><div class="ph ph--story-3" aria-hidden="true"></div></div>
+        <div class="wanelo-story-row__copy">
+          <div class="wanelo-kicker">The finish</div>
+          <h3>Washed eight times before it leaves us.</h3>
+          <p>So the first time you wash it, nothing changes. The second time, it gets a little softer. By the hundredth, it's the shirt you reach for.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 8. SPECS (optional) ═══ -->
-  <div class="module-label optional" data-n="08">Specs · optional · 6-12 row table</div>
-  <section class="wanelo-section wanelo-specs reveal in">
+  <!-- ============= 3. FEATURES ============= -->
+  <section class="wanelo-section" id="wanelo-features">
+    <div class="wanelo-head reveal">
+      <div class="wanelo-kicker">What makes it</div>
+      <h2>Three things you'll notice.</h2>
+    </div>
+    <div class="wanelo-features__wrap reveal">
+      <div class="wanelo-features__grid">
+        <div class="wanelo-features__card reveal delay-1">
+          <div class="wanelo-features__num">01</div>
+          <div class="wanelo-features__meta">The hand</div>
+          <h4>Cool to the touch. Always.</h4>
+          <p>Linen pulls heat away from the skin. Ours pulls 4× faster than cotton of the same weight.</p>
+        </div>
+        <div class="wanelo-features__card reveal delay-2">
+          <div class="wanelo-features__num">02</div>
+          <div class="wanelo-features__meta">The cut</div>
+          <h4>Boxy where it should be. Trim where it shouldn't.</h4>
+          <p>Through-body cut from a single template. Sized so a medium fits a medium.</p>
+        </div>
+        <div class="wanelo-features__card reveal delay-3">
+          <div class="wanelo-features__num">03</div>
+          <div class="wanelo-features__meta">The buttons</div>
+          <h4>Mother-of-pearl. From oyster shells.</h4>
+          <p>Hand-shanked. Stitched on a Cornely machine from 1934. Two spares in the pocket.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= 5. VIDEO DEMO (NEW) ============= -->
+  <section class="wanelo-section wanelo-video-demo reveal">
     <div class="wanelo-head">
-      <div class="wanelo-kicker">TECHNICAL</div>
-      <h2>Under the <em>hood</em></h2>
+      <div class="wanelo-kicker">See it in action</div>
+      <h2>45 seconds on the loom.</h2>
+      <p class="desc">Inside the Kortrijk atelier where every shirt starts.</p>
+    </div>
+    <div class="wanelo-video-demo__frame">
+      <button type="button" class="wanelo-video-demo__poster" data-video-source="youtube" data-video-embed="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&amp;rel=0" aria-label="Play product demo video">
+        <div class="ph ph--video" aria-hidden="true" style="width:100%;height:100%;background:linear-gradient(135deg,#3a3530 0%,#1a1815 100%);position:relative"></div>
+        <span class="wanelo-video-demo__play" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-play"></use></svg></span>
+        <span class="wanelo-video-demo__duration">0:45</span>
+      </button>
+    </div>
+    <ol class="wanelo-video-demo__chapters">
+      <li class="wanelo-video-demo__chapter"><span class="wanelo-video-demo__chapter-time">0:00</span><span class="wanelo-video-demo__chapter-label">The loom</span></li>
+      <li class="wanelo-video-demo__chapter"><span class="wanelo-video-demo__chapter-time">0:12</span><span class="wanelo-video-demo__chapter-label">Cutting the pattern</span></li>
+      <li class="wanelo-video-demo__chapter"><span class="wanelo-video-demo__chapter-time">0:24"</span><span class="wanelo-video-demo__chapter-label">Hand-sewn buttons</span></li>
+      <li class="wanelo-video-demo__chapter"><span class="wanelo-video-demo__chapter-time">0:36</span><span class="wanelo-video-demo__chapter-label">The eighth wash</span></li>
+    </ol>
+  </section>
+
+  <!-- ============= 7. LIFESTYLE GALLERY (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-lifestyle-gallery reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">In the wild</div>
+      <h2>On real people.</h2>
+      <p class="desc">Sent in by buyers around the world. We don't dress them — they dress themselves.</p>
+    </div>
+    <ul class="wanelo-lifestyle-gallery__grid">
+      <li class="wanelo-lifestyle-gallery__item is-tall"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#d8c8a8 0%,#a89880 100%)"></div><div class="wanelo-lifestyle-gallery__overlay"><span class="wanelo-lifestyle-gallery__caption">Off to the studio.</span><span class="wanelo-lifestyle-gallery__credit">@mayachen</span></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#e8d8c0 0%,#c8b896 100%)"></div><div class="wanelo-lifestyle-gallery__overlay"><span class="wanelo-lifestyle-gallery__caption">Sunday walk.</span><span class="wanelo-lifestyle-gallery__credit">@runblue</span></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#bfa890 0%,#8a7560 100%)"></div><div class="wanelo-lifestyle-gallery__overlay"><span class="wanelo-lifestyle-gallery__credit">@jdesai</span></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#d4c8b0 0%,#b8a890 100%)"></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item is-tall"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#cabe9c 0%,#988a6e 100%)"></div><div class="wanelo-lifestyle-gallery__overlay"><span class="wanelo-lifestyle-gallery__caption">Studio break.</span><span class="wanelo-lifestyle-gallery__credit">@verde</span></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#e0d4b8 0%,#b09478 100%)"></div></a></li>
+      <li class="wanelo-lifestyle-gallery__item"><a class="wanelo-lifestyle-gallery__link" href="#"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#c8b896 0%,#8a7560 100%)"></div><div class="wanelo-lifestyle-gallery__overlay"><span class="wanelo-lifestyle-gallery__caption">Lisbon, July.</span><span class="wanelo-lifestyle-gallery__credit">@tomas.l</span></div></a></li>
+    </ul>
+    <p class="wanelo-lifestyle-gallery__footer">Tag #AtelierMade to be featured.</p>
+  </section>
+
+  <!-- ============= 6. INGREDIENTS ============= -->
+  <section class="wanelo-section wanelo-ingredients reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Materials</div>
+      <h2>What's in it.</h2>
+    </div>
+    <ul class="wanelo-ingredients__list">
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">Primary</span><span class="wanelo-ingredients__name">European linen</span><span class="wanelo-ingredients__role">240 gsm</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Mother-of-pearl</span><span class="wanelo-ingredients__role">buttons</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Organic cotton</span><span class="wanelo-ingredients__role">thread</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__name">Recycled paper</span><span class="wanelo-ingredients__role">label</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">No</span><span class="wanelo-ingredients__name">Polyester</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">No</span><span class="wanelo-ingredients__name">PFAS</span></li>
+      <li class="wanelo-ingredients__chip"><span class="wanelo-ingredients__badge">No</span><span class="wanelo-ingredients__name">Optical brighteners</span></li>
+    </ul>
+  </section>
+
+  <!-- ============= 9. NUTRITION FACTS (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-nutrition-facts reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Fabric · per panel</div>
+      <h2>What's in the cloth.</h2>
+      <p class="desc">A spec-sheet read of the fabric itself — same shape as a nutrition label, applied to fibre.</p>
+    </div>
+    <ul class="wanelo-nutrition-facts__highlights">
+      <li class="wanelo-nutrition-facts__highlight">No plastic</li>
+      <li class="wanelo-nutrition-facts__highlight">No PFAS</li>
+      <li class="wanelo-nutrition-facts__highlight">Biodegradable</li>
+    </ul>
+    <div class="wanelo-nutrition-facts__label">
+      <header class="wanelo-nutrition-facts__label-head">
+        <div class="wanelo-nutrition-facts__label-title">Fabric Facts</div>
+        <div class="wanelo-nutrition-facts__servings">5 panels per shirt</div>
+        <div class="wanelo-nutrition-facts__serving-row"><span>Panel size</span><strong>Size M front</strong></div>
+      </header>
+      <div class="wanelo-nutrition-facts__calories"><span>Weight</span><strong>240</strong></div>
+      <div class="wanelo-nutrition-facts__dv-head">% of natural fibre</div>
+      <ul class="wanelo-nutrition-facts__macros">
+        <li class="wanelo-nutrition-facts__macro"><span class="wanelo-nutrition-facts__macro-label">European flax</span><span class="wanelo-nutrition-facts__macro-value">100%</span><span class="wanelo-nutrition-facts__macro-dv">100%</span></li>
+        <li class="wanelo-nutrition-facts__macro"><span class="wanelo-nutrition-facts__macro-label">Organic cotton</span><span class="wanelo-nutrition-facts__macro-value">2 g</span><span class="wanelo-nutrition-facts__macro-dv">—</span></li>
+        <li class="wanelo-nutrition-facts__macro"><span class="wanelo-nutrition-facts__macro-label">Mother-of-pearl</span><span class="wanelo-nutrition-facts__macro-value">0.4 g</span><span class="wanelo-nutrition-facts__macro-dv">—</span></li>
+        <li class="wanelo-nutrition-facts__macro"><span class="wanelo-nutrition-facts__macro-label">Synthetic fibre</span><span class="wanelo-nutrition-facts__macro-value">0 g</span><span class="wanelo-nutrition-facts__macro-dv">0%</span></li>
+        <li class="wanelo-nutrition-facts__macro"><span class="wanelo-nutrition-facts__macro-label">PFAS / treatments</span><span class="wanelo-nutrition-facts__macro-value">None</span><span class="wanelo-nutrition-facts__macro-dv">—</span></li>
+      </ul>
+    </div>
+    <div class="wanelo-nutrition-facts__allergens">
+      <span class="wanelo-kicker">May trigger</span>
+      <ul><li>Severe flax / linen-fibre allergy (rare)</li></ul>
+    </div>
+  </section>
+
+  <!-- ============= 5. HOW-TO ============= -->
+  <section class="wanelo-section wanelo-howto reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Wearing it</div>
+      <h2>Four ways to make it yours.</h2>
+    </div>
+    <ol class="wanelo-howto__list">
+      <li class="wanelo-howto__step">
+        <span class="wanelo-howto__n">01</span>
+        <div class="wanelo-howto__body">
+          <h4>Wash it once before you wear it.</h4>
+          <p>Cold cycle, no detergent. The fibres relax and the shirt drops a half-size.</p>
+        </div>
+      </li>
+      <li class="wanelo-howto__step">
+        <span class="wanelo-howto__n">02</span>
+        <div class="wanelo-howto__body">
+          <h4>Wear it untucked.</h4>
+          <p>The hem is cut straight for a reason. Layer over a tee, under a jacket, or alone with sleeves rolled to the elbow.</p>
+        </div>
+      </li>
+      <li class="wanelo-howto__step">
+        <span class="wanelo-howto__n">03</span>
+        <div class="wanelo-howto__body">
+          <h4>Don't iron the wrinkles out.</h4>
+          <p>Linen creases. That's the point. Hang it overnight in the bathroom and the worst will fall out.</p>
+        </div>
+      </li>
+      <li class="wanelo-howto__step">
+        <span class="wanelo-howto__n">04</span>
+        <div class="wanelo-howto__body">
+          <h4>Get it wet.</h4>
+          <p>Salt water, rain, the lake. Linen is one of the few fabrics that gets stronger when it's wet.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============= 8. PROTOCOL (NEW) ============= -->
+  <section class="wanelo-section wanelo-protocol reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Your rhythm</div>
+      <h2>Wear it on a schedule.</h2>
+      <p class="desc">Or don't — it'll be fine either way.</p>
+    </div>
+    <ol class="wanelo-protocol__list">
+      <li class="wanelo-protocol__phase">
+        <span class="wanelo-protocol__when">Week 1</span>
+        <div class="wanelo-protocol__body">
+          <dl class="wanelo-protocol__meta">
+            <div><dt>Wear</dt><dd>Every other day</dd></div>
+            <div><dt>Wash</dt><dd>Once</dd></div>
+            <div><dt>Mode</dt><dd>Break-in</dd></div>
+          </dl>
+          <p class="wanelo-protocol__note">First wash drops it a half-size. Don't fight the wrinkles.</p>
+        </div>
+      </li>
+      <li class="wanelo-protocol__phase">
+        <span class="wanelo-protocol__when">Month 1–2</span>
+        <div class="wanelo-protocol__body">
+          <dl class="wanelo-protocol__meta">
+            <div><dt>Wear</dt><dd>Twice a week</dd></div>
+            <div><dt>Wash</dt><dd>Every 3 wears</dd></div>
+            <div><dt>Mode</dt><dd>Settling</dd></div>
+          </dl>
+          <p class="wanelo-protocol__note">The fabric starts remembering you. The collar relaxes.</p>
+        </div>
+      </li>
+      <li class="wanelo-protocol__phase">
+        <span class="wanelo-protocol__when">Ongoing</span>
+        <div class="wanelo-protocol__body">
+          <dl class="wanelo-protocol__meta">
+            <div><dt>Wear</dt><dd>Daily if you want</dd></div>
+            <div><dt>Wash</dt><dd>When it needs it</dd></div>
+            <div><dt>Mode</dt><dd>Patina</dd></div>
+          </dl>
+          <p class="wanelo-protocol__note">The hand of the fabric keeps softening for the first 100 washes.</p>
+        </div>
+      </li>
+    </ol>
+    <p class="wanelo-protocol__total">
+      <span class="wanelo-kicker">Total commitment</span>
+      <span>2 months break-in · a decade of wear</span>
+    </p>
+  </section>
+
+  <!-- ============= 9. TIMELINE ============= -->
+  <section class="wanelo-section wanelo-timeline reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">How it ages</div>
+      <h2>A shirt with a lifespan you can see.</h2>
+    </div>
+    <ol class="wanelo-timeline__list">
+      <li class="wanelo-timeline__step">
+        <span class="wanelo-timeline__when">Week 1</span>
+        <div class="wanelo-timeline__body">
+          <h4>Crisp. Structured. Almost stiff.</h4>
+          <p>The starch from finishing is still in the fibres. The collar stands on its own.</p>
+        </div>
+      </li>
+      <li class="wanelo-timeline__step">
+        <span class="wanelo-timeline__when">Month 1</span>
+        <div class="wanelo-timeline__body">
+          <h4>The fabric starts to remember you.</h4>
+          <p>Soft enough to sleep in. The wrinkles fall in the same places every time.</p>
+        </div>
+      </li>
+      <li class="wanelo-timeline__step">
+        <span class="wanelo-timeline__when">Year 1</span>
+        <div class="wanelo-timeline__body">
+          <h4>The colour deepens. The hand softens.</h4>
+          <p>Linen is one of the few natural fibres that gets better with washing. Yours is now broken in.</p>
+        </div>
+      </li>
+      <li class="wanelo-timeline__step">
+        <span class="wanelo-timeline__when">Year 5</span>
+        <div class="wanelo-timeline__body">
+          <h4>Still here.</h4>
+          <p>We've seen 12-year-old Atelier 01s in the wild. We expect yours to outlast everything else in your closet.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============= 13. CLINICAL EVIDENCE (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-clinical-evidence reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Tested · verified</div>
+      <h2>Independently measured.</h2>
+      <p class="desc">Third-party fabric labs, not our own. All studies on file.</p>
+    </div>
+    <ul class="wanelo-clinical-evidence__claims">
+      <li class="wanelo-clinical-evidence__claim">
+        <div class="wanelo-clinical-evidence__stat">4×</div>
+        <p class="wanelo-clinical-evidence__text">faster moisture-wicking than cotton of equivalent weight</p>
+        <ul class="wanelo-clinical-evidence__meta"><li>AATCC 195</li><li>Independent fabric lab</li><li>2024</li></ul>
+      </li>
+      <li class="wanelo-clinical-evidence__claim">
+        <div class="wanelo-clinical-evidence__stat">+34%</div>
+        <p class="wanelo-clinical-evidence__text">tensile strength when wet vs. dry — a property unique to flax fibre</p>
+        <ul class="wanelo-clinical-evidence__meta"><li>ASTM D5034</li><li>n=18 panels</li><li>2024</li></ul>
+      </li>
+      <li class="wanelo-clinical-evidence__claim">
+        <div class="wanelo-clinical-evidence__stat">12<em style="font-size:.5em;font-weight:500;letter-spacing:0;">+ yrs</em></div>
+        <p class="wanelo-clinical-evidence__text">average wear-life before structural fibre breakdown in accelerated testing</p>
+        <ul class="wanelo-clinical-evidence__meta"><li>ISO 12947</li><li>50,000 abrasion cycles</li><li>2023</li></ul>
+      </li>
+    </ul>
+    <div class="wanelo-clinical-evidence__mechanism">
+      <span class="wanelo-kicker">Why it lasts</span>
+      <p>Flax fibres are hollow and longer than cotton fibres. The hollow core moves moisture away from skin; the length means fewer fibre ends per inch — less pilling, less breakdown over washes.</p>
+    </div>
+    <p class="wanelo-clinical-evidence__disclaimer">Fabric performance varies with care. We're a shirt company — not making medical claims.</p>
+  </section>
+
+  <!-- ============= 7. STATS ============= -->
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal">
+      <div class="wanelo-kicker">By the numbers</div>
+      <h2>What we put in.</h2>
+    </div>
+    <div class="wanelo-stats reveal">
+      <div class="wanelo-stats__row">
+        <div class="wanelo-stats__cell">
+          <div class="wanelo-stats__num">240<em>hrs</em></div>
+          <div class="wanelo-stats__lbl">On the loom</div>
+        </div>
+        <div class="wanelo-stats__cell">
+          <div class="wanelo-stats__num">8<em>washes</em></div>
+          <div class="wanelo-stats__lbl">Before it leaves</div>
+        </div>
+        <div class="wanelo-stats__cell">
+          <div class="wanelo-stats__num">100<em>%</em></div>
+          <div class="wanelo-stats__lbl">European flax</div>
+        </div>
+        <div class="wanelo-stats__cell">
+          <div class="wanelo-stats__num">12<em>yrs</em></div>
+          <div class="wanelo-stats__lbl">Oldest one in the wild</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= 8. SPECS ============= -->
+  <section class="wanelo-section wanelo-specs reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">The technical bit</div>
+      <h2>Specifications.</h2>
     </div>
     <dl class="wanelo-specs__table">
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Battery</dt><dd class="wanelo-specs__value">4000mAh Li-ion</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (low)</dt><dd class="wanelo-specs__value">12 hours</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Runtime (high)</dt><dd class="wanelo-specs__value">4 hours</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Charge time</dt><dd class="wanelo-specs__value">2 hours (USB-C)</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (low)</dt><dd class="wanelo-specs__value">35 dB</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Noise (high)</dt><dd class="wanelo-specs__value">52 dB</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Weight</dt><dd class="wanelo-specs__value">220 g</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Material</dt><dd class="wanelo-specs__value">ABS plastic</dd></div>
-      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Includes</dt><dd class="wanelo-specs__value">Fan, USB-C cable, manual</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Composition</dt><dd class="wanelo-specs__value">100% European flax linen</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Weight</dt><dd class="wanelo-specs__value">240 gsm · medium-weight</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Weave</dt><dd class="wanelo-specs__value">Plain weave · single-ply warp &amp; weft</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Buttons</dt><dd class="wanelo-specs__value">Akoya mother-of-pearl · 9-line</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Stitching</dt><dd class="wanelo-specs__value">11 stitches per inch · French seams</dd></div>
+      <div class="wanelo-specs__row"><dt class="wanelo-specs__label">Made in</dt><dd class="wanelo-specs__value">Kortrijk, Belgium</dd></div>
     </dl>
   </section>
 
-  <!-- ═══ 9. SIZE GUIDE (optional) ═══ -->
-  <div class="module-label optional" data-n="09">Size Guide · optional · clothing/jewelry/pet</div>
-  <section class="wanelo-section wanelo-sizeguide reveal in">
+  <!-- ============= 12. COMPATIBILITY (NEW) ============= -->
+  <section class="wanelo-section wanelo-compatibility reveal">
     <div class="wanelo-head">
-      <div class="wanelo-kicker">FIND YOUR FIT</div>
-      <h2>Get the <em>fit</em></h2>
+      <div class="wanelo-kicker">Works with</div>
+      <h2>Already in your closet.</h2>
+      <p class="desc">Cut to layer with the basics you already own.</p>
     </div>
-    <div class="wanelo-sizeguide__wrap">
-      <table class="wanelo-sizeguide__table">
-        <thead><tr><th class="wanelo-sizeguide__row-label"></th><th class="wanelo-sizeguide__col">XS</th><th class="wanelo-sizeguide__col">S</th><th class="wanelo-sizeguide__col">M</th><th class="wanelo-sizeguide__col">L</th><th class="wanelo-sizeguide__col">XL</th></tr></thead>
-        <tbody>
-          <tr><td class="wanelo-sizeguide__row-label">Chest <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">81</td><td class="wanelo-sizeguide__cell">86</td><td class="wanelo-sizeguide__cell">92</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">107</td></tr>
-          <tr><td class="wanelo-sizeguide__row-label">Waist <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">65</td><td class="wanelo-sizeguide__cell">70</td><td class="wanelo-sizeguide__cell">76</td><td class="wanelo-sizeguide__cell">83</td><td class="wanelo-sizeguide__cell">91</td></tr>
-          <tr><td class="wanelo-sizeguide__row-label">Hip <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">88</td><td class="wanelo-sizeguide__cell">93</td><td class="wanelo-sizeguide__cell">99</td><td class="wanelo-sizeguide__cell">106</td><td class="wanelo-sizeguide__cell">114</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="wanelo-sizeguide__note">Measurements taken flat across — double for full circumference.</p>
-  </section>
-
-  <!-- ═══ 10. DIMENSIONS (optional) ═══ -->
-  <div class="module-label optional" data-n="10">Dimensions · optional · decor/furniture/lighting</div>
-  <section class="wanelo-section wanelo-dimensions reveal in">
-    <div class="wanelo-head">
-      <div class="wanelo-kicker">ACTUAL SIZE</div>
-      <h2>In your <em>space</em></h2>
-    </div>
-    <ul class="wanelo-dimensions__list">
-      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Height</span><span class="wanelo-dimensions__value">32 cm</span></li>
-      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Width</span><span class="wanelo-dimensions__value">18 cm</span></li>
-      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Depth</span><span class="wanelo-dimensions__value">14 cm</span></li>
-      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Weight</span><span class="wanelo-dimensions__value">220 g</span></li>
+    <ul class="wanelo-compatibility__platforms">
+      <li class="wanelo-compatibility__platform"><span class="wanelo-compatibility__logo" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-ribbon"></use></svg></span><span class="wanelo-compatibility__platform-name">Selvedge denim</span><span class="wanelo-compatibility__platform-version">all weights</span></li>
+      <li class="wanelo-compatibility__platform"><span class="wanelo-compatibility__logo" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-leaf"></use></svg></span><span class="wanelo-compatibility__platform-name">Linen trouser</span><span class="wanelo-compatibility__platform-version">tone-match</span></li>
+      <li class="wanelo-compatibility__platform"><span class="wanelo-compatibility__logo" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-shield"></use></svg></span><span class="wanelo-compatibility__platform-name">Knitwear</span><span class="wanelo-compatibility__platform-version">layer under</span></li>
+      <li class="wanelo-compatibility__platform"><span class="wanelo-compatibility__logo" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-gem"></use></svg></span><span class="wanelo-compatibility__platform-name">Tailoring</span><span class="wanelo-compatibility__platform-version">unstructured</span></li>
     </ul>
-    <p class="wanelo-dimensions__scale-note">Roughly the size of a hardcover book lying flat.</p>
-  </section>
-
-  <!-- ═══ 11. VARIANTS (optional) ═══ -->
-  <div class="module-label optional" data-n="11">Variants · optional · color swatches</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">PICK YOUR LOOK</div>
-      <h2>Five <em>shades</em></h2>
-    </div>
-    <ul class="wanelo-variants__list reveal in">
-      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#ffffff"></span><span class="wanelo-variants__name">White</span></li>
-      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#f5b8c8"></span><span class="wanelo-variants__name">Pink</span></li>
-      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#a6d8be"></span><span class="wanelo-variants__name">Mint</span></li>
-      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#c4b09a"></span><span class="wanelo-variants__name">Sand</span></li>
-      <li class="wanelo-variants__item wanelo-variants__item--soldout"><span class="wanelo-variants__swatch" style="background:#222222"></span><span class="wanelo-variants__name">Black</span><span class="wanelo-variants__soldout">Sold out</span></li>
-    </ul>
-  </section>
-
-  <!-- ═══ 12. CARE (optional) ═══ -->
-  <div class="module-label optional" data-n="12">Care · optional · fashion/jewelry/textiles</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">TAKING CARE</div>
-      <h2>Keep it <em>good</em></h2>
-    </div>
-    <ul class="wanelo-care__list reveal in">
-      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⌒</span><div class="wanelo-care__body"><span class="wanelo-care__label">Wipe weekly</span><span class="wanelo-care__note">Dry microfiber inside the air duct. No water inside.</span></div></li>
-      <li class="wanelo-care__item"><span class="wanelo-care__glyph">⚡</span><div class="wanelo-care__body"><span class="wanelo-care__label">Charge before storage</span><span class="wanelo-care__note">Don't store empty for &gt;1 month.</span></div></li>
-      <li class="wanelo-care__item"><span class="wanelo-care__glyph">☼</span><div class="wanelo-care__body"><span class="wanelo-care__label">Avoid heat</span><span class="wanelo-care__note">Don't leave in hot car (&gt;50°C) — battery degrades.</span></div></li>
-    </ul>
-  </section>
-
-  <!-- ═══ 13. WHAT'S INCLUDED (optional) ═══ -->
-  <div class="module-label optional" data-n="13">What's Included · optional · bundles/kits</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">IN THE BOX</div>
-      <h2>Everything you <em>get</em></h2>
-    </div>
-    <ul class="wanelo-whatsincluded__list reveal in">
-      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌖</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Bladeless neck fan</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">in your chosen color</span></div></li>
-      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">↯</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">USB-C charge cable</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">1m braided</span></div></li>
-      <li class="wanelo-whatsincluded__item"><span class="wanelo-whatsincluded__glyph">⌘</span><div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Quick-start manual</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">5 languages</span></div></li>
-    </ul>
-  </section>
-
-  <!-- ═══ 14. GIFT OPTIONS (optional) ═══ -->
-  <div class="module-label optional" data-n="14">Gift Options · optional · gift-intent products</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">GIFT-READY</div>
-      <h2>For <em>gifting</em></h2>
-    </div>
-    <div class="wanelo-giftoptions__grid reveal in">
-      <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">⌘</div>
-        <h4>Gift wrap <span>· $5</span></h4>
-        <ul class="wanelo-giftoptions__opts">
-          <li>Kraft + linen ribbon</li>
-          <li>Cream + gold foil</li>
-          <li>Sage + dried bloom</li>
-        </ul>
-      </div>
-      <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">✉</div>
-        <h4>Personal message <span>· up to 240 chars</span></h4>
-        <ul class="wanelo-giftoptions__opts">
-          <li>"Happy birthday — stay cool."</li>
-          <li>"For the office hero."</li>
-        </ul>
-      </div>
-      <div class="wanelo-giftoptions__card">
-        <div class="wanelo-giftoptions__icon">✦</div>
-        <h4>Perfect for</h4>
-        <ul class="wanelo-giftoptions__opts">
-          <li>Birthday</li>
-          <li>Father's Day</li>
-          <li>House-warming</li>
-          <li>New job</li>
-        </ul>
-      </div>
-    </div>
-    <p class="wanelo-giftoptions__ships">Ships in unbranded outer packaging — receiver sees only your message inside.</p>
-  </section>
-
-  <!-- ═══ 15. COMPARE (optional) ═══ -->
-  <div class="module-label optional" data-n="15">Compare · optional · vs alternatives matrix</div>
-  <section class="wanelo-section wanelo-compare reveal in">
-    <div class="wanelo-head">
-      <div class="wanelo-kicker">SIDE BY SIDE</div>
-      <h2>Why <em>this one</em></h2>
-    </div>
-    <div class="wanelo-compare__wrap">
-      <table class="wanelo-compare__table">
-        <thead><tr>
-          <th class="wanelo-compare__row-label"></th>
-          <th class="wanelo-compare__col wanelo-compare__col--badge"><span class="wanelo-compare__col-name">This fan</span><span class="wanelo-compare__col-badge">Best</span></th>
-          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Handheld mini</span></th>
-          <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Desk fan</span></th>
-        </tr></thead>
-        <tbody>
-          <tr><td class="wanelo-compare__row-label">Hands-free</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">✓</td></tr>
-          <tr><td class="wanelo-compare__row-label">Portable</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td></tr>
-          <tr><td class="wanelo-compare__row-label">Bladeless</td><td class="wanelo-compare__cell">✓</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">rare</td></tr>
-          <tr><td class="wanelo-compare__row-label">Battery life</td><td class="wanelo-compare__cell">12h</td><td class="wanelo-compare__cell">3-6h</td><td class="wanelo-compare__cell">AC plug</td></tr>
-          <tr><td class="wanelo-compare__row-label">Quiet on low</td><td class="wanelo-compare__cell">35dB</td><td class="wanelo-compare__cell">40-50dB</td><td class="wanelo-compare__cell">45-55dB</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ═══ 16. TRUST (optional) ═══ -->
-  <div class="module-label optional" data-n="16">Trust · optional · certs + press mentions</div>
-  <section class="wanelo-section wanelo-trust reveal in">
-    <div class="wanelo-head">
-      <div class="wanelo-kicker">VERIFIED</div>
-      <h2>Independent <em>proof</em></h2>
-    </div>
-    <ul class="wanelo-trust__certs">
-      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">CE Certified</span><span class="wanelo-trust__sub">Lab-tested 2025</span></li>
-      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">FCC Approved</span><span class="wanelo-trust__sub">No EMI risk</span></li>
-      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">UL Battery Safe</span><span class="wanelo-trust__sub">Tested to UL 2056</span></li>
-    </ul>
-    <div class="wanelo-trust__press">
-      <div class="wanelo-trust__press-label">As seen on</div>
-      <ul class="wanelo-trust__press-list">
-        <li class="wanelo-trust__press-item">Wired <span>· "tiny invisible wind tunnel"</span></li>
-        <li class="wanelo-trust__press-item">Gear Patrol <span>· staff pick 2025</span></li>
-        <li class="wanelo-trust__press-item">The Strategist <span>· best for commutes</span></li>
+    <div class="wanelo-compatibility__accessories">
+      <div class="wanelo-compatibility__sub-label">Pair it with</div>
+      <ul class="wanelo-compatibility__accessory-list">
+        <li class="wanelo-compatibility__accessory"><div class="wanelo-compatibility__accessory-name">Atelier 02 · Linen Trouser</div><div class="wanelo-compatibility__accessory-note">Same weight, same fabric. Wear them as a set or apart.</div><div class="wanelo-compatibility__accessory-sku">SKU · ATL-02</div></li>
+        <li class="wanelo-compatibility__accessory"><div class="wanelo-compatibility__accessory-name">Field Cardigan</div><div class="wanelo-compatibility__accessory-note">Lambswool. Cut to button over an open Atelier 01.</div><div class="wanelo-compatibility__accessory-sku">SKU · FLD-CD</div></li>
+        <li class="wanelo-compatibility__accessory"><div class="wanelo-compatibility__accessory-name">Spare buttons (set of 6)</div><div class="wanelo-compatibility__accessory-note">Mother-of-pearl, hand-shanked. Two come sewn in the pocket.</div><div class="wanelo-compatibility__accessory-sku">SKU · BTN-MOP-6</div></li>
       </ul>
     </div>
   </section>
 
-  <!-- ═══ 17. REVIEWS (always-on) ═══ -->
-  <div class="module-label always-on" data-n="17">Reviews · always-on · 9-12 mini-quotes</div>
-  <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">BUYERS SAY</div>
-      <h2>In their <em>words</em></h2>
+  <!-- ============= 17. APP SHOWCASE (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-app-showcase reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">In your pocket</div>
+      <h2>Atelier Closet — the app.</h2>
+      <p class="desc">Track what you own, log every wear, see what's left to add.</p>
     </div>
-    <div class="wanelo-reviews reveal in">
+    <ul class="wanelo-app-showcase__screens">
+      <li class="wanelo-app-showcase__screen reveal delay-1">
+        <div class="wanelo-app-showcase__phone"><div class="ph" style="width:100%;height:100%;background:linear-gradient(180deg,#fafaf7 0%,#e8e4dd 100%);display:flex;align-items:center;justify-content:center;font-size:14px;color:#6e6e73;padding:40px 16px 16px;text-align:center">Wardrobe<br><strong style="color:#1d1d1f;font-size:32px;display:block;margin-top:8px">14</strong>pieces</div></div>
+        <div class="wanelo-app-showcase__caption">Auto-detect your closet</div>
+      </li>
+      <li class="wanelo-app-showcase__screen reveal delay-2">
+        <div class="wanelo-app-showcase__phone"><div class="ph" style="width:100%;height:100%;background:linear-gradient(180deg,#e8e4dd 0%,#c8bfa8 100%);display:flex;align-items:center;justify-content:center;font-size:14px;color:#3a3a35;padding:40px 16px 16px;text-align:center">Wear log<br><strong style="color:#1d1d1f;font-size:32px;display:block;margin-top:8px">38</strong>wears · yr</div></div>
+        <div class="wanelo-app-showcase__caption">Cost-per-wear, live</div>
+      </li>
+      <li class="wanelo-app-showcase__screen reveal delay-3">
+        <div class="wanelo-app-showcase__phone"><div class="ph" style="width:100%;height:100%;background:linear-gradient(180deg,#d8d2c5 0%,#988a6e 100%);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;padding:40px 16px 16px;text-align:center">Repair<br><strong style="color:#fff;font-size:32px;display:block;margin-top:8px">2</strong>buttons left</div></div>
+        <div class="wanelo-app-showcase__caption">Spare-button reminders</div>
+      </li>
+    </ul>
+    <ul class="wanelo-app-showcase__features">
+      <li class="wanelo-app-showcase__feature"><span class="wanelo-app-showcase__feature-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Photo-recognise your wardrobe</span></li>
+      <li class="wanelo-app-showcase__feature"><span class="wanelo-app-showcase__feature-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Daily wear-log via shortcut</span></li>
+      <li class="wanelo-app-showcase__feature"><span class="wanelo-app-showcase__feature-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Cost-per-wear over time</span></li>
+      <li class="wanelo-app-showcase__feature"><span class="wanelo-app-showcase__feature-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Repair scheduling — buttons, hems</span></li>
+    </ul>
+    <div class="wanelo-app-showcase__stores">
+      <a class="wanelo-app-showcase__store" href="#" rel="noopener"><span class="wanelo-app-showcase__store-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-appstore"></use></svg></span><span class="wanelo-app-showcase__store-text"><span class="wanelo-app-showcase__store-pre">Download on</span><span class="wanelo-app-showcase__store-name">App Store</span></span></a>
+      <a class="wanelo-app-showcase__store" href="#" rel="noopener"><span class="wanelo-app-showcase__store-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-googleplay"></use></svg></span><span class="wanelo-app-showcase__store-text"><span class="wanelo-app-showcase__store-pre">Get it on</span><span class="wanelo-app-showcase__store-name">Google Play</span></span></a>
+    </div>
+  </section>
+
+  <!-- ============= 13. SIZE GUIDE ============= -->
+  <section class="wanelo-section wanelo-sizeguide reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Get the fit right</div>
+      <h2>Size guide.</h2>
+      <p class="desc">Cut to wear loose. If you're between sizes, size down — the fabric relaxes a half-size with washing.</p>
+    </div>
+    <div class="wanelo-sizeguide__wrap">
+      <table class="wanelo-sizeguide__table">
+        <thead>
+          <tr>
+            <th class="wanelo-sizeguide__row-label"></th>
+            <th class="wanelo-sizeguide__col">XS</th>
+            <th class="wanelo-sizeguide__col">S</th>
+            <th class="wanelo-sizeguide__col">M</th>
+            <th class="wanelo-sizeguide__col">L</th>
+            <th class="wanelo-sizeguide__col">XL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="wanelo-sizeguide__row-label">Chest <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">96</td><td class="wanelo-sizeguide__cell">102</td><td class="wanelo-sizeguide__cell">108</td><td class="wanelo-sizeguide__cell">114</td><td class="wanelo-sizeguide__cell">120</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Length <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">72</td><td class="wanelo-sizeguide__cell">74</td><td class="wanelo-sizeguide__cell">76</td><td class="wanelo-sizeguide__cell">78</td><td class="wanelo-sizeguide__cell">80</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Sleeve <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">62</td><td class="wanelo-sizeguide__cell">63</td><td class="wanelo-sizeguide__cell">64</td><td class="wanelo-sizeguide__cell">65</td><td class="wanelo-sizeguide__cell">66</td></tr>
+          <tr><td class="wanelo-sizeguide__row-label">Shoulder <span class="wanelo-sizeguide__unit">(cm)</span></td><td class="wanelo-sizeguide__cell">44</td><td class="wanelo-sizeguide__cell">46</td><td class="wanelo-sizeguide__cell">48</td><td class="wanelo-sizeguide__cell">50</td><td class="wanelo-sizeguide__cell">52</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="wanelo-sizeguide__note">Measurements taken flat. Allow ±1cm tolerance — every shirt is finished by hand.</p>
+  </section>
+
+  <!-- ============= 10. DIMENSIONS ============= -->
+  <section class="wanelo-section wanelo-dimensions reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Size M, for reference</div>
+      <h2>Made to a single body.</h2>
+    </div>
+    <ul class="wanelo-dimensions__list">
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Chest</span><span class="wanelo-dimensions__value">108<em style="font-size:.4em;color:var(--sec-fg-3);margin-left:6px;">cm</em></span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Length</span><span class="wanelo-dimensions__value">76<em style="font-size:.4em;color:var(--sec-fg-3);margin-left:6px;">cm</em></span></li>
+      <li class="wanelo-dimensions__item"><span class="wanelo-dimensions__axis">Weight</span><span class="wanelo-dimensions__value">340<em style="font-size:.4em;color:var(--sec-fg-3);margin-left:6px;">g</em></span></li>
+    </ul>
+    <p class="wanelo-dimensions__scale-note">About the weight of a paperback. Light enough for August, structured enough for November.</p>
+  </section>
+
+  <!-- ============= 20. ROOM PLACEMENT (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-room-placement reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">In context</div>
+      <h2>Where it lives.</h2>
+      <p class="desc">How the shirt scales against the rest of a closet.</p>
+    </div>
+    <ul class="wanelo-room-placement__rooms">
+      <li class="wanelo-room-placement__room">Capsule wardrobe</li>
+      <li class="wanelo-room-placement__room">Carry-on travel</li>
+      <li class="wanelo-room-placement__room">Office → evening</li>
+      <li class="wanelo-room-placement__room">Weekend uniform</li>
+    </ul>
+    <ul class="wanelo-room-placement__photos">
+      <li class="wanelo-room-placement__photo">
+        <div class="wanelo-room-placement__img"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#e8e0d0 0%,#b8a890 100%)"></div></div>
+        <p class="wanelo-room-placement__caption">Stacks flat, takes up the depth of two T-shirts in a drawer.</p>
+      </li>
+      <li class="wanelo-room-placement__photo">
+        <div class="wanelo-room-placement__img"><div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,#d4c4a8 0%,#988568 100%)"></div></div>
+        <p class="wanelo-room-placement__caption">Rolls to the size of a paperback — fits in a tote, not just a suitcase.</p>
+      </li>
+    </ul>
+    <div class="wanelo-room-placement__pairs">
+      <span class="wanelo-kicker">Pairs well with</span>
+      <ul>
+        <li>Selvedge denim</li>
+        <li>Wool flannel trouser</li>
+        <li>Unstructured tailoring</li>
+        <li>White leather sneakers</li>
+        <li>A black tee underneath</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============= 11. VARIANTS ============= -->
+  <section class="wanelo-section wanelo-variants reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Five colours</div>
+      <h2>Pick one. Or three.</h2>
+    </div>
+    <ul class="wanelo-variants__list">
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#f4ecdf"></span><span class="wanelo-variants__name">Sand</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#fafaf7"></span><span class="wanelo-variants__name">Bone</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#3a4a5c"></span><span class="wanelo-variants__name">Slate</span></li>
+      <li class="wanelo-variants__item"><span class="wanelo-variants__swatch" style="background:#5a6e4f"></span><span class="wanelo-variants__name">Olive</span></li>
+      <li class="wanelo-variants__item wanelo-variants__item--soldout"><span class="wanelo-variants__swatch" style="background:#1a1a1c"></span><span class="wanelo-variants__name">Ink</span><span class="wanelo-variants__soldout">Sold out</span></li>
+    </ul>
+  </section>
+
+  <!-- ============= 12. CARE ============= -->
+  <section class="wanelo-section wanelo-care reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Looking after it</div>
+      <h2>It only asks for a few things.</h2>
+    </div>
+    <ul class="wanelo-care__list">
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-cold"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">Cold machine wash</span><span class="wanelo-care__note">Like with like. No fabric softener.</span></div>
+      </li>
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-tumble"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">Tumble low or hang dry</span><span class="wanelo-care__note">Either way. It softens both.</span></div>
+      </li>
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-iron"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">Iron warm if you must</span><span class="wanelo-care__note">Or steam from the inside.</span></div>
+      </li>
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-bleach"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">No bleach</span><span class="wanelo-care__note">Even on Bone.</span></div>
+      </li>
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-store"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">Hang or fold flat</span><span class="wanelo-care__note">Both are fine. Wrinkles drop overnight.</span></div>
+      </li>
+      <li class="wanelo-care__item">
+        <span class="wanelo-care__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-care-dry"></use></svg></span>
+        <div class="wanelo-care__body"><span class="wanelo-care__label">Skip the dry cleaner</span><span class="wanelo-care__note">Linen prefers water.</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============= 13. WHAT'S INCLUDED ============= -->
+  <section class="wanelo-section wanelo-whatsincluded reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">In the box</div>
+      <h2>What you get.</h2>
+    </div>
+    <ul class="wanelo-whatsincluded__list">
+      <li class="wanelo-whatsincluded__item">
+        <span class="wanelo-whatsincluded__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span>
+        <div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Atelier 01 shirt</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">Folded with archival tissue</span></div>
+      </li>
+      <li class="wanelo-whatsincluded__item">
+        <span class="wanelo-whatsincluded__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-gem"></use></svg></span>
+        <div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Spare buttons</span><span class="wanelo-whatsincluded__qty">×2</span><span class="wanelo-whatsincluded__note">Mother-of-pearl, sewn into pocket</span></div>
+      </li>
+      <li class="wanelo-whatsincluded__item">
+        <span class="wanelo-whatsincluded__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-ribbon"></use></svg></span>
+        <div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Cotton dust bag</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">For travel, for storage</span></div>
+      </li>
+      <li class="wanelo-whatsincluded__item">
+        <span class="wanelo-whatsincluded__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-leaf"></use></svg></span>
+        <div class="wanelo-whatsincluded__body"><span class="wanelo-whatsincluded__name">Care card</span><span class="wanelo-whatsincluded__qty">×1</span><span class="wanelo-whatsincluded__note">Hand-printed in Lisbon</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============= 18. ASSEMBLY (NEW) ============= -->
+  <section class="wanelo-section wanelo-assembly reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">When the box arrives</div>
+      <h2>Out of the wrap in 30 seconds.</h2>
+    </div>
+    <div class="wanelo-assembly__stats">
+      <div class="wanelo-assembly__stat">
+        <div class="wanelo-assembly__stat-num">30<em>sec</em></div>
+        <div class="wanelo-assembly__stat-lbl">Unboxing</div>
+      </div>
+      <div class="wanelo-assembly__stat">
+        <div class="wanelo-assembly__stat-num wanelo-assembly__stat-num--text">None</div>
+        <div class="wanelo-assembly__stat-lbl">Assembly required</div>
+      </div>
+      <div class="wanelo-assembly__stat">
+        <div class="wanelo-assembly__stat-num">1<em>person</em></div>
+        <div class="wanelo-assembly__stat-lbl">To wear it</div>
+      </div>
+    </div>
+    <div class="wanelo-assembly__tools">
+      <div class="wanelo-assembly__sub-label">What you'll want on hand</div>
+      <ul class="wanelo-assembly__tool-list">
+        <li class="wanelo-assembly__tool is-included">
+          <span class="wanelo-assembly__tool-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span>
+          <span class="wanelo-assembly__tool-name">Care card with first-wash instructions</span>
+          <span class="wanelo-assembly__tool-state">Included</span>
+        </li>
+        <li class="wanelo-assembly__tool is-included">
+          <span class="wanelo-assembly__tool-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span>
+          <span class="wanelo-assembly__tool-name">Cotton dust bag for storage</span>
+          <span class="wanelo-assembly__tool-state">Included</span>
+        </li>
+        <li class="wanelo-assembly__tool">
+          <span class="wanelo-assembly__tool-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-info"></use></svg></span>
+          <span class="wanelo-assembly__tool-name">A washing machine</span>
+          <span class="wanelo-assembly__tool-state">Bring your own</span>
+        </li>
+        <li class="wanelo-assembly__tool is-optional">
+          <span class="wanelo-assembly__tool-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-info"></use></svg></span>
+          <span class="wanelo-assembly__tool-name">A steam iron</span>
+          <span class="wanelo-assembly__tool-state">Optional</span>
+        </li>
+      </ul>
+    </div>
+    <ul class="wanelo-assembly__warnings">
+      <li class="wanelo-assembly__warning">Take the spare buttons out of the breast pocket before the first wash.</li>
+    </ul>
+  </section>
+
+  <!-- ============= 19. GIFT OPTIONS ============= -->
+  <section class="wanelo-section wanelo-giftoptions reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">If it's for someone else</div>
+      <h2>Give it as it should be given.</h2>
+    </div>
+    <div class="wanelo-giftoptions__grid">
+      <div class="wanelo-giftoptions__card">
+        <span class="wanelo-giftoptions__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-gift"></use></svg></span>
+        <h4>Hand-wrapped <span>· $8</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Kraft paper + linen ribbon</li>
+          <li>Pressed-wax seal in five colours</li>
+          <li>Wrapped before it leaves the atelier</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <span class="wanelo-giftoptions__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-message"></use></svg></span>
+        <h4>A note from you <span>· up to 240 chars</span></h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>"Welcome to the family."</li>
+          <li>"You'll love this in five years."</li>
+          <li>"Don't iron the wrinkles out."</li>
+        </ul>
+      </div>
+      <div class="wanelo-giftoptions__card">
+        <span class="wanelo-giftoptions__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-calendar"></use></svg></span>
+        <h4>Made for</h4>
+        <ul class="wanelo-giftoptions__opts">
+          <li>Father's Day</li>
+          <li>Anniversaries</li>
+          <li>The first warm weekend</li>
+          <li>Yourself</li>
+        </ul>
+      </div>
+    </div>
+    <p class="wanelo-giftoptions__ships">Packaging slip is hidden inside the dust bag — no prices printed anywhere.</p>
+  </section>
+
+  <!-- ============= 26. SUBSCRIPTION REFILL (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-subscription-refill reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Auto-replenish</div>
+      <h2>One every season.</h2>
+      <p class="desc">A new colour, 4× a year. Skip or cancel anytime.</p>
+    </div>
+    <div class="wanelo-subscription-refill__toggle" data-subscription-toggle role="group" aria-label="Purchase type">
+      <button type="button" class="wanelo-subscription-refill__option" data-option="onetime">
+        <span class="wanelo-subscription-refill__option-label">One-time</span>
+        <span class="wanelo-subscription-refill__option-detail">$148 · no commitment</span>
+      </button>
+      <button type="button" class="wanelo-subscription-refill__option is-active" data-option="subscribe">
+        <span class="wanelo-subscription-refill__option-flag">Save 15%</span>
+        <span class="wanelo-subscription-refill__option-label">Subscribe</span>
+        <span class="wanelo-subscription-refill__option-detail">$126 · every 90 days</span>
+      </button>
+    </div>
+    <div class="wanelo-subscription-refill__details">
+      <div class="wanelo-subscription-refill__big">
+        <span class="wanelo-subscription-refill__big-num">15<em>%</em></span>
+        <span class="wanelo-subscription-refill__big-lbl">off every shipment</span>
+      </div>
+      <ul class="wanelo-subscription-refill__meta">
+        <li><span class="wanelo-kicker">Ships</span><span>Every 90 days</span></li>
+        <li><span class="wanelo-kicker">Choose</span><span>Colour at each ship</span></li>
+        <li><span class="wanelo-kicker">You save</span><span>$88 / year</span></li>
+      </ul>
+    </div>
+    <ul class="wanelo-subscription-refill__perks">
+      <li class="wanelo-subscription-refill__perk"><span class="wanelo-subscription-refill__perk-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Skip a season anytime</span></li>
+      <li class="wanelo-subscription-refill__perk"><span class="wanelo-subscription-refill__perk-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Pick the colour before each ship</span></li>
+      <li class="wanelo-subscription-refill__perk"><span class="wanelo-subscription-refill__perk-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Cancel in one tap</span></li>
+      <li class="wanelo-subscription-refill__perk"><span class="wanelo-subscription-refill__perk-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg></span><span>Repair credit, lifetime</span></li>
+    </ul>
+    <p class="wanelo-subscription-refill__best-for">For people building a closet of 4–6 shirts — not the impulse buyer.</p>
+  </section>
+
+  <!-- ============= 15. COMPARE ============= -->
+  <section class="wanelo-section wanelo-compare reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">How we're different</div>
+      <h2>Linen, by the spec sheet.</h2>
+    </div>
+    <div class="wanelo-compare__wrap">
+      <table class="wanelo-compare__table">
+        <thead>
+          <tr>
+            <th class="wanelo-compare__row-label"></th>
+            <th class="wanelo-compare__col wanelo-compare__col--badge">
+              <span class="wanelo-compare__col-name">Atelier 01</span>
+              <span class="wanelo-compare__col-badge">Ours</span>
+            </th>
+            <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">High-street linen</span></th>
+            <th class="wanelo-compare__col"><span class="wanelo-compare__col-name">Luxury linen ($400+)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="wanelo-compare__row-label">European flax fibre</td><td class="wanelo-compare__cell">Long-fibre</td><td class="wanelo-compare__cell">Short-fibre</td><td class="wanelo-compare__cell">Long-fibre</td></tr>
+          <tr><td class="wanelo-compare__row-label">Weight</td><td class="wanelo-compare__cell">240 gsm</td><td class="wanelo-compare__cell">120–160 gsm</td><td class="wanelo-compare__cell">200–260 gsm</td></tr>
+          <tr><td class="wanelo-compare__row-label">Pre-washed</td><td class="wanelo-compare__cell">8 times</td><td class="wanelo-compare__cell">Once</td><td class="wanelo-compare__cell">2–3 times</td></tr>
+          <tr><td class="wanelo-compare__row-label">Buttons</td><td class="wanelo-compare__cell">Mother-of-pearl</td><td class="wanelo-compare__cell">Resin</td><td class="wanelo-compare__cell">Mother-of-pearl</td></tr>
+          <tr><td class="wanelo-compare__row-label">Made in</td><td class="wanelo-compare__cell">Belgium</td><td class="wanelo-compare__cell">Varies</td><td class="wanelo-compare__cell">Italy / France</td></tr>
+          <tr><td class="wanelo-compare__row-label">Spare buttons</td><td class="wanelo-compare__cell">2 sewn in</td><td class="wanelo-compare__cell">—</td><td class="wanelo-compare__cell">1 in envelope</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============= 16. TRUST ============= -->
+  <section class="wanelo-section wanelo-trust reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Independently verified</div>
+      <h2>Certifications &amp; press.</h2>
+    </div>
+    <ul class="wanelo-trust__certs">
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">European Flax</span><span class="wanelo-trust__sub">Certified fibre origin</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">OEKO-TEX 100</span><span class="wanelo-trust__sub">Tested for harmful substances</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">B-Corp</span><span class="wanelo-trust__sub">Score 94, recertified 2025</span></li>
+      <li class="wanelo-trust__cert"><span class="wanelo-trust__label">GOTS Cotton</span><span class="wanelo-trust__sub">Organic thread &amp; bag</span></li>
+    </ul>
+    <div class="wanelo-trust__press">
+      <div class="wanelo-trust__press-label">As seen on</div>
+      <ul class="wanelo-trust__press-list">
+        <li class="wanelo-trust__press-item">Monocle <span>· Best of 2025</span></li>
+        <li class="wanelo-trust__press-item">Kinfolk <span>· The Quiet List</span></li>
+        <li class="wanelo-trust__press-item">The Strategist <span>· Buy It For Life</span></li>
+        <li class="wanelo-trust__press-item">Mr Porter <span>· Editor's pick</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============= 29. SUSTAINABILITY (NEW r6) ============= -->
+  <section class="wanelo-section wanelo-sustainability reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Our footprint</div>
+      <h2>Made responsibly.</h2>
+      <p class="desc">The numbers we track, not just the ones that sound good.</p>
+    </div>
+    <ul class="wanelo-sustainability__certs">
+      <li class="wanelo-sustainability__cert"><span class="wanelo-sustainability__cert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-leaf"></use></svg></span><div class="wanelo-sustainability__cert-body"><span class="wanelo-sustainability__cert-label">European Flax</span><span class="wanelo-sustainability__cert-sub">Alliance for European Flax · since 2019</span></div></li>
+      <li class="wanelo-sustainability__cert"><span class="wanelo-sustainability__cert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-shield"></use></svg></span><div class="wanelo-sustainability__cert-body"><span class="wanelo-sustainability__cert-label">OEKO-TEX 100</span><span class="wanelo-sustainability__cert-sub">Independent textile lab · since 2020</span></div></li>
+      <li class="wanelo-sustainability__cert"><span class="wanelo-sustainability__cert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-globe"></use></svg></span><div class="wanelo-sustainability__cert-body"><span class="wanelo-sustainability__cert-label">Climate Neutral</span><span class="wanelo-sustainability__cert-sub">climateneutral.org · since 2022</span></div></li>
+      <li class="wanelo-sustainability__cert"><span class="wanelo-sustainability__cert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-recycle"></use></svg></span><div class="wanelo-sustainability__cert-body"><span class="wanelo-sustainability__cert-label">B-Corp</span><span class="wanelo-sustainability__cert-sub">Score 94, recertified 2025</span></div></li>
+    </ul>
+    <div class="wanelo-sustainability__materials">
+      <div class="wanelo-sustainability__sub-label">Material breakdown by mass</div>
+      <ul class="wanelo-sustainability__material-list">
+        <li class="wanelo-sustainability__material">
+          <div class="wanelo-sustainability__material-head"><span class="wanelo-sustainability__material-name">European flax linen</span><span class="wanelo-sustainability__material-percent">98%</span></div>
+          <div class="wanelo-sustainability__material-bar" aria-hidden="true"><span style="width:98%"></span></div>
+          <div class="wanelo-sustainability__material-note">Grown in France, woven in Belgium. Rain-retted, not chemical-retted.</div>
+        </li>
+        <li class="wanelo-sustainability__material">
+          <div class="wanelo-sustainability__material-head"><span class="wanelo-sustainability__material-name">Organic cotton thread</span><span class="wanelo-sustainability__material-percent">1.5%</span></div>
+          <div class="wanelo-sustainability__material-bar" aria-hidden="true"><span style="width:1.5%"></span></div>
+          <div class="wanelo-sustainability__material-note">GOTS-certified, US-grown.</div>
+        </li>
+        <li class="wanelo-sustainability__material">
+          <div class="wanelo-sustainability__material-head"><span class="wanelo-sustainability__material-name">Mother-of-pearl buttons</span><span class="wanelo-sustainability__material-percent">0.5%</span></div>
+          <div class="wanelo-sustainability__material-bar" aria-hidden="true"><span style="width:0.5%"></span></div>
+          <div class="wanelo-sustainability__material-note">Akoya oyster shells — by-product of food industry.</div>
+        </li>
+      </ul>
+    </div>
+    <div class="wanelo-sustainability__footer">
+      <div class="wanelo-sustainability__carbon">
+        <span class="wanelo-kicker">Per shirt, cradle to gate</span>
+        <span class="wanelo-sustainability__carbon-value">4.8 kg CO₂e</span>
+      </div>
+      <p class="wanelo-sustainability__recycling">Compostable end-of-life. We take old Atelier shirts back, fibre-shred them, and re-spin into new linen — free of charge, for life.</p>
+    </div>
+  </section>
+
+  <!-- ============= 22. SAFETY (NEW) ============= -->
+  <section class="wanelo-section wanelo-safety reveal">
+    <div class="wanelo-head">
+      <div class="wanelo-kicker">Before you wear it</div>
+      <h2>A few honest notes.</h2>
+    </div>
+    <div class="wanelo-safety__card">
+      <div class="wanelo-safety__age" aria-label="Age rating">
+        <span class="wanelo-safety__age-label">Ages</span>
+        <span class="wanelo-safety__age-value">All</span>
+      </div>
+      <ul class="wanelo-safety__warnings">
+        <li class="wanelo-safety__warning">
+          <span class="wanelo-safety__warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-warning"></use></svg></span>
+          <div class="wanelo-safety__warning-body"><span class="wanelo-safety__warning-label">Natural dye runs slightly the first wash</span><span class="wanelo-safety__warning-detail">Wash separately the first time. Slate and Ink in particular.</span></div>
+        </li>
+        <li class="wanelo-safety__warning">
+          <span class="wanelo-safety__warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-warning"></use></svg></span>
+          <div class="wanelo-safety__warning-body"><span class="wanelo-safety__warning-label">Linen is flammable</span><span class="wanelo-safety__warning-detail">As are most natural fibres. Keep away from open flame.</span></div>
+        </li>
+        <li class="wanelo-safety__warning">
+          <span class="wanelo-safety__warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#wanelo-icon-warning"></use></svg></span>
+          <div class="wanelo-safety__warning-body"><span class="wanelo-safety__warning-label">Mother-of-pearl is fragile</span><span class="wanelo-safety__warning-detail">A button will chip if you drop a heavy object on it. Two spares are sewn into the pocket.</span></div>
+        </li>
+      </ul>
+      <div class="wanelo-safety__contra">
+        <div class="wanelo-safety__contra-label">Skip this if</div>
+        <ul class="wanelo-safety__contra-list">
+          <li class="wanelo-safety__contra-chip">Severe flax allergy</li>
+          <li class="wanelo-safety__contra-chip">Need wrinkle-free workwear</li>
+        </ul>
+      </div>
+      <ul class="wanelo-safety__certs">
+        <li class="wanelo-safety__cert"><span class="wanelo-safety__cert-label">OEKO-TEX 100</span><span class="wanelo-safety__cert-sub">Tested for harmful substances</span></li>
+        <li class="wanelo-safety__cert"><span class="wanelo-safety__cert-label">European Flax</span><span class="wanelo-safety__cert-sub">Certified origin · EFL-2402</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============= 23. REVIEWS ============= -->
+  <section class="wanelo-section">
+    <div class="wanelo-head reveal">
+      <div class="wanelo-kicker">From the people wearing it</div>
+      <h2>What you're saying.</h2>
+    </div>
+    <div class="wanelo-reviews reveal">
       <div class="wanelo-reviews__wall">
+        <!-- c1 -->
         <div class="wanelo-reviews__col c1">
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Garden work in 90° suddenly fine. Hair stays put.</p><div class="wanelo-reviews__who">Priya (Toronto)</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Subway commute is now <em>bearable</em>. Light enough I forget I'm wearing it.</p><div class="wanelo-reviews__who">Maya R.</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Battery actually <em>does</em> last. Low is genuinely silent.</p><div class="wanelo-reviews__who">@jkay</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Three years in and it's the only thing I reach for in summer."</p><div class="wanelo-reviews__who">Tomás · Lisbon</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Bought one. Bought four more. Sand goes with everything I own."</p><div class="wanelo-reviews__who">Anya · NYC</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"The weight is what does it. Substantial without being heavy."</p><div class="wanelo-reviews__who">Liam · London</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Three years in and it's the only thing I reach for in summer."</p><div class="wanelo-reviews__who">Tomás · Lisbon</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Bought one. Bought four more. Sand goes with everything I own."</p><div class="wanelo-reviews__who">Anya · NYC</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"The weight is what does it. Substantial without being heavy."</p><div class="wanelo-reviews__who">Liam · London</div></div>
         </div>
+        <!-- c2 -->
         <div class="wanelo-reviews__col c2">
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it on a 12-hour flight. <em>Game changer.</em></p><div class="wanelo-reviews__who">Tomás (Lisbon)</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Wore it in a Zoom meeting. Nobody heard a thing.</p><div class="wanelo-reviews__who">Alex K., verified buyer</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">Bought one for me, one for partner. Mint is gorgeous.</p><div class="wanelo-reviews__who">N.S., 40s</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"I size down. Got it right on the second try and never looked back."</p><div class="wanelo-reviews__who">Mira · Stockholm</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Wore it on a flight. Slept in it. Looked the same the next morning."</p><div class="wanelo-reviews__who">Jules · Paris</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"This is what a shirt should feel like. I'd forgotten."</p><div class="wanelo-reviews__who">Ren · Tokyo</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"I size down. Got it right on the second try and never looked back."</p><div class="wanelo-reviews__who">Mira · Stockholm</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Wore it on a flight. Slept in it. Looked the same the next morning."</p><div class="wanelo-reviews__who">Jules · Paris</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"This is what a shirt should feel like. I'd forgotten."</p><div class="wanelo-reviews__who">Ren · Tokyo</div></div>
         </div>
+        <!-- c3 -->
         <div class="wanelo-reviews__col c3">
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Light, quiet, looks decent. Three for three.</p><div class="wanelo-reviews__who">Sara R., first-time buyer</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">Three speeds is exactly the right number.</p><div class="wanelo-reviews__who">J. Wright</div></div>
-          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★☆</div><p class="wanelo-reviews__quote">USB-C is a small thing that <em>matters</em>.</p><div class="wanelo-reviews__who">@cooldad</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Olive in winter, Sand in summer. Same shirt, two lives."</p><div class="wanelo-reviews__who">Eli · Berlin</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"The buttons. I never thought I'd care about buttons."</p><div class="wanelo-reviews__who">Noor · Amsterdam</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"My partner stole mine. So I bought two more."</p><div class="wanelo-reviews__who">Marco · Milan</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"Olive in winter, Sand in summer. Same shirt, two lives."</p><div class="wanelo-reviews__who">Eli · Berlin</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"The buttons. I never thought I'd care about buttons."</p><div class="wanelo-reviews__who">Noor · Amsterdam</div></div>
+          <div class="wanelo-reviews__card"><div class="wanelo-reviews__stars">★★★★★</div><p class="wanelo-reviews__quote">"My partner stole mine. So I bought two more."</p><div class="wanelo-reviews__who">Marco · Milan</div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 18. FAQ (always-on) ═══ -->
-  <div class="module-label always-on" data-n="18">FAQ · always-on · 4-7 q/a + JSON-LD</div>
+  <!-- ============= 18. FAQ ============= -->
   <section class="wanelo-section">
-    <div class="wanelo-head reveal in">
-      <div class="wanelo-kicker">QUICK ANSWERS</div>
-      <h2>Before you <em>buy</em></h2>
+    <div class="wanelo-head reveal">
+      <div class="wanelo-kicker">Before you ask</div>
+      <h2>Questions, answered.</h2>
     </div>
-    <div class="wanelo-faq reveal in">
-      <details><summary>Will it actually cool me down?</summary><div class="wanelo-faq__answer">It moves air across your skin, which speeds evaporation. So yes — measurably cooler within seconds, especially at neck.</div></details>
-      <details open><summary>How long does the battery really last?</summary><div class="wanelo-faq__answer">Low: 12h. Mid: 7h. High: 4h. Mixed real-world use: ~6-8h.</div></details>
-      <details><summary>Is it loud in meetings?</summary><div class="wanelo-faq__answer">On low (35dB) it's quieter than a refrigerator and won't trigger mic background noise filters.</div></details>
-      <details><summary>Will it tangle long hair?</summary><div class="wanelo-faq__answer">No — the airflow comes from an enclosed duct, not exposed blades. Hair stays out.</div></details>
-      <details><summary>Can I wear it on a bike?</summary><div class="wanelo-faq__answer">Yes — it stays put on the neck via the rounded hook. Tested up to ~15 mph.</div></details>
-    </div>
-  </section>
-
-  <!-- ═══ 19. CTA (always-on) ═══ -->
-  <div class="module-label always-on" data-n="19">CTA · always-on · final conversion card</div>
-  <section class="wanelo-section">
-    <div class="wanelo-cta reveal in">
-      <div class="wanelo-kicker">READY TO COMMIT</div>
-      <h2>Ditch the sweat. <em>Wear the wind.</em></h2>
-      <p>Bladeless. 4-12 hours. Hands-free. Available in five pastel shades.</p>
-      <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>Take it home — $24.90</a>
+    <div class="wanelo-faq reveal">
+      <details><summary>Will it shrink in the wash?</summary><div class="wanelo-faq__answer">A little. We pre-wash eight times before it leaves us, so the first time you wash it at home, the change is minimal — usually under 2%. After that, it stays put.</div></details>
+      <details><summary>What if I'm between sizes?</summary><div class="wanelo-faq__answer">Size down. The fabric relaxes a half-size after the first wash, and the cut is built to wear loose to start with.</div></details>
+      <details><summary>Why does linen wrinkle so much?</summary><div class="wanelo-faq__answer">Because the fibre is hollow. That's what makes it cooling. The wrinkles are the trade-off — and they fall out the moment you hang it overnight.</div></details>
+      <details><summary>Can I tumble dry it?</summary><div class="wanelo-faq__answer">Yes — on low. We test every shirt against 50 tumble cycles. It softens the hand and shortens dry time. Hang dry works too.</div></details>
+      <details><summary>Where exactly is it made?</summary><div class="wanelo-faq__answer">Flax grown in northern France. Woven in Kortrijk, Belgium. Cut and sewn in Porto, Portugal. Three countries, one shirt.</div></details>
     </div>
   </section>
 
-  <!-- ═══ 20. INTERLINKS (always-on) ═══ -->
-  <div class="module-label always-on" data-n="20">Interlinks · always-on · collection pills</div>
-  <section class="wanelo-section">
-    <div class="wanelo-interlinks reveal in">
-      <h3>Explore more</h3>
-      <div class="wanelo-interlinks__list">
-        <a class="wanelo-interlinks__link" href="#">Personal cooling</a>
-        <a class="wanelo-interlinks__link" href="#">Outdoor essentials</a>
-        <a class="wanelo-interlinks__link" href="#">Commute kit</a>
-        <a class="wanelo-interlinks__link" href="#">Summer 2026</a>
-        <a class="wanelo-interlinks__link" href="#">Wearable tech</a>
+  <!-- ============= 19. CTA ============= -->
+  <section class="wanelo-section wanelo-cta">
+    <div class="wanelo-cta__inner reveal">
+      <div class="wanelo-kicker">Atelier 01 · Linen Shirt</div>
+      <h2>Made to last. Cut to wear.</h2>
+      <p>Five colours. Sizes XS through XL. $148.</p>
+      <div class="wanelo-cta__ctas">
+        <a href="#wanelo-atc" class="wanelo-cta__button" data-wanelo-atc-link>Add to bag — $148</a>
+        <a href="#wanelo-faq" class="wanelo-cta__button-secondary">Questions? <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 21. PALETTE (always-on, injected at top, listed last for completeness) ═══ -->
-  <div class="module-label always-on" data-n="21">Palette · always-on · injected as :root CSS variables (see &lt;style data-wanelo-palette&gt; at top)</div>
+  <!-- ============= 20. INTERLINKS ============= -->
+  <section class="wanelo-section wanelo-interlinks reveal">
+    <h3>Explore the rest</h3>
+    <div class="wanelo-interlinks__list">
+      <a class="wanelo-interlinks__link" href="#">Men's linen shirts</a>
+      <a class="wanelo-interlinks__link" href="#">Garment-washed linen</a>
+      <a class="wanelo-interlinks__link" href="#">Summer button-ups</a>
+      <a class="wanelo-interlinks__link" href="#">Mother-of-pearl buttons</a>
+      <a class="wanelo-interlinks__link" href="#">Made in Portugal</a>
+      <a class="wanelo-interlinks__link" href="#">European flax</a>
+      <a class="wanelo-interlinks__link" href="#">Layering pieces</a>
+      <a class="wanelo-interlinks__link" href="#">240 gsm shirts</a>
+      <a class="wanelo-interlinks__link" href="#">Buy-it-for-life essentials</a>
+    </div>
+  </section>
 
-  <p class="footer-note">21 modules · skip-if-blank · operator typically sees 11-13 per product · per-product palette via <code>:root</code> CSS variables · Editorial Pastel system</p>
 </div>
 
-<!-- Mobile sticky ATC bar — wanelo.js usually injects, here static for preview -->
-<a href="#wanelo-atc" class="wanelo-sticky-atc visible" style="display:none" id="sticky-preview">Add to cart <span class="wanelo-sticky-arrow">↑</span></a>
+<!-- Placeholder image styling — kept in preview only -->
+<style>
+.ph{width:100%;height:100%;background:linear-gradient(135deg,#e8e4dd 0%,#d8d2c5 50%,#c8bfa8 100%)}
+.ph--hero{background:linear-gradient(180deg,#f0ece4 0%,#d8d2c5 100%);position:relative}
+.ph--hero::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;aspect-ratio:3/4;background:linear-gradient(160deg,#bdb29a 0%,#988a6e 100%);border-radius:8px;box-shadow:0 24px 48px rgba(0,0,0,.15)}
+.ph--story-1{background:linear-gradient(180deg,#d8e0c8 0%,#b8c4a0 100%)}
+.ph--story-2{background:linear-gradient(180deg,#e8d8c0 0%,#c8b08a 100%)}
+.ph--story-3{background:linear-gradient(180deg,#e0d8d2 0%,#b8aa9c 100%)}
+</style>
 
-<!-- Section progress rail — desktop ≥1100px. JS positions each dot
-     proportionally along the 280px track; here pre-positioned for the
-     static preview. -->
-<div class="wanelo-rail" aria-hidden="true">
-  <span class="wanelo-rail__dot" style="top:0%"></span>
-  <span class="wanelo-rail__dot" style="top:11%"></span>
-  <span class="wanelo-rail__dot" style="top:22%"></span>
-  <span class="wanelo-rail__dot active" style="top:33%"></span>
-  <span class="wanelo-rail__dot" style="top:44%"></span>
-  <span class="wanelo-rail__dot" style="top:55%"></span>
-  <span class="wanelo-rail__dot" style="top:66%"></span>
-  <span class="wanelo-rail__dot" style="top:77%"></span>
-  <span class="wanelo-rail__dot" style="top:88%"></span>
-  <span class="wanelo-rail__dot" style="top:100%"></span>
-</div>
-
+<script src="../theme_assets/assets/wanelo.js" defer></script>
 <script>
-  // Palette picker — swaps the per-product :root CSS variables.
-  const PALETTES = {
-    lavender: {brand_1:'#c8b6e2', brand_2:'#d8e6d5', brand_3:'#f5e6d3', brand_soft:'#f0e8f8', brand_deep:'#b59cd0'},
-    peach:    {brand_1:'#ffd4ba', brand_2:'#ffe2c8', brand_3:'#f7e0d0', brand_soft:'#fff0e3', brand_deep:'#e89968'},
-    sage:     {brand_1:'#c5d8c0', brand_2:'#e0e8d4', brand_3:'#f0eed5', brand_soft:'#eaf0e6', brand_deep:'#7a9a72'},
-    blush:    {brand_1:'#f0c8c8', brand_2:'#fad8d8', brand_3:'#f7e0d8', brand_soft:'#faecec', brand_deep:'#c87878'},
-    butter:   {brand_1:'#f5e6a8', brand_2:'#f7edc4', brand_3:'#f0e0c0', brand_soft:'#faf3d8', brand_deep:'#c8a040'},
+/* Review toolbar — palette switcher + CTA token tester. */
+(function(){
+  var palettes = {
+    'default': {brand_1:'#0071e3',brand_2:'#0071e3',brand_3:'#0071e3',brand_soft:'rgba(0,113,227,.08)',brand_deep:'#0071e3'},
+    'lavender':{brand_1:'#c8b6e2',brand_2:'#d8c8e8',brand_3:'#e8d8f0',brand_soft:'rgba(181,156,208,.18)',brand_deep:'#7b5fa8'},
+    'peach':   {brand_1:'#e89b7a',brand_2:'#f0b896',brand_3:'#f5d2b8',brand_soft:'rgba(232,155,122,.18)',brand_deep:'#b8633b'},
+    'sage':    {brand_1:'#9ab487',brand_2:'#b4c8a6',brand_3:'#cedcc4',brand_soft:'rgba(122,163,122,.18)',brand_deep:'#506a45'},
+    'blush':   {brand_1:'#e6b0b8',brand_2:'#eec4ca',brand_3:'#f4d8dd',brand_soft:'rgba(212,139,150,.18)',brand_deep:'#a04a5a'},
+    'butter':  {brand_1:'#e8d28a',brand_2:'#f0deae',brand_3:'#f8ecc8',brand_soft:'rgba(212,181,74,.18)',brand_deep:'#8a6e1a'}
   };
-  document.getElementById('palette-picker').addEventListener('change', e => {
-    const p = PALETTES[e.target.value];
-    document.getElementById('palette-style').textContent =
-      `.wanelo-page{--brand-1:${p.brand_1};--brand-2:${p.brand_2};--brand-3:${p.brand_3};--brand-soft:${p.brand_soft};--brand-deep:${p.brand_deep};}`;
+  var page = document.querySelector('.wanelo-page');
+  var btns = document.querySelectorAll('.review-toolbar__color');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){x.classList.remove('is-active')});
+      b.classList.add('is-active');
+      var p = palettes[b.dataset.palette];
+      Object.keys(p).forEach(function(k){
+        page.style.setProperty('--'+k.replace('_','-'), p[k]);
+      });
+    });
   });
+  var cta = document.getElementById('ctaColor');
+  cta.addEventListener('input', function(){
+    document.body.style.setProperty('--btn-primary-bg-color', cta.value);
+    /* Slight lift for hover by darkening 8% */
+    var h = cta.value.replace('#','');
+    var r=parseInt(h.substr(0,2),16), g=parseInt(h.substr(2,2),16), bl=parseInt(h.substr(4,2),16);
+    r=Math.max(0,r-15); g=Math.max(0,g-15); bl=Math.max(0,bl-15);
+    document.body.style.setProperty('--btn-primary-hover-bg-color', '#'+
+      [r,g,bl].map(function(x){return ('0'+x.toString(16)).slice(-2)}).join(''));
+  });
+  document.getElementById('ctaReset').addEventListener('click', function(){
+    document.body.style.removeProperty('--btn-primary-bg-color');
+    document.body.style.removeProperty('--btn-primary-hover-bg-color');
+    cta.value = '#0071e3';
+  });
+})();
 </script>
-
 </body>
 </html>

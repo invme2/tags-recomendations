@@ -1,9 +1,9 @@
 {%- comment -%}
-  SPECS snippet — technical specifications table.
+  SPECS snippet — Apple-style spec rows (label uppercase tracked, value
+  large + tabular numerals). Markup unchanged from prior version; CSS
+  drops the boxed table for a flat hairline-separated list.
   Reads product.metafields.custom.specs JSON:
     {head: {kicker, h2, desc}, items: [{label, value}]}
-  Designer fills 6-12 spec rows for: electronics, kitchen appliances,
-  jewelry materials, sports gear dimensions.
 {%- endcomment -%}
 
 {%- assign specs = product.metafields.custom.specs.value -%}

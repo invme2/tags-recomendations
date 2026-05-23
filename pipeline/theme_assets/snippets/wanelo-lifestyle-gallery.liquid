@@ -1,0 +1,50 @@
+{%- comment -%}
+  LIFESTYLE-GALLERY snippet — UGC mood grid for emotional / aspirational
+  positioning. Distinct from story-chapter images (narrative-anchored).
+
+  JSON schema:
+    "lifestyle_gallery": {
+      "head": {kicker, h2, desc},
+      "items": [{image_url, credit, caption}],
+      "footer_text": "Tag #WaneloMade to be featured."
+    }
+
+  CSS-only masonry via grid-auto-rows + row-span hint inlined per item
+  (designer JSON can include "tall": true to opt into 2-row span). No
+  JS masonry library. Click image → open in new tab.
+{%- endcomment -%}
+
+{%- assign lg = product.metafields.custom.lifestyle_gallery.value -%}
+{%- if lg and lg.items and lg.items.size > 0 -%}
+<section class="wanelo-section wanelo-lifestyle-gallery reveal">
+  {%- if lg.head and lg.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if lg.head.kicker != blank -%}<div class="wanelo-kicker">{{ lg.head.kicker }}</div>{%- endif -%}
+      <h2>{{ lg.head.h2 }}</h2>
+      {%- if lg.head.desc != blank -%}<p class="desc">{{ lg.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ul class="wanelo-lifestyle-gallery__grid">
+    {%- for item in lg.items -%}
+      {%- if item.image_url != blank -%}
+        <li class="wanelo-lifestyle-gallery__item{%- if item.tall %} is-tall{% endif -%}">
+          <a class="wanelo-lifestyle-gallery__link" href="{{ item.image_url }}" target="_blank" rel="noopener">
+            <img src="{{ item.image_url }}" alt="{{ item.caption | default: item.credit | escape }}" loading="lazy" decoding="async">
+            {%- if item.credit != blank or item.caption != blank -%}
+              <div class="wanelo-lifestyle-gallery__overlay">
+                {%- if item.caption != blank -%}<span class="wanelo-lifestyle-gallery__caption">{{ item.caption }}</span>{%- endif -%}
+                {%- if item.credit != blank -%}<span class="wanelo-lifestyle-gallery__credit">{{ item.credit }}</span>{%- endif -%}
+              </div>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+
+  {%- if lg.footer_text != blank -%}
+    <p class="wanelo-lifestyle-gallery__footer">{{ lg.footer_text }}</p>
+  {%- endif -%}
+</section>
+{%- endif -%}

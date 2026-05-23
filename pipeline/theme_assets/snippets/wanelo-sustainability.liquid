@@ -1,0 +1,98 @@
+{%- comment -%}
+  SUSTAINABILITY snippet — eco/ethical credentials. Distinct from
+  `trust` (awards/press) and `safety` (warnings).
+
+  FILL for: skincare/food with eco claims, fashion (recycled / Fair
+            Trade), decor (FSC wood), pet (sustainably sourced).
+  SKIP for: pure tech, generic commodity.
+
+  JSON schema:
+    "sustainability": {
+      "head": {kicker, h2, desc},
+      "certs": [{label, since, verifier}],
+      "materials": [{name, percent, note}],
+      "carbon_footprint_g": 240,
+      "recycling": "Body recyclable in standard streams. Battery: return to retailer."
+    }
+{%- endcomment -%}
+
+{%- assign sus = product.metafields.custom.sustainability.value -%}
+{%- assign has_certs = false -%}
+{%- if sus and sus.certs and sus.certs.size > 0 -%}{%- assign has_certs = true -%}{%- endif -%}
+{%- assign has_mats = false -%}
+{%- if sus and sus.materials and sus.materials.size > 0 -%}{%- assign has_mats = true -%}{%- endif -%}
+{%- assign has_carbon = false -%}
+{%- if sus and sus.carbon_footprint_g -%}{%- assign has_carbon = true -%}{%- endif -%}
+{%- assign has_recycling = false -%}
+{%- if sus and sus.recycling != blank -%}{%- assign has_recycling = true -%}{%- endif -%}
+
+{%- if has_certs or has_mats or has_carbon or has_recycling -%}
+<section class="wanelo-section wanelo-sustainability reveal">
+  {%- if sus.head and sus.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if sus.head.kicker != blank -%}<div class="wanelo-kicker">{{ sus.head.kicker }}</div>{%- endif -%}
+      <h2>{{ sus.head.h2 }}</h2>
+      {%- if sus.head.desc != blank -%}<p class="desc">{{ sus.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_certs -%}
+    <ul class="wanelo-sustainability__certs">
+      {%- for c in sus.certs -%}
+        {%- if c.label != blank -%}
+          <li class="wanelo-sustainability__cert">
+            <span class="wanelo-sustainability__cert-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-leaf"></use></svg>
+            </span>
+            <div class="wanelo-sustainability__cert-body">
+              <span class="wanelo-sustainability__cert-label">{{ c.label }}</span>
+              <span class="wanelo-sustainability__cert-sub">
+                {%- if c.verifier != blank -%}{{ c.verifier }}{%- endif -%}
+                {%- if c.since != blank -%}{%- if c.verifier != blank %} · {% endif -%}since {{ c.since }}{%- endif -%}
+              </span>
+            </div>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if has_mats -%}
+    <div class="wanelo-sustainability__materials">
+      <div class="wanelo-sustainability__sub-label">What it's made of</div>
+      <ul class="wanelo-sustainability__material-list">
+        {%- for m in sus.materials -%}
+          {%- if m.name != blank -%}
+            <li class="wanelo-sustainability__material">
+              <div class="wanelo-sustainability__material-head">
+                <span class="wanelo-sustainability__material-name">{{ m.name }}</span>
+                {%- if m.percent -%}<span class="wanelo-sustainability__material-percent">{{ m.percent }}%</span>{%- endif -%}
+              </div>
+              {%- if m.percent -%}
+                <div class="wanelo-sustainability__material-bar" aria-hidden="true">
+                  <span style="width:{{ m.percent }}%"></span>
+                </div>
+              {%- endif -%}
+              {%- if m.note != blank -%}<div class="wanelo-sustainability__material-note">{{ m.note }}</div>{%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  {%- if has_carbon or has_recycling -%}
+    <div class="wanelo-sustainability__footer">
+      {%- if has_carbon -%}
+        <div class="wanelo-sustainability__carbon">
+          <span class="wanelo-kicker">Carbon footprint</span>
+          <span class="wanelo-sustainability__carbon-value">{{ sus.carbon_footprint_g }} g CO₂e</span>
+        </div>
+      {%- endif -%}
+      {%- if has_recycling -%}
+        <p class="wanelo-sustainability__recycling">{{ sus.recycling }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}

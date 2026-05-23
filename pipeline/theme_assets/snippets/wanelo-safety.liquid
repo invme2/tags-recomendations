@@ -1,0 +1,97 @@
+{%- comment -%}
+  SAFETY snippet — regulatory warnings, age rating, contraindications,
+  safety certs. Distinct from `trust` (awards/press) — this is the
+  "before you buy / before you use" must-read.
+
+  FILL for: beauty devices (LED/microcurrent/RF/IPL), supplements,
+            children's toys (CPSIA / ASTM-F963 age ratings), kitchen
+            appliances with sharp/hot parts, fitness equipment with
+            injury risk, anything FDA-regulated.
+  SKIP for: fashion accessories, decor, candles, jewelry, clothing.
+
+  JSON schema:
+    "safety": {
+      "head": {kicker, h2, desc},
+      "age_rating": "14+" | "3+" | "Adult use only" | "",
+      "warnings": [{label, detail}],
+      "contraindications": ["pacemaker", "active skin infection"],
+      "safety_certs": [{label, sub}]
+    }
+
+  Visual: warm pale notice tone, hairline-left accent (orange), age
+  rating as large badge top-right. Apple-aesthetic — typography-led,
+  no decorative chrome.
+{%- endcomment -%}
+
+{%- assign safety = product.metafields.custom.safety.value -%}
+{%- assign has_warnings = false -%}
+{%- if safety and safety.warnings and safety.warnings.size > 0 -%}{%- assign has_warnings = true -%}{%- endif -%}
+{%- assign has_contra = false -%}
+{%- if safety and safety.contraindications and safety.contraindications.size > 0 -%}{%- assign has_contra = true -%}{%- endif -%}
+{%- assign has_certs = false -%}
+{%- if safety and safety.safety_certs and safety.safety_certs.size > 0 -%}{%- assign has_certs = true -%}{%- endif -%}
+{%- assign has_age = false -%}
+{%- if safety and safety.age_rating != blank -%}{%- assign has_age = true -%}{%- endif -%}
+
+{%- if has_warnings or has_contra or has_certs or has_age -%}
+<section class="wanelo-section wanelo-safety reveal">
+  {%- if safety.head and safety.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if safety.head.kicker != blank -%}<div class="wanelo-kicker">{{ safety.head.kicker }}</div>{%- endif -%}
+      <h2>{{ safety.head.h2 }}</h2>
+      {%- if safety.head.desc != blank -%}<p class="desc">{{ safety.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-safety__card">
+    {%- if has_age -%}
+      <div class="wanelo-safety__age" aria-label="Age rating">
+        <span class="wanelo-safety__age-label">Age</span>
+        <span class="wanelo-safety__age-value">{{ safety.age_rating }}</span>
+      </div>
+    {%- endif -%}
+
+    {%- if has_warnings -%}
+      <ul class="wanelo-safety__warnings">
+        {%- for w in safety.warnings -%}
+          {%- if w.label != blank -%}
+            <li class="wanelo-safety__warning">
+              <span class="wanelo-safety__warning-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><use href="#wanelo-icon-warning"></use></svg>
+              </span>
+              <div class="wanelo-safety__warning-body">
+                <span class="wanelo-safety__warning-label">{{ w.label }}</span>
+                {%- if w.detail != blank -%}<span class="wanelo-safety__warning-detail">{{ w.detail }}</span>{%- endif -%}
+              </div>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if has_contra -%}
+      <div class="wanelo-safety__contra">
+        <div class="wanelo-safety__contra-label">Do not use if you have</div>
+        <ul class="wanelo-safety__contra-list">
+          {%- for c in safety.contraindications -%}
+            <li class="wanelo-safety__contra-chip">{{ c }}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if has_certs -%}
+      <ul class="wanelo-safety__certs">
+        {%- for c in safety.safety_certs -%}
+          {%- if c.label != blank -%}
+            <li class="wanelo-safety__cert">
+              <span class="wanelo-safety__cert-label">{{ c.label }}</span>
+              {%- if c.sub != blank -%}<span class="wanelo-safety__cert-sub">{{ c.sub }}</span>{%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}

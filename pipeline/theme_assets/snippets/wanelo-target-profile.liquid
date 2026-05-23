@@ -1,0 +1,109 @@
+{%- comment -%}
+  TARGET-PROFILE snippet — explicit "who this is for / not for".
+  Cold-traffic decides in 3 seconds; surfacing "you're in the right
+  place" cuts bounce.
+
+  FILL for: fitness (skill / goal), beauty (skin type / age / concern),
+            supplements (lifestyle / health goal), toys (age / interest),
+            pet products (species / size / temperament).
+  SKIP for: utility / decor / broad-appeal food.
+
+  JSON schema:
+    "target_profile": {
+      "head": {kicker, h2, desc},
+      "ideal_for": [{glyph, label, detail}],
+      "not_ideal_for": ["pregnant or nursing", "active acne flare"],
+      "fitness_level": "All levels" | "Beginner" | ...,
+      "skin_type": "All" | "Oily" | "Dry" | ...,
+      "age_range": "18-65" | "Kids 6-10" | ...
+    }
+
+  glyph field accepted but rendered as a tiny dot — no emoji. Category
+  tags (fitness_level / skin_type / age_range) render as flat chips
+  ABOVE the two-column list.
+{%- endcomment -%}
+
+{%- assign tp = product.metafields.custom.target_profile.value -%}
+{%- assign has_ideal = false -%}
+{%- if tp and tp.ideal_for and tp.ideal_for.size > 0 -%}{%- assign has_ideal = true -%}{%- endif -%}
+{%- assign has_notideal = false -%}
+{%- if tp and tp.not_ideal_for and tp.not_ideal_for.size > 0 -%}{%- assign has_notideal = true -%}{%- endif -%}
+{%- assign has_tags = false -%}
+{%- if tp and tp.fitness_level != blank -%}{%- assign has_tags = true -%}{%- endif -%}
+{%- if tp and tp.skin_type != blank -%}{%- assign has_tags = true -%}{%- endif -%}
+{%- if tp and tp.age_range != blank -%}{%- assign has_tags = true -%}{%- endif -%}
+
+{%- if has_ideal or has_notideal or has_tags -%}
+<section class="wanelo-section wanelo-target-profile reveal">
+  {%- if tp.head and tp.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if tp.head.kicker != blank -%}<div class="wanelo-kicker">{{ tp.head.kicker }}</div>{%- endif -%}
+      <h2>{{ tp.head.h2 }}</h2>
+      {%- if tp.head.desc != blank -%}<p class="desc">{{ tp.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_tags -%}
+    <ul class="wanelo-target-profile__tags">
+      {%- if tp.fitness_level != blank -%}
+        <li class="wanelo-target-profile__tag">
+          <span class="wanelo-target-profile__tag-label">Level</span>
+          <span class="wanelo-target-profile__tag-value">{{ tp.fitness_level }}</span>
+        </li>
+      {%- endif -%}
+      {%- if tp.skin_type != blank -%}
+        <li class="wanelo-target-profile__tag">
+          <span class="wanelo-target-profile__tag-label">Skin type</span>
+          <span class="wanelo-target-profile__tag-value">{{ tp.skin_type }}</span>
+        </li>
+      {%- endif -%}
+      {%- if tp.age_range != blank -%}
+        <li class="wanelo-target-profile__tag">
+          <span class="wanelo-target-profile__tag-label">Ages</span>
+          <span class="wanelo-target-profile__tag-value">{{ tp.age_range }}</span>
+        </li>
+      {%- endif -%}
+    </ul>
+  {%- endif -%}
+
+  <div class="wanelo-target-profile__grid">
+    {%- if has_ideal -%}
+      <div class="wanelo-target-profile__col wanelo-target-profile__col--yes">
+        <div class="wanelo-target-profile__col-label">Made for you if</div>
+        <ul class="wanelo-target-profile__list">
+          {%- for item in tp.ideal_for -%}
+            {%- if item.label != blank -%}
+              <li class="wanelo-target-profile__item">
+                <span class="wanelo-target-profile__mark" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><use href="#wanelo-icon-check"></use></svg>
+                </span>
+                <div>
+                  <span class="wanelo-target-profile__item-label">{{ item.label }}</span>
+                  {%- if item.detail != blank -%}<span class="wanelo-target-profile__item-detail">{{ item.detail }}</span>{%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+    {%- if has_notideal -%}
+      <div class="wanelo-target-profile__col wanelo-target-profile__col--no">
+        <div class="wanelo-target-profile__col-label">Not the right fit if</div>
+        <ul class="wanelo-target-profile__list">
+          {%- for item in tp.not_ideal_for -%}
+            <li class="wanelo-target-profile__item">
+              <span class="wanelo-target-profile__mark wanelo-target-profile__mark--no" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><use href="#wanelo-icon-x"></use></svg>
+              </span>
+              <div>
+                <span class="wanelo-target-profile__item-label">{{ item }}</span>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}

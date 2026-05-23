@@ -1,0 +1,93 @@
+{%- comment -%}
+  NUTRITION-FACTS snippet — FDA-label-style box for food/supplements.
+  Distinct from `ingredients` (chip list of components).
+
+  JSON schema:
+    "nutrition_facts": {
+      "head": {kicker, h2, desc},
+      "serving_size": "1 scoop (32g)",
+      "servings_per_container": 30,
+      "calories": 120,
+      "macros": [{label, value, dv_percent}],
+      "highlights": ["No added sugar", "Gluten-free"],
+      "allergens": ["Soy (manufactured in facility with peanuts)"]
+    }
+
+  Visual: centered FDA-style box with black hairlines, monospace
+  numbers, right-aligned %DV. Highlights as chips above. Allergens as
+  muted note below.
+{%- endcomment -%}
+
+{%- assign nf = product.metafields.custom.nutrition_facts.value -%}
+{%- assign has_macros = false -%}
+{%- if nf and nf.macros and nf.macros.size > 0 -%}{%- assign has_macros = true -%}{%- endif -%}
+{%- assign has_serving = false -%}
+{%- if nf and nf.serving_size != blank -%}{%- assign has_serving = true -%}{%- endif -%}
+
+{%- if has_macros or has_serving -%}
+<section class="wanelo-section wanelo-nutrition-facts reveal">
+  {%- if nf.head and nf.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if nf.head.kicker != blank -%}<div class="wanelo-kicker">{{ nf.head.kicker }}</div>{%- endif -%}
+      <h2>{{ nf.head.h2 }}</h2>
+      {%- if nf.head.desc != blank -%}<p class="desc">{{ nf.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if nf.highlights and nf.highlights.size > 0 -%}
+    <ul class="wanelo-nutrition-facts__highlights">
+      {%- for h in nf.highlights -%}
+        <li class="wanelo-nutrition-facts__highlight">{{ h }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  <div class="wanelo-nutrition-facts__label">
+    <header class="wanelo-nutrition-facts__label-head">
+      <div class="wanelo-nutrition-facts__label-title">Nutrition Facts</div>
+      {%- if nf.servings_per_container -%}
+        <div class="wanelo-nutrition-facts__servings">{{ nf.servings_per_container }} servings per container</div>
+      {%- endif -%}
+      {%- if has_serving -%}
+        <div class="wanelo-nutrition-facts__serving-row">
+          <span>Serving size</span>
+          <strong>{{ nf.serving_size }}</strong>
+        </div>
+      {%- endif -%}
+    </header>
+
+    {%- if nf.calories -%}
+      <div class="wanelo-nutrition-facts__calories">
+        <span>Calories</span>
+        <strong>{{ nf.calories }}</strong>
+      </div>
+    {%- endif -%}
+
+    {%- if has_macros -%}
+      <div class="wanelo-nutrition-facts__dv-head">% Daily Value</div>
+      <ul class="wanelo-nutrition-facts__macros">
+        {%- for m in nf.macros -%}
+          {%- if m.label != blank -%}
+            <li class="wanelo-nutrition-facts__macro">
+              <span class="wanelo-nutrition-facts__macro-label">{{ m.label }}</span>
+              <span class="wanelo-nutrition-facts__macro-value">{{ m.value }}</span>
+              <span class="wanelo-nutrition-facts__macro-dv">
+                {%- if m.dv_percent -%}{{ m.dv_percent }}%{%- else -%}—{%- endif -%}
+              </span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+  {%- if nf.allergens and nf.allergens.size > 0 -%}
+    <div class="wanelo-nutrition-facts__allergens">
+      <span class="wanelo-kicker">Contains / may contain</span>
+      <ul>
+        {%- for a in nf.allergens -%}<li>{{ a }}</li>{%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}

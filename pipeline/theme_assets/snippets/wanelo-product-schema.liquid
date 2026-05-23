@@ -1,26 +1,13 @@
 {%- comment -%}
-  WANELO Augmented Product Schema (JSON-LD).
-
-  Shopify themes emit a basic Product schema by default but it's
-  inconsistent across themes and often missing key fields. This snippet
-  emits a controlled, complete JSON-LD that helps Google build rich
-  snippets in SERPs — +10-20% CTR for product pages already ranking.
+  WANELO Augmented Product Schema (JSON-LD). UNCHANGED from prior
+  release — markup not affected by the Apple-aesthetic refactor.
 
   Compliance notes:
-    - Does NOT emit `aggregateRating` from custom.reviews metafield —
-      those are AI-generated content used for visual social proof, NOT
-      verified buyer testimonials. Emitting them as schema.org aggregate
-      ratings would be FTC fraud territory. Once Judge.me / Loox / Yotpo
-      is wired with real reviews, this block can be expanded.
-    - Does NOT emit `hasMerchantReturnPolicy` — operator handles return
+    - Does NOT emit aggregateRating from custom.reviews metafield —
+      those are AI-generated content used for visual social proof,
+      NOT verified buyer testimonials.
+    - Does NOT emit hasMerchantReturnPolicy — operator handles return
       policy via a separate Shopify checkout-page module, not on PDP.
-
-  Read fields:
-    - product.title, product.vendor, product.url
-    - product.price, product.compare_at_price, product.available
-    - product.featured_image
-    - product.metafields.custom.hero.value.lead (AI-written tagline,
-      preferred over raw description for snippet quality)
 {%- endcomment -%}
 
 {%- assign hero_lead = product.metafields.custom.hero.value.lead | default: '' -%}

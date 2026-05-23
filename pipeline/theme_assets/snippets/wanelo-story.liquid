@@ -1,13 +1,15 @@
 {%- comment -%}
-  STORY snippet — alternating photo/text rows.
+  STORY snippet — Apple sticky-scroll chapters.
   Reads product.metafields.custom.story JSON:
     {head: {kicker, h2, desc}, chapters: [{image_url, image_alt, kicker, h3, p}]}
-  Each chapter renders as a story-row; even-indexed rows are mirrored (photo on right).
+  On desktop ≥1024px, each row gets .is-sticky → text column sticks while
+  the image scrolls past. On mobile, plain stacked rows.
+  Mirror class on every other row alternates which side the image sits on.
 {%- endcomment -%}
 
 {%- assign story = product.metafields.custom.story.value -%}
 {%- if story and story.chapters and story.chapters.size > 0 -%}
-<section class="wanelo-section">
+<section class="wanelo-section wanelo-story">
   {%- if story.head and story.head.h2 != blank -%}
     <div class="wanelo-head reveal">
       {%- if story.head.kicker != blank -%}<div class="wanelo-kicker">{{ story.head.kicker }}</div>{%- endif -%}
@@ -20,18 +22,20 @@
     {%- assign mirror_class = '' -%}
     {%- assign row_rem = forloop.index0 | modulo: 2 -%}
     {%- if row_rem == 1 -%}{%- assign mirror_class = ' mirror' -%}{%- endif -%}
-    <div class="wanelo-story-row reveal{{ mirror_class }}">
-      {%- if chapter.image_url != blank -%}
-        <div class="wanelo-story-row__img">
-          <img src="{{ chapter.image_url }}"
-               alt="{{ chapter.image_alt | default: '' | escape }}"
-               loading="lazy" decoding="async">
+    <div class="wanelo-story-row reveal is-sticky{{ mirror_class }}">
+      <div class="wanelo-story-row__inner">
+        {%- if chapter.image_url != blank -%}
+          <div class="wanelo-story-row__img">
+            <img src="{{ chapter.image_url }}"
+                 alt="{{ chapter.image_alt | default: '' | escape }}"
+                 loading="lazy" decoding="async">
+          </div>
+        {%- endif -%}
+        <div class="wanelo-story-row__copy">
+          {%- if chapter.kicker != blank -%}<div class="wanelo-kicker">{{ chapter.kicker }}</div>{%- endif -%}
+          {%- if chapter.h3 != blank -%}<h3>{{ chapter.h3 }}</h3>{%- endif -%}
+          {%- if chapter.p != blank -%}<p>{{ chapter.p }}</p>{%- endif -%}
         </div>
-      {%- endif -%}
-      <div class="wanelo-story-row__copy">
-        {%- if chapter.kicker != blank -%}<div class="wanelo-kicker">{{ chapter.kicker }}</div>{%- endif -%}
-        {%- if chapter.h3 != blank -%}<h3>{{ chapter.h3 }}</h3>{%- endif -%}
-        {%- if chapter.p != blank -%}<p>{{ chapter.p }}</p>{%- endif -%}
       </div>
     </div>
   {%- endfor -%}

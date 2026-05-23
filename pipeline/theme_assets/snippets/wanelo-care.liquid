@@ -2,8 +2,10 @@
   CARE snippet — how to clean/maintain/store the product.
   Reads product.metafields.custom.care JSON:
     {head: {kicker, h2, desc},
-     items: [{glyph: "🌊", label: "Hand wash", note: "cold water"}]}
-  Designer fills 3-6 items for: fashion/jewelry/textiles/leather/kitchen tools/decor.
+     items: [{icon: "care-cold", label: "Hand wash", note: "cold water"}]}
+  item.icon is one of the keys in wanelo-icons.liquid (care-warm,
+  care-cold, care-dry, care-iron, care-bleach, care-tumble, care-charge,
+  care-store, care-wipe). Falls back to no glyph if icon blank.
 {%- endcomment -%}
 
 {%- assign care = product.metafields.custom.care.value -%}
@@ -20,7 +22,11 @@
     {%- for item in care.items -%}
       {%- if item.label != blank -%}
         <li class="wanelo-care__item">
-          {%- if item.glyph != blank -%}<span class="wanelo-care__glyph">{{ item.glyph }}</span>{%- endif -%}
+          {%- if item.icon != blank -%}
+            <span class="wanelo-care__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ item.icon }}"></use></svg>
+            </span>
+          {%- endif -%}
           <div class="wanelo-care__body">
             <span class="wanelo-care__label">{{ item.label }}</span>
             {%- if item.note != blank -%}<span class="wanelo-care__note">{{ item.note }}</span>{%- endif -%}

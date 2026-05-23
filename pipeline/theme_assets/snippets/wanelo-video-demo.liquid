@@ -1,0 +1,83 @@
+{%- comment -%}
+  VIDEO-DEMO snippet — embedded product video with lazy-loaded iframe.
+  Click the poster → wanelo.js swaps it for the real iframe (privacy +
+  performance: no third-party request until user opts in).
+
+  JSON schema:
+    "video_demo": {
+      "head": {kicker, h2, desc},
+      "video": {source: "youtube"|"vimeo"|"direct",
+                id_or_url: "dQw4w9WgXcQ" | "https://.../demo.mp4",
+                duration_seconds: 45,
+                thumbnail_url: "https://...optional"},
+      "chapters": [{time: "0:00", label: "Unboxing"}]
+    }
+
+  Builds the embed URL from source + id_or_url. For "direct" source,
+  id_or_url is a full https:// URL to a .mp4; wanelo.js will render
+  a <video> element instead of an iframe.
+{%- endcomment -%}
+
+{%- assign vd = product.metafields.custom.video_demo.value -%}
+{%- if vd and vd.video and vd.video.id_or_url != blank -%}
+
+{%- assign vid = vd.video.id_or_url -%}
+{%- assign source = vd.video.source | default: 'youtube' -%}
+{%- assign embed = '' -%}
+{%- case source -%}
+  {%- when 'youtube' -%}
+    {%- assign embed = vid | prepend: 'https://www.youtube-nocookie.com/embed/' | append: '?autoplay=1&rel=0' -%}
+  {%- when 'vimeo' -%}
+    {%- assign embed = vid | prepend: 'https://player.vimeo.com/video/' | append: '?autoplay=1' -%}
+  {%- else -%}
+    {%- assign embed = vid -%}
+{%- endcase -%}
+
+{%- assign poster = vd.video.thumbnail_url -%}
+{%- if poster == blank and source == 'youtube' -%}
+  {%- assign poster = vid | prepend: 'https://i.ytimg.com/vi/' | append: '/hqdefault.jpg' -%}
+{%- endif -%}
+
+{%- assign dur = vd.video.duration_seconds | default: 0 -%}
+{%- assign m = dur | divided_by: 60 -%}
+{%- assign s = dur | modulo: 60 | prepend: '0' | slice: -2, 2 -%}
+
+<section class="wanelo-section wanelo-video-demo reveal">
+  {%- if vd.head and vd.head.h2 != blank -%}
+    <div class="wanelo-head">
+      {%- if vd.head.kicker != blank -%}<div class="wanelo-kicker">{{ vd.head.kicker }}</div>{%- endif -%}
+      <h2>{{ vd.head.h2 }}</h2>
+      {%- if vd.head.desc != blank -%}<p class="desc">{{ vd.head.desc }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-video-demo__frame">
+    <button type="button"
+            class="wanelo-video-demo__poster"
+            data-video-source="{{ source }}"
+            data-video-embed="{{ embed | escape }}"
+            aria-label="Play product demo video">
+      {%- if poster != blank -%}
+        <img src="{{ poster }}" alt="" loading="lazy" decoding="async">
+      {%- endif -%}
+      <span class="wanelo-video-demo__play" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><use href="#wanelo-icon-play"></use></svg>
+      </span>
+      {%- if dur > 0 -%}
+        <span class="wanelo-video-demo__duration">{{ m }}:{{ s }}</span>
+      {%- endif -%}
+    </button>
+  </div>
+
+  {%- if vd.chapters and vd.chapters.size > 0 -%}
+    <ol class="wanelo-video-demo__chapters">
+      {%- for ch in vd.chapters -%}
+        <li class="wanelo-video-demo__chapter">
+          <span class="wanelo-video-demo__chapter-time">{{ ch.time }}</span>
+          <span class="wanelo-video-demo__chapter-label">{{ ch.label }}</span>
+        </li>
+      {%- endfor -%}
+    </ol>
+  {%- endif -%}
+</section>
+{%- endif -%}

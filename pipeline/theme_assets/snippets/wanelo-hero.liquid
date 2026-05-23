@@ -1,9 +1,9 @@
 {%- comment -%}
-  HERO snippet — text + photo split.
+  HERO snippet — Apple full-viewport hero.
   Reads product.metafields.custom.hero JSON:
-    {kicker, h1, lead, image_url, image_alt}
-  Inline CTA "Add to cart — $price" links to #wanelo-atc.
-  data-wanelo-atc-link → wanelo.js attaches smooth-scroll + analytics.
+    {kicker, h1, lead, image_url, image_alt, secondary_label, secondary_href}
+  Primary CTA = pill, secondary CTA = "Learn more →" text link.
+  Both inherit --btn-primary-* tokens; smooth-scroll via data-wanelo-atc-link.
 {%- endcomment -%}
 
 {%- assign hero = product.metafields.custom.hero.value -%}
@@ -11,24 +11,32 @@
 <section class="wanelo-hero reveal">
   <div class="wanelo-hero__copy">
     {%- if hero.kicker != blank -%}
-      <div class="wanelo-kicker reveal">{{ hero.kicker }}</div>
+      <div class="wanelo-kicker">{{ hero.kicker }}</div>
     {%- endif -%}
-    <h1>
-      <span class="mask"><span>{{ hero.h1 }}</span></span>
-    </h1>
+    <h1>{{ hero.h1 }}</h1>
     {%- if hero.lead != blank -%}
       <p class="wanelo-hero__lead reveal delay-1">{{ hero.lead }}</p>
     {%- endif -%}
 
-    <a href="#wanelo-atc" class="wanelo-hero__cta reveal delay-2"
-       data-wanelo-atc-link>
-      {{- shop.metafields.wanelo.cta_label | default: 'Add to cart' -}}
-      {%- if product.price -%} — {{ product.price | money }}{%- endif -%}
-      <span aria-hidden="true"> →</span>
-    </a>
+    <div class="wanelo-hero__ctas reveal delay-2">
+      <a href="#wanelo-atc" class="wanelo-hero__cta" data-wanelo-atc-link>
+        {{- shop.metafields.wanelo.cta_label | default: 'Add to cart' -}}
+        {%- if product.price -%} — {{ product.price | money }}{%- endif -%}
+      </a>
+      {%- if hero.secondary_label != blank -%}
+        <a href="{{ hero.secondary_href | default: '#wanelo-features' }}" class="wanelo-hero__cta-secondary">
+          {{ hero.secondary_label }} <span aria-hidden="true">→</span>
+        </a>
+      {%- else -%}
+        <a href="#wanelo-features" class="wanelo-hero__cta-secondary">
+          Learn more <span aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+    </div>
   </div>
+
   {%- if hero.image_url != blank -%}
-    <div class="wanelo-hero__photo reveal">
+    <div class="wanelo-hero__photo reveal" data-parallax="0.4">
       <img src="{{ hero.image_url }}"
            alt="{{ hero.image_alt | default: product.title | escape }}"
            loading="eager" fetchpriority="high" decoding="async">

@@ -6,17 +6,12 @@
   pipeline post-creation with reciprocity + hub detection).
 
   Each chip carries varied anchor text (exact title / keyword phrase /
-  generic "explore X") so we don't over-optimize a single anchor —
-  Google penalty signal.
+  generic "explore X"). Hubs get distinctive styling + a "HUB" badge.
 
-  Hubs (top-15% by in-degree) get distinctive styling + a "HUB" badge —
-  buyer sees the parent category clearly, authority concentrates there.
+  Apple-aesthetic refactor: chips now flat (no border, no transform on
+  hover), inherit --btn-primary-* token colors for hub state.
 
-  Install: Online Store → Themes → Customize → Collection → Default
-  collection → Add section → "Wanelo Related Collections" → Save.
-
-  Empty metafield = section renders nothing (skip-if-blank gate), so it's
-  safe to leave installed even on collections without related data yet.
+  Empty metafield = section renders nothing (skip-if-blank gate).
 {%- endcomment -%}
 
 {%- assign related = collection.metafields.custom.related_collections.value -%}
@@ -47,7 +42,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Renders a chip-row of related collections from collection.metafields.custom.related_collections. Data is computed by the pipeline (Cell 4 cross-linking step) with reciprocity + hub detection. Empty metafield = section hidden, so safe to leave installed on all collections."
+      "content": "Renders a chip-row of related collections from collection.metafields.custom.related_collections. Empty metafield = section hidden, so safe to leave installed on all collections."
     }
   ],
   "presets": [

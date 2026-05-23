@@ -1,8 +1,11 @@
 {%- comment -%}
-  STATS snippet — 4-cell grid 2×2 with big numbers.
+  STATS snippet — single horizontal row of 4 stat cells with hairline
+  separators. Big SF Pro numerals (NOT Fraunces — Apple uses SF Pro for
+  numerals too). Replaces the old 2×2 fancy grid.
   Reads product.metafields.custom.stats JSON:
     {head: {kicker, h2, desc}, items: [{kicker, value, label}]}
-  Designer should provide 4 items. value can contain <em>units</em>.
+  Designer should provide 4 items. value can contain <em>units</em>
+  for tonal de-emphasis (rendered .45em, --sec-fg-3 colour).
 {%- endcomment -%}
 
 {%- assign stats = product.metafields.custom.stats.value -%}
@@ -17,12 +20,12 @@
   {%- endif -%}
 
   <div class="wanelo-stats reveal">
-    <div class="wanelo-stats__grid">
+    <div class="wanelo-stats__row">
       {%- for item in stats.items limit: 4 -%}
         <div class="wanelo-stats__cell reveal delay-{{ forloop.index0 | plus: 1 }}">
-          {%- if item.kicker != blank -%}<div class="wanelo-kicker">{{ item.kicker }}</div>{%- endif -%}
           {%- if item.value != blank -%}<div class="wanelo-stats__num">{{ item.value }}</div>{%- endif -%}
           {%- if item.label != blank -%}<div class="wanelo-stats__lbl">{{ item.label }}</div>{%- endif -%}
+          {%- if item.kicker != blank -%}<div class="wanelo-kicker">{{ item.kicker }}</div>{%- endif -%}
         </div>
       {%- endfor -%}
     </div>

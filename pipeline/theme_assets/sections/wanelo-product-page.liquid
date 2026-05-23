@@ -1,34 +1,56 @@
 {%- comment -%}
   WANELO Product Page — single section, renders the entire long-form
-  description from up to 21 Shopify metafields (each a JSON object).
-{%- endcomment -%}
+  description from up to 34 Shopify metafield modules. Skip-if-blank
+  gates inside every snippet — empty metafield = section hidden.
 
-{%- comment -%} Font preconnect — saves ~80-150ms on cold first paint {%- endcomment -%}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  Round-4 (Apple aesthetic): system fonts, dark var-swap, monochrome +
+  accent, pill CTAs inheriting --btn-primary-*.
+  Round-5 (category expansion #1): +6 modules — target-profile, video-
+  demo, protocol, compatibility, assembly, safety.
+  Round-6 (category expansion #2): +8 modules — brand-story, lifestyle-
+  gallery, nutrition-facts, clinical-evidence, app-showcase, room-
+  placement, subscription-refill, sustainability.
+
+  Render order is FIXED. Pipeline tests assert this sequence.
+{%- endcomment -%}
 
 {{ 'wanelo.css' | asset_url | stylesheet_tag }}
 {% render 'wanelo-palette' %}
 {% render 'wanelo-product-schema' %}
+{% render 'wanelo-icons' %}
 
 <div class="wanelo-page" role="article">
 
   {% render 'wanelo-hero' %}
+  {% render 'wanelo-target-profile' %}
+  {% render 'wanelo-brand-story' %}
   {% render 'wanelo-story' %}
   {% render 'wanelo-features' %}
+  {% render 'wanelo-video-demo' %}
+  {% render 'wanelo-lifestyle-gallery' %}
   {% render 'wanelo-ingredients' %}
+  {% render 'wanelo-nutrition-facts' %}
   {% render 'wanelo-how-to' %}
+  {% render 'wanelo-protocol' %}
   {% render 'wanelo-timeline' %}
+  {% render 'wanelo-clinical-evidence' %}
   {% render 'wanelo-stats' %}
   {% render 'wanelo-specs' %}
+  {% render 'wanelo-compatibility' %}
+  {% render 'wanelo-app-showcase' %}
   {% render 'wanelo-size-guide' %}
   {% render 'wanelo-dimensions' %}
+  {% render 'wanelo-room-placement' %}
   {% render 'wanelo-variants' %}
   {% render 'wanelo-care' %}
   {% render 'wanelo-whats-included' %}
+  {% render 'wanelo-assembly' %}
   {% render 'wanelo-gift-options' %}
+  {% render 'wanelo-subscription-refill' %}
   {% render 'wanelo-compare' %}
   {% render 'wanelo-trust' %}
+  {% render 'wanelo-sustainability' %}
+  {% render 'wanelo-safety' %}
   {% render 'wanelo-reviews' %}
   {% render 'wanelo-faq' %}
   {% render 'wanelo-cta' %}
