@@ -43,3 +43,55 @@ GitHub UI в формате ZIP внутри `files(4).zip`).
 
 Дата: 2026-05-05
 Связанные коммиты: be4dcd7 (с секретами, не запушен) → новый без секретов
+
+---
+
+## #002 — EPROLO scraper берёт маркетинговую страницу вместо товара
+Симптом: pipeline создал в Shopify товары с title `"EPROLO - All-in-One
+Dropshipping Supply Chain Platform"` и `"Sign Up -EPROLO"` вместо
+реальных продуктов. Все товары [3..11] получили один handle и
+перезаписали друг друга через `Updated: gid://shopify/Product/8889396265138`.
+
+Корневая причина: `scrape_eprolo` (Cell 2) использует Playwright без
+залогиненной EPROLO-сессии. EPROLO для незалогиненных редиректит
+product-URL на signup/home, а скрейпер берёт `<h1>` этой страницы.
+`validate_scrape` пропускал такой title — `"EPROLO - ..."` длиннее 5
+символов, картинки на маркетинг-странице есть, проверка проходила.
+
+Решение (частичное, defense-in-depth):
+1. `validate_scrape` расширен — детектит маркетинг-тайтлы как issue
+   `marketing_page` (`'EPROLO -' / 'Sign Up' / 'Sign In' / 'Log In' /
+   'Login' / 'Dropshipping Supply' / 'All-in-One Dropshipping'`).
+2. Cell 6 при `marketing_page` ставит `status='error'` и не пушит
+   в Shopify.
+
+Полное решение (в работе): Playwright `storage_state.json` после
+ручного логина в EPROLO + проверка финального URL после `page.goto`.
+См. `HANDOFF.md` секция 1, Bug A.
+
+Дата: 2026-05-26
+Связанный коммит: ba799f3
+
+---
+
+## #003 — `TypeError: object of type 'NoneType' has no len()` в Cell 6
+Симптом: после `Created: gid://shopify/Product/...` pipeline крашится
+строкой `_ok_mf = len(_data_mf.get('metafields', []))` →
+`TypeError: object of type 'NoneType' has no len()`. Товар в Shopify
+есть, но метафилды не записаны.
+
+Корневая причина: Shopify возвращает `{"metafields": null}` (не
+`[]`!) когда **все** метафилды в батче упали валидацию. `dict.get(key,
+default)` возвращает default только при отсутствии ключа, а не при
+значении `null` — поэтому `.get('metafields', [])` отдавал `None`.
+`len(None)` ломал функцию ДО логирования `userErrors`, мы и не видели,
+что именно отвергло Shopify.
+
+Решение:
+1. `_data_mf.get('metafields') or []` — теперь `None` тоже даёт `[]`.
+2. Verbose-логгирование (отдельный коммит `4927a82`) — top-level
+   GraphQL `errors` + per-input `key/type/value_len` + все
+   `userErrors` с `field/code/message` при `0/N written`.
+
+Дата: 2026-05-26
+Связанные коммиты: ba799f3 (fix), 4927a82 (diagnostics)

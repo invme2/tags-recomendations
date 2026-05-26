@@ -97,7 +97,7 @@ tags-recomendations/
 5. `git add -A && git commit -m "..." && git push -u origin <branch>`
 
 ## Что СЕЙЧАС работает (не трогай без причины)
-- ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING)
+- ✅ Каркас моно-репо и memory-файлы (CLAUDE/DECISIONS/CHANGELOG/TROUBLESHOOTING/HANDOFF)
 - ✅ `taxonomy.json` (790 кластеров: 430 v3.1 approved + 335 v3.2 draft + **25 v3.3 draft, gap-fill итерации 1+2**, 36 sections, 27 personas, 14 intents, 9 demos) валиден против `schema.json`
 - ✅ `taxonomy/tools/gap_test.py` — matching тестовых продуктов (или CSV-каталога) против таксономии через cosine; auto-fallback `sentence-transformers/MiniLM` → `sklearn TfidfVectorizer` (sandbox блокирует huggingface.co)
 - ✅ `taxonomy/schema.json` отражает реальную структуру (ADR-006, supersedes ADR-005)
@@ -105,13 +105,16 @@ tags-recomendations/
   (дубли cluster/persona/intent/demo/section, broken section_id/section_slug/related,
   unknown persona/intent/gender/age, empty embed_text)
 - ✅ `taxonomy/tools/enrich_taxonomy.py` — реальный скрипт пользователя (обогащение через Claude API + FAISS-related)
-- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт **до 21 JSON-секции** с FILL/SKIP per category) → Shopify push (метафилды + EPROLO gallery).
-- ✅ Theme: 21 storefront-метафилда (9 always-on + 12 optional) + 2 admin-only (`photo_pack` ZIP, `source` EPROLO origin record) = 23 total. Файлы темы в `pipeline/theme_assets/` (1 master section + 21 snippet + wanelo.css ~465 строк + wanelo.js). Snippets с пустым метафилдом скипаются в Liquid, типичный товар получает 11-13 секций из 21. Admin-only метафилды видны только в Shopify Admin → Product → Metafields, никогда не попадают в storefront markup.
+- ✅ `pipeline/Shopify_Pipeline.ipynb` (17 ячеек, 8 code, ветка `apple-design-rounds-5-6`) проходит `notebook_smoke`. Pipeline: Strategy(Opus 4.7) → Designer(Sonnet 4.6, выдаёт **до 35 JSON-секций** с FILL/SKIP per category) → Shopify push (метафилды + EPROLO gallery).
+- ✅ Theme: **35 storefront-метафилдов** (round 1-4 + round 5 +6 +round 6 +8) + 2 admin-only (`photo_pack` ZIP, `source` EPROLO origin record) = 37 total. Файлы темы в `pipeline/theme_assets/` (Apple aesthetic: 1 master section + 35 snippets + wanelo.css ~65KB + wanelo.js). Snippets с пустым метафилдом скипаются в Liquid.
 - ✅ `pipeline/tools/notebook_smoke.py` — `nbformat.validate` + `ast.parse` + межъячеечная дефинированность только на module-level scope (не лезет в тела функций — иначе 75 false-positive)
 - ✅ `pipeline/tools/extract_cells.py`, `apply_patch.py` — работают
 - ✅ `tools/health_check.py` — на реальных данных всё зелёное
 - ✅ `taxonomy/tests/test_taxonomy.py` — 15/15: синтетика покрывает все классы ошибок + контрактный тест на реальный `taxonomy.json`
+- ✅ `pipeline/tests/` — **566 passed** (на ветке `apple-design-rounds-5-6` после Round 5+6).
 - ✅ CI: `validate-taxonomy.yml` + `smoke-pipeline.yml`
+- ✅ **`validate_scrape` hard-fail на EPROLO marketing-page redirects** (`'EPROLO -' / 'Sign Up' / 'Sign In' / 'Log In' / 'Login' / 'Dropshipping Supply' / 'All-in-One Dropshipping'` в title → status=error, не пушится в Shopify).
+- ✅ **Verbose metafieldsSet diagnostics** — top-level GraphQL errors + per-input key/type/value_len + до 10 userErrors с code/message при `0/N written`.
 
 ## Что СЕЙЧАС сломано / в работе
 - ⏳ `taxonomy/tools/build_taxonomy.py`, `stats.py`, `export_to_csv.py` —
@@ -125,3 +128,18 @@ tags-recomendations/
 - ⏳ Реальный gap-анализ против каталога EPROLO/Shopify ещё не делали —
   нужен дамп каталога. Текущая итерация — только внутренний структурный
   + индустриальные эвристики (см. CHANGELOG раздел «Gap-analysis итерация 1»).
+- 🔴 **Bug A — EPROLO redirects на signup без залогиненной сессии.**
+  Код-defense есть (marketing_page hard-fail), но pipeline сейчас фейлит
+  100% товаров. Нужен Playwright `storage_state.json` после логина
+  пользователя в EPROLO. **См. `HANDOFF.md` секцию 1.**
+- 🔴 **Bug B — метафилды пусто в Shopify Admin у уже созданных
+  товаров.** Корневая причина не подтверждена (нет логов с новой
+  диагностикой). Гипотеза №1: токен `shpss_*` вместо `shpat_*`. Нужен
+  следующий прогон с verbose-логом. **См. `HANDOFF.md` секцию 1.**
+- 🟡 **Cleanup мусорных Shopify-товаров** — `gid://shopify/Product/8889396002994`
+  и `gid://shopify/Product/8889396265138`. Удалить вручную или через
+  Admin API после получения корректного токена. После — откат status
+  в `pipeline.db` (SQL в `HANDOFF.md` секция 1).
+- 🟡 **Secrets rotation.** Пользователь засветил Anthropic / Shopify /
+  OpenAI / DataForSEO ключи в чат-логе. Должны быть отозваны и
+  перевыпущены. См. `HANDOFF.md` секция 4.

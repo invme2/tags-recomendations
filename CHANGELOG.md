@@ -6,7 +6,34 @@
 
 ## [Unreleased]
 
+### Fixed
+- **EPROLO marketing-page redirect detection** (commit `ba799f3`).
+  `validate_scrape` теперь hard-fail'ит на известные маркетинг-тайтлы
+  (`'EPROLO -' / 'Sign Up' / 'Sign In' / 'Log In' / 'Login' /
+  'Dropshipping Supply' / 'All-in-One Dropshipping'`). Cell 6 при таком
+  issue ставит status='error' и НЕ пушит товар в Shopify. Без этого
+  pipeline создавал в магазине одинаковые мусорные товары с handle от
+  signup-страницы, перезаписывающие друг друга. См. TROUBLESHOOTING #002.
+- **`TypeError: len(None)` в Cell 6** (commit `ba799f3`). Shopify
+  возвращает `{"metafields": null}` (не `[]`) при полном фейле батча
+  метафилдов. `dict.get('metafields', [])` отдавал `None`, и `len()`
+  крашил функцию ДО логирования userErrors. Заменил на
+  `dict.get('metafields') or []`. См. TROUBLESHOOTING #003.
+
+### Changed
+- **Verbose `metafieldsSet` diagnostics** (commit `4927a82`). Раньше при
+  фейле логгировали только `userErrors[:2]` и игнорили top-level GraphQL
+  errors. Сейчас при `0/N written`:
+  - Печатается top-level `errors` (auth, throttle, schema).
+  - Каждый input — `key`, `type`, `value_len` (сразу видно, был ли
+    Designer-output пустой).
+  - До 10 `userErrors` с `field/code/message`.
+  Помогает изолировать Bug B (см. HANDOFF.md секция 1).
+
 ### Added
+- **`HANDOFF.md`** — передача состояния следующему ИИ-агенту: prod-баги,
+  что сделано, первые 10 шагов, жёсткие констрейнты, ротация ключей.
+
 - **Cross-collection SEO interlinking (silo structure)** — fills the
   "collection → collection" link gap. Before, each collection page was a
   dead end for Google (linked only to its own products). Now collections
