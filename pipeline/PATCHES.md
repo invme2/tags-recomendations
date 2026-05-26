@@ -431,3 +431,83 @@ RESET_DB = False  # True = wipe DB before run, False = continue/resume
 
 Коммит: следующий после этой записи.
 
+---
+
+## 2026-05-26 — fix(pipeline): EPROLO storage_state + redirect guard (Bug A)
+Cell: #4 (Cell 2 — Helpers, `get_shared_browser_ctx` + `scrape_eprolo`)
+Cell ID: `b810afd7`
+Snapshot: `pipeline/.snapshots/20260526_144444_before-bug-a-storage-state.ipynb`
+
+### Что было — продолжение Bug A
+TROUBLESHOOTING #002 + commit `ba799f3` добавили только частичный defense
+(hard-fail на marketing-title в `validate_scrape`). Pipeline по-прежнему
+открывал EPROLO незалогиненным → 100% товаров терялись на скрейпе.
+
+### Что стало
+**Op 1 — `get_shared_browser_ctx` (Cell 2):** перед `new_context()`
+читает `EPROLO_STATE_FILE` env var. Если файл существует — передаёт
+`storage_state=...`. Иначе печатает предупреждение. Без правки сигнатуры
+функции, чтобы не задеть call-sites.
+
+```python
+_ctx_kwargs = {"user_agent": "..."}
+_state_file = os.environ.get("EPROLO_STATE_FILE", "")
+if _state_file and os.path.exists(_state_file):
+    _ctx_kwargs["storage_state"] = _state_file
+    print(f"  ⚙ EPROLO session loaded from {_state_file}")
+elif _state_file:
+    print(f"  ⚠ EPROLO_STATE_FILE={_state_file} doesn't exist — Bug A risk")
+else:
+    print(f"  ⚠ EPROLO_STATE_FILE not set — Bug A risk (unauthenticated session)")
+_PW_STATE["ctx"] = await _PW_STATE["browser"].new_context(**_ctx_kwargs)
+```
+
+**Op 2 — `scrape_eprolo` (Cell 2):** defense-in-depth — после `page.goto`
+проверяет, осталась ли `page.url` в `/app/product/`. Если EPROLO
+редиректнул на home/signup (товар удалён / session expired) — ранний
+выход с пустым `result['title']`, который `validate_scrape` ловит как
+`empty/short title` → `status='error'`, без push в Shopify.
+
+```python
+await page.goto(url, wait_until="networkidle", timeout=60000)
+_final_url = page.url or ""
+if "/app/product/" not in _final_url:
+    result["_redirect_target"] = _final_url
+    print(f'    ⚠ EPROLO redirect: {url[:60]} -> {_final_url[:60]}')
+    await page.close()
+    return result
+await page.wait_for_timeout(5000)
+```
+
+### Связанные новые tools
+- `pipeline/tools/eprolo_login.py` — headed Chromium для ручного логина;
+  периодически сохраняет state в `pipeline/.eprolo_state.json` пока
+  пользователь не закроет окно.
+- `pipeline/tools/eprolo_verify_scrape.py <url>` — проверяет, что
+  сохранённый state работает: scrape возвращает реальный product title,
+  не marketing-redirect.
+
+### Действия на стороне пользователя
+1. Установить playwright и chromium локально (на Windows):
+   `pip install playwright python-dotenv && python -m playwright install chromium`.
+2. Один раз залогиниться: `python pipeline/tools/eprolo_login.py` →
+   откроется headed Chromium → login → закрыть окно.
+3. Положить в `.env` (gitignored): `EPROLO_STATE_FILE=<абсолютный путь
+   к pipeline/.eprolo_state.json>`.
+4. Verify: `python pipeline/tools/eprolo_verify_scrape.py <product-url>`
+   → должно вернуть `RESULT: Real product page reached`.
+5. Перезапустить ноутбук — `get_shared_browser_ctx` подхватит state.
+   В логах должно появиться `⚙ EPROLO session loaded from ...`.
+
+### Тест
+- `PYTHONIOENCODING=utf-8 python pipeline/tools/notebook_smoke.py` →
+  «Notebook валиден. Ячеек: 17 (code: 8).»
+- `python -m pytest pipeline/tests/ -q` → **566 passed**.
+- Manual verify через `eprolo_verify_scrape.py`: 2/3 URL'а из тестового
+  батча — реальный product page; 3-й (OceAura body glitter) — товар
+  удалён с EPROLO, redirect на home корректно ловится Op 2 + Op 1 из
+  commit `ba799f3` (`marketing_page`).
+
+Коммит: следующий после этой записи.
+
+

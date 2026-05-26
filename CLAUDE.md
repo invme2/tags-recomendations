@@ -114,6 +114,7 @@ tags-recomendations/
 - ✅ `pipeline/tests/` — **566 passed** (на ветке `apple-design-rounds-5-6` после Round 5+6).
 - ✅ CI: `validate-taxonomy.yml` + `smoke-pipeline.yml`
 - ✅ **`validate_scrape` hard-fail на EPROLO marketing-page redirects** (`'EPROLO -' / 'Sign Up' / 'Sign In' / 'Log In' / 'Login' / 'Dropshipping Supply' / 'All-in-One Dropshipping'` в title → status=error, не пушится в Shopify).
+- ✅ **EPROLO storage_state + redirect guard (Bug A full fix, 2026-05-26).** `get_shared_browser_ctx` подгружает state из `EPROLO_STATE_FILE` env var, `scrape_eprolo` бьёт `_redirect_target` и ранний return когда `/app/product/` не в финальном URL. Новые tools: `pipeline/tools/eprolo_login.py` (одноразовая ручная авторизация в headed Chromium) + `eprolo_verify_scrape.py` (smoke-проверка). Эмпирически подтверждено на 3 URL'ах. См. TROUBLESHOOTING #004.
 - ✅ **Verbose metafieldsSet diagnostics** — top-level GraphQL errors + per-input key/type/value_len + до 10 userErrors с code/message при `0/N written`.
 
 ## Что СЕЙЧАС сломано / в работе
@@ -128,14 +129,18 @@ tags-recomendations/
 - ⏳ Реальный gap-анализ против каталога EPROLO/Shopify ещё не делали —
   нужен дамп каталога. Текущая итерация — только внутренний структурный
   + индустриальные эвристики (см. CHANGELOG раздел «Gap-analysis итерация 1»).
-- 🔴 **Bug A — EPROLO redirects на signup без залогиненной сессии.**
-  Код-defense есть (marketing_page hard-fail), но pipeline сейчас фейлит
-  100% товаров. Нужен Playwright `storage_state.json` после логина
-  пользователя в EPROLO. **См. `HANDOFF.md` секцию 1.**
-- 🔴 **Bug B — метафилды пусто в Shopify Admin у уже созданных
-  товаров.** Корневая причина не подтверждена (нет логов с новой
-  диагностикой). Гипотеза №1: токен `shpss_*` вместо `shpat_*`. Нужен
-  следующий прогон с verbose-логом. **См. `HANDOFF.md` секцию 1.**
+- ✅ **Bug A — EPROLO redirects (FIXED 2026-05-26).** Полное решение
+  через storage_state + redirect-guard, см. блок выше. Пользователь
+  обязан один раз залогиниться через `eprolo_login.py` и держать
+  `EPROLO_STATE_FILE` в `.env`.
+- 🟡 **Bug B — пустые `namespace:custom` метафилды у созданных товаров.**
+  Гипотезы из HANDOFF (`shpss_*` vs `shpat_*`) и моя ранняя
+  («отсутствует `write_metafields` scope») **опровергнуты эмпирически
+  2026-05-26**: OAuth flow работает (Cell 2 корректно обменивает
+  `shpss_*` на `shpat_*` TTL 24h), у app `EproloImages` все 9 essential
+  scopes присутствуют (`currentAppInstallation.accessScopes`), пустая
+  `metafieldsSet` мутация даёт 200 OK. Реальная причина пока неизвестна
+  — ждём verbose-логи `4927a82` от прогона на 1-2 реальных EPROLO URL.
 - 🟡 **Cleanup мусорных Shopify-товаров** — `gid://shopify/Product/8889396002994`
   и `gid://shopify/Product/8889396265138`. Удалить вручную или через
   Admin API после получения корректного токена. После — откат status

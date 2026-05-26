@@ -7,6 +7,15 @@
 ## [Unreleased]
 
 ### Fixed
+- **EPROLO storage_state + redirect guard (Bug A full fix)** (TBD commit,
+  see `pipeline/PATCHES.md` 2026-05-26). `get_shared_browser_ctx` теперь
+  читает `EPROLO_STATE_FILE` env var и если файл существует — передаёт
+  `storage_state` в `new_context`. Plus defense-in-depth в
+  `scrape_eprolo`: ранний выход при редиректе с `/app/product/` →
+  ошибка ловится `validate_scrape`. Эмпирически подтверждено на 3
+  URL'ах из тестового батча. Новые tools: `pipeline/tools/eprolo_login.py`
+  (headed Chromium для ручного логина) + `eprolo_verify_scrape.py`
+  (smoke-проверка состояния). См. TROUBLESHOOTING #004.
 - **EPROLO marketing-page redirect detection** (commit `ba799f3`).
   `validate_scrape` теперь hard-fail'ит на известные маркетинг-тайтлы
   (`'EPROLO -' / 'Sign Up' / 'Sign In' / 'Log In' / 'Login' /

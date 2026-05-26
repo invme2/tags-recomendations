@@ -95,3 +95,36 @@ default)` возвращает default только при отсутствии 
 
 Дата: 2026-05-26
 Связанные коммиты: ba799f3 (fix), 4927a82 (diagnostics)
+
+---
+
+## #004 — Bug A полное решение: EPROLO storage_state + redirect guard
+Симптом: после `ba799f3` pipeline корректно отказывался пушить
+маркетинг-redirects в Shopify, но 100% реальных EPROLO product URLs всё
+равно скрейпились пустыми — `scrape_eprolo` открывал страницу без
+залогиненной сессии, и EPROLO одинаково редиректил всех на signup.
+
+Корневая причина: `get_shared_browser_ctx` создавал `new_context()` без
+`storage_state`. Колаб не имеет stateful Playwright-сессии, кладовая
+кук пустая, EPROLO считает запрос анонимным.
+
+Решение:
+1. Headed-режим Playwright для ручного логина один раз —
+   `pipeline/tools/eprolo_login.py` сохраняет cookies + localStorage
+   в `pipeline/.eprolo_state.json` (gitignored).
+2. `get_shared_browser_ctx` теперь читает `EPROLO_STATE_FILE` из env,
+   и если файл есть — передаёт `storage_state=...` в `new_context`.
+3. `scrape_eprolo` defense-in-depth: после `page.goto` сверяет
+   `page.url` с шаблоном `/app/product/`. Если редирект — ранний
+   выход с пустым `title`, который `validate_scrape` ловит.
+
+Проверено эмпирически: anti-aging-firming-micro-needling и
+crest-3d-white возвращают реальные product titles. OceAura
+(удалённый товар) ловится по `_redirect_target=/app/home.html`
++ `marketing_page` в `validate_scrape` (commit `ba799f3`).
+
+TTL Shopify-токена 24h, TTL EPROLO-сессии — пока браузер не разлогинит
+(в норме недели). Re-login через `eprolo_login.py` при необходимости.
+
+Дата: 2026-05-26
+Связанный коммит: следующий после этой записи.

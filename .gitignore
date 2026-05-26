@@ -49,6 +49,10 @@ pipeline/.snapshots/*
 credentials.json
 secrets.json
 
+# Playwright session state (EPROLO login cookies) — see pipeline/tools/eprolo_login.py
+pipeline/.eprolo_state.json
+eprolo_state.json
+
 # Editor / OS
 .DS_Store
 Thumbs.db
