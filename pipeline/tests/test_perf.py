@@ -72,11 +72,11 @@ def test_designer_timeout_is_at_least_two_minutes(cells: dict) -> None:
 
 
 def test_strategy_timeout_is_reasonable(cells: dict) -> None:
-    """Strategy emits ~4096 tokens — 90-180s is appropriate."""
+    """Strategy emits ~2500 tokens — 90-180s is appropriate."""
     c6 = cells["ce20f070"]
-    pat = re.compile(r"max_tokens=4096,\s*timeout=(\d+(?:\.\d+)?)")
+    pat = re.compile(r"max_tokens=2500,\s*timeout=(\d+(?:\.\d+)?)")
     m = pat.search(c6)
-    assert m, "Strategy call (max_tokens=4096, timeout=) not found"
+    assert m, "Strategy call (max_tokens=2500, timeout=) not found"
     t = float(m.group(1))
     assert 60.0 <= t <= 240.0, f"Strategy timeout={t}s outside reasonable 60-240s range"
 
@@ -383,15 +383,20 @@ def test_async_anthropic_client_declared(cells: dict) -> None:
 
 def test_loop_uses_await_client_async(cells: dict) -> None:
     """The per-product AI calls (Vision / Strategy / Designer + retries)
-    must use `await client_async.messages.create(...)` — not the sync
-    `client.messages.create(...)` which blocks the event loop."""
+    must use the async client — either `await client_async.messages.create(...)`
+    OR `async with client_async.messages.stream(...)` (streaming form, which
+    we use for Designer to bypass the 10-min read-timeout on long generation).
+    The sync `client.messages.create(...)` would block the event loop and
+    is forbidden here."""
     c6 = cells["ce20f070"]
-    # Count async vs sync call sites in Cell 6
-    n_async = c6.count("await client_async.messages.create")
+    n_async_create = c6.count("await client_async.messages.create")
+    n_async_stream = c6.count("async with client_async.messages.stream")
+    n_async_total = n_async_create + n_async_stream
     n_sync = c6.count("client.messages.create")
-    assert n_async >= 5, (
-        f"Expected ≥5 await client_async.messages.create call sites in Cell 6; "
-        f"got {n_async}"
+    assert n_async_total >= 5, (
+        f"Expected ≥5 async client_async call sites in Cell 6 "
+        f"(create + stream); got create={n_async_create}, "
+        f"stream={n_async_stream}, total={n_async_total}"
     )
     assert n_sync == 0, (
         f"Cell 6 must NOT call sync client.messages.create (would block "
@@ -533,7 +538,16 @@ def test_end_of_batch_summary_prints_cache_ratio(cells: dict) -> None:
     )
     assert "_anthropic_cost_tracker" in c6
     # Warning when cache ratio is suspiciously low
-    assert "verify cache_control" in c6 or "cache hit ratio low" in c6
+    assert (
+        "verify cache_control" in c6
+        or "cache hit ratio low" in c6
+        or "blended cache hit low" in c6
+    )
+    # Restart-safe job-wide totals: summary merges the per-run sidecar first, and
+    # prints a per-model breakdown (so a low blended ratio is attributable to the
+    # cheap image-heavy model, not silent cache breakage).
+    assert "_load_usage_once" in c6
+    assert "by_model" in c6
 
 
 # ============================================================

@@ -511,3 +511,287 @@ await page.wait_for_timeout(5000)
 Коммит: следующий после этой записи.
 
 
+
+---
+
+## 2026-05-31 — Оптимизация расхода Anthropic-кредитов (Opus НЕ тронут)
+
+**Проблема (диагноз):** `BATCH_CONCURRENCY=1` (серийная обработка) + Designer-стрим
+8–10 мин/товар > TTL ephemeral-кэша (5 мин). Системные промпты (Designer ~10K ток,
+Strategy/Opus ~2.7K, Vision ~0.7K) истекали ДО следующего товара → каждый товар
+переплачивал за *запись* кэша (1.25×) вместо *чтения* (0.1×). Cache hit ≈ 0%.
+Потери ~$0.08/товар (на 2000 товаров ≈ $160 впустую).
+
+**Правки (`pipeline/tools/patch_credit_opt.py`, через nbformat):**
+1. `cache_control` 5 сайтов: `{"type":"ephemeral"}` → `{"type":"ephemeral","ttl":"1h"}`.
+2. Оба клиента: `default_headers={"anthropic-beta":"extended-cache-ttl-2025-04-11"}`.
+3. `BATCH_CONCURRENCY` default `1` → `3` (товары независимы; кэш горячий + ~3× быстрее).
+4. Strategy(Opus) `max_tokens` `4096` → `2500` + «ONLY compact JSON» в user-контенте
+   (бриф внутренний, самый дорогой output-токен $75/M; качество витрины не меняется).
+
+**Не менялось:** модели (Opus 4.7 Strategy / Sonnet 4.6 Designer / Haiku 4.5 Vision),
+Designer max_tokens=16000, логика секций.
+
+**Проверка:** `notebook_smoke` ✅ (17 ячеек, 8 code).
+**Ожидаемо:** cache hit с ~0% → 70–90% на батче; вход. токены −60–70%; Opus output −10–25%.
+
+---
+
+## 2026-05-31 — Экспертный блок TITLE / META / SHORT-DESC в Designer-промпт
+
+**Контекст ревью промптов (оператор):** заголовок/описание/фото — главное для продаж.
+**Находка:** storefront-title товара = `meta.seo_meta.title` (`_clean_title = (seo_t or product['title'])[:255]`),
+но в Designer-промпте на него была ровно одна инструкция — «55-60 chars». Самый
+сильный по CTR элемент (каталог, поиск, Google Shopping, корзина, вкладка) — без
+маркетинговых правил.
+
+**Правка (`pipeline/tools/patch_title_prompt.py`, nbformat):** вставлен блок из 9 строк
+после COPY QUALITY:
+- TITLE: структура «<категорийное существительное> + <главная выгода>», выгода вперёд,
+  Title Case, 50-60 симв (хард-кап 60), запрет EPROLO/AliExpress-маркеров
+  (ALL-CAPS, «2024 New», «Hot Sale», спец-дампы, keyword stuffing, эмодзи),
+  primary keyword естественно.
+- META DESCRIPTION: 140-155 симв, выгода+keyword+крючок+мягкий pull, не дублировать title.
+- SHORT DESCRIPTION: открывать after-state (результат), не спецификацией.
+
+**Не менялось:** Strategy/Vision-промпты, модели, логика секций. Доп. ~250 ток в
+cached system-блоке (1h TTL) — стоимость ничтожна, ROI высокий.
+**Проверка:** notebook_smoke ✅, pytest pipeline ✅.
+
+---
+
+## 2026-05-31 — Designer: ground-in-strategy + senior-SEO мета (patch_strategy_seo.py)
+
+**A. GROUND EVERY SECTION IN THE STRATEGY (7 строк перед COPY QUALITY).**
+Проблема: дорогой Opus-Strategy выдаёт selling_idea/transformation/key_objections/
+buying_trigger, но Designer ссылался на стратегию только в мелочах (voice/kickers) —
+Opus-бриф недоиспользовался. Теперь жёсткое маппирование:
+hero←selling_idea, story-арка←transformation (before→turn→after), features/stats←
+differentiator+key_objections, faq←key_objections, cta←buying_trigger,
+тон←key_emotion+voice. «Не противоречить позиционированию; не служит стратегии — SKIP».
+
+**B. Senior-SEO апгрейд мета-тайтла и дескрипшена.**
+Было: только длина («55-60» / «140-155»). Стало:
+- TITLE (= и название товара, и `<title>`-тег): primary keyword в первых ~5 словах,
+  UNIQUE по каталогу, бренд НЕ добавлять (тема добавляет сама).
+- META DESCRIPTION: keyword+выгода в первых ~120 символах (мобильная обрезка ~120;
+  Google болдит совпадения запроса = выше CTR), active voice, вторичный keyword,
+  мягкий pull, UNIQUE, без кавычек/«!».
+
+**Не менялось:** Strategy/Vision, модели, секции. Проверка: notebook_smoke ✅, pytest 566 ✅.
+
+---
+
+## 2026-05-31 — Designer: LIGHT-background mandate для генерации ИЗОБРАЖЕНИЙ (patch_image_lightbg.py)
+
+**Дыра:** правило оператора (CLAUDE.md 2026-05-29) — запрет чёрного/тёмного фона
+в генерации И изображений, И видео. У ВИДЕО guard есть (`LIGHT_BG` в video_prompts.py),
+у ИЗОБРАЖЕНИЙ (Designer `photo_briefs`/`visual_style` → photo_pack ZIP) — НЕ было.
+Designer мог выдать `visual_style: "dramatic dark studio"` → тёмные фото на светлом сайте.
+(Два «black» в промпте — это палитра секций сайта, не фон фото.)
+
+**Правка:** в секцию PHOTO_BRIEFS (после budget-правил, перед CAROUSEL-воронкой)
+добавлен NON-NEGOTIABLE блок: только светлый/белый/пастельный/дневной фон; visual_style =
+один консистентный светлый сет (мягкий дневной свет, white/cream/pastel seamless или
+светлая lifestyle-поверхность); каждый edit_instructions обязан явно называть светлый фон.
+
+**Проверка:** notebook_smoke ✅, pytest 566 ✅. Snapshot сохранён.
+
+---
+
+## 2026-05-31 — Cell 6: полный RESUME-чекпоинтинг (patch_seo_resume.py)
+
+**Задача оператора:** не сжигать API ни на одном этапе; при остановке — продолжить
+с того же места.
+
+**Карта до правки:** per-product Anthropic-конвейер уже resumable (статус-машина в
+pipeline.db). Дыра — Cell 6 (Stage 1 категоризация + DataForSEO): всё копилось в
+памяти, в БД писалось только в конце; `cost_tracker.spent` сбрасывался в 0 →
+рестарт мог потратить ещё до $15 заново.
+
+**Фикс — единый content-keyed кэш вокруг КАЖДОГО API-вызова:**
+- Таблица `seo_kw_cache(ckey, payload)`: результат каждого батча пишется в БД сразу
+  (`_seo_cache_put` + commit). Ключ = sha1(endpoint + sorted(seeds)) → стабилен,
+  не зависит от позиции батча (seeds не «плывут»).
+- На рестарте батч с известным ckey берётся из кэша — **без API, без charge**.
+- `dfs_spent` в `seo_state` → `cost_tracker.spent` восстанавливается → cap $15
+  кумулятивный между рестартами.
+- `can_afford()` перенесён ВНУТРЬ cache-miss → кэшированные батчи проходят даже у
+  потолка бюджета.
+- `bulk_keyword_difficulty` получил can_afford-гард, которого не было.
+- Обёрнуты 6 call-sites: 2 Claude (cat1, seed1) + 4 DataForSEO
+  (keywords_for_keywords, keyword_ideas, bulk_keyword_difficulty, expansion).
+
+**Доказательство:** автономный тест (in-memory sqlite) — краш после 2/3 батчей →
+рестарт переиспользует 1-2 из кэша (0 re-charge), бьёт API только по батчу 3,
+spend $0.15→$0.225 кумулятивно. + 4 pytest-гарда (`test_seo_resume.py`).
+
+**Примечание:** при намеренном РЕ-РАНЕ keyword-research (свежие данные) очистить
+`seo_kw_cache` и `seo_complete`/`dfs_spent` в `seo_state`, иначе вернётся кэш.
+
+**Проверка:** notebook_smoke ✅, pytest **570 passed** ✅. Snapshot сохранён.
+
+---
+
+## 2026-06-01 — Strategy → Opus 4.8 + правка cost-формулы (patch_opus48.py)
+
+Реальная цена Opus (проверено июнь 2026): **$5 in / $25 out** /Mtok (неизменна с 4.5).
+Ноутбук считал Strategy по $15/$75 — завышение в 3×.
+- `MODEL_STRATEGY` + probe: `claude-opus-4-7` → `claude-opus-4-8`
+- `_cost_strat`: `*15 + *75` → `*5 + *25`
+Либо реальная экономия 3× на Strategy (если 4.7 правда стоил $15/$75), либо чинит
+раздутый учёт — хуже не будет. Тест `test_cell1_keeps_strategy_model` → opus-4-8.
+notebook_smoke ✅, pytest **570** ✅.
+
+## 2026-06-01 — A/B harness Designer: Sonnet vs DeepSeek V4 Pro (ab_designer_deepseek.py)
+
+Цены: Sonnet $3/$15 vs **DeepSeek V4 Pro $0.435/$0.87** (~17× дешевле output).
+Решение оператора: A/B ДО полного свапа (миграция провайдера + риск качества/JSON).
+Standalone-скрипт (прод-ноутбук НЕ трогает): извлекает реальный designer-system из
+ноутбука, берёт реальные vision+strategy товара из run-БД, шлёт один и тот же
+промпт в Sonnet и DeepSeek, сравнивает valid-JSON / число секций / output-токены /
+$ / latency / hero-копирайт.
+Блокер: нужен `DEEPSEEK_API_KEY` в .env (+ опц. `DEEPSEEK_MODEL`, дефолт deepseek-chat).
+
+---
+
+## 2026-06-01 — DeepSeek V4 Pro вшит в Designer за флагом (patch_deepseek_designer.py)
+
+A/B (3 реальных товара) подтвердил: DeepSeek valid-JSON 3/3, ~20× дешевле, ~5×
+быстрее, копирайт на уровне. Внедрено за флагом `DESIGNER_PROVIDER=anthropic|deepseek`
+(дефолт anthropic — ноль риска).
+- cell 2: флаг `DESIGNER_PROVIDER` + `DEEPSEEK_MODEL` (deepseek-chat) + `DEEPSEEK_API_KEY`.
+- cell 4: `_deepseek_designer()` (OpenAI-совместимый, JSON mode, off-thread через
+  asyncio.to_thread → не блокирует loop) + `_ShimResp/_ShimUsage` (маскирует ответ
+  под Anthropic-объект → `_track_anthropic_response` и учёт стоимости без изменений).
+  + `_DEEPSEEK_DESIGNER_NUDGE`: 2 тюна — держать `<em>` в заголовках + AIM HIGH 18-25 секций.
+- cell 14: main + retry Designer-блоки → ветка `if DESIGNER_PROVIDER=='deepseek'`;
+  старый Anthropic-стрим сохранён байт-в-байт в `else`. Стоимость DeepSeek $0.435/$0.87.
+- run_pipeline_local.py: проброс `DESIGNER_PROVIDER`/`DEEPSEEK_API_KEY`/`DEEPSEEK_MODEL`.
+
+Включение: `DESIGNER_PROVIDER=deepseek` в .env (ключ уже добавлен).
+Проверка: notebook_smoke ✅, pytest **570** ✅, ast.parse cell4+14 ✅. Snapshot сохранён.
+
+---
+
+## 2026-06-01 — Гибрид качества #1+#2 (patch_quality_hybrid.py)
+
+Цель оператора: максимум качества на customer-facing тексте без удорожания цепочки.
+DeepSeek-Designer дал ~$0.05/товар (было $0.16) → есть запас бюджета.
+
+**#2 (Opus на самые продающие строки):** STRATEGY_SYSTEM_PROMPT (Opus 4.8, уже крутится)
+теперь дополнительно отдаёт `seo_title` + `seo_description` + `hero` (kicker/h1/lead) с
+senior-SEO/marketplace правилами. Сборка (cell 14, после `seo_m=`) предпочитает Strategy-
+версии поверх DeepSeek; hero мёржится по тексту, image_url от DeepSeek сохраняется.
+Маржинальная стоимость ~+$0.005 (неск. сотен Opus-output токенов, без нового вызова).
+
+**#1 (бесплатно):** в `_DEEPSEEK_DESIGNER_NUDGE` добавлен photo-brief нудж (art-director
+качество + явный светлый фон + 5 carousel-слотов = 5 вопросов покупателя).
+
+Итог: title/meta/hero — на frontier Opus; объёмный контент + фото — на дешёвом DeepSeek.
+~$0.05–0.055/товар. Проверка: notebook_smoke ✅, pytest **570** ✅, ast.parse ✅. Snapshot.
+
+---
+
+## 2026-06-01 — Automatic internal-linking silo (parent_category)
+
+Цель оператора: автоматический internal-linking для SEO + быстрый доступ; оператор
+постоянно создаёт новые коллекции и НЕ должен вести списки ссылок руками. Всё
+рендерится из живого Liquid-объекта `collections` → новая коллекция появляется сразу.
+
+**Метафилд:** `custom.parent_category` (single_line_text_field) на коллекциях.
+Бэкафилл — `pipeline/tools/assign_parent_categories.py` (--dry-run сначала): keyword-
+группировка 724 коллекций в 28 родителей (5% fallback "More"). Записано 724/724.
+
+**Theme (snapshot перед правкой в .snapshots/):**
+- NEW `sections/wanelo-category-hubs.liquid` — homepage "Shop by category": итерирует
+  `collections`, собирает distinct `custom.parent_category`, рендерит ~6-15 хабов
+  (карточка+иконка через `{% render 'wanelo-icon' %}`). Линк хаба → коллекция с
+  handle==slug если есть, иначе `/pages/collections#<slug>`.
+- NEW `sections/wanelo-collections-directory.liquid` — footer "All collections"
+  HTML-sitemap: ОДИН проход по `collections`, группировка по parent_category
+  (sort_natural по "parent+title" → группы + алфавит внутри), каждая ссылка со своей
+  `custom.icon`. Single-pass — не превышает бюджет рендера Shopify.
+- NEW `templates/page.collections.json` → секция directory. Создана страница
+  `/pages/collections` (template_suffix=collections) через Admin API.
+- `templates/index.json` (snapshot) — добавлена секция `wanelo_category_hubs` сразу
+  после `wanelo_best_sellers`.
+
+**Pipeline future-proof (cell id=066bb296, патч `tools/patch_parent_category.py`):**
+после создания коллекции (и при FOUND — идемпотентный бэкафилл) вызывается
+`_set_parent_category()` с той же keyword-логикой (`_parent_for`) → новая коллекция
+авто-получает parent_category. nbformat-only, smoke ✅, pytest **570** ✅.
+
+**Гарантия "auto-appears":** новая коллекция, опубликованная в Online Store, сразу
+видна в footer-директории (loop по live `collections`, 0 правок темы) и под своим
+хабом на homepage как только проставлен parent_category (что pipeline делает при
+создании). Неопубликованные коллекции (420 из 724) в Liquid `collections` не
+попадают by design (нет storefront-URL) — линкуются только 304 опубликованных.
+
+**Footer-ссылка (ручной one-time шаг оператора — у app-токена нет scope
+read/write_online_store_navigation):** Shopify Admin → Online Store → Navigation →
+Footer menu → Add menu item → Name "All collections", Link → Pages → "All
+Collections" (/pages/collections) → Save. После этого футер ссылается на директорию.
+
+---
+
+## 2026-06-02 — Разнообразие промптов генерации (video + image)
+
+**Проблема (оператор):** промпты картинок/видео мало разнообразны, особенно Review —
+у многих товаров один и тот же паттерн.
+
+**video_prompts.py — переписан:**
+- «Product Review» был БЕЗ ротации (фиксированный промпт) → добавлен REVIEW_SCENES
+  (8 сцен) × REVIEWERS (7 персон).
+- Ротация была по index → у всех товаров одинаковая сцена на слоте. Добавлен
+  per-PRODUCT seed-offset (`_pick(seq, index, product, salt)`) → каждый товар
+  получает свою последовательность сцен.
+- Пулы расширены: SHOWCASE 8→12, UGC 5→10, TV 3→7, WILD 3→7 + CAMERA_MOVES +
+  COMPOSITIONS для комбинаторного разнообразия. Все сцены LIGHT.
+
+**Designer visual_style:** усилен — требует DISTINCT light-стиль под КАЖДЫЙ товар
+(варьировать поверхность/реквизит/палитру/ракурс), чтобы каталог не выглядел шаблонно.
+
+Проверка: self-demo показывает разные сцены по товарам/слотам; pytest 570 ✅.
+
+---
+
+## 2026-06-02 — Per-product photo styling theme (patch_photo_variety.py)
+
+**Проблема:** Designer-промпты для photo_briefs (генерация картинок) слишком похожи
+между товарами — слоты карусели описаны фиксированно ("pure white seamless" hero и т.д.),
+мягкое "be varied" не помогает.
+
+**Фикс (как в video_prompts):** в cell 4 — пулы LIGHT (12 поверхностей, 12 реквизитов,
+8 палитр, 6 типов света, 5 ракурсов) + `_photo_theme(seed)` — детерминированно по хэшу
+товара выдаёт УНИКАЛЬНУЮ комбинацию. В cell 14 тема инжектится в Designer user-промпт:
+"PHOTO STYLING THEME (DISTINCT look for THIS product…): {_photo_theme_str}".
+Модель строит edit_instructions вокруг конкретной per-product темы → каталог не шаблонный.
+
+Проверка: `_photo_theme()` даёт разные темы по товарам; pytest 570 ✅.
+
+---
+
+## 2026-06-04 — Restart-safe Anthropic usage tracker (patch_usage_tracker.py)
+
+**Проблема:** `_anthropic_cost_tracker` — только in-memory. Каждый рестарт
+бэбиситтера = свежий процесс = трекер сброшен в 0. End-of-batch summary печатал
+тотал ОДНОГО resume-сегмента (часто `0 read / 0 written / 0 fresh`, когда сегмент
+делал только DeepSeek-Designer без Anthropic-вызовов). Оператор видит «0%» и думает,
+что кэш сломан — а он работает (см. диагностику: blended ratio низкий из-за дешёвых
+Haiku-картинок, дорогой Opus кэшируется ~60%).
+
+**Фикс (cell 4 + cell 14):**
+- JSON-сайдкар `{PROJECT_DIR}/anthropic_usage.json` — `_persist_usage()` после
+  каждого tracked-вызова (tmp+os.replace, атомарно).
+- `_load_usage_once()` — на первом вызове процесса мержит сайдкар обратно в счётчик
+  → тоталы НАКАПЛИВАЮТСЯ через рестарты = JOB-WIDE cache-hit ratio.
+- per-model разбивка из `resp.model` (Opus vs Haiku) — видно, что низкий blended
+  сидит на дешёвом Haiku, а не утечка кэша.
+- summary (cell 14) зовёт `_load_usage_once()` перед печатью + печатает per-model
+  таблицу, поэтому даже resume-only сегмент показывает реальные job-wide цифры.
+
+Reader (без прогона ноутбука): `python pipeline/tools/anthropic_usage_report.py`.
+
+Проверка: sandbox-exec блока трекера — накопление через «рестарт» подтверждено
+(calls 2→3, Haiku подтянулся из сайдкара, Opus cache 60% / Haiku 10%); pytest 570 ✅.
