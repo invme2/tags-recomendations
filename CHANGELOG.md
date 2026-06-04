@@ -6,7 +6,26 @@
 
 ## [Unreleased]
 
+### Added
+- **`pipeline/tools/fill_collections.py`** — наполняет пустые/тонкие
+  keyword-коллекции (SEO-лендинги из DataForSEO) топологически релевантными
+  товарами через TF-IDF (прямой матч коллекция↔товар по заголовку/тегам +
+  кластер таксономии как booster ранга, не добавляющий внетематическое).
+  Флаг `--from-shopify` берёт товары из живого стора (устойчиво к порче
+  локальной БД). Идемпотентно, dry-run по умолчанию, гейт уверенности
+  (`--min-picks`/`--strong`) против «1 неверный товар». Результат на проде:
+  пустых коллекций 186→0, медиана 1→6 товаров, наполнено 733/733.
+- **`pipeline/tools/collections_census.py`** — read-only аудит автоматизма
+  внутренних ссылок (parent_category покрытие, публикация) + распределения
+  товаров по коллекциям (fill-бакеты, орфаны, cluster-tag coverage).
+
 ### Fixed
+- **Writer-гонка бэбиситтера → порча `pipeline.db`** (см. TROUBLESHOOTING
+  #005). `babysit_chunk2.py` теперь `kill_stragglers()` перед каждым
+  рестартом: force-kill старого раннера + блок до его смерти = single-writer
+  гарантия. Раньше два процесса могли писать один SQLite при рестарте →
+  `database disk image is malformed` (файл ровно 1 GiB). Товары в Shopify
+  не пострадали.
 - **EPROLO storage_state + redirect guard (Bug A full fix)** (TBD commit,
   see `pipeline/PATCHES.md` 2026-05-26). `get_shared_browser_ctx` теперь
   читает `EPROLO_STATE_FILE` env var и если файл существует — передаёт
