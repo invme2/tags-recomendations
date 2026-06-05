@@ -1950,3 +1950,15 @@
   font-size: clamp(18px, 2vw, 22px);
   margin-top: 0.25rem;
 }
+
+
+/* === WANELO BORDERLESS BACKINGS (operator request) === */
+/* facet filter divider lines (Price / Availability / Product type) */
+.facet-accordion-details > .accordion-details__summary,
+.facet-accordion-details[aria-expanded="true"] > .accordion-details__summary { border-block-end: 0 !important; border-color: transparent !important; }
+/* product card outline backings */
+.product-card.color-inherit, .product-card--horizontal.color-inherit,
+.product-card--simple.color-inherit { box-shadow: none !important; }
+.collection-card--boxed { border: 0 !important; box-shadow: none !important; }
+/* boxed product card 1px inset outline */
+.product-card-style-boxed { box-shadow: none !important; }
