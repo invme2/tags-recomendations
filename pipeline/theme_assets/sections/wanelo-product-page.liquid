@@ -15,27 +15,80 @@
 {%- endcomment -%}
 
 {{ 'wanelo.css' | asset_url | stylesheet_tag }}
+<style>
+  .wanelo-vrow { max-width:1080px; margin:clamp(40px,5.5vw,80px) auto; display:grid; gap:clamp(20px,4vw,56px); align-items:center; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .wanelo-vrow--solo { max-width:360px; grid-template-columns:1fr; }
+  .wanelo-vrow__media { width:100%; max-width:340px; margin:0 auto; }
+  .wanelo-vrow--video-right .wanelo-vrow__media { order:2; }
+  .wanelo-vrow--video-right .wanelo-vrow__content { order:1; }
+  .wanelo-vslot__frame { position:relative; aspect-ratio:9/16; border-radius:20px; overflow:hidden; background:#000; box-shadow:0 14px 40px rgba(0,0,0,.16); }
+  .wanelo-vslot__frame video, .wanelo-vslot__frame iframe { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block; }
+  .wanelo-vslot__video { cursor:pointer; }
+  .wanelo-vslot__sound { position:absolute; bottom:14px; right:14px; z-index:2; width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.42); color:#fff; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); box-shadow:0 2px 10px rgba(0,0,0,.25); transition:background .2s, transform .15s; }
+  .wanelo-vslot__sound:hover { background:rgba(0,0,0,.62); transform:scale(1.07); }
+  .wanelo-vslot__sound:active { transform:scale(.95); }
+  .wanelo-vslot__ic { width:20px; height:20px; display:block; }
+  .wanelo-vslot__ic--on { display:none; }
+  .wanelo-vslot__sound.is-on .wanelo-vslot__ic--mute { display:none; }
+  .wanelo-vslot__sound.is-on .wanelo-vslot__ic--on { display:block; }
+  .wanelo-vrow__content { max-width:430px; }
+  .wanelo-vrow__icon { display:inline-flex; width:44px; height:44px; border-radius:13px; background:#f3f4f6; align-items:center; justify-content:center; color:#111; margin-bottom:14px; }
+  .wanelo-vrow__icon svg { width:23px; height:23px; }
+  .wanelo-vrow__eyebrow { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .wanelo-vrow__heading { font-size:clamp(20px,2.4vw,29px); font-weight:700; letter-spacing:-0.02em; color:#1a1a1a; margin:0 0 11px; line-height:1.2; }
+  .wanelo-vrow__body { font-size:clamp(14px,1.5vw,16px); color:#4b5563; line-height:1.6; margin:0; }
+  .wanelo-vslot__eyebrow-solo { text-align:center; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#9ca3af; margin-top:12px; }
+  @media (max-width:749px){ .wanelo-vrow{ grid-template-columns:1fr; gap:18px; max-width:380px; } .wanelo-vrow--video-right .wanelo-vrow__media,.wanelo-vrow--video-right .wanelo-vrow__content{ order:0; } .wanelo-vrow__content{ max-width:none; text-align:center; } .wanelo-vrow__icon{ margin-left:auto; margin-right:auto; } }
+</style>
 {% render 'wanelo-palette' %}
 {% render 'wanelo-product-schema' %}
 {% render 'wanelo-icons' %}
 
 <div class="wanelo-page" role="article">
+  {%- comment -%}
+    ABOVE-collapse zone — minimal, just signals + engagement:
+    - rating (compact star row, social proof 0.3s)
+    - trust strip (one-line inline row of icons, no boxed look)
+    - videos (engagement preview)
+    Research refs MOVED inside collapse next to trust/clinical-evidence
+    (authority/proof zone) where it logically belongs in long-form structure.
+  {%- endcomment -%}
+  {%- comment -%}
+    Rating REMOVED (operator request, 2026-05-27). Synthetic "4.7 / 847
+    verified reviews" was a fake trust signal — FTC fraud risk and the
+    Hyper-new theme already exposes price near the title where the rating
+    would go. Trust strip also removed earlier. Snippet + CSS kept on disk
+    for future real-review integration (Judge.me / Loox / Stamped sync).
+  {%- endcomment -%}
+  {% render 'wanelo-video-slot', index: 0, eyebrow: 'See it in action' %}
+
+  <div class="wanelo-page__collapse" data-wanelo-collapse>
+    <div class="wanelo-page__collapse-inner">
 
   {% render 'wanelo-hero' %}
   {% render 'wanelo-target-profile' %}
   {% render 'wanelo-brand-story' %}
   {% render 'wanelo-story' %}
   {% render 'wanelo-features' %}
+  {% render 'wanelo-video-slot', index: 1, eyebrow: 'Watch it work' %}
   {% render 'wanelo-video-demo' %}
   {% render 'wanelo-lifestyle-gallery' %}
   {% render 'wanelo-ingredients' %}
+  {% render 'wanelo-video-slot', index: 6, eyebrow: 'Real results' %}
   {% render 'wanelo-nutrition-facts' %}
   {% render 'wanelo-how-to' %}
+  {% render 'wanelo-use-scenarios' %}
+  {% render 'wanelo-video-slot', index: 2, eyebrow: 'Real routine' %}
   {% render 'wanelo-protocol' %}
+  {% render 'wanelo-mistake-warnings' %}
   {% render 'wanelo-timeline' %}
+  {% render 'wanelo-progress-milestones' %}
+  {% render 'wanelo-video-slot', index: 3, eyebrow: 'See the difference' %}
   {% render 'wanelo-clinical-evidence' %}
+  {% render 'wanelo-research-refs' %}
   {% render 'wanelo-stats' %}
   {% render 'wanelo-specs' %}
+  {% render 'wanelo-video-slot', index: 4, eyebrow: 'Closer look' %}
   {% render 'wanelo-compatibility' %}
   {% render 'wanelo-app-showcase' %}
   {% render 'wanelo-size-guide' %}
@@ -44,19 +97,88 @@
   {% render 'wanelo-variants' %}
   {% render 'wanelo-care' %}
   {% render 'wanelo-whats-included' %}
+  {% render 'wanelo-unboxing-journey' %}
   {% render 'wanelo-assembly' %}
   {% render 'wanelo-gift-options' %}
   {% render 'wanelo-subscription-refill' %}
   {% render 'wanelo-compare' %}
+  {% render 'wanelo-video-slot', index: 7, eyebrow: 'The verdict' %}
   {% render 'wanelo-trust' %}
   {% render 'wanelo-sustainability' %}
   {% render 'wanelo-safety' %}
   {% render 'wanelo-reviews' %}
+  {% render 'wanelo-video-slot', index: 5, eyebrow: 'Why people love it' %}
   {% render 'wanelo-faq' %}
   {% render 'wanelo-cta' %}
   {% render 'wanelo-interlinks' %}
 
+  {%- comment -%}
+    AUTO-DISCOVER zone — render any custom.* metafield Designer emitted
+    that doesn't have a dedicated wanelo-*.liquid snippet yet. Pipeline
+    auto-creates definitions on-the-fly (see Cell 14), this loop catches
+    them on the storefront. Falls through to wanelo-auto-section.liquid
+    which detects the JSON shape and renders in matching Apple style.
+
+    KNOWN_SECTIONS = every key that has its own dedicated snippet above.
+    When operator builds a custom snippet for an auto-discovered key,
+    add the key to this list so the duplicate fallback render is skipped.
+  {%- endcomment -%}
+  {%- assign known_sections = "hero,target_profile,brand_story,story,features,video_demo,lifestyle_gallery,ingredients,nutrition_facts,how_to,use_scenarios,protocol,mistake_warnings,timeline,progress_milestones,clinical_evidence,research_refs,stats,specs,compatibility,app_showcase,size_guide,dimensions,room_placement,variants,care,whats_included,assembly,gift_options,subscription_refill,compare,trust,sustainability,safety,reviews,faq,cta,interlinks,palette,videos,rating,trust_strip,unboxing_journey,photo_pack,source,source_url,designer_prompt,html_description,og_image,title_tag,description_tag" | split: "," -%}
+  {%- for mf in product.metafields.custom -%}
+    {%- assign mf_key = mf[0] -%}
+    {%- unless known_sections contains mf_key -%}
+      {%- render 'wanelo-auto-section', key: mf_key -%}
+    {%- endunless -%}
+  {%- endfor -%}
+
+    </div>
+    <div class="wanelo-page__fade" aria-hidden="true"></div>
+  </div>
+  <button type="button"
+          class="wanelo-page__toggle btn btn--secondary"
+          data-wanelo-toggle
+          aria-expanded="false"
+          aria-controls="wanelo-page-collapse">
+    <span class="wanelo-page__toggle-more">Show full description</span>
+    <span class="wanelo-page__toggle-less" hidden>Show less</span>
+    <span class="wanelo-page__toggle-chev" aria-hidden="true">&#x25BE;</span>
+  </button>
+
   <script src="{{ 'wanelo.js' | asset_url }}" defer></script>
+  <script>
+  (function(){
+    var slots = document.querySelectorAll('.wanelo-vslot__frame[data-vslot]');
+    if(!slots.length) return;
+    // Autoplay (muted) when scrolled into view, pause when out — TikTok/Reels style.
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          var v = e.target.querySelector('video');
+          if(!v) return;
+          if(e.isIntersecting && e.intersectionRatio >= 0.5){ v.play().catch(function(){}); }
+          else { v.pause(); }
+        });
+      }, {threshold:[0,0.5,1]});
+      slots.forEach(function(s){ io.observe(s); });
+    } else {
+      slots.forEach(function(s){ var v=s.querySelector('video'); if(v) v.play().catch(function(){}); });
+    }
+    // Tap video = play/pause. Sound button = mute/unmute.
+    slots.forEach(function(s){
+      var v = s.querySelector('video');
+      var btn = s.querySelector('[data-vsound]');
+      if(v){ v.addEventListener('click', function(){ if(v.paused){ v.play().catch(function(){}); } else { v.pause(); } }); }
+      if(v && btn){
+        btn.addEventListener('click', function(ev){
+          ev.preventDefault(); ev.stopPropagation();
+          v.muted = !v.muted;
+          btn.classList.toggle('is-on', !v.muted);
+          if(!v.muted){ v.play().catch(function(){}); }
+        });
+      }
+    });
+  })();
+  </script>
 </div>
 
 {% schema %}

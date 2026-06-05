@@ -1,0 +1,68 @@
+{%- comment -%}
+  VIDEO SLOT — renders ONE video from custom.videos.items[index] woven into
+  the long-form content as an editorial "media + content" row (Oura-style):
+  video on one side, a content panel (eyebrow + heading + body + icon) on the
+  other, alternating sides by index parity. Stacks on mobile.
+
+  If the item has no heading/body, falls back to a single centred video.
+
+  Params:
+    index   (required) — which item in custom.videos.items
+    eyebrow (optional) — fallback eyebrow if item has none
+
+  Content + media fields read from the item:
+    item.eyebrow, item.heading, item.body, item.preset (drives the icon),
+    item.url / item.video_id, item.thumbnail_url
+{%- endcomment -%}
+{%- assign videos = product.metafields.custom.videos.value -%}
+{%- if videos and videos.items and videos.items.size > index -%}
+  {%- assign item = videos.items[index] -%}
+  {%- assign u = item.url | default: '' | strip -%}
+  {%- assign is_mp4 = false -%}
+  {%- if item.platform == 'higgsfield-mp4' or u contains '.mp4' or u contains '.webm' -%}{%- assign is_mp4 = true -%}{%- endif -%}
+  {%- assign vid = item.video_id | default: '' | strip -%}
+  {%- if is_mp4 and u != blank or vid != blank -%}
+    {%- assign eb = item.eyebrow | default: eyebrow -%}
+    {%- assign has_content = false -%}
+    {%- if item.heading != blank or item.body != blank -%}{%- assign has_content = true -%}{%- endif -%}
+    {%- assign parity = index | modulo: 2 -%}
+    {%- assign vside = 'left' -%}{%- if parity == 1 -%}{%- assign vside = 'right' -%}{%- endif -%}
+
+    <div class="wanelo-vrow{% unless has_content %} wanelo-vrow--solo{% endunless %} wanelo-vrow--video-{{ vside }}">
+      <div class="wanelo-vrow__media">
+        <div class="wanelo-vslot__frame" data-vslot>
+          {%- if is_mp4 and u != blank -%}
+            <video class="wanelo-vslot__video" muted loop playsinline preload="metadata" poster="{{ item.thumbnail_url }}">
+              <source src="{{ u }}#t=0.1" type="video/mp4">
+            </video>
+            <button type="button" class="wanelo-vslot__sound" data-vsound aria-label="Toggle sound">
+              <svg class="wanelo-vslot__ic wanelo-vslot__ic--mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+              <svg class="wanelo-vslot__ic wanelo-vslot__ic--on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+            </button>
+          {%- else -%}
+            <iframe src="https://www.youtube.com/embed/{{ vid }}?modestbranding=1&rel=0&playsinline=1" loading="lazy" title="{{ item.heading | default: 'Product video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if has_content -%}
+        <div class="wanelo-vrow__content">
+          <span class="wanelo-vrow__icon" aria-hidden="true">
+            {%- case item.preset -%}
+              {%- when 'Hyper Motion' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>
+              {%- when 'UGC' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-8.3a5 5 0 0 0 0-7.1z"/></svg>
+              {%- when 'Product Review' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 6.3L21 10l-4.9 4.3L17.5 21 12 17.4 6.5 21l1.4-6.7L3 10l6.4-.7z"/></svg>
+              {%- when 'TV Spot' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/></svg>
+              {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18" opacity=".0"/><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>
+            {%- endcase -%}
+          </span>
+          {%- if eb != blank -%}<div class="wanelo-vrow__eyebrow">{{ eb }}</div>{%- endif -%}
+          {%- if item.heading != blank -%}<h3 class="wanelo-vrow__heading">{{ item.heading }}</h3>{%- endif -%}
+          {%- if item.body != blank -%}<p class="wanelo-vrow__body">{{ item.body }}</p>{%- endif -%}
+        </div>
+      {%- elsif eb != blank -%}
+        <div class="wanelo-vslot__eyebrow-solo">{{ eb }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endif -%}

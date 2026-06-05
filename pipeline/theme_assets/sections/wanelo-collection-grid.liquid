@@ -1,0 +1,92 @@
+{%- comment -%}
+  WANELO Collection Grid — compact, hierarchical "Shop by category".
+  Curated parent → subcategory tree (no auto-loop dupes), line-icon chips
+  instead of big image cards, short 1-2 word labels. Each chip links to the
+  smart collection (auto-populated by cluster tag). Live product counts come
+  from `collections[handle].all_products_count`. Critical for SEO: gives the
+  homepage crawlable links to every category. Apple/Oura aesthetic.
+
+  Hierarchy data string format (kept inline so no theme-editor config needed):
+    GROUPS  = "ParentName::kid;kid;...||ParentName::kid;..."
+    kid     = "handle,Label,iconKey"
+{%- endcomment -%}
+
+{%- assign heading = section.settings.heading | default: 'Shop by category' -%}
+{%- assign GROUPS = section.settings.groups | default: 'Makeup::makeup,Makeup,lipstick;makeup-kits,Kits,palette;lashes-brows,Lashes,eye;lip-care,Lips,lips;eye-care,Eyes,eye;brow-care,Brows,eye||Skincare::skincare,Skincare,drop;anti-aging,Anti-Aging,sparkle;acne-care,Acne,shield;daily-routine,Daily,sun;natural-organic,Natural,leaf||Bath & Body::bath,Bath,wave;body-care,Body,drop;shower,Shower,wave;bathroom,Bathroom,home;massage,Massage,heart;body-sculpting,Sculpting,sparkle||Hair::hair-care,Hair,wave||Oral Care::oral-care,Oral Care,star;dental-kits,Dental,star||Nails::nail-care,Nails,sparkle' -%}
+
+<section class="wcg">
+  {%- if heading != blank -%}
+    <div class="wcg__head">
+      <h2 class="wcg__h2">{{ heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="wcg__sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wcg__groups">
+    {%- assign group_list = GROUPS | split: '||' -%}
+    {%- for g in group_list -%}
+      {%- assign gp = g | split: '::' -%}
+      {%- assign parent = gp[0] -%}
+      {%- assign kids = gp[1] | split: ';' -%}
+      <div class="wcg__group">
+        <span class="wcg__glabel">{{ parent }}</span>
+        <div class="wcg__chips">
+          {%- for k in kids -%}
+            {%- assign kk = k | split: ',' -%}
+            {%- assign h = kk[0] -%}
+            {%- assign label = kk[1] -%}
+            {%- assign icon = kk[2] -%}
+            {%- assign coll = collections[h] -%}
+            {%- if coll != blank -%}{%- assign url = coll.url -%}{%- else -%}{%- assign url = '/collections/' | append: h -%}{%- endif -%}
+            {%- assign cnt = coll.all_products_count | default: 0 -%}
+            <a href="{{ url }}" class="wcg__chip" title="{{ label | escape }}">
+              <span class="wcg__ico" aria-hidden="true">{%- render 'wanelo-icon', icon: icon -%}</span>
+              <span class="wcg__lbl">{{ label }}</span>
+              {%- if cnt > 0 -%}<span class="wcg__cnt">{{ cnt }}</span>{%- endif -%}
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wanelo Collection Grid",
+  "tag": "section",
+  "class": "wanelo-coll-grid-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by category" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "textarea", "id": "groups", "label": "Hierarchy (Parent::handle,Label,icon;... || ...)", "info": "Advanced. Leave blank for default curated tree." }
+  ],
+  "presets": [
+    { "name": "Wanelo Collection Grid" }
+  ]
+}
+{% endschema %}
+
+<style>
+  .wcg { max-width: 1180px; margin: 0 auto; padding: clamp(28px,4vw,56px) clamp(16px,4vw,40px); }
+  .wcg__head { text-align: center; margin-bottom: clamp(20px,2.5vw,34px); }
+  .wcg__h2 { font-size: clamp(22px,2.6vw,32px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.4rem; color: #1a1a1a; }
+  .wcg__sub { font-size: clamp(14px,1.4vw,16px); color: #6b7280; margin: 0; }
+  .wcg__groups { display: flex; flex-direction: column; gap: clamp(16px,2vw,24px); }
+  .wcg__group { border-top: 1px solid #f0f0f2; padding-top: clamp(14px,1.6vw,20px); }
+  .wcg__group:first-child { border-top: 0; padding-top: 0; }
+  .wcg__glabel { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #9ca3af; margin: 0 0 12px; }
+  .wcg__chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .wcg__chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid #e5e7eb; border-radius: 999px; background: #fff; color: #1a1a1a; font-size: 14px; font-weight: 600; text-decoration: none; line-height: 1; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .wcg__chip:hover { border-color: #111; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.07); }
+  .wcg__ico { display: inline-flex; }
+  .wcg__ico svg { width: 18px; height: 18px; color: #6b7280; display: block; transition: color .2s ease; }
+  .wcg__chip:hover .wcg__ico svg { color: #111; }
+  .wcg__cnt { font-size: 11px; font-weight: 500; color: #9ca3af; background: #f4f4f5; border-radius: 999px; padding: 2px 7px; }
+  @media (min-width: 760px) {
+    .wcg__group { display: grid; grid-template-columns: 140px 1fr; gap: 24px; align-items: start; }
+    .wcg__glabel { margin: 4px 0 0; text-align: right; }
+  }
+</style>

@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "directory": {
+      "type": "wanelo-collections-directory",
+      "settings": {
+        "heading": "All collections",
+        "intro": "Every collection, grouped by category. Browse the full catalog.",
+        "other_label": "Other",
+        "hide_empty": false
+      }
+    }
+  },
+  "order": ["directory"]
+}

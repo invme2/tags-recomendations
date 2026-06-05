@@ -24,10 +24,13 @@
   </div>
   <ul class="wanelo-coll-related__list">
     {%- for r in related -%}
+      {%- assign rc_coll = collections[r.handle] -%}
+      {%- assign rc_icon = rc_coll.metafields.custom.icon | default: 'generic' -%}
       <li class="wanelo-coll-related__item{% if r.is_hub %} is-hub{% endif %}">
         <a href="/collections/{{ r.handle }}" rel="noopener">
+          <span class="wanelo-coll-related__ico" aria-hidden="true">{%- render 'wanelo-icon', icon: rc_icon -%}</span>
           {%- if r.is_hub -%}<span class="wanelo-coll-related__hub" aria-hidden="true">HUB</span> {% endif -%}
-          {{ r.anchor | default: r.title }}
+          <span class="wanelo-coll-related__txt">{{ r.anchor | default: r.title }}</span>
         </a>
       </li>
     {%- endfor -%}
@@ -37,7 +40,7 @@
 
 {% schema %}
 {
-  "name": "Wanelo Related Collections",
+  "name": "Wanelo Related Coll",
   "tag": "section",
   "settings": [
     {
@@ -46,7 +49,7 @@
     }
   ],
   "presets": [
-    { "name": "Wanelo Related Collections" }
+    { "name": "Wanelo Related Coll" }
   ]
 }
 {% endschema %}

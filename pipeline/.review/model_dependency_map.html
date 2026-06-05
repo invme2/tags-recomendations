@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Wanelo Pipeline — карта зависимостей моделей</title>
+<style>
+  :root{--opus:#6d4aff;--deepseek:#00a37a;--haiku:#e08a2b;--ink:#1a1a2e;--muted:#6b7280;--line:#cbd5e1;--bg:#f7f8fc;}
+  *{box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,sans-serif;}
+  body{margin:0;background:var(--bg);color:var(--ink);padding:32px;}
+  h1{font-size:24px;margin:0 0 4px;}
+  .sub{color:var(--muted);margin:0 0 28px;font-size:14px;}
+  .flow{display:flex;flex-direction:column;gap:0;max-width:980px;margin:0 auto;}
+  .row{display:flex;align-items:stretch;gap:18px;}
+  .node{flex:1;border-radius:16px;padding:16px 18px;background:#fff;border:2px solid var(--line);box-shadow:0 2px 10px rgba(20,20,50,.05);position:relative;}
+  .node.opus{border-color:var(--opus);}
+  .node.deepseek{border-color:var(--deepseek);}
+  .node.haiku{border-color:var(--haiku);}
+  .node.io{border-style:dashed;background:#fff;border-color:#94a3b8;}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:99px;color:#fff;text-transform:uppercase;}
+  .tag.opus{background:var(--opus);} .tag.deepseek{background:var(--deepseek);} .tag.haiku{background:var(--haiku);}
+  .node h3{margin:10px 0 2px;font-size:17px;}
+  .node .role{color:var(--muted);font-size:12.5px;margin:0 0 8px;}
+  .node ul{margin:6px 0 0;padding-left:16px;font-size:12.5px;line-height:1.5;}
+  .node .cost{position:absolute;top:14px;right:16px;font-weight:800;font-size:15px;}
+  .node .cost small{font-weight:500;color:var(--muted);font-size:11px;}
+  .cf{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;margin-top:8px;}
+  .cf.yes{background:#fde2e4;color:#b4123f;} .cf.no{background:#e7ecf3;color:#5a6b86;}
+  .arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;padding:8px 0;}
+  .arrow .bar{width:2px;height:22px;background:var(--line);}
+  .arrow .lbl{font-size:11px;color:var(--muted);max-width:520px;text-align:center;padding:4px 10px;}
+  .brainwrap{border:2px dashed var(--opus);border-radius:18px;padding:14px;margin:6px 0;background:rgba(109,74,255,.04);}
+  .brainwrap .cap{font-size:12px;color:var(--opus);font-weight:700;margin:0 0 10px;}
+  .panel{max-width:980px;margin:28px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .card h4{margin:0 0 10px;font-size:14px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px;}
+  .bar-row .seg{height:14px;border-radius:5px;}
+  .bar-row .nm{width:120px;color:var(--muted);}
+  .bar-row .pc{font-weight:700;}
+  .legend{font-size:12px;color:var(--muted);text-align:center;margin-top:18px;}
+  .dep{font-size:12.5px;line-height:1.7;}
+  .dep b{color:var(--opus);}
+  .k{font-family:ui-monospace,Menlo,monospace;background:#eef1f7;border-radius:4px;padding:1px 5px;font-size:12px;}
+</style>
+</head>
+<body>
+  <h1>Wanelo — карта зависимостей моделей</h1>
+  <p class="sub">Поток на 1 товар. Цвет = модель. Пунктир = вход/выход (не модель). «Customer-facing» = это видит покупатель.</p>
+
+  <div class="flow">
+    <div class="row"><div class="node io"><b>EPROLO scrape</b> — <b>заголовок + описание</b> + фото + цена + варианты + specs <span class="cost">$0 <small>браузер</small></span></div></div>
+    <div class="arrow"><div class="bar"></div><div class="lbl">фото + заголовок → Vision &nbsp;·&nbsp; заголовок + описание[:600] → напрямую в Strategy</div><div class="bar"></div></div>
+
+    <div class="row"><div class="node haiku">
+      <span class="tag haiku">Haiku 4.5</span><span class="cost">~$0.01</span>
+      <h3>1 · Vision</h3>
+      <p class="role">«Глаза» — смотрит фото, достаёт факты</p>
+      <ul><li>категория, тип, claims с упаковки</li><li>ингредиенты, палитра, premium-сигналы</li><li>боль/аудитория из визуала</li></ul>
+      <span class="cf no">внутреннее — покупатель не видит</span>
+    </div></div>
+    <div class="arrow"><div class="bar"></div><div class="lbl">факты (JSON) →</div><div class="bar"></div></div>
+
+    <div class="brainwrap">
+      <p class="cap">◆ МОЗГ ЦЕПОЧКИ — всё ниже строится вокруг него</p>
+      <div class="row"><div class="node opus">
+        <span class="tag opus">Opus 4.8</span><span class="cost">~$0.03</span>
+        <h3>2 · Strategy</h3>
+        <p class="role">«Мозг/позиционирование» — задаёт рамку продажи</p>
+        <p style="font-size:11.5px;color:var(--muted);margin:0 0 6px">входы: <b>EPROLO заголовок + описание[:600]</b> + Vision-факты</p>
+        <ul>
+          <li>selling_idea · transformation (before→after)</li>
+          <li>key_emotion · buying_trigger · key_objections · voice</li>
+          <li><b>+ ЗАГОЛОВОК · мета-описание · hero</b> (senior-SEO)</li>
+          <li>research_refs (научные ссылки)</li>
+        </ul>
+        <span class="cf yes">customer-facing: заголовок, мета, hero, research</span>
+      </div></div>
+    </div>
+
+    <div class="arrow"><div class="bar"></div><div class="lbl">⬇ Vision-факты <b>И</b> Strategy-бриф (оба входа) →<br>Designer обязан строить по стратегии: hero←selling_idea · story←transformation · faq←objections · тон←voice</div><div class="bar"></div></div>
+
+    <div class="row"><div class="node deepseek">
+      <span class="tag deepseek">DeepSeek v4-pro</span><span class="cost">~$0.014</span>
+      <h3>3 · Designer</h3>
+      <p class="role">«Руки/писатель» — пишет страницу по рамке Opus</p>
+      <ul>
+        <li>весь контент: story, features, stats, reviews, faq, cta…</li>
+        <li>ingredients, specs, timeline, compare, care…</li>
+        <li><b>промпты на генерацию фото</b> (photo_briefs, visual_style)</li>
+        <li>почти все метафилды</li>
+      </ul>
+      <span class="cf yes">customer-facing: контент + фото-промпты</span>
+    </div></div>
+
+    <div class="arrow"><div class="bar"></div><div class="lbl">⬆ ГИБРИД: заголовок/мета/hero от Opus <b>перетирают</b> версию DeepSeek (картинка hero остаётся от DeepSeek)</div><div class="bar"></div></div>
+
+    <div class="row"><div class="node io"><b>Shopify push</b> — товар + 24 метафилда + цена <span class="cost">$0 <small>API</small></span></div></div>
+  </div>
+
+  <div class="panel">
+    <div class="card">
+      <h4>Куда уходит стоимость (~$0.054/товар)</h4>
+      <div class="bar-row"><span class="nm">Strategy (Opus)</span><span class="seg" style="width:56%;background:var(--opus)"></span><span class="pc">56%</span></div>
+      <div class="bar-row"><span class="nm">Designer (DeepSeek)</span><span class="seg" style="width:26%;background:var(--deepseek)"></span><span class="pc">26%</span></div>
+      <div class="bar-row"><span class="nm">Vision (Haiku)</span><span class="seg" style="width:18%;background:var(--haiku)"></span><span class="pc">18%</span></div>
+      <p style="font-size:12px;color:var(--muted);margin:10px 0 0">Opus — большинство цены, но он «мозг» с маленьким выводом. Объёмное письмо — на дешёвом DeepSeek. Это и есть эффективность: платим за интеллект, а не за объём.</p>
+    </div>
+    <div class="card">
+      <h4>Насколько всё связано (зависимости)</h4>
+      <p class="dep">
+        • Strategy зависит от Vision (нужны факты).<br>
+        • Designer зависит от <b>Vision + Strategy</b> — жёстко: вся копирайт-рамка из стратегии.<br>
+        • <b>Opus = единственная верхняя точка</b>, что контролирует качество всего низа. Высокий рычаг → оправдан премиум-моделью.<br>
+        • Заголовок/мета/hero идут <b>напрямую от Opus</b> (минуя DeepSeek).
+      </p>
+    </div>
+    <div class="card">
+      <h4>Почему это эффективно</h4>
+      <p class="dep">
+        ✓ Каждый шаг кэшируется в БД → падение Designer <u>не</u> перезапускает Vision/Strategy.<br>
+        ✓ Системные промпты — кэш Anthropic на 1 час (вход дешевле в ~10×).<br>
+        ✓ DeepSeek — своё авто-кэширование ($0.0036/Mtok).<br>
+        ✓ 3 товара параллельно (concurrency).<br>
+        ✓ Resume-чекпоинт: упал — продолжит, ничего не пережигает.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Размен качество / цена</h4>
+      <p class="dep">
+        • Топ-строки (заголовок, мета, hero) — <b>frontier Opus 4.8</b>.<br>
+        • Объём + фото-промпты — DeepSeek v4-pro (= Sonnet по богатству, 24 секции).<br>
+        • Итог <span class="k">~$0.054/товар</span> против старых <span class="k">$0.16</span> — ~3× дешевле, качество там, где решает продажу.
+      </p>
+    </div>
+  </div>
+
+  <p class="legend">Vision (Haiku) → Strategy (Opus 4.8, мозг) → Designer (DeepSeek v4-pro, руки). Opus задаёт рамку; DeepSeek исполняет; гибрид кладёт самые продающие строки обратно на Opus.</p>
+</body>
+</html>

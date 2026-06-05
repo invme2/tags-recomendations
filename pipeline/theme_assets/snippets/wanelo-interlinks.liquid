@@ -16,8 +16,11 @@
   <div class="wanelo-interlinks__list">
     {%- for item in interlinks.items -%}
       {%- if item.handle != blank -%}
+        {%- assign li_coll = collections[item.handle] -%}
+        {%- assign li_icon = li_coll.metafields.custom.icon | default: 'generic' -%}
         <a class="wanelo-interlinks__link" href="/collections/{{ item.handle }}">
-          {{- item.anchor | default: item.handle -}}
+          <span class="wanelo-interlinks__ico" aria-hidden="true">{%- render 'wanelo-icon', icon: li_icon -%}</span>
+          <span class="wanelo-interlinks__txt">{{- item.anchor | default: item.handle -}}</span>
         </a>
       {%- endif -%}
     {%- endfor -%}

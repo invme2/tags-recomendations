@@ -53,6 +53,9 @@ secrets.json
 pipeline/.eprolo_state.json
 eprolo_state.json
 
+# Local-run outputs from pipeline/tools/run_pipeline_local.py
+runs/
+
 # Editor / OS
 .DS_Store
 Thumbs.db

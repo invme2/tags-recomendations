@@ -1,0 +1,222 @@
+{% liquid
+  assign product_limit = section.settings.products_to_show | default: 12
+  assign fallback_products_per_collection = section.settings.fallback_products_per_collection | default: 8
+
+  assign has_manual_collections = false
+  if section.settings.fallback_collection_1 != blank
+    assign has_manual_collections = true
+  elsif section.settings.fallback_collection_2 != blank
+    assign has_manual_collections = true
+  elsif section.settings.fallback_collection_3 != blank
+    assign has_manual_collections = true
+  endif
+
+  assign initial_collection = blank
+  if has_manual_collections
+    if section.settings.fallback_collection_1 != blank
+      assign initial_collection = section.settings.fallback_collection_1
+    elsif section.settings.fallback_collection_2 != blank
+      assign initial_collection = section.settings.fallback_collection_2
+    elsif section.settings.fallback_collection_3 != blank
+      assign initial_collection = section.settings.fallback_collection_3
+    endif
+  else
+    assign initial_collection = collections['all']
+  endif
+
+  assign fallback_json = ''
+  assign seen_handles = '|'
+%}
+
+{% comment %} ── Собираем fallback JSON для скоринга в JS ── {% endcomment %}
+{% unless has_manual_collections %}
+  {% assign auto_limit = product_limit | times: 2 %}
+  {% for product in collections['all'].products limit: auto_limit %}
+    {% unless product.available %}{% continue %}{% endunless %}
+    {% assign ht = '|' | append: product.handle | append: '|' %}
+    {% unless seen_handles contains ht %}
+      {% capture ij %}
+      {"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"price":{{ product.price | json }},"compare_at_price":{{ product.compare_at_price | default: 0 | json }},"available":{{ product.available | json }},"featured_image":{% if product.featured_image %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},"tags":{{ product.tags | json }},"type":{{ product.type | json }},"source_collections":["all"],"category":{{ product.category.full_name | default: product.type | json }}}
+      {% endcapture %}
+      {% if fallback_json != '' %}{% assign fallback_json = fallback_json | append: ',' %}{% endif %}
+      {% assign fallback_json = fallback_json | append: ij %}
+      {% assign seen_handles = seen_handles | append: product.handle | append: '|' %}
+    {% endunless %}
+  {% endfor %}
+{% endunless %}
+
+{% if section.settings.fallback_collection_1 != blank %}
+  {% for product in section.settings.fallback_collection_1.products limit: fallback_products_per_collection %}
+    {% unless product.available %}{% continue %}{% endunless %}
+    {% assign ht = '|' | append: product.handle | append: '|' %}
+    {% unless seen_handles contains ht %}
+      {% capture ij %}
+      {"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"price":{{ product.price | json }},"compare_at_price":{{ product.compare_at_price | default: 0 | json }},"available":{{ product.available | json }},"featured_image":{% if product.featured_image %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},"tags":{{ product.tags | json }},"type":{{ product.type | json }},"source_collections":[{{ section.settings.fallback_collection_1.handle | json }}],"category":{{ product.category.full_name | default: product.type | json }}}
+      {% endcapture %}
+      {% if fallback_json != '' %}{% assign fallback_json = fallback_json | append: ',' %}{% endif %}
+      {% assign fallback_json = fallback_json | append: ij %}
+      {% assign seen_handles = seen_handles | append: product.handle | append: '|' %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% if section.settings.fallback_collection_2 != blank %}
+  {% for product in section.settings.fallback_collection_2.products limit: fallback_products_per_collection %}
+    {% unless product.available %}{% continue %}{% endunless %}
+    {% assign ht = '|' | append: product.handle | append: '|' %}
+    {% unless seen_handles contains ht %}
+      {% capture ij %}
+      {"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"price":{{ product.price | json }},"compare_at_price":{{ product.compare_at_price | default: 0 | json }},"available":{{ product.available | json }},"featured_image":{% if product.featured_image %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},"tags":{{ product.tags | json }},"type":{{ product.type | json }},"source_collections":[{{ section.settings.fallback_collection_2.handle | json }}],"category":{{ product.category.full_name | default: product.type | json }}}
+      {% endcapture %}
+      {% if fallback_json != '' %}{% assign fallback_json = fallback_json | append: ',' %}{% endif %}
+      {% assign fallback_json = fallback_json | append: ij %}
+      {% assign seen_handles = seen_handles | append: product.handle | append: '|' %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% if section.settings.fallback_collection_3 != blank %}
+  {% for product in section.settings.fallback_collection_3.products limit: fallback_products_per_collection %}
+    {% unless product.available %}{% continue %}{% endunless %}
+    {% assign ht = '|' | append: product.handle | append: '|' %}
+    {% unless seen_handles contains ht %}
+      {% capture ij %}
+      {"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"price":{{ product.price | json }},"compare_at_price":{{ product.compare_at_price | default: 0 | json }},"available":{{ product.available | json }},"featured_image":{% if product.featured_image %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},"tags":{{ product.tags | json }},"type":{{ product.type | json }},"source_collections":[{{ section.settings.fallback_collection_3.handle | json }}],"category":{{ product.category.full_name | default: product.type | json }}}
+      {% endcapture %}
+      {% if fallback_json != '' %}{% assign fallback_json = fallback_json | append: ',' %}{% endif %}
+      {% assign fallback_json = fallback_json | append: ij %}
+      {% assign seen_handles = seen_handles | append: product.handle | append: '|' %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+<section
+  class="personalized-feed-section"
+  data-personalized-feed
+  data-section-id="{{ section.id }}"
+  data-products-limit="{{ product_limit }}"
+  data-empty-title="{{ section.settings.empty_title | escape }}"
+  data-filled-title="{{ section.settings.title | escape }}"
+  data-empty-subtitle="{{ section.settings.empty_subtitle | escape }}"
+  data-filled-subtitle="{{ section.settings.subtitle | escape }}"
+  data-max-pages="{{ section.settings.max_scroll_pages | default: 20 }}"
+>
+  <div class="page-width personalized-feed__inner">
+    <div class="personalized-feed__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="personalized-feed__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      <h2 class="personalized-feed__title" data-personalized-feed-title>
+        {{ section.settings.empty_title }}
+      </h2>
+      {% if section.settings.empty_subtitle != blank or section.settings.subtitle != blank %}
+        <div class="personalized-feed__subtitle" data-personalized-feed-subtitle>
+          {{ section.settings.empty_subtitle }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} ── Grid with NATIVE product cards ── {% endcomment %}
+    {% comment %} Render extra cards so JS can shuffle without fetching {% endcomment %}
+    {% assign render_limit = product_limit | times: 3 %}
+    <div class="personalized-feed__grid" data-personalized-feed-grid data-visible-limit="{{ product_limit }}">
+      {% if initial_collection != blank %}
+        {% for product in initial_collection.products limit: render_limit %}
+          {% unless product.available %}{% continue %}{% endunless %}
+          <div class="personalized-feed__cell" data-pf-handle="{{ product.handle }}"{% if forloop.index > product_limit %} style="display:none" data-pf-extra{% endif %}>
+            {%- render 'card-product', product: product, section_index: section_index, index: forloop.index -%}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% comment %} ── Infinite scroll ── {% endcomment %}
+    <div class="personalized-feed__loader" data-personalized-feed-loader>
+      <div class="personalized-feed__spinner"></div>
+    </div>
+    <div class="personalized-feed__sentinel" data-personalized-feed-sentinel></div>
+    <div class="personalized-feed__end" data-personalized-feed-end style="display:none">
+      {{ section.settings.end_message | default: "You've seen it all!" }}
+      <button class="personalized-feed__reset-btn" data-personalized-feed-reset type="button" onclick="if(window.__pf_reset)window.__pf_reset()">
+        Reset feed
+      </button>
+    </div>
+  </div>
+
+  <script type="application/json" data-personalized-feed-fallback>
+    [{{ fallback_json }}]
+  </script>
+
+  <style>
+    .personalized-feed-section { margin: 40px 0; }
+    .personalized-feed__header { margin-bottom: 18px; }
+    .personalized-feed__eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; opacity: .72; }
+    .personalized-feed__title { margin: 0; font-size: clamp(24px, 3vw, 38px); line-height: 1.05; }
+    .personalized-feed__subtitle { margin-top: 8px; opacity: .8; }
+
+    /* 2 columns mobile, 5 desktop */
+    .personalized-feed__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+    }
+    /* Mobile: grid goes edge-to-edge, ignoring page-width padding */
+    @media (max-width: 767px) {
+      .personalized-feed__grid {
+        margin-left: calc(-1 * var(--page-width-padding, 15px));
+        margin-right: calc(-1 * var(--page-width-padding, 15px));
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+    @media (min-width: 768px) {
+      .personalized-feed__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .personalized-feed__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1280px) {
+      .personalized-feed__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    }
+
+    .personalized-feed__loader { display: none; text-align: center; padding: 32px 0; }
+    .personalized-feed__loader--active { display: block; }
+    .personalized-feed__spinner {
+      display: inline-block; width: 32px; height: 32px;
+      border: 3px solid rgba(0,0,0,.1); border-top-color: #111;
+      border-radius: 50%; animation: pf-spin .7s linear infinite;
+    }
+    @keyframes pf-spin { to { transform: rotate(360deg); } }
+    .personalized-feed__sentinel { height: 1px; }
+    .personalized-feed__end { text-align: center; padding: 24px 0; opacity: .7; font-size: 14px; }
+    .personalized-feed__reset-btn {
+      display: inline-block; margin-top: 12px; padding: 8px 20px;
+      font-size: 13px; border: 1px solid #ccc; border-radius: 8px;
+      background: #fff; color: #333; cursor: pointer; transition: all .2s;
+    }
+    .personalized-feed__reset-btn:hover { background: #111; color: #fff; border-color: #111; }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Personalized feed",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "For you" },
+    { "type": "text", "id": "title", "label": "Personalized title", "default": "Picked for you" },
+    { "type": "textarea", "id": "subtitle", "label": "Personalized subtitle", "default": "A feed that adapts to what the visitor explored before." },
+    { "type": "text", "id": "empty_title", "label": "Fallback title", "default": "Trending now" },
+    { "type": "textarea", "id": "empty_subtitle", "label": "Fallback subtitle" },
+    { "type": "range", "id": "products_to_show", "min": 4, "max": 20, "step": 1, "label": "Products per batch", "default": 10 },
+    { "type": "range", "id": "fallback_products_per_collection", "min": 4, "max": 12, "step": 1, "label": "Fallback products per collection", "default": 8 },
+    { "type": "range", "id": "max_scroll_pages", "min": 5, "max": 50, "step": 1, "label": "Max scroll pages", "default": 20 },
+    { "type": "text", "id": "end_message", "label": "End of feed message", "default": "You've seen it all!" },
+    { "type": "header", "content": "Optional: override auto-fallback" },
+    { "type": "paragraph", "content": "Leave empty to auto-show all products." },
+    { "type": "collection", "id": "fallback_collection_1", "label": "Fallback collection 1 (optional)" },
+    { "type": "collection", "id": "fallback_collection_2", "label": "Fallback collection 2 (optional)" },
+    { "type": "collection", "id": "fallback_collection_3", "label": "Fallback collection 3 (optional)" }
+  ],
+  "presets": [{ "name": "Personalized feed" }]
+}
+{% endschema %}

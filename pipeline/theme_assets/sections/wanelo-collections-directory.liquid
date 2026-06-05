@@ -1,0 +1,124 @@
+{%- comment -%}
+  WANELO COLLECTIONS DIRECTORY — the "All collections" HTML-sitemap page.
+
+  FULLY AUTOMATIC. Loops EVERY collection in the live `collections` object and
+  groups each under its `custom.parent_category` metafield (alphabetical within
+  the group). This is where full link coverage lives — a brand-new collection
+  shows here the instant it exists, with ZERO theme edits. Pairs with Shopify's
+  auto /sitemap.xml for SEO.
+
+  Each link carries its small per-collection line-icon (collection
+  custom.icon metafield, rendered via the shared wanelo-icon snippet). If a
+  collection has no parent_category yet it lands under an "Other" group so it is
+  never dropped.
+
+  Light, clean, scannable — a two/three-column directory, NOT a spam wall.
+
+  Reach it by assigning this section to a page template
+  (templates/page.collections.json) and linking that page from the footer.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading = section.settings.heading | default: 'All collections'
+  assign other_label = section.settings.other_label | default: 'Other'
+  assign hide_empty = section.settings.hide_empty
+-%}
+
+{%- comment -%}
+  SINGLE-PASS, O(n) GROUPING.
+
+  A nested loop (parents x all-collections) exceeds Shopify's per-render
+  iteration budget on a large catalog and silently truncates groups. Instead we
+  make ONE pass over the live `collections`, emitting per collection a single
+  pipe-delimited record prefixed with a SORT KEY = "<parent><title>".
+  Liquid's `sort` on that array of strings orders records by parent, then by
+  title within each parent (lexical) in a single O(n log n) step. A second,
+  single O(n) pass walks the sorted records and opens a new <div class="group">
+  header whenever the parent changes. No parents x collections blow-up.
+
+  Record layout (split on the unit separator ):
+    [0] parent   [1] title   [2] url   [3] icon-key   [4] products_count
+  Collections with no parent_category fall under `other_label` so none are lost.
+{%- endcomment -%}
+{%- assign US = '|FS|' -%}
+{%- assign records = '' -%}
+{%- for c in collections -%}
+  {%- if hide_empty and c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+  {%- assign cp = c.metafields.custom.parent_category | strip -%}
+  {%- if cp == blank -%}{%- assign cp = other_label -%}{%- endif -%}
+  {%- assign cic = c.metafields.custom.icon | default: 'generic' -%}
+  {%- comment -%} sort-key (parent + title, lowercased) is field [0]+[1] joined; keep raw fields after {%- endcomment -%}
+  {%- capture rec -%}{{ cp }}{{ US }}{{ c.title }}{{ US }}{{ c.url }}{{ US }}{{ cic }}{{ US }}{{ c.products_count }}{%- endcapture -%}
+  {%- if records == blank -%}
+    {%- assign records = rec -%}
+  {%- else -%}
+    {%- assign records = records | append: '|REC|' | append: rec -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign rec_list = records | split: '|REC|' | sort_natural -%}
+
+<section class="wcd">
+  {%- if heading != blank -%}
+    <div class="wcd__head">
+      <h1 class="wcd__h1">{{ heading }}</h1>
+      {%- if section.settings.intro != blank -%}<p class="wcd__intro">{{ section.settings.intro }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wcd__cols">
+    {%- assign cur_parent = '' -%}
+    {%- assign open = false -%}
+    {%- for rec in rec_list -%}
+      {%- assign f = rec | split: US -%}
+      {%- assign parent = f[0] -%}
+      {%- if parent != cur_parent -%}
+        {%- if open -%}</ul></div>{%- endif -%}
+        {%- assign cur_parent = parent -%}
+        {%- assign open = true -%}
+        {%- assign slug = parent | downcase | replace: '&', ' ' | replace: '/', ' ' | replace: "'", ' ' | replace: '-', ' ' | strip | split: ' ' | join: '-' -%}
+        <div class="wcd__group" id="{{ slug }}"><h2 class="wcd__gtitle">{{ parent }}</h2><ul class="wcd__list">
+      {%- endif -%}
+      {%- assign cnt = f[4] | plus: 0 -%}
+      <li class="wcd__item"><a href="{{ f[2] }}" class="wcd__link"><span class="wcd__ico" aria-hidden="true">{%- render 'wanelo-icon', icon: f[3] -%}</span><span class="wcd__name">{{ f[1] }}</span>{%- if cnt > 0 -%}<span class="wcd__cnt">{{ cnt }}</span>{%- endif -%}</a></li>
+    {%- endfor -%}
+    {%- if open -%}</ul></div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wanelo Directory",
+  "tag": "section",
+  "class": "wanelo-collections-directory-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "All collections" },
+    { "type": "textarea", "id": "intro", "label": "Intro text", "default": "Every collection, grouped by category. Browse the full catalog." },
+    { "type": "text", "id": "other_label", "label": "Uncategorized group label", "default": "Other" },
+    { "type": "checkbox", "id": "hide_empty", "label": "Hide collections with no products", "default": false }
+  ],
+  "presets": [
+    { "name": "Wanelo Collections Directory" }
+  ]
+}
+{% endschema %}
+
+<style>
+  .wcd { max-width: 1180px; margin: 0 auto; padding: clamp(28px,4vw,56px) clamp(16px,4vw,40px); }
+  .wcd__head { margin-bottom: clamp(22px,2.6vw,36px); }
+  .wcd__h1 { font-size: clamp(24px,3vw,38px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.4rem; color: #1a1a1a; }
+  .wcd__intro { font-size: clamp(14px,1.4vw,16px); color: #6b7280; margin: 0; max-width: 60ch; }
+  .wcd__cols { columns: 1; column-gap: clamp(24px,3vw,44px); }
+  @media (min-width: 620px) { .wcd__cols { columns: 2; } }
+  @media (min-width: 1000px) { .wcd__cols { columns: 3; } }
+  .wcd__group { break-inside: avoid; margin: 0 0 clamp(20px,2.4vw,30px); display: inline-block; width: 100%; }
+  .wcd__gtitle { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #9ca3af; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f2; }
+  .wcd__list { list-style: none; margin: 0; padding: 0; }
+  .wcd__item { margin: 0; }
+  .wcd__link { display: flex; align-items: center; gap: 9px; padding: 6px 6px; border-radius: 8px; color: #374151; text-decoration: none; font-size: 14px; line-height: 1.3; transition: background .15s ease, color .15s ease; }
+  .wcd__link:hover { background: #f6f6f7; color: #111; }
+  .wcd__ico { display: inline-flex; flex: 0 0 auto; color: #9ca3af; transition: color .15s ease; }
+  .wcd__link:hover .wcd__ico { color: #111; }
+  .wcd__ico svg { width: 16px; height: 16px; display: block; }
+  .wcd__name { flex: 1 1 auto; min-width: 0; }
+  .wcd__cnt { flex: 0 0 auto; font-size: 11px; color: #c4c8ce; font-weight: 500; }
+</style>

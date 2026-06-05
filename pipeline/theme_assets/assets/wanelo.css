@@ -61,13 +61,18 @@
   padding-inline:var(--pad-section-x);
   background:var(--sec-bg);color:var(--sec-fg);
 }
-/* Every 5th content section inverts (hero is :nth-of-type(1), so 6/11/16). */
+/* Dark-section inversion DISABLED (operator preference): every section now
+   uses the light --sec-bg / --sec-fg tokens. The Apple-aesthetic 5n+1 dark
+   chapters + the wanelo-cta black panel had readability + tonal-fit issues
+   inside the host product card; reverted to all-light.
+   To re-enable, uncomment the selector + token override below.
 .wanelo-page section[class*="wanelo-"]:nth-of-type(5n+1):not(.wanelo-hero),
 .wanelo-page section[class*="wanelo-"].is-dark,
 .wanelo-page section.wanelo-cta{
   --sec-bg:#000;--sec-fg:#f5f5f7;--sec-fg-2:#a1a1a6;--sec-fg-3:#86868b;
   --sec-line:rgba(255,255,255,.14);--sec-panel:#0b0b0c;
 }
+*/
 
 /* Module head */
 .wanelo-page .wanelo-head{max-width:var(--max-w-narrow);margin:0 auto var(--pad-head);text-align:center}
@@ -304,12 +309,16 @@
 .wanelo-page .wanelo-interlinks h3{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--sec-fg-3);margin-bottom:var(--space-5)}
 .wanelo-page .wanelo-interlinks__list{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-2)}
 .wanelo-page .wanelo-interlinks__link{
-  display:inline-block;padding:10px 18px;
+  display:inline-flex;align-items:center;gap:8px;padding:10px 18px;
   border-radius:var(--rounded-radius,999px);border:0;
   background:var(--sec-panel);font-size:14px;font-weight:500;color:var(--sec-fg);
   transition:background .2s var(--ease),color .2s;
 }
+.wanelo-page .wanelo-interlinks__ico{display:inline-flex;flex:0 0 auto;color:var(--sec-fg-3)}
+.wanelo-page .wanelo-interlinks__ico .wanelo-icon__svg{width:17px;height:17px;display:block}
+.wanelo-page .wanelo-interlinks__txt{display:inline-block}
 .wanelo-page .wanelo-interlinks__link:hover{background:var(--sec-fg);color:var(--sec-bg)}
+.wanelo-page .wanelo-interlinks__link:hover .wanelo-interlinks__ico{color:var(--sec-bg)}
 
 /* HOW-TO */
 .wanelo-page .wanelo-howto__list{
@@ -532,7 +541,11 @@
   background:var(--bg-2);color:var(--ink);font-size:14px;font-weight:500;
   transition:background .2s var(--ease),color .2s;
 }
+.wanelo-coll-related__ico{display:inline-flex;flex:0 0 auto;color:var(--ink-2,#6b7280)}
+.wanelo-coll-related__ico .wanelo-icon__svg{width:17px;height:17px;display:block}
 .wanelo-coll-related__item a:hover{background:var(--ink);color:#fff}
+.wanelo-coll-related__item a:hover .wanelo-coll-related__ico{color:rgba(255,255,255,.85)}
+.wanelo-coll-related__item.is-hub a .wanelo-coll-related__ico{color:rgba(255,255,255,.8)}
 .wanelo-coll-related__item.is-hub a{background:var(--btn-primary-bg-color,#0071e3);color:var(--btn-primary-color,#fff)}
 .wanelo-coll-related__item.is-hub a:hover{background:var(--btn-primary-hover-bg-color,#0077ed)}
 .wanelo-coll-related__hub{font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.18);text-transform:uppercase}
@@ -1061,4 +1074,879 @@
   .wanelo-page .wanelo-sustainability__material-bar span{transition:none}
   .wanelo-page .wanelo-lifestyle-gallery__link img{transition:none}
   .wanelo-page .wanelo-lifestyle-gallery__link:hover img{transform:none}
+}
+/* ============================================================
+   Collapse-card: visually attach the long-form description to
+   the product-info card above (no big gap, same background) +
+   collapse content with "Show full description" toggle.
+   ============================================================ */
+/* MERGED MODE — wanelo.js appends .wanelo-page inside the Hyper-theme
+   `.product` flex container as a full-width child. Once inside, kill
+   our own card styling: the parent `.product` is already a white card
+   with shadow + radius, so we just inherit and look like a continuation. */
+.wanelo-merged-wrap{
+  flex-basis:100%;
+  width:100%;
+  /* Negative margin-top pulls wanelo block UP into the gap created when
+     the two columns of the product card (left product info + right
+     payment/share column) have different heights. Without this there's
+     a large empty band before "WATCH IN ACTION". */
+  margin-top:-1rem;
+}
+.wanelo-merged-wrap .wanelo-page{margin:0;padding:0;max-width:none}
+.wanelo-merged-wrap .wanelo-page>.wanelo-page__collapse{
+  position:relative;
+  margin:0;
+  background:transparent;     /* parent .product card already has bg */
+  border:none;
+  border-radius:0;
+  box-shadow:none;
+  max-height:680px;
+  overflow:hidden;
+  transition:max-height .4s ease;
+}
+/* Fallback styling — when JS hasn't moved the node yet OR :has() unsupported.
+   These rules ONLY apply to the original orphan placement. */
+.shopify-section:has(.wanelo-page:not(.wanelo-merged-wrap .wanelo-page)){
+  margin-top:-11rem;
+  position:relative;
+  z-index:1;
+}
+.wanelo-page:not(.wanelo-merged-wrap .wanelo-page){margin:0 auto;padding:0;max-width:1430px}
+.wanelo-page:not(.wanelo-merged-wrap .wanelo-page)>.wanelo-page__collapse{
+  position:relative;
+  margin:0 auto;
+  background:#fff;
+  border-radius:0 0 12px 12px;
+  border-top:1px solid rgba(0,0,0,.05);
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+  max-height:680px;
+  overflow:hidden;
+  transition:max-height .4s ease;
+}
+/* Zero out the first child's top padding so hero starts right at the seam. */
+.wanelo-page>.wanelo-page__collapse>.wanelo-page__collapse-inner>:first-child{
+  padding-top:.5rem;
+  margin-top:0;
+}
+.wanelo-page>.wanelo-page__collapse>.wanelo-page__collapse-inner>:first-child>:first-child{
+  padding-top:0;
+  margin-top:0;
+}
+.wanelo-page>.wanelo-page__collapse.is-expanded{
+  max-height:none;
+  /* Drop overflow:hidden too — `position: sticky` on inner story-row text
+     columns (CHAPTER 01/02/03 scroll-stick effect) needs a non-clipping
+     scroll ancestor. Without this, the text just scrolls past with the
+     image instead of sticking to the viewport top. The clip-on-collapse
+     was only for the fade-mask effect; once expanded, no need to clip. */
+  overflow:visible;
+}
+.wanelo-page__fade{
+  position:absolute;left:0;right:0;bottom:0;height:140px;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.95) 70%,#fff 100%);
+  transition:opacity .25s ease;
+}
+.wanelo-page>.wanelo-page__collapse.is-expanded .wanelo-page__fade{
+  opacity:0;
+}
+/* Toggle inherits theme button class `.btn.btn--secondary` (Hyper-new):
+   Instrument Sans 15px 700 capitalize, border-radius 100px, theme accent
+   color (e.g. tinted blue bg + accent border + accent text). We only
+   add LAYOUT tweaks here (centering, max-width, icon spacing) — visual
+   styling comes from the theme so it changes automatically when the
+   operator swaps theme/colors. */
+.wanelo-page__toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  margin:1.5rem auto;         /* STANDARD: 24px top + bottom */
+  min-height:40px;            /* smaller button */
+  padding:.4rem 1.5rem;
+  max-width:380px;
+  cursor:pointer;
+}
+/* Make sure the toggle row centers in the merged layout (flex parent). */
+.wanelo-merged-wrap .wanelo-page__toggle{
+  display:flex;
+  margin-left:auto;margin-right:auto;
+}
+.wanelo-page__toggle-chev{
+  display:inline-block;
+  transition:transform .25s ease;
+  font-size:.85em;
+  margin-left:.25rem;
+}
+.wanelo-page__toggle[aria-expanded="true"] .wanelo-page__toggle-chev{
+  transform:rotate(180deg);
+}
+@media (prefers-reduced-motion:reduce){
+  .wanelo-page>.wanelo-page__collapse,
+  .wanelo-page__fade,
+  .wanelo-page__toggle,
+  .wanelo-page__toggle-chev{transition:none}
+}
+
+/* ============================================================
+   WANELO THEME MERGE — re-tune metafield-rendered sections so
+   they sit naturally inside the host theme's design system.
+   When .wanelo-page is moved INTO .product card by wanelo.js
+   (.wanelo-merged-wrap parent), these rules kick in. Outside
+   the merged wrap (Customize-mode preview, or if JS fails),
+   sections fall back to the bigger Apple-aesthetic typography.
+   ============================================================ */
+.wanelo-merged-wrap .wanelo-page,
+.wanelo-merged-wrap .wanelo-page * {
+  /* Inherit theme font (Instrument Sans on Hyper-new) from body. */
+  font-family: inherit;
+}
+
+/* Display typography — pull massive Apple-aesthetic sizes down to
+   theme proportions (h1: 40px in product card; we sit a bit larger
+   for the long-form description so it still feels like content).
+
+   IMPORTANT: color uses var(--sec-fg) so dark-bg sections (every
+   5n+1, see line 65-69) still render with #f5f5f7 light text. Hard-
+   coding navy here would break readability on inverted sections
+   (e.g. wanelo-timeline / wanelo-protocol when they fall on a 5n+1
+   position). The navy itself comes from --ink override below. */
+.wanelo-merged-wrap .wanelo-page h1,
+.wanelo-merged-wrap .wanelo-page .wanelo-hero h1,
+.wanelo-merged-wrap .wanelo-page .wanelo-story h2 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--sec-fg);      /* navy on light, #f5f5f7 on dark */
+}
+.wanelo-merged-wrap .wanelo-page h2 {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: var(--sec-fg);
+}
+.wanelo-merged-wrap .wanelo-page h3,
+.wanelo-merged-wrap .wanelo-page h4 {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  color: var(--sec-fg);
+}
+
+/* Kicker labels (STICK PEEL SLAY / KEEP LOOKING / FIRST USE etc) —
+   move from muted-gold to theme accent for visual unity. On dark-bg
+   sections we shift to lighter blue so the chip stays legible. */
+.wanelo-merged-wrap .wanelo-page .wanelo-kicker,
+.wanelo-merged-wrap .wanelo-page [class*="__kicker"] {
+  color: rgb(0, 91, 255);    /* same blue as .btn--primary on Hyper-new */
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.wanelo-merged-wrap .wanelo-page section[class*="wanelo-"]:nth-of-type(5n+1):not(.wanelo-hero) .wanelo-kicker,
+.wanelo-merged-wrap .wanelo-page section[class*="wanelo-"]:nth-of-type(5n+1):not(.wanelo-hero) [class*="__kicker"],
+.wanelo-merged-wrap .wanelo-page section[class*="wanelo-"].is-dark .wanelo-kicker,
+.wanelo-merged-wrap .wanelo-page section[class*="wanelo-"].is-dark [class*="__kicker"] {
+  color: #5fa0ff;            /* lighter blue for legibility on black */
+}
+
+/* Body copy + paragraphs match theme reading size. Color uses
+   var(--sec-fg-2) so dark-bg sections fall back to #a1a1a6 (defined
+   by the 5n+1 inversion rule), not invisible navy on black. */
+.wanelo-merged-wrap .wanelo-page p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--sec-fg-2);
+}
+
+/* Override wanelo's design tokens at page level. --ink + --ink-2
+   propagate into --sec-fg / --sec-fg-2 ONLY for light-bg sections
+   (the 5n+1 dark sections override --sec-fg/--sec-fg-2 directly),
+   so this gives us navy text on light cards while preserving the
+   original Apple light-on-dark on inverted sections. */
+.wanelo-merged-wrap .wanelo-page {
+  --btn-primary-bg-color: rgb(0, 91, 255);
+  --btn-primary-color: #fff;
+  --brand-1: rgb(0, 91, 255);
+  --ink: rgb(0, 26, 52);
+  --ink-2: rgba(0, 26, 52, 0.72);
+}
+
+/* CTA section's dark Apple-style panel — soften to light card so it
+   reads as part of the host product page, not as a "closing chapter". */
+.wanelo-merged-wrap .wanelo-page .wanelo-cta {
+  background: rgb(245, 247, 250);  /* match theme --color-background */
+  color: rgb(0, 26, 52);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-cta h2,
+.wanelo-merged-wrap .wanelo-page .wanelo-cta p,
+.wanelo-merged-wrap .wanelo-page .wanelo-cta .wanelo-kicker {
+  color: rgb(0, 26, 52);
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-cta .wanelo-kicker {
+  color: rgb(0, 91, 255);
+}
+
+/* CTA buttons inherit .btn.btn--primary / .btn--secondary added to
+   Liquid — strip any wanelo-internal background to avoid double-styling. */
+.wanelo-merged-wrap .wanelo-page .wanelo-cta__button.btn,
+.wanelo-merged-wrap .wanelo-page .wanelo-cta__button-secondary.btn {
+  background: unset;          /* let .btn rule paint */
+  color: unset;
+  border: unset;
+  padding: 0 32px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Section padding — reduce vertical breathing room (theme is tighter). */
+.wanelo-merged-wrap .wanelo-page > .wanelo-page__collapse > .wanelo-page__collapse-inner > section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* The wanelo-hero block was designed as a standalone Apple-aesthetic hero
+   (88vh tall, huge centered h1). Inside the merged product card that
+   creates a massive empty band between the videos block and the next
+   long-form section. Cap it to content-fit + modest padding. */
+.wanelo-merged-wrap .wanelo-page .wanelo-hero {
+  min-height: auto;
+  padding-top: 0.75rem;          /* tightened: 12px (was 24px) */
+  padding-bottom: 0.5rem;        /* tightened: 8px (was 24px) */
+  gap: 0.5rem;                   /* tightened: 8px between copy and photo (was 16px) */
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-hero h1 {
+  font-size: clamp(28px, 4vw, 44px);    /* down from clamp(56px, 9vw, 128px) */
+  max-width: 22ch;
+  margin: 0;
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-hero__lead {
+  font-size: clamp(15px, 1.4vw, 18px);  /* down from clamp(19px, 1.7vw, 24px) */
+  margin-top: 0.375rem;          /* tightened: 6px (was 8px) */
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-hero__ctas {
+  margin-top: 0.5rem;            /* tightened: 8px between lead and CTAs (was ~32px) */
+  margin-bottom: 1.5rem;         /* 24px breathing room so hero photo + parallax don't ride up onto the Add-to-cart button */
+  gap: 1rem;                     /* tightened gap between primary + secondary CTA */
+}
+.wanelo-merged-wrap .wanelo-page .wanelo-hero__photo {
+  margin-top: 1rem;              /* 16px gap above hero photo (was 4px — photo was overlapping CTAs) */
+}
+
+/* ============================================================
+   wanelo-rating — compact star rating row at top of wanelo-page
+   ============================================================ */
+.wanelo-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 16px 0;
+  font-size: 14px;
+  color: rgb(0, 26, 52);
+}
+.wanelo-rating__stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: #f5b800;        /* gold filled stars */
+}
+.wanelo-rating__star {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.wanelo-rating__score {
+  font-weight: 700;
+  color: rgb(0, 26, 52);
+}
+.wanelo-rating__count {
+  color: #6b7480;
+  font-size: 13px;
+}
+/* When JS relocates .wanelo-rating into the host theme's product info
+   column (next to the price), strip the wanelo-page padding so it
+   aligns to the same left edge as the price/title. */
+.wanelo-rating-slot {
+  margin-top: 0.375rem;
+  margin-bottom: 0.25rem;
+}
+.wanelo-rating-slot .wanelo-rating {
+  padding: 0;
+}
+
+/* ============================================================
+   wanelo-trust-strip — minimal inline icon row, no background box.
+   Sits naturally between rating and videos with no visual island.
+   ============================================================ */
+.wanelo-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 0.5rem 16px;
+  margin: 0;
+  list-style: none;
+}
+.wanelo-trust-strip__item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 12px;
+  color: #6b7480;
+  font-weight: 500;
+}
+.wanelo-trust-strip__icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: rgb(0, 91, 255);
+}
+.wanelo-trust-strip__icon svg { width: 14px; height: 14px; }
+.wanelo-trust-strip__label { white-space: nowrap; }
+@media (max-width: 640px) {
+  .wanelo-trust-strip { gap: 0.875rem; padding: 0.375rem 12px; }
+  .wanelo-trust-strip__item { font-size: 11px; }
+}
+
+/* ============================================================
+   wanelo-research-refs — Apple-aesthetic section that lives INSIDE
+   the long-form collapse, between wanelo-clinical-evidence and
+   wanelo-stats. Uses the same .wanelo-head + reveal pattern as the
+   other metafield-rendered sections (wanelo-trust, wanelo-stats, etc.)
+   so it visually blends rather than feeling like a separate widget.
+   ============================================================ */
+.wanelo-page .wanelo-research-refs {
+  /* Inherits .wanelo-section padding-block from line ~60 of this CSS */
+}
+.wanelo-page .wanelo-research-refs__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: var(--max-w-narrow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.wanelo-page .wanelo-research-refs__item a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--sec-line);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity .25s var(--ease);
+}
+.wanelo-page .wanelo-research-refs__item:last-child a { border-bottom: 0; }
+.wanelo-page .wanelo-research-refs__item a:hover { opacity: 0.65; }
+.wanelo-page .wanelo-research-refs__title {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--sec-fg);
+  line-height: 1.4;
+  flex: 1;
+}
+.wanelo-page .wanelo-research-refs__meta {
+  font-size: 13px;
+  color: var(--sec-fg-3);
+  font-style: italic;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.wanelo-page .wanelo-research-refs__ext {
+  font-style: normal;
+  color: var(--brand-deep);
+  font-weight: 600;
+  font-size: 14px;
+}
+@media (max-width: 640px) {
+  .wanelo-page .wanelo-research-refs__item a {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .wanelo-page .wanelo-research-refs__title { font-size: 15px; }
+  .wanelo-page .wanelo-research-refs__meta { font-size: 12px; }
+}
+
+/* ============================================================
+   wanelo-videos — horizontal-scroll row of vertical 9:16 shorts
+   that lives ABOVE the collapse-card so it's visible without the
+   "Show full description" click. Drives top-of-page conversion.
+   ============================================================ */
+.wanelo-videos,
+.wanelo-page section.wanelo-videos,
+.wanelo-merged-wrap .wanelo-page section.wanelo-videos {
+  /* Single standard for the above-collapse zone:
+     - 24px (1.5rem) top + bottom section padding
+     - 16px (1rem) gap between head block and content
+     Beats the global chapter-rhythm `--pad-section-y` (96-180px)
+     via higher selector specificity. */
+  padding-top: 1.5rem;        /* STANDARD: 24px above kicker+h2 */
+  padding-bottom: 1.5rem;     /* STANDARD: 24px below video row */
+  padding-inline: 16px;
+  background: transparent;
+}
+.wanelo-videos__head {
+  max-width: 720px;
+  margin: 0 auto 1rem;        /* STANDARD: 16px gap below head */
+  text-align: center;
+}
+.wanelo-videos__kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(0, 91, 255);
+  margin-bottom: 0.25rem;     /* tighter: 4px instead of 8px */
+}
+.wanelo-videos__h2 {
+  font-size: clamp(16px, 2vw, 20px);   /* smaller header — less screen real estate */
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: rgb(0, 26, 52);
+  margin: 0;
+  line-height: 1.2;
+}
+/* The actual scrolling row — uses CSS scroll-snap so each video aligns
+   nicely after a swipe / scroll. overflow-x:auto enables touch + wheel
+   horizontal scroll. The track is wider than the viewport when there
+   are 3+ videos. */
+.wanelo-videos__scroll {
+  display: flex;
+  gap: 1rem;
+  /* Center the row when total card-width fits the viewport (≤2 cards
+     on desktop). `safe` keyword falls back to flex-start automatically
+     when content overflows, so 4-5 cards on mobile still scroll from
+     start instead of clipping leftmost cards out of reach. */
+  justify-content: safe center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 16px;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 16px 0;          /* no extra bottom — section's padding-bottom owns it (STANDARD) */
+  margin: 0 -16px;            /* break out of section padding to let cards bleed to screen edge */
+  /* Subtle scrollbar styling — hide on mobile, thin on desktop */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 26, 52, 0.2) transparent;
+}
+.wanelo-videos__scroll::-webkit-scrollbar { height: 6px; }
+.wanelo-videos__scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 26, 52, 0.2);
+  border-radius: 3px;
+}
+.wanelo-videos__scroll::-webkit-scrollbar-track { background: transparent; }
+/* Each video card — vertical 9:16, compact width so videos don't
+   dominate above-the-fold. Was 260-320px; reduced to 180-220px so a
+   user sees the videos but they're an enhancement, not a takeover. */
+.wanelo-videos__card {
+  flex: 0 0 auto;
+  width: clamp(180px, 20vw, 220px);
+  margin: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.wanelo-videos__frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;             /* black under iframe/video load */
+  box-shadow: 0 4px 16px rgba(0, 26, 52, 0.08);
+}
+/* Both iframe (YouTube) AND video (Higgsfield mp4) must fully fill the
+   9:16 frame. Without this rule on <video>, the element used its own
+   intrinsic dimensions and overflowed / sat top-left of the frame. */
+.wanelo-videos__frame iframe,
+.wanelo-videos__frame video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  object-fit: cover;
+  background: #000;
+}
+.wanelo-videos__caption {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(0, 26, 52);
+  line-height: 1.35;
+  padding: 0 2px;
+}
+/* Mobile: cards a bit wider so user sees 1.5-2 cards with peek (swipe affordance) */
+@media (max-width: 640px) {
+  /* Mobile uses same 1.5rem/1rem standard, just narrower side padding */
+  .wanelo-videos { padding: 1.5rem 12px; }
+  .wanelo-videos__card { width: min(45vw, 180px); }       /* 2 cards visible + peek */
+  .wanelo-videos__h2 { font-size: 15px; }
+  .wanelo-videos__head { margin-bottom: 1rem; }           /* STANDARD: 16px */
+  .wanelo-videos__kicker { font-size: 10px; margin-bottom: 0.25rem; }
+}
+
+/* ============================================================
+   Mobile: edge-to-edge white background.
+   The host theme's .product container keeps left/right padding
+   on mobile which leaves visible gutters around our long-form
+   description card. We break out of that container with a
+   100vw negative-margin trick — content uses the full viewport
+   width, while inner sections keep their own text padding so
+   text doesn't touch the screen edge.
+   ============================================================ */
+@media (max-width: 768px) {
+  .wanelo-merged-wrap {
+    /* Break out of any theme padding/margin on parent .product */
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  /* Text padding inside sections — keep readable on phones but tighter
+     than the desktop 20-40px to recoup the screen width we just claimed. */
+  .wanelo-merged-wrap .wanelo-page section[class*="wanelo-"] {
+    padding-inline: 16px;
+  }
+  /* The collapse card itself should fill the new full-width wrapper. */
+  .wanelo-merged-wrap .wanelo-page,
+  .wanelo-merged-wrap .wanelo-page > .wanelo-page__collapse {
+    width: 100%;
+    max-width: 100%;
+  }
+  /* "Show full description" toggle button — keep it visually centered
+     and not flush against the screen edge. */
+  .wanelo-merged-wrap .wanelo-page__toggle {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+
+/* ============================================================
+   wanelo-unboxing-journey — numbered steps the customer walks
+   through when opening the package. Apple-aesthetic numeric list.
+   ============================================================ */
+.wanelo-page section.wanelo-unboxing-journey {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.wanelo-unboxing-journey__list {
+  max-width: var(--max-w-narrow, 720px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  counter-reset: uj;
+}
+.wanelo-unboxing-journey__step {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(0, 26, 52, 0.08);
+}
+.wanelo-unboxing-journey__step:last-child { border-bottom: 0; }
+.wanelo-unboxing-journey__num {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 300;
+  color: rgb(0, 91, 255);
+  line-height: 1;
+}
+.wanelo-unboxing-journey__title {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  color: rgb(0, 26, 52);
+  margin: 0 0 0.5rem;
+}
+.wanelo-unboxing-journey__desc {
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgb(80, 100, 120);
+  margin: 0;
+}
+
+/* ============================================================
+   wanelo-progress-milestones — Day 1 / Week 1 / Week 4 / Week 8
+   horizontal timeline of expected results.
+   ============================================================ */
+.wanelo-page section.wanelo-progress-milestones {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.wanelo-progress-milestones__track {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  position: relative;
+}
+.wanelo-progress-milestones__track::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 91, 255, 0.4), rgba(0, 91, 255, 0.05));
+  z-index: 0;
+}
+.wanelo-progress-milestones__node {
+  position: relative;
+  z-index: 1;
+  padding-top: 40px;
+  text-align: left;
+}
+.wanelo-progress-milestones__dot {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgb(0, 91, 255);
+  box-shadow: 0 0 0 4px #fff, 0 0 0 5px rgba(0, 91, 255, 0.25);
+}
+.wanelo-progress-milestones__when {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(0, 91, 255);
+  margin-bottom: 0.375rem;
+}
+.wanelo-progress-milestones__label {
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 600;
+  color: rgb(0, 26, 52);
+  margin: 0 0 0.5rem;
+}
+.wanelo-progress-milestones__what {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgb(80, 100, 120);
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .wanelo-progress-milestones__track::before { display: none; }
+  .wanelo-progress-milestones__node { padding-top: 0; padding-left: 28px; }
+  .wanelo-progress-milestones__dot { top: 4px; left: 0; }
+}
+
+/* ============================================================
+   wanelo-mistake-warnings — common-mistakes block.
+   Cards with ✕ icon for mistake + ✓ for correct.
+   ============================================================ */
+.wanelo-page section.wanelo-mistake-warnings {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.wanelo-mistake-warnings__list {
+  max-width: var(--max-w-narrow, 720px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1.25rem;
+}
+.wanelo-mistake-warnings__item {
+  background: #fafbfc;
+  border: 1px solid rgba(0, 26, 52, 0.06);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+.wanelo-mistake-warnings__mistake {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 16px;
+  color: rgb(0, 26, 52);
+  margin-bottom: 0.5rem;
+}
+.wanelo-mistake-warnings__mistake strong { font-weight: 600; }
+.wanelo-mistake-warnings__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f6e3e3;
+  color: #c43d3d;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.wanelo-mistake-warnings__icon--ok {
+  background: #e3f3e8;
+  color: #2a8a4a;
+}
+.wanelo-mistake-warnings__why {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgb(80, 100, 120);
+  margin: 0 0 0.625rem 28px;
+}
+.wanelo-mistake-warnings__do {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: rgb(0, 26, 52);
+  margin-left: 0;
+}
+
+/* ============================================================
+   wanelo-use-scenarios — 3-column grid of usage contexts.
+   ============================================================ */
+.wanelo-page section.wanelo-use-scenarios {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.wanelo-use-scenarios__grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.wanelo-use-scenarios__card {
+  background: #fff;
+  border: 1px solid rgba(0, 26, 52, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.wanelo-use-scenarios__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 26, 52, 0.08);
+}
+.wanelo-use-scenarios__scenario {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  color: rgb(0, 26, 52);
+  margin: 0 0 0.375rem;
+}
+.wanelo-use-scenarios__when {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(0, 91, 255);
+  margin-bottom: 0.75rem;
+}
+.wanelo-use-scenarios__how {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgb(80, 100, 120);
+  margin: 0 0 1rem;
+}
+.wanelo-use-scenarios__benefit {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(0, 26, 52);
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 26, 52, 0.08);
+}
+
+/* ============================================================
+   wanelo-auto-section — generic fallback for ANY new custom.*
+   metafield that doesn't have a dedicated snippet yet. Renders
+   in matching Apple aesthetic so storefront looks consistent
+   even when pipeline auto-creates new metafield types.
+   ============================================================ */
+.wanelo-page section.wanelo-auto {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.wanelo-auto__list {
+  max-width: var(--max-w-narrow, 720px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1.25rem;
+}
+.wanelo-auto__item {
+  background: #fafbfc;
+  border: 1px solid rgba(0, 26, 52, 0.06);
+  border-radius: 14px;
+  padding: 1.5rem;
+  position: relative;
+}
+.wanelo-auto__num {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 300;
+  color: rgba(0, 91, 255, 0.4);
+  line-height: 1;
+}
+.wanelo-auto__title {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  color: rgb(0, 26, 52);
+  margin: 0 0 0.75rem;
+  padding-right: 3rem;
+}
+.wanelo-auto__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-top: 0.5rem;
+}
+.wanelo-auto__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(0, 91, 255);
+}
+.wanelo-auto__value {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgb(80, 100, 120);
+}
+
+/* ============================================================
+   wanelo-features PHOTO variant — Oura-style: each feature card
+   leads with a square product/lifestyle photo instead of a numeral.
+   Triggered when Designer emits item.image_url.
+   ============================================================ */
+.wanelo-page .wanelo-features__photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.1rem;
+  background: #f4f4f5;
+}
+.wanelo-page .wanelo-features__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--ease, ease);
+}
+.wanelo-page .wanelo-features__card:hover .wanelo-features__photo img {
+  transform: scale(1.04);
+}
+/* In photo mode, cards are lighter (image carries the weight) */
+.wanelo-page .wanelo-features__grid--photo .wanelo-features__card {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.wanelo-page .wanelo-features__grid--photo .wanelo-features__card h4 {
+  font-size: clamp(18px, 2vw, 22px);
+  margin-top: 0.25rem;
 }

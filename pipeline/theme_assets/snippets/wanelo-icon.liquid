@@ -1,0 +1,115 @@
+{%- comment -%}
+  WANELO ICON — single source of truth for category line-icons.
+
+  Usage:
+    {% render 'wanelo-icon', icon: 'foot-care' %}
+
+  Design: thin-stroke Lucide/Feather aesthetic. 24x24 viewBox, currentColor
+  stroke, NO fills (site is LIGHT), stroke-width 1.7, rounded caps/joins.
+  Color is controlled by the caller via CSS `color` on a wrapper. Falls back
+  to a soft generic "tag" glyph when the key is unknown or blank.
+
+  Keys are the values written to collection.metafields.custom.icon by
+  pipeline/tools/assign_collection_icons.py. Legacy short keys (eye, drop,
+  sparkle, shield, sun, leaf, wave, home, heart, star, lips, lipstick,
+  palette) are preserved so wanelo-collection-grid.liquid keeps working.
+{%- endcomment -%}
+
+{%- liquid
+  assign ic = icon | default: 'generic' | downcase | strip
+  if ic == blank
+    assign ic = 'generic'
+  endif
+-%}
+<svg class="wanelo-icon__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- case ic -%}
+
+{%- comment -%} ───────── FOOT / LEG / COMPRESSION ───────── {%- endcomment -%}
+{%- when 'foot-care' -%}<path d="M7 4.5c2.2 0 3.4 1.6 3.4 4 0 1.8.5 3 .9 4.3.5 1.5.2 3-1 3.7-1.4.8-3 .2-3.4-1.3-.3-1.1-.3-2.2-1-3.3C5 14.4 4.5 13 4.5 11 4.5 7 5 4.5 7 4.5Z"/><circle cx="13.4" cy="5.2" r=".9"/><circle cx="15.4" cy="6" r=".8"/><circle cx="16.8" cy="7.6" r=".7"/>
+{%- when 'leg-care' -%}<path d="M9 3.5c2.2 0 3.6 1.4 3.6 4 0 2.2-.4 3.6-.4 5.4 0 1.7 1 2.6 1 4.3 0 1.6-1 2.8-2.6 2.8"/><path d="M9 3.5C7 3.5 6.4 5.6 6.6 8c.2 2.4 1 3.5 1 5.3"/><path d="M7.6 13.3c0 1.8 1.6 2.6 1.6 4.4 0 1.4-.9 2.6-2.3 2.6"/>
+{%- when 'compression' -%}<path d="M9 3.5c2.2 0 3.6 1.4 3.6 4 0 2.2-.4 3.6-.4 5.4 0 1.7 1 2.6 1 4.3 0 1.6-1 2.8-2.6 2.8"/><path d="M9 3.5C7 3.5 6.4 5.6 6.6 8c.2 2.4 1 3.5 1 5.3 0 1.8 1.6 2.6 1.6 4.4 0 1.4-.9 2.6-2.3 2.6"/><path d="M6.7 9.2h6M6.7 12h6.2M7.4 15h5.6"/>
+
+{%- comment -%} ───────── JOINT / MUSCLE / MASSAGE / BONE ───────── {%- endcomment -%}
+{%- when 'joint-care' -%}<path d="M6 4.5c1.7 0 2.8 1.4 2.8 3.1 0 1 .3 1.7 1 2.4l1.2 1.2c.7.7 1.4 1 2.4 1 1.7 0 3.1 1.1 3.1 2.8"/><circle cx="6" cy="4.5" r="2.2"/><circle cx="16.5" cy="17.5" r="2.2"/>
+{%- when 'joint-cream' -%}<rect x="8" y="9" width="8" height="11" rx="2.5"/><path d="M9.5 9V6.6A1.6 1.6 0 0 1 11.1 5h1.8a1.6 1.6 0 0 1 1.6 1.6V9"/><path d="M11 3.4h2"/><path d="M10 13h4"/>
+{%- when 'muscle' -%}<path d="M4 9c2.5-1 4-2.5 6-2.5 3 0 4.5 2 7.5 2 1.4 0 2.5-.6 2.5-1.5"/><path d="M4 9c0 4 2.2 6.5 5.5 6.5 2 0 2.5-1.2 4.5-1.2 1.6 0 2.4 1 2.4 2.3 0 1.2-.9 2.4-2.6 2.4"/><path d="M9 12.2c.8.6 1.7.9 2.7.9"/>
+{%- when 'massage' -%}<circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/><path d="M12 5v-2M9 5.6 8 4M15 5.6 16 4"/>
+
+{%- comment -%} ───────── PATCHES / STICKERS ───────── {%- endcomment -%}
+{%- when 'patch' -%}<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-25 12 12)"/><path d="M10 7.6 8 11.8M14.2 9.7l-2 4.2" stroke-dasharray="0.1 2.4"/>
+{%- when 'detox-foot-patch' -%}<rect x="5" y="8" width="10" height="13" rx="4"/><path d="M7.5 11.5h5M7.5 14.5h5M7.5 17.5h5" stroke-dasharray="0.1 2"/><path d="M16 6.5c0 1.4-1.2 2.5-1.2 2.5S13.6 7.9 13.6 6.5a1.2 1.2 0 0 1 2.4 0Z"/>
+{%- when 'firming-patch' -%}<rect x="4.5" y="8" width="15" height="8" rx="4" transform="rotate(-18 12 12)"/><path d="M8.5 13.5c1.5-1 2.5-1 4-2s2.5-1 4-2"/>
+{%- when 'sleep-patch' -%}<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-20 12 12)"/><path d="M15 6.5a3 3 0 1 0 2.8 4 2.4 2.4 0 0 1-2.8-4Z"/>
+{%- when 'care-patch' -%}<rect x="6.5" y="4" width="11" height="16" rx="3"/><path d="M9.5 8.5h5M9.5 12h5M9.5 15.5h3" stroke-dasharray="0.1 2.2"/>
+{%- when 'wellness-patch' -%}<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-22 12 12)"/><path d="M12.2 8.6 13 11l2.4.2-1.9 1.5.7 2.3-2-1.3-2 1.3.6-2.3-1.8-1.5 2.4-.2Z"/>
+
+{%- comment -%} ───────── WART / MOLE / SKIN-TAG / DISCOLORATION ───────── {%- endcomment -%}
+{%- when 'wart-removal' -%}<path d="M5 13c0-3.3 2.7-6 6-6 2.6 0 4.2 1.6 5.4 1.6.8 0 1.6-.5 1.6-1.3"/><path d="M5 13c0 3.3 2.7 6 6 6 .9 0 1.4-.5 1.4-1.3"/><circle cx="15" cy="14.5" r="2"/><path d="M15 12v-1.5M15 16.5V18M12.5 14.5H11M19 14.5h-1.5"/>
+{%- when 'mole-removal' -%}<circle cx="11" cy="11" r="7"/><circle cx="11" cy="11" r="2.4"/><path d="M17.5 17.5 21 21"/>
+{%- when 'discoloration' -%}<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16Z" opacity="1"/><path d="M14.5 8.5h.01M16.5 11h.01M15 14h.01"/>
+
+{%- comment -%} ───────── FACE / SKIN / MOISTURIZER / LOTION / CREAM ───────── {%- endcomment -%}
+{%- when 'skin-care' -%}<circle cx="12" cy="11" r="7.2"/><path d="M9 13c.8 1 1.9 1.5 3 1.5s2.2-.5 3-1.5"/><path d="M9.5 9.5h.01M14.5 9.5h.01"/>
+{%- when 'face-care' -%}<path d="M5.5 9c0-3.6 2.9-5.6 6.5-5.6S18.5 5.4 18.5 9c0 2.2-.4 3.4-.4 5.2 0 3.6-2.5 6.2-6.1 6.2S5.9 17.8 5.9 14.2C5.9 12.4 5.5 11.2 5.5 9Z"/><path d="M9.5 10.5h.01M14.5 10.5h.01"/><path d="M10 15c.6.6 1.3.9 2 .9s1.4-.3 2-.9"/>
+{%- when 'moisturizer' -%}<path d="M12 3.5c0 3.5 4.5 5.8 4.5 9.8a4.5 4.5 0 0 1-9 0c0-4 4.5-6.3 4.5-9.8Z"/><path d="M9.7 13.5a2.3 2.3 0 0 0 2.3 2.3"/>
+{%- when 'lotion' -%}<path d="M8 9h8v8.5A2.5 2.5 0 0 1 13.5 20h-3A2.5 2.5 0 0 1 8 17.5Z"/><path d="M9.5 9V7.2A1.2 1.2 0 0 1 10.7 6h2.6A1.2 1.2 0 0 1 14.5 7.2V9"/><path d="M10.5 4.5h3l-.4-1.2a.8.8 0 0 0-.8-.6h-.6a.8.8 0 0 0-.8.6Z"/><path d="M10 13.5h4"/>
+{%- when 'cream' -%}<path d="M6 11.5h12l-1 7.2a1.6 1.6 0 0 1-1.6 1.3H8.6A1.6 1.6 0 0 1 7 18.7Z"/><path d="M6 11.5 7 8h10l1 3.5"/><ellipse cx="12" cy="8" rx="5" ry="1.6"/><path d="M12 8V4.5"/>
+{%- when 'body-care' -%}<circle cx="12" cy="6" r="2.4"/><path d="M12 8.4v6M12 11h-4M12 11h4M12 14.4l-2.5 5.6M12 14.4l2.5 5.6"/>
+{%- when 'chest-care' -%}<path d="M12 6.5C12 6.5 9.5 4 7 4 5 4 4 5.5 4 7.5c0 4 5 7.5 8 9.8 3-2.3 8-5.8 8-9.8 0-2-1-3.5-3-3.5-2.5 0-5 2.5-5 2.5Z"/><path d="M12 17.3v3"/>
+
+{%- comment -%} ───────── BREAST / INTIMATE / PROSTATE ───────── {%- endcomment -%}
+{%- when 'breast-care' -%}<path d="M4 8c1.5-1.3 3-2 4.5-2 2.5 0 3.5 2 3.5 2s1-2 3.5-2c1.5 0 3 .7 4.5 2"/><path d="M4 8c0 3.6 1.8 6.5 4.5 6.5 1.7 0 2.7-1.2 3.5-2.6.8 1.4 1.8 2.6 3.5 2.6C18.2 14.5 20 11.6 20 8"/><circle cx="8.5" cy="9.6" r=".7"/><circle cx="15.5" cy="9.6" r=".7"/>
+{%- when 'womens-intimate' -%}<circle cx="12" cy="9" r="5"/><path d="M12 14v6M9 18h6"/>
+{%- when 'mens-intimate' -%}<circle cx="10" cy="14" r="5"/><path d="m14 10 5-5M15 5h4v4"/>
+{%- when 'prostate' -%}<path d="M12 4.5a4 4 0 0 1 4 4c0 2.2-1.8 3.5-1.8 5.6V16a2.2 2.2 0 0 1-4.4 0v-1.9C9.8 12 8 10.7 8 8.5a4 4 0 0 1 4-4Z"/><path d="M10.5 16.5v2a1.5 1.5 0 0 0 3 0v-2"/>
+
+{%- comment -%} ───────── EAR / NASAL / NOSE / EYE / THROAT / ORAL ───────── {%- endcomment -%}
+{%- when 'ear-care' -%}<path d="M7 10a5 5 0 0 1 10 0c0 2-1.3 3-2.6 3.8C13 14.6 12.5 15 12.5 16.4A2.6 2.6 0 0 1 7.4 17"/><path d="M9.8 9.8a2.2 2.2 0 0 1 4.2.9"/>
+{%- when 'nasal-care' -%}<path d="M9 4v6.5c0 2-1.6 3-1.6 5C7.4 18 9 19.5 12 19.5"/><path d="M9 13c1.3 0 2.4 1 2.4 2.4"/><path d="M14.5 4c.8 2 1.5 3 1.5 5.5"/>
+{%- when 'eye-drops' -%}<path d="M12 3.5c0 3-3.5 5-3.5 8a3.5 3.5 0 0 0 7 0c0-3-3.5-5-3.5-8Z"/><path d="M6 17c2 1.5 4 2 6 2s4-.5 6-2"/><path d="M5 19.5c.01 0 0 0 0 0M8 21c.01 0 0 0 0 0"/>
+{%- when 'throat-care' -%}<path d="M9 3v5.5c0 1.5-2 2.5-2 5 0 3 2 5 5 5s5-1.6 5-4c0-2.4-2.4-3-2.4-5"/><path d="M9 3h6"/><path d="M11 13a1 1 0 1 0 2 0 1 1 0 0 0-2 0Z"/>
+{%- when 'oral-care' -%}<path d="M8 4c1.2 0 1.6.8 2.5.8S12.3 4 13.5 4C16 4 18 6 18 9c0 3-.7 4.5-1.2 7-.4 2-.6 3.5-1.8 3.5-1.3 0-1.3-2.5-3-2.5s-1.7 2.5-3 2.5c-1.2 0-1.4-1.5-1.8-3.5C6.7 13.5 6 12 6 9c0-3 1-5 2-5Z"/>
+
+{%- comment -%} ───────── TEA / DROPS / CAPSULES / SUPPLEMENTS ───────── {%- endcomment -%}
+{%- when 'tea' -%}<path d="M5 9h11v4a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4Z"/><path d="M16 10h2.2a2 2 0 0 1 0 4H16"/><path d="M7.5 6.5c.5-1-.5-1.5 0-2.5M10.5 6.5c.5-1-.5-1.5 0-2.5M13.5 6.5c.5-1-.5-1.5 0-2.5"/><path d="M5 20h11"/>
+{%- when 'slimming-tea' -%}<path d="M5 9h11v4a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4Z"/><path d="M16 10h2.2a2 2 0 0 1 0 4H16"/><path d="M8.5 13c1-.8 2-1 3.5-1"/><path d="M5 20h11M9 6.5c.5-1-.5-1.5 0-2.5M12.5 6.5c.5-1-.5-1.5 0-2.5"/>
+{%- when 'drops' -%}<path d="M12 3.5c0 3.5 4.5 5.8 4.5 9.8a4.5 4.5 0 0 1-9 0c0-4 4.5-6.3 4.5-9.8Z"/><path d="M10 12.5a2 2 0 0 0 2 2"/>
+{%- when 'capsule' -%}<rect x="3.5" y="9" width="17" height="6" rx="3" transform="rotate(-40 12 12)"/><path d="M9.4 14.6 14.6 9.4"/>
+{%- when 'supplement' -%}<rect x="6.5" y="3.5" width="11" height="17" rx="2.5"/><path d="M9.5 7h5M9.5 10h5"/><path d="M10 13.5h4l-.6 4a1.4 1.4 0 0 1-1.4 1.2h0a1.4 1.4 0 0 1-1.4-1.2Z"/>
+
+{%- comment -%} ───────── OILS / SPRAY / SHOWER / MENS ───────── {%- endcomment -%}
+{%- when 'body-oil' -%}<path d="M9 8h6v9.5a2.5 2.5 0 0 1-2.5 2.5h-1A2.5 2.5 0 0 1 9 17.5Z"/><path d="M10.5 8V5.5h3V8"/><path d="M11 3.5h2"/><path d="M12 11.5c-1 1-1.5 1.8-1.5 2.7a1.5 1.5 0 0 0 3 0c0-.9-.5-1.7-1.5-2.7Z"/>
+{%- when 'spray' -%}<rect x="8" y="9.5" width="7" height="10.5" rx="2"/><path d="M9.5 9.5V7h4v2.5"/><path d="M13.5 5h4M13.5 7h4M16 3h2"/><path d="M10 13.5h3"/>
+{%- when 'shower' -%}<path d="M5 12V6.5A2.5 2.5 0 0 1 7.5 4H10"/><path d="M9.5 12a3.5 3.5 0 0 1 7 0Z"/><path d="M10.5 16v2M13 16.5v2.5M15.5 16v2"/>
+{%- when 'mens-care' -%}<circle cx="11" cy="13" r="6"/><path d="m15.5 8.5 4-4M16 4.5h3.5V8"/>
+
+{%- comment -%} ───────── PIMPLE / ACNE / SCAR / SERUM ───────── {%- endcomment -%}
+{%- when 'pimple' -%}<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.2"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/>
+{%- when 'serum' -%}<path d="M10 3.5h4v3l2.5 4.5a3 3 0 0 1-2.6 4.5h-3.8a3 3 0 0 1-2.6-4.5L10 6.5Z"/><path d="M8.6 12.5h6.8"/><path d="M11.5 9a1 1 0 1 0 1 1"/>
+
+{%- comment -%} ───────── NAILS / DEVICES / MISC HEALTH ───────── {%- endcomment -%}
+{%- when 'nail-care' -%}<path d="M8 20c-1.2 0-2-1-2-2.3V8.5C6 5.5 8 3.5 12 3.5s6 2 6 5v9.2C18 19 17.2 20 16 20Z"/><path d="M6.4 9.5c2-1 3.4-1.4 5.6-1.4s3.6.4 5.6 1.4"/><path d="M9 16.5h6"/>
+{%- when 'light-therapy' -%}<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>
+{%- when 'monitor' -%}<rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M6.5 11h2l1.5-2.5L12 13l1.5-2h4"/><path d="M9 19h6M12 16v3"/>
+{%- when 'bandage' -%}<rect x="3" y="8.5" width="18" height="7" rx="3.5" transform="rotate(-30 12 12)"/><path d="M10 10.5v3M12 9.5v5M14 10.5v3"/>
+{%- when 'bracelet' -%}<circle cx="12" cy="12" r="7"/><path d="M12 5a7 7 0 0 1 0 14" stroke-dasharray="1.4 2.2"/><path d="M10.6 12 12 10.6 13.4 12 12 13.4Z"/>
+
+{%- comment -%} ───────── LEGACY SHORT KEYS (grid back-compat) ───────── {%- endcomment -%}
+{%- when 'eye' -%}<path d="M1.8 12s3.6-6.5 10.2-6.5S22.2 12 22.2 12 18.6 18.5 12 18.5 1.8 12 1.8 12Z"/><circle cx="12" cy="12" r="3"/>
+{%- when 'drop' -%}<path d="M12 3.5c0 3.5 4.5 5.8 4.5 9.8a4.5 4.5 0 0 1-9 0c0-4 4.5-6.3 4.5-9.8Z"/>
+{%- when 'sparkle' -%}<path d="M12 3.5 13.9 9 19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-.9Z"/><path d="M18 4v3M19.5 5.5h-3"/>
+{%- when 'shield' -%}<path d="M12 3 19 5.5v5.5c0 4.6-3.1 7.8-7 9.5-3.9-1.7-7-4.9-7-9.5V5.5Z"/><path d="M9.5 11.5 11.3 13.3 15 9.6"/>
+{%- when 'sun' -%}<circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/>
+{%- when 'leaf' -%}<path d="M11 20.5A7.5 7.5 0 0 1 3.5 13C3.5 6.5 11 3.5 20.5 3.5c0 9.5-3.5 17-9.5 17Z"/><path d="M3.5 20.5C8 14 12.5 12 16.5 11"/>
+{%- when 'wave' -%}<path d="M2 9c2.7 0 2.7 2 5.3 2s2.7-2 5.4-2 2.7 2 5.3 2 2.7-2 2-2"/><path d="M2 15c2.7 0 2.7 2 5.3 2s2.7-2 5.4-2 2.7 2 5.3 2"/>
+{%- when 'home' -%}<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.3V21h14V9.3"/><path d="M10 21v-5h4v5"/>
+{%- when 'heart' -%}<path d="M12 20.5 4.3 13a4.6 4.6 0 0 1 6.5-6.5L12 7.7l1.2-1.2A4.6 4.6 0 0 1 19.7 13Z"/>
+{%- when 'star' -%}<path d="M12 3.5 14.6 9.3 21 10l-4.9 4.2L17.5 20.5 12 17.2 6.5 20.5 7.9 14.2 3 10l6.4-.7Z"/>
+{%- when 'lips' -%}<path d="M3.5 12c2-2.2 4.2-3.2 8.5-3.2s6.5 1 8.5 3.2c-2 3-5 4.8-8.5 4.8S5.5 15 3.5 12Z"/><path d="M3.5 12c3.2 0 6 .4 8.5 1.6C14.5 12.4 17.3 12 20.5 12"/>
+{%- when 'lipstick' -%}<rect x="9" y="9" width="6" height="11" rx="1.4"/><path d="M9 9 10.4 3.7a1.6 1.6 0 0 1 3.2 0L15 9"/>
+{%- when 'palette' -%}<path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.6 0 1.9-1.2 1.1-2-.8-.9-.3-2.2 1-2.2h1.6a3.8 3.8 0 0 0 3.8-3.8c0-4.8-3.8-9-7.5-9Z"/><circle cx="7.6" cy="11.4" r=".9"/><circle cx="10" cy="7.8" r=".9"/><circle cx="14.4" cy="7.8" r=".9"/>
+
+{%- comment -%} ───────── GENERIC FALLBACK (soft tag) ───────── {%- endcomment -%}
+{%- else -%}<path d="M3.5 11.2 11 3.7a2.2 2.2 0 0 1 1.6-.7H18a2 2 0 0 1 2 2v5.4a2.2 2.2 0 0 1-.7 1.6l-7.5 7.5a2 2 0 0 1-2.8 0l-4.7-4.7a2 2 0 0 1 0-2.9Z"/><circle cx="15.5" cy="8.5" r="1.4"/>
+{%- endcase -%}
+</svg>

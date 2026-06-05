@@ -1,0 +1,92 @@
+{%- comment -%}
+  VIDEOS snippet — horizontal-scroll row of 2-N vertical short videos
+  shown BEFORE the long-form description so they're visible without
+  expanding the "Show full description" toggle.
+
+  Reads product.metafields.custom.videos JSON:
+    {
+      head: { kicker, h2 },
+      items: [
+        { platform: "youtube-shorts", video_id: "abc123", title: "..." },
+        { platform: "higgsfield-mp4",  url: "https://...mp4", title: "..." }
+      ]
+    }
+
+  platform values supported:
+    "youtube-shorts" — embeds via <iframe> (also accepts plain YouTube IDs)
+    "higgsfield-mp4" or any item with `url` ending .mp4 → renders via <video>
+    (controls, preload metadata, click-to-play)
+
+  Each video renders as vertical 9:16 in a horizontally-scrollable row
+  on desktop; stacked / swipeable on mobile.
+
+  AUTO-DETECT: if item has `url` field with .mp4/.webm extension and NO
+  `video_id`, treats as direct video file regardless of platform value.
+{%- endcomment -%}
+
+{%- assign videos = product.metafields.custom.videos.value -%}
+{%- if videos and videos.items and videos.items.size > 0 -%}
+<section class="wanelo-videos">
+  {%- if videos.head -%}
+    <div class="wanelo-videos__head">
+      {%- if videos.head.kicker != blank -%}
+        <div class="wanelo-videos__kicker">{{ videos.head.kicker }}</div>
+      {%- endif -%}
+      {%- if videos.head.h2 != blank -%}
+        <h2 class="wanelo-videos__h2">{{ videos.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-videos__scroll" data-wanelo-videos>
+    {%- for item in videos.items -%}
+      {%- comment -%}
+        Routing: pick render mode per item.
+          1. If platform == 'higgsfield-mp4' OR url ends with .mp4/.webm → <video>
+          2. Else if video_id present → YouTube iframe
+          3. Else skip
+      {%- endcomment -%}
+      {%- assign is_mp4 = false -%}
+      {%- assign u = item.url | default: '' | strip -%}
+      {%- if item.platform == 'higgsfield-mp4' -%}{%- assign is_mp4 = true -%}{%- endif -%}
+      {%- if u contains '.mp4' or u contains '.webm' -%}{%- assign is_mp4 = true -%}{%- endif -%}
+      {%- assign vid = item.video_id | default: '' | strip -%}
+
+      {%- if is_mp4 and u != blank -%}
+        {%- comment -%}
+          Direct video file (Higgsfield CDN mp4).
+          NO poster — browser auto-shows first frame via preload="metadata".
+          Using product image as poster causes ugly center-crop because
+          product photo is landscape but video frame is 9:16 portrait.
+        {%- endcomment -%}
+        <figure class="wanelo-videos__card">
+          <div class="wanelo-videos__frame">
+            <video controls preload="metadata" playsinline>
+              <source src="{{ u }}#t=0.1" type="video/mp4">
+            </video>
+          </div>
+          {%- if item.title != blank -%}
+            <figcaption class="wanelo-videos__caption">{{ item.title }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- elsif vid != blank -%}
+        {%- comment -%}YouTube Shorts iframe embed{%- endcomment -%}
+        <figure class="wanelo-videos__card">
+          <div class="wanelo-videos__frame">
+            <iframe
+              src="https://www.youtube.com/embed/{{ vid }}?modestbranding=1&rel=0&playsinline=1"
+              loading="lazy"
+              title="{{ item.title | default: 'Product video' | escape }}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+          {%- if item.title != blank -%}
+            <figcaption class="wanelo-videos__caption">{{ item.title }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}

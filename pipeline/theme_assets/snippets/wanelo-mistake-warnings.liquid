@@ -1,0 +1,47 @@
+{%- comment -%}
+  MISTAKE WARNINGS — "Common mistakes to avoid" — 4-6 anti-patterns +
+  why each is a problem + what to do instead. Positions brand as the
+  caring expert, not Amazon-seller. Reduces returns from misuse.
+
+  Reads custom.mistake_warnings JSON:
+    { head: { kicker, h2 },
+      warnings: [ { mistake, why_problem, instead_do } ] }
+{%- endcomment -%}
+
+{%- assign mw = product.metafields.custom.mistake_warnings.value -%}
+{%- if mw and mw.warnings and mw.warnings.size > 0 -%}
+<section class="wanelo-section wanelo-mistake-warnings">
+  {%- if mw.head -%}
+    <div class="wanelo-head reveal">
+      {%- if mw.head.kicker != blank -%}
+        <div class="wanelo-kicker">{{ mw.head.kicker }}</div>
+      {%- endif -%}
+      {%- if mw.head.h2 != blank -%}
+        <h2>{{ mw.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ul class="wanelo-mistake-warnings__list reveal">
+    {%- for w in mw.warnings -%}
+      <li class="wanelo-mistake-warnings__item">
+        {%- if w.mistake != blank -%}
+          <div class="wanelo-mistake-warnings__mistake">
+            <span class="wanelo-mistake-warnings__icon" aria-hidden="true">✕</span>
+            <strong>{{ w.mistake }}</strong>
+          </div>
+        {%- endif -%}
+        {%- if w.why_problem != blank -%}
+          <p class="wanelo-mistake-warnings__why">{{ w.why_problem }}</p>
+        {%- endif -%}
+        {%- if w.instead_do != blank -%}
+          <div class="wanelo-mistake-warnings__do">
+            <span class="wanelo-mistake-warnings__icon wanelo-mistake-warnings__icon--ok" aria-hidden="true">✓</span>
+            <span>{{ w.instead_do }}</span>
+          </div>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

@@ -140,18 +140,25 @@ def test_no_hero_trust_css_rules() -> None:
 # CTA-anchor unification — all 3 CTAs point to #wanelo-atc
 # ============================================================
 
-def test_cta_snippet_anchors_to_unified_wanelo_atc() -> None:
-    """Previously wanelo-cta.liquid used #product-form while hero CTA and
-    sticky bar used #wanelo-atc. Now unified — all three target one
-    anchor so wanelo.js can attach smooth-scroll consistently."""
+def test_cta_snippet_renders_no_button() -> None:
+    """Operator preference (2026-05-27): the closing wanelo-cta chapter
+    renders kicker/h2/p only — NO Add-to-cart button. The primary CTA
+    lives at the top of the product page next to price; duplicating it
+    inside the long-form description felt redundant.
+
+    Legacy expectation was 'all 3 CTAs (hero / sticky / closing) anchor
+    to #wanelo-atc'. Now only 2: hero CTA + mobile sticky bar. The
+    closing chapter is editorial copy (no button)."""
     cta = (THEME / "snippets" / "wanelo-cta.liquid").read_text(encoding="utf-8")
-    assert 'href="#wanelo-atc"' in cta, (
-        "wanelo-cta button must anchor to #wanelo-atc (was #product-form)"
+    # No button element at all
+    assert "btn--primary" not in cta, "wanelo-cta must not render any button"
+    assert "data-wanelo-atc-link" not in cta, (
+        "wanelo-cta must not carry the ATC-link data attribute (no button)"
     )
-    assert "data-wanelo-atc-link" in cta
-    assert "#product-form" not in cta, (
-        "Legacy #product-form anchor must be replaced"
-    )
+    assert "href=" not in cta, "wanelo-cta must not render any links"
+    # But the editorial content must still be there
+    assert "wanelo-cta__inner" in cta, "wanelo-cta must still render its inner wrapper"
+    assert "{{ cta.h2 }}" in cta, "wanelo-cta must still render the closing H2"
 
 
 # ============================================================

@@ -179,4 +179,62 @@
       });
     });
   });
+
+  /* Move .wanelo-page INTO the Hyper-theme `.product` flex container
+     so visually the long-form description is part of the same product
+     card (one DOM block, no two-card overlap-coordination needed).
+     The container is `<product-info> > .shopify-section > .product`
+     in Hyper-new theme. We append wanelo as a full-width flex child
+     at the END (after image gallery + product details column). */
+  var prodCard = document.querySelector('product-info .product, .product.product--vertical, .product.flex.flex-wrap');
+  if (prodCard && page && prodCard !== page.parentNode) {
+    /* Wrap so we can force full-width inside the flex container */
+    var wrap = document.createElement('div');
+    wrap.className = 'wanelo-merged-wrap';
+    wrap.style.flexBasis = '100%';
+    wrap.style.width = '100%';
+    prodCard.appendChild(wrap);
+    wrap.appendChild(page);
+  }
+
+  /* Rating relocation block removed 2026-05-27 — wanelo-rating snippet
+     no longer rendered (synthetic star count was a fake trust signal).
+     If real-review sync (Judge.me / Loox / Stamped) is wired later,
+     restore the snippet render in wanelo-product-page.liquid and the
+     priceTarget lookup + slot insertion here. */
+
+  /* Collapse-card toggle — long-form description is clipped to
+     `max-height: 680px` by CSS; this button removes the clip on click.
+     If natural content height fits the clip threshold, the toggle hides
+     itself (no point showing it). */
+  var collapseEl = page.querySelector('[data-wanelo-collapse]');
+  var toggleEl = page.querySelector('[data-wanelo-toggle]');
+  if (collapseEl && toggleEl) {
+    var inner = collapseEl.querySelector('.wanelo-page__collapse-inner');
+    var checkOverflow = function () {
+      if (!inner) return;
+      var natural = inner.scrollHeight;
+      var clipped = collapseEl.clientHeight;
+      /* Hide toggle if content already fits */
+      toggleEl.hidden = natural <= clipped + 20;
+    };
+    /* Recompute after fonts/images settle */
+    if (document.readyState === 'complete') checkOverflow();
+    else window.addEventListener('load', checkOverflow, { once: true });
+    setTimeout(checkOverflow, 800);
+
+    toggleEl.addEventListener('click', function () {
+      var expanded = collapseEl.classList.toggle('is-expanded');
+      toggleEl.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      toggleEl.querySelector('.wanelo-page__toggle-more').hidden = expanded;
+      toggleEl.querySelector('.wanelo-page__toggle-less').hidden = !expanded;
+      /* When collapsing back, scroll to keep the toggle in view */
+      if (!expanded) {
+        var rect = collapseEl.getBoundingClientRect();
+        if (rect.top < 0) {
+          collapseEl.scrollIntoView({ behavior: mqReduce ? 'auto' : 'smooth', block: 'start' });
+        }
+      }
+    });
+  }
 })();

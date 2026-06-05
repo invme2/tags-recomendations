@@ -104,7 +104,7 @@ def test_cell1_no_openai_billing_link(cells: dict) -> None:
 
 def test_cell1_keeps_strategy_model(cells: dict) -> None:
     c1 = cells["477e495d"]
-    assert 'MODEL_STRATEGY        = "claude-opus-4-7"' in c1
+    assert 'MODEL_STRATEGY        = "claude-opus-4-8"' in c1
 
 
 def test_cell1_alter_keeps_strategy_json(cells: dict) -> None:

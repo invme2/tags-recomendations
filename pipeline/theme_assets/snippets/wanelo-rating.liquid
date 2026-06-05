@@ -1,0 +1,32 @@
+{%- comment -%}
+  RATING snippet — compact star rating + reviews count.
+  Reads product.metafields.custom.rating JSON:
+    { "stars": 4.7, "count": 847, "label": "Verified reviews" }
+{%- endcomment -%}
+
+{%- assign r = product.metafields.custom.rating.value -%}
+{%- if r and r.stars > 0 -%}
+  {%- assign stars_num = r.stars | times: 1.0 -%}
+  {%- assign full_count = stars_num | floor -%}
+  {%- assign next_idx = full_count | plus: 1 -%}
+  {%- assign remainder = stars_num | minus: full_count -%}
+  {%- assign count = r.count | default: 0 -%}
+  {%- assign label = r.label | default: 'reviews' -%}
+<div class="wanelo-rating" aria-label="Rated {{ stars_num }} out of 5 by {{ count }} {{ label }}">
+  <span class="wanelo-rating__stars" aria-hidden="true">
+    {%- for i in (1..5) -%}
+      {%- assign show_half = false -%}
+      {%- if i == next_idx and remainder > 0.25 -%}{%- assign show_half = true -%}{%- endif -%}
+      {%- if i <= full_count -%}
+        <svg class="wanelo-rating__star is-full" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      {%- elsif show_half -%}
+        <svg class="wanelo-rating__star is-half" viewBox="0 0 24 24"><defs><linearGradient id="half-{{ product.id }}-{{ forloop.index }}"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#dde1e6"/></linearGradient></defs><path fill="url(#half-{{ product.id }}-{{ forloop.index }})" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      {%- else -%}
+        <svg class="wanelo-rating__star is-empty" viewBox="0 0 24 24" fill="#dde1e6"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      {%- endif -%}
+    {%- endfor -%}
+  </span>
+  <span class="wanelo-rating__score">{{ stars_num }}</span>
+  <span class="wanelo-rating__count">({{ count }} {{ label }})</span>
+</div>
+{%- endif -%}

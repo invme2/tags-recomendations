@@ -20,10 +20,16 @@
   {%- endif -%}
 
   <div class="wanelo-features__wrap reveal">
-    <div class="wanelo-features__grid">
+    <div class="wanelo-features__grid{% if features.items.first.image_url != blank %} wanelo-features__grid--photo{% endif %}">
       {%- for item in features.items limit: 3 -%}
         <div class="wanelo-features__card reveal delay-{{ forloop.index0 | plus: 1 }}">
-          {%- if item.icon != blank -%}
+          {%- comment -%} Oura-style: square photo on top of each feature card.
+              Falls back to numeric counter when no image is provided. {%- endcomment -%}
+          {%- if item.image_url != blank -%}
+            <div class="wanelo-features__photo">
+              <img src="{{ item.image_url }}" alt="{{ item.image_alt | default: item.h4 }}" loading="lazy">
+            </div>
+          {%- elsif item.icon != blank -%}
             <span class="wanelo-features__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><use href="#wanelo-icon-{{ item.icon }}"></use></svg>
             </span>

@@ -1,0 +1,149 @@
+{%- comment -%}
+  WANELO CATEGORY HUBS — homepage "Shop by category".
+
+  FULLY AUTOMATIC. Iterates the LIVE `collections` object, collects the distinct
+  values of each collection's `custom.parent_category` metafield, and renders ONE
+  card per parent (a silo hub) with a representative line-icon. A brand-new
+  collection appears under its hub the moment it has a parent_category set — the
+  pipeline (Cell 6) sets it on creation, so the operator never edits the theme.
+
+  This is the SEO-equity concentrator: ~6-15 parent hubs, NOT 700 links. Full
+  coverage of every collection lives in the footer directory
+  (wanelo-collections-directory.liquid).
+
+  Link target per hub: a collection whose handle == the parent slug if one
+  exists (cleanest), else the All-collections directory page anchored to that
+  parent group (/pages/<directory_page>#<slug>). Both work on any theme.
+
+  Icon: rendered via {% render 'wanelo-icon', icon: <key> %}. The parent->icon
+  map lives below (mirrors PARENT_RULES in assign_parent_categories.py). If the
+  wanelo-icon snippet is missing it degrades to no icon (the snippet owns the
+  glyphs; this section only references them).
+{%- endcomment -%}
+
+{%- liquid
+  assign heading = section.settings.heading | default: 'Shop by category'
+  assign dir_page = section.settings.directory_handle | default: 'collections'
+  assign max_hubs = section.settings.max_hubs | default: 15
+-%}
+{%- comment -%}
+  parent -> representative icon key. Mirror of PARENT_RULES icons in
+  pipeline/tools/assign_parent_categories.py. Captured as literal text (so
+  apostrophes in parent names need no escaping). Format: "Parent=icon|...".
+  An operator override via the icon_map setting wins when present.
+{%- endcomment -%}
+{%- capture default_icon_map -%}Foot & Leg Care=foot-care|Joint & Muscle=muscle|Massage & Relaxation=massage|Skin Care=skin-care|Bath & Body=wave|Hair Care=wave|Makeup & Nails=palette|Oral Care=oral-care|Intimate & Wellness=womens-intimate|Sleep & Wellness=sleep-patch|Patches & Pads=patch|Supplements & Vitamins=supplement|Health Devices=monitor|Men's=mens-care|Women's Fashion=lips|Clothing & Shoes=star|Bags & Jewelry=star|Home & Kitchen=home|Pet Supplies=heart|Tech & Electronics=monitor|Music & Instruments=star|Office & School=star|Books & Media=star|Sports & Outdoors=star|Tools & Auto=star|Food & Grocery=leaf|Baby & Kids=heart|More=generic{%- endcapture -%}
+{%- assign icon_map = section.settings.icon_map | default: default_icon_map -%}
+
+{%- comment -%}
+  1) Collect distinct parent_category values from the live object. Each value is
+  wrapped in "~" delimiters in the accumulator so a substring (e.g. "Men's" vs
+  "Women's") never gives a false `contains`. parent_list is the de-duplicated set.
+{%- endcomment -%}
+{%- assign seen = '~' -%}
+{%- assign parent_list = '' -%}
+{%- for c in collections -%}
+  {%- assign p = c.metafields.custom.parent_category | strip -%}
+  {%- if p == blank -%}{%- continue -%}{%- endif -%}
+  {%- assign needle = p | append: '~' | prepend: '~' -%}
+  {%- unless seen contains needle -%}
+    {%- assign seen = seen | append: p | append: '~' -%}
+    {%- if parent_list == blank -%}
+      {%- assign parent_list = p -%}
+    {%- else -%}
+      {%- assign parent_list = parent_list | append: '~~' | append: p -%}
+    {%- endif -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- assign parent_list = parent_list | split: '~~' -%}
+
+<section class="wch">
+  {%- if heading != blank -%}
+    <div class="wch__head">
+      <h2 class="wch__h2">{{ heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="wch__sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wch__grid">
+    {%- assign shown = 0 -%}
+    {%- for parent in parent_list -%}
+      {%- if parent == blank -%}{%- continue -%}{%- endif -%}
+      {%- if shown >= max_hubs -%}{%- break -%}{%- endif -%}
+
+      {%- comment -%} count collections under this parent (live) {%- endcomment -%}
+      {%- assign cnt = 0 -%}
+      {%- for c in collections -%}
+        {%- assign cp = c.metafields.custom.parent_category | strip -%}
+        {%- if cp == parent -%}{%- assign cnt = cnt | plus: 1 -%}{%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} slug for this parent (lowercase, non-alnum -> single dash) {%- endcomment -%}
+      {%- assign slug = parent | downcase | replace: '&', ' ' | replace: '/', ' ' | replace: "'", ' ' | replace: '-', ' ' | strip | split: ' ' | join: '-' -%}
+
+      {%- comment -%} resolve the icon for this parent from icon_map {%- endcomment -%}
+      {%- assign ic = 'generic' -%}
+      {%- assign pairs = icon_map | split: '|' -%}
+      {%- for pr in pairs -%}
+        {%- assign kv = pr | split: '=' -%}
+        {%- if kv[0] == parent -%}{%- assign ic = kv[1] -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} link target: parent-slug collection if it exists, else directory anchor {%- endcomment -%}
+      {%- assign hub_coll = collections[slug] -%}
+      {%- if hub_coll != blank and hub_coll.products_count > 0 -%}
+        {%- assign url = hub_coll.url -%}
+      {%- else -%}
+        {%- assign url = '/pages/' | append: dir_page | append: '#' | append: slug -%}
+      {%- endif -%}
+
+      <a href="{{ url }}" class="wch__card" title="{{ parent | escape }}">
+        <span class="wch__ico" aria-hidden="true">{%- render 'wanelo-icon', icon: ic -%}</span>
+        <span class="wch__txt">
+          <span class="wch__name">{{ parent }}</span>
+          {%- if cnt > 0 -%}<span class="wch__cnt">{{ cnt }} collection{% if cnt != 1 %}s{% endif %}</span>{%- endif -%}
+        </span>
+      </a>
+      {%- assign shown = shown | plus: 1 -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wanelo Category Hubs",
+  "tag": "section",
+  "class": "wanelo-category-hubs-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by category" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Browse our top categories" },
+    { "type": "range", "id": "max_hubs", "label": "Max hubs to show", "min": 6, "max": 30, "step": 1, "default": 15 },
+    { "type": "text", "id": "directory_handle", "label": "All-collections page handle", "default": "collections", "info": "Page that hosts the footer directory (wanelo-collections-directory). Hubs link to its #parent anchor when no matching collection handle exists." },
+    { "type": "textarea", "id": "icon_map", "label": "Parent -> icon map", "info": "Advanced. Pipe-separated Parent=iconKey pairs. Leave default unless you rename parents." }
+  ],
+  "presets": [
+    { "name": "Wanelo Category Hubs" }
+  ]
+}
+{% endschema %}
+
+<style>
+  .wch { max-width: 1180px; margin: 0 auto; padding: clamp(28px,4vw,56px) clamp(16px,4vw,40px); }
+  .wch__head { text-align: center; margin-bottom: clamp(22px,2.6vw,36px); }
+  .wch__h2 { font-size: clamp(22px,2.6vw,32px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.4rem; color: #1a1a1a; }
+  .wch__sub { font-size: clamp(14px,1.4vw,16px); color: #6b7280; margin: 0; }
+  .wch__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(10px,1.4vw,16px); }
+  @media (min-width: 560px) { .wch__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 860px) { .wch__grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1080px) { .wch__grid { grid-template-columns: repeat(5, 1fr); } }
+  .wch__card { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; color: #1a1a1a; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .wch__card:hover { border-color: #111; transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+  .wch__ico { display: inline-flex; flex: 0 0 auto; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 12px; background: #f6f6f7; color: #4b5563; transition: background .2s ease, color .2s ease; }
+  .wch__card:hover .wch__ico { background: #111; color: #fff; }
+  .wch__ico svg { width: 22px; height: 22px; display: block; }
+  .wch__txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .wch__name { font-size: 15px; font-weight: 650; line-height: 1.2; letter-spacing: -0.01em; }
+  .wch__cnt { font-size: 12px; color: #9ca3af; font-weight: 500; }
+</style>

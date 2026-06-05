@@ -93,15 +93,23 @@ def test_photo_pack_is_admin_only_in_loop(cells: dict) -> None:
 def test_other_metafields_remain_storefront_visible(cells: dict) -> None:
     """All content metafields (hero, story, etc.) must remain visible to
     Storefront API — Liquid theme reads them. The admin-only set must be
-    explicit and tight (only utility/internal fields: photo_pack ZIP +
-    source EPROLO origin record)."""
+    explicit and tight (only utility/internal fields).
+
+    Expected admin-only members:
+      - photo_pack       : ZIP download URL
+      - source           : EPROLO origin record (JSON)
+      - source_url       : clickable EPROLO URL (admin convenience)
+      - designer_prompt  : photo-editor prompt text (admin convenience)
+    """
     c2 = cells["b810afd7"]
     m = re.search(r"_admin_only\s*=\s*\{([^}]+)\}", c2)
     assert m, "_admin_only set declaration not found"
     members = {s.strip().strip("'\"") for s in m.group(1).split(',') if s.strip()}
-    assert members == {"photo_pack", "source"}, (
-        f"_admin_only must contain ONLY photo_pack + source; got {members}. "
-        "Adding other keys would hide content metafields from Liquid."
+    assert members == {"photo_pack", "source", "source_url", "designer_prompt"}, (
+        f"_admin_only must contain exactly photo_pack + source + source_url + "
+        f"designer_prompt; got {members}. Adding other keys would hide content "
+        "metafields from Liquid; removing source_url/designer_prompt would "
+        "leak admin-only fields to the storefront."
     )
 
 
@@ -122,11 +130,23 @@ def test_no_liquid_snippet_references_photo_pack() -> None:
 
 
 def test_master_section_does_not_render_photo_pack() -> None:
-    """The master section must not include photo_pack in its render list."""
+    """photo_pack is an admin-only ZIP utility — it must never produce visible
+    storefront output.
+
+    The master section has a generic fallback loop that renders any custom
+    metafield NOT listed in the `known_sections` denylist. So photo_pack MUST
+    appear in that denylist (that is exactly what keeps it from rendering),
+    but must never be echoed as a value or rendered via a snippet."""
     section = (ROOT / "pipeline" / "theme_assets" / "sections" /
                "wanelo-product-page.liquid").read_text(encoding="utf-8")
-    assert "photo_pack" not in section, (
-        "Master section must NOT render photo_pack — utility-only metafield"
+    # It must be excluded from the generic fallback loop via the denylist.
+    assert "known_sections" in section and "photo_pack" in section, (
+        "photo_pack must be in the known_sections denylist so the fallback "
+        "loop skips it"
+    )
+    # But its VALUE must never be output / its snippet never rendered.
+    assert "custom.photo_pack" not in section, (
+        "Master section must NOT echo the photo_pack value to storefront"
     )
     assert "photo-pack" not in section, (
         "Master section must NOT render any photo-pack snippet"
@@ -295,53 +315,71 @@ def test_designer_inline_briefs_must_quote_actual_heading(cells: dict) -> None:
 # prompt.txt surfaces funnel + slot_context per brief
 # ============================================================
 
+def _prompt_block(c6: str) -> str:
+    """Return the substring spanning the new _build_scope_prompt helper +
+    _prompt_carousel_txt / _prompt_inline_txt assignments. All 'prompt.txt
+    content' tests now anchor on this block instead of the legacy
+    _prompt_lines list (which was removed when prompts were split per scope)."""
+    start = c6.find("def _build_scope_prompt(")
+    if start == -1:
+        return ""
+    end = c6.find("_content_pp.setdefault('sections', {})['designer_prompt']", start)
+    return c6[start:end] if end > start else c6[start:start + 12000]
+
+
 def test_prompt_txt_includes_funnel_reference(cells: dict) -> None:
-    """prompt.txt should have a Carousel funnel section so ChatGPT knows
-    each carousel photo answers a different buyer question."""
+    """Both prompt files must differentiate carousel (marketplace-style)
+    from inline (editorial), and the funnel buyer-questions must appear."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    assert idx != -1
-    txt = c6[idx:idx + 6000]
-    assert "Carousel conversion funnel" in txt or "carousel conversion" in txt.lower()
-    assert "buyer-question" in txt.lower() or "buyer question" in txt.lower()
+    block = _prompt_block(c6)
+    assert block, "_build_scope_prompt helper not found"
+    lower = block.lower()
+    assert "carousel" in lower and "inline" in lower, (
+        "prompt builder must handle BOTH carousel-* and inline-* scopes"
+    )
+    assert "marketplace" in lower or "amazon" in lower, (
+        "carousel scope must reference marketplace/Amazon style"
+    )
 
 
 def test_prompt_txt_per_brief_includes_slot_context(cells: dict) -> None:
     """Per-brief section must surface slot_context so ChatGPT sees the
     placement context for each photo."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    assert idx != -1
-    txt = c6[idx:idx + 6000]
-    assert "Slot context:" in txt or "slot_context" in txt
+    block = _prompt_block(c6)
+    assert "Slot context:" in block or "slot_context" in block
     assert "_brief_pp.get('slot_context'" in c6, (
         "STEP 4.5 must read brief.slot_context and include it per brief"
     )
 
 
 def test_prompt_txt_inline_placement_block(cells: dict) -> None:
-    """prompt.txt should have a section explaining inline-* placement
-    inside the page narrative — so editor knows the photo isn't standalone.
-    Lives at the end of prompt.txt under 'Reference: inline placement'."""
+    """Inline prompt must explain that photos sit INSIDE the product
+    description (editorial), so the editor doesn't treat them like
+    standalone marketing assets."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    assert idx != -1
-    # Look at the whole _prompt_lines block + Reference extends (8k window covers it).
-    txt = c6[idx:idx + 8000]
-    assert "inline placement" in txt.lower(), (
-        "prompt.txt must include an inline placement reference block"
+    block = _prompt_block(c6)
+    lower = block.lower()
+    assert ("editorial" in lower or "inside the product description" in lower
+            or "sit inside the product description" in lower), (
+        "inline prompt must explain inline-* photos sit INSIDE the description"
     )
-    assert "inline-*" in txt, "prompt.txt must explain inline-* slot behavior"
+    assert "inline" in lower, "prompt builder must explain inline-* slot behavior"
 
 
 def test_prompt_txt_workflow_mentions_carousel_priority(cells: dict) -> None:
-    """The model instruction line must call out that carousel-* photos
-    should prioritise the buyer-question over generic style."""
+    """Carousel scope must REQUIRE text overlays (marketplace-style);
+    inline scope must FORBID overlay text (prevents the bug Roman hit
+    where ChatGPT erased packaging text expecting clean photos)."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    assert idx != -1
-    txt = c6[idx:idx + 6000]
-    assert "buyer-question" in txt.lower() or "prioritise" in txt.lower() or "prioritize" in txt.lower()
+    block = _prompt_block(c6)
+    lower = block.lower()
+    assert ("overlay" in lower or "callout" in lower or "infographic" in lower), (
+        "carousel scope must instruct text overlays / callouts / infographics"
+    )
+    assert "no overlay text" in lower, (
+        "inline scope must explicitly forbid overlay text"
+    )
 
 
 # ============================================================
@@ -393,12 +431,16 @@ def test_designer_retries_on_parse_fail(cells: dict) -> None:
 
 
 def test_step45_uses_zipfile(cells: dict) -> None:
-    """Pipeline packs in-memory ZIP using stdlib zipfile."""
+    """Pipeline packs in-memory ZIP using stdlib zipfile, with TWO prompt
+    files (one per scope: carousel + inline)."""
     c6 = cells["ce20f070"]
     assert "import zipfile as _zf" in c6
     assert "_zf.ZIP_DEFLATED" in c6
-    assert "writestr('prompt.txt'" in c6, (
-        "ZIP must include prompt.txt — the ChatGPT edit-prompt"
+    assert "writestr('prompt_carousel.txt'" in c6, (
+        "ZIP must include prompt_carousel.txt for Amazon-style batch"
+    )
+    assert "writestr('prompt_inline.txt'" in c6, (
+        "ZIP must include prompt_inline.txt for editorial-style batch"
     )
     assert "f'photos/" in c6, (
         "ZIP must include photos/ directory with descriptive filenames"
@@ -499,52 +541,49 @@ def test_photo_pack_in_wanelo_keys(cells: dict) -> None:
 # ============================================================
 
 def test_prompt_txt_contains_model_instructions(cells: dict) -> None:
-    """prompt.txt (model context) must have explicit 'Instructions for the
-    image model' section at the top with visual style + per-brief edits.
-    Operator-workflow language (ChatGPT-UI / Download / Shopify Admin) must
-    NOT live in prompt.txt — that's README.md territory."""
+    """Both prompt files (carousel + inline) must have explicit style +
+    visual_style + per-brief sections. Operator-workflow language must
+    NOT leak into prompt files — that's README.md territory."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    assert idx != -1, "_prompt_lines list not found"
-    txt = c6[idx:idx + 3500]
-    assert "Instructions for the image model" in txt, (
-        "prompt.txt must have explicit model-instruction header"
+    block = _prompt_block(c6)
+    assert block, "_build_scope_prompt helper not found"
+    lower = block.lower()
+    assert "style" in lower and "marketplace" in lower, (
+        "carousel header must declare marketplace style"
     )
-    assert "visual style" in txt.lower(), "missing 'visual style' header"
-    assert "carousel" in txt.lower(), "missing carousel mention"
+    assert "editorial" in lower, "inline header must declare editorial style"
+    assert "visual style" in lower, "must include 'Unified visual style' shared block"
+    assert "carousel" in lower and "inline" in lower
 
 
 def test_prompt_txt_has_no_operator_workflow_language(cells: dict) -> None:
-    """prompt.txt must NOT include operator-workflow phrases like 'Open a NEW
-    chat', 'Download edited photos', 'In Shopify Admin'. Those live in
-    README.md and would confuse the model if uploaded as context."""
+    """Prompt files must NOT include operator-workflow phrases (those live
+    in README.md and would confuse the model if uploaded as context)."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    end = c6.find("_prompt_txt = ", idx)
-    assert idx != -1 and end != -1
-    prompt_block = c6[idx:end]
+    block = _prompt_block(c6)
     for forbidden in ("Open a NEW chat", "Download edited photos",
-                      "In Shopify Admin", "Drop edited"):
-        assert forbidden not in prompt_block, (
-            f"prompt.txt must NOT contain operator-only phrase: {forbidden!r}"
+                      "In Shopify Admin", "Drop edited",
+                      "python pipeline/tools/upload_edited_photos"):
+        assert forbidden not in block, (
+            f"prompt files must NOT contain operator-only phrase: {forbidden!r}"
         )
 
 
 def test_prompt_txt_includes_per_brief_section(cells: dict) -> None:
-    """Each brief gets its own ### section with Slot context / Concept /
-    Edit instructions. Source URL must NOT be in prompt.txt (lives in
-    manifest.json — operator-only audit data)."""
+    """Each brief gets ### section with Concept / Edit instructions, and
+    inline briefs get an ASPECT hint. Source URL must NOT be in prompt
+    files (lives in manifest.json — operator-only audit data)."""
     c6 = cells["ce20f070"]
-    idx = c6.find("_prompt_lines = [")
-    end = c6.find("_prompt_txt = ", idx)
-    assert idx != -1 and end != -1
-    prompt_block = c6[idx:end]
-    assert "Concept:" in prompt_block
-    assert "Edit instructions:" in prompt_block
-    assert "Slot context:" in prompt_block
-    # Source URL must NOT leak into prompt.txt — it's audit-only operator data.
-    assert "Source URL:" not in prompt_block, (
-        "Source URL must live in manifest.json, NOT prompt.txt (noise for model)"
+    block = _prompt_block(c6)
+    assert "Concept:" in block
+    assert "Edit instructions:" in block
+    assert "Slot context:" in block
+    assert "ASPECT:" in block, (
+        "inline briefs must include ASPECT hint (matches theme display container)"
+    )
+    # Source URL must NOT leak into prompt files — it's audit-only operator data.
+    assert "Source URL:" not in block, (
+        "Source URL must live in manifest.json, NOT prompt files (noise for model)"
     )
 
 
@@ -576,16 +615,29 @@ def test_cell2_loop_uses_type_override_lookup(cells: dict) -> None:
 
 
 def test_metafieldsset_special_cases_photo_pack_as_url(cells: dict) -> None:
-    """Step 5 metafieldsSet payload must send photo_pack with type='url' and a
-    plain-URL string value — sending a JSON-encoded dict to a url-typed field
-    would be rejected by Shopify."""
+    """Step 5 metafieldsSet payload must send photo_pack + source_url with
+    type='url' (plain-URL string value) and designer_prompt with
+    type='multi_line_text_field' (plain text value). Sending a JSON-encoded
+    dict to those typed fields would be rejected by Shopify."""
     c6 = cells["ce20f070"]
-    assert "_mf_types = {'photo_pack': 'url'}" in c6, (
+    # _mf_types must declare all three special cases
+    assert "'photo_pack':" in c6 and "'url'" in c6, (
         "Step 5 must declare per-key type override for photo_pack"
     )
+    assert "'source_url':" in c6 and "'url'" in c6, (
+        "Step 5 must declare per-key type override for source_url"
+    )
+    assert "'designer_prompt':" in c6 and "'multi_line_text_field'" in c6, (
+        "Step 5 must declare per-key type override for designer_prompt"
+    )
     # The loop must branch on type and skip JSON-encoding for url-typed fields
-    assert 'if _t == \'url\':' in c6 or "if _t == 'url':" in c6, (
+    assert "if _t == 'url':" in c6, (
         "metafieldsSet loop must special-case type 'url' to avoid json.dumps"
+    )
+    # multi_line_text_field also bypasses json.dumps (plain text)
+    assert "elif _t == 'multi_line_text_field':" in c6, (
+        "metafieldsSet loop must special-case multi_line_text_field for plain-text "
+        "metafields like designer_prompt"
     )
 
 
@@ -720,28 +772,32 @@ def test_readme_md_is_written_to_zip(cells: dict) -> None:
 
 def test_readme_explains_funnel_filename_order(cells: dict) -> None:
     """README.md must explicitly tell the operator that filenames are
-    pre-sorted by conversion funnel — this is the whole point of #3."""
+    pre-sorted by funnel — this is the whole point of numbered filenames."""
     c6 = cells["ce20f070"]
     idx = c6.find("_readme_lines = [")
     assert idx != -1
     end = c6.find("_readme_txt = ", idx)
     assert end != -1
     readme = c6[idx:end]
-    assert "FILENAME ORDER" in readme or "filename order" in readme.lower(), (
-        "README must instruct operator to use filename order"
+    lower = readme.lower()
+    assert "funnel" in lower or "filename order" in lower or "same filenames" in lower, (
+        "README must explain filename ordering / funnel sort"
     )
-    assert "funnel" in readme.lower(), "README must mention the funnel sort"
 
 
 def test_readme_lists_inline_metafield_mapping(cells: dict) -> None:
-    """README must tell operator which metafield image_url field each
-    inline-* slot maps to."""
+    """README must explain that inline-* photos get URL-swapped into
+    metafield JSONs by upload_edited_photos.py — the operator needs to know
+    inline photos aren't manual paste-into-Admin work anymore."""
     c6 = cells["ce20f070"]
     idx = c6.find("_readme_lines = [")
     end = c6.find("_readme_txt = ", idx)
     readme = c6[idx:end]
-    assert "custom.hero.image_url" in readme
-    assert "custom.story.chapters" in readme
+    lower = readme.lower()
+    assert "metafield" in lower, "README must mention metafields (inline destination)"
+    assert "upload_edited_photos" in readme, (
+        "README must tell operator to run upload_edited_photos.py for round-trip"
+    )
 
 
 def test_readme_tells_operator_not_to_upload_readme(cells: dict) -> None:

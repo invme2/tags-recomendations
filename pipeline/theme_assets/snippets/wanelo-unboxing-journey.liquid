@@ -1,0 +1,41 @@
+{%- comment -%}
+  UNBOXING JOURNEY — 4-5 steps the customer experiences when opening the
+  package. Sits in the post-purchase anticipation zone (near whats_included).
+
+  Reads custom.unboxing_journey JSON:
+    { head: { kicker, h2 }, steps: [ { step_number, title, description } ] }
+{%- endcomment -%}
+
+{%- assign uj = product.metafields.custom.unboxing_journey.value -%}
+{%- if uj and uj.steps and uj.steps.size > 0 -%}
+<section class="wanelo-section wanelo-unboxing-journey">
+  {%- if uj.head -%}
+    <div class="wanelo-head reveal">
+      {%- if uj.head.kicker != blank -%}
+        <div class="wanelo-kicker">{{ uj.head.kicker }}</div>
+      {%- endif -%}
+      {%- if uj.head.h2 != blank -%}
+        <h2>{{ uj.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ol class="wanelo-unboxing-journey__list reveal">
+    {%- for step in uj.steps -%}
+      <li class="wanelo-unboxing-journey__step">
+        <div class="wanelo-unboxing-journey__num" aria-hidden="true">
+          {%- if step.step_number != blank -%}{{ step.step_number }}{%- else -%}{{ forloop.index }}{%- endif -%}
+        </div>
+        <div class="wanelo-unboxing-journey__body">
+          {%- if step.title != blank -%}
+            <h3 class="wanelo-unboxing-journey__title">{{ step.title }}</h3>
+          {%- endif -%}
+          {%- if step.description != blank -%}
+            <p class="wanelo-unboxing-journey__desc">{{ step.description }}</p>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+{%- endif -%}

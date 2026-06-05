@@ -1,0 +1,46 @@
+{%- comment -%}
+  USE SCENARIOS — 3-5 distinct contexts when the product fits.
+  Morning routine / Date night / Travel / Special occasion etc.
+  Expands perceived value — one product, many use cases.
+
+  Reads custom.use_scenarios JSON:
+    { head: { kicker, h2 },
+      scenarios: [ { scenario, when, how_to_use, key_benefit } ] }
+{%- endcomment -%}
+
+{%- assign us = product.metafields.custom.use_scenarios.value -%}
+{%- if us and us.scenarios and us.scenarios.size > 0 -%}
+<section class="wanelo-section wanelo-use-scenarios">
+  {%- if us.head -%}
+    <div class="wanelo-head reveal">
+      {%- if us.head.kicker != blank -%}
+        <div class="wanelo-kicker">{{ us.head.kicker }}</div>
+      {%- endif -%}
+      {%- if us.head.h2 != blank -%}
+        <h2>{{ us.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wanelo-use-scenarios__grid reveal">
+    {%- for s in us.scenarios -%}
+      <article class="wanelo-use-scenarios__card">
+        {%- if s.scenario != blank -%}
+          <h3 class="wanelo-use-scenarios__scenario">{{ s.scenario }}</h3>
+        {%- endif -%}
+        {%- if s.when != blank -%}
+          <div class="wanelo-use-scenarios__when">{{ s.when }}</div>
+        {%- endif -%}
+        {%- if s.how_to_use != blank -%}
+          <p class="wanelo-use-scenarios__how">{{ s.how_to_use }}</p>
+        {%- endif -%}
+        {%- if s.key_benefit != blank -%}
+          <div class="wanelo-use-scenarios__benefit">
+            <span aria-hidden="true">→</span> {{ s.key_benefit }}
+          </div>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}

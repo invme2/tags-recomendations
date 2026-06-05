@@ -1,0 +1,43 @@
+{%- comment -%}
+  PROGRESS MILESTONES — Day 1 / Week 1 / Week 4 / Week 8 timeline of what
+  to expect. Manages expectations to reduce "doesn't work after 3 days"
+  returns. Sits near custom.timeline (different — timeline = product
+  history, milestones = user's expected results journey).
+
+  Reads custom.progress_milestones JSON:
+    { head: { kicker, h2 },
+      milestones: [ { timeframe, label, expected_result } ] }
+{%- endcomment -%}
+
+{%- assign pm = product.metafields.custom.progress_milestones.value -%}
+{%- if pm and pm.milestones and pm.milestones.size > 0 -%}
+<section class="wanelo-section wanelo-progress-milestones">
+  {%- if pm.head -%}
+    <div class="wanelo-head reveal">
+      {%- if pm.head.kicker != blank -%}
+        <div class="wanelo-kicker">{{ pm.head.kicker }}</div>
+      {%- endif -%}
+      {%- if pm.head.h2 != blank -%}
+        <h2>{{ pm.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ol class="wanelo-progress-milestones__track reveal">
+    {%- for m in pm.milestones -%}
+      <li class="wanelo-progress-milestones__node">
+        <div class="wanelo-progress-milestones__dot" aria-hidden="true"></div>
+        <div class="wanelo-progress-milestones__when">
+          {%- if m.timeframe != blank -%}{{ m.timeframe }}{%- endif -%}
+        </div>
+        {%- if m.label != blank -%}
+          <h3 class="wanelo-progress-milestones__label">{{ m.label }}</h3>
+        {%- endif -%}
+        {%- if m.expected_result != blank -%}
+          <p class="wanelo-progress-milestones__what">{{ m.expected_result }}</p>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+{%- endif -%}

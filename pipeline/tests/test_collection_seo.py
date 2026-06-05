@@ -196,10 +196,13 @@ def test_collection_related_section_uses_anchor_with_title_fallback() -> None:
 
 
 def test_collection_related_section_has_shopify_section_schema() -> None:
-    """Must include {% schema %} block so operator can install via Customize."""
+    """Must include {% schema %} block so operator can install via Customize.
+    Section schema 'name' field is capped at 25 chars by Shopify, so we use
+    the truncated 'Wanelo Related Coll' label (was 'Wanelo Related Collections'
+    before — rejected by Shopify with 'name is too long' at upload)."""
     f = (THEME / "sections" / "wanelo-collection-related.liquid").read_text(encoding="utf-8")
     assert "{% schema %}" in f
-    assert '"Wanelo Related Collections"' in f
+    assert '"Wanelo Related Coll"' in f
 
 
 # ============================================================
@@ -241,7 +244,7 @@ def compute_helper(cells: dict):
     # Find the function body
     start = c2.find("def _compute_collection_related(")
     assert start != -1
-    end = c2.find("\n# ════ v9.2: SET INVENTORY ════", start)
+    end = c2.find("\n# ════ v10.0: ALWAYS-IN-STOCK (dropshipping mode) ════", start)
     assert end != -1
     src = c2[start:end]
     mod = types.ModuleType("synth_compute")

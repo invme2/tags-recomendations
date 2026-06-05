@@ -1,0 +1,84 @@
+{%- comment -%}
+  AUTO-SECTION — universal fallback renderer for ANY custom.* JSON metafield
+  that doesn't have a dedicated wanelo-*.liquid snippet yet.
+
+  Pipeline auto-creates definitions when Designer emits new keys. The master
+  section template loops over all custom.* metafields, skips known ones,
+  and renders the rest through this snippet.
+
+  Supports these JSON shapes (auto-detected):
+    { head: {kicker, h2}, items:        [{...}] }   — generic key-value cards
+    { head: {kicker, h2}, steps:        [{...}] }   — numbered list
+    { head: {kicker, h2}, chapters:     [{...}] }   — narrative chapters
+    { head: {kicker, h2}, phases:       [{...}] }   — timeline phases
+    { head: {kicker, h2}, milestones:   [{...}] }   — progress milestones
+    { head: {kicker, h2}, scenarios:    [{...}] }   — context cards
+    { head: {kicker, h2}, warnings:     [{...}] }   — warning cards
+    { head: {kicker, h2}, ANY_ARRAY:    [{...}] }   — falls through to cards
+
+  Operator can later build a dedicated wanelo-X.liquid for better styling
+  and add `X` to the `KNOWN_SECTIONS` array in wanelo-product-page.liquid.
+
+  Usage:
+    {%- render 'wanelo-auto-section', key: 'body_routine' -%}
+{%- endcomment -%}
+
+{%- assign mfval = product.metafields.custom[key].value -%}
+{%- if mfval -%}
+
+  {%- comment -%} Find the first non-'head' field that holds an array {%- endcomment -%}
+  {%- assign collection = nil -%}
+  {%- assign collection_name = '' -%}
+  {%- for field in mfval -%}
+    {%- assign fkey = field[0] -%}
+    {%- assign fval = field[1] -%}
+    {%- if fkey != 'head' and fval.size > 0 and fval.first -%}
+      {%- assign collection = fval -%}
+      {%- assign collection_name = fkey -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if collection -%}
+    <section class="wanelo-section wanelo-auto wanelo-auto--{{ key | replace: '_', '-' }}">
+      {%- if mfval.head -%}
+        <div class="wanelo-head reveal">
+          {%- if mfval.head.kicker != blank -%}
+            <div class="wanelo-kicker">{{ mfval.head.kicker }}</div>
+          {%- endif -%}
+          {%- if mfval.head.h2 != blank -%}
+            <h2>{{ mfval.head.h2 }}</h2>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <ul class="wanelo-auto__list wanelo-auto__list--{{ collection_name }} reveal">
+        {%- for item in collection -%}
+          <li class="wanelo-auto__item">
+            {%- assign first_done = false -%}
+            {%- for ifield in item -%}
+              {%- assign ikey = ifield[0] -%}
+              {%- assign ival = ifield[1] -%}
+              {%- if ival == blank or ival == nil -%}
+                {%- continue -%}
+              {%- endif -%}
+              {%- comment -%} Numeric index/order field — render small number badge {%- endcomment -%}
+              {%- if ikey contains 'number' or ikey contains 'order' or ikey == 'index' -%}
+                <span class="wanelo-auto__num" aria-hidden="true">{{ ival }}</span>
+              {%- elsif first_done == false -%}
+                <h3 class="wanelo-auto__title">{{ ival }}</h3>
+                {%- assign first_done = true -%}
+              {%- else -%}
+                <div class="wanelo-auto__row">
+                  <span class="wanelo-auto__label">{{ ikey | replace: '_', ' ' | capitalize }}</span>
+                  <span class="wanelo-auto__value">{{ ival }}</span>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </section>
+  {%- endif -%}
+
+{%- endif -%}

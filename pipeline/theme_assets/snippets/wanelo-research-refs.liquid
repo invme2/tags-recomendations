@@ -1,0 +1,38 @@
+{%- comment -%}
+  RESEARCH REFERENCES — Apple-aesthetic section that lives INSIDE the
+  long-form collapse, near wanelo-trust / wanelo-clinical-evidence
+  (authority/proof zone). Reads custom.research_refs JSON.
+{%- endcomment -%}
+
+{%- assign rr = product.metafields.custom.research_refs.value -%}
+{%- if rr and rr.items and rr.items.size > 0 -%}
+<section class="wanelo-section wanelo-research-refs">
+  {%- if rr.head -%}
+    <div class="wanelo-head reveal">
+      {%- if rr.head.kicker != blank -%}
+        <div class="wanelo-kicker">{{ rr.head.kicker }}</div>
+      {%- endif -%}
+      {%- if rr.head.h2 != blank -%}
+        <h2>{{ rr.head.h2 }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <ul class="wanelo-research-refs__list reveal">
+    {%- for item in rr.items -%}
+      {%- if item.url != blank -%}
+        <li class="wanelo-research-refs__item">
+          <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer nofollow">
+            <span class="wanelo-research-refs__title">{{ item.title }}</span>
+            <span class="wanelo-research-refs__meta">
+              {%- if item.source != blank -%}{{ item.source }}{%- endif -%}
+              {%- if item.year %} · {{ item.year }}{% endif -%}
+              <span class="wanelo-research-refs__ext" aria-hidden="true">↗</span>
+            </span>
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

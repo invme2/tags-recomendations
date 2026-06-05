@@ -1,0 +1,2065 @@
+{
+  "sections": {
+    "collection_list_slider_6qbNfj": {
+      "type": "collection-list-slider",
+      "blocks": {
+        "featured_collection_L9N3Tg": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "event-party-supplies",
+            "image": "shopify://shop_images/hfhtfh.png",
+            "title": "Event & Party Supplies"
+          }
+        },
+        "featured_collection_gxdACj": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "seasonal-decor",
+            "image": "shopify://shop_images/iop.png",
+            "title": "Seasonal Decor"
+          }
+        },
+        "featured_collection_jQXtir": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bedding-1",
+            "image": "shopify://shop_images/6546.png",
+            "title": "Bedding"
+          }
+        },
+        "featured_collection_4H9LzM": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "towels-shower-curtains",
+            "image": "shopify://shop_images/adasf.png",
+            "title": "Towels & Shower Curtains"
+          }
+        },
+        "featured_collection_jMA9xm": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "wall-art",
+            "image": "shopify://shop_images/dsfwe.png",
+            "title": "Wall Art"
+          }
+        },
+        "featured_collection_J6hxH9": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "blankets-throws",
+            "image": "shopify://shop_images/ewrwe.png",
+            "title": "Blankets & Throws"
+          }
+        },
+        "featured_collection_HwzPfD": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bath",
+            "image": "shopify://shop_images/esddf.png",
+            "title": "Bath"
+          }
+        },
+        "featured_collection_GW3kAL": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "umbrellas",
+            "image": "shopify://shop_images/jytfhjdthkl.png",
+            "title": "Umbrellas"
+          }
+        },
+        "featured_collection_J6V8fx": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-clutches-evening-bags",
+            "image": "shopify://shop_images/dsftwrte.png",
+            "title": "Women's Clutches"
+          }
+        },
+        "featured_collection_NkFYeg": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-belts",
+            "image": "shopify://shop_images/fgddaa.png",
+            "title": "Women's Belts"
+          }
+        },
+        "featured_collection_eBphH3": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-backpacks-bookbags",
+            "image": "shopify://shop_images/o_ioh.png",
+            "title": "Women's Backpacks"
+          }
+        },
+        "featured_collection_mFCdUY": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "mens-handbags",
+            "image": "shopify://shop_images/ghfgs.png",
+            "title": "Men's Handbags"
+          }
+        },
+        "featured_collection_dVPBrW": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-shoulder-bags",
+            "image": "shopify://shop_images/dsetwtw3.png",
+            "title": "Women's Shoulder Bags"
+          }
+        },
+        "featured_collection_N6cDbL": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "living-room-furniture",
+            "image": "shopify://shop_images/abdaef5a0c22f5c990c5e4a115587fff.png",
+            "title": "Living Room"
+          }
+        },
+        "featured_collection_HkYgAV": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-costumes-accessories",
+            "image": "shopify://shop_images/yjtyk.png",
+            "title": "Women's Costumes Accessories"
+          }
+        },
+        "featured_collection_iFTHCd": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-wedding-accessories",
+            "image": "shopify://shop_images/uyhf.png",
+            "title": "Women's Wedding Accessories"
+          }
+        },
+        "featured_collection_yYrpNh": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "hand-fans",
+            "image": "shopify://shop_images/hkh_h.png",
+            "title": "Hand Fans"
+          }
+        },
+        "featured_collection_rKQbMB": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "kids-baby-furniture",
+            "image": "shopify://shop_images/869c916ac181f1a03572d9f339ab99cc.png",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_L9N3Tg",
+        "featured_collection_gxdACj",
+        "featured_collection_jQXtir",
+        "featured_collection_4H9LzM",
+        "featured_collection_jMA9xm",
+        "featured_collection_J6hxH9",
+        "featured_collection_HwzPfD",
+        "featured_collection_GW3kAL",
+        "featured_collection_J6V8fx",
+        "featured_collection_NkFYeg",
+        "featured_collection_eBphH3",
+        "featured_collection_mFCdUY",
+        "featured_collection_dVPBrW",
+        "featured_collection_N6cDbL",
+        "featured_collection_HkYgAV",
+        "featured_collection_iFTHCd",
+        "featured_collection_yYrpNh",
+        "featured_collection_rKQbMB"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "section_header_alignment": "left",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "card_color_scheme": "",
+        "card_style": "standard",
+        "card_heading_size": "text-base",
+        "card_image_ratio": "1/1",
+        "card_image_width": "medium",
+        "card_image_padding": "none",
+        "rounded_card_image": true,
+        "mobile_layout": "vertical",
+        "carousel_item_size": "auto",
+        "columns_desktop": 6,
+        "carousel_control_color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "slider_with_multicolumn_KwPRDj": {
+      "type": "slider-with-multicolumn",
+      "blocks": {
+        "slide_jzURAg": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/7662713935765e57fd0d087a91e499ba.png",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "content_alignment": "center",
+            "subheading": "<strong>100,000+ Happy Customers Worldwide</strong>",
+            "heading": "<em>Discover Products Everyone Loves</em>",
+            "highlight_style": "none",
+            "highlight_font_style": "normal",
+            "highlight_style_color": "",
+            "highlight_text_color": "#da8409",
+            "heading_size": "hd2",
+            "text": "<p>Curated collection of trending products, unique gadgets, and viral finds. Be the first to discover what's hot.</p>",
+            "button_label": "Shop Trending Now",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "slide_HfpXmr": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/7662713935765e57fd0d087a91e499ba.png",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "content_alignment": "center",
+            "subheading": "100,000+ Happy Customers Worldwide",
+            "heading": "<em>Discover Products Everyone Loves</em>",
+            "highlight_style": "none",
+            "highlight_font_style": "normal",
+            "highlight_style_color": "",
+            "highlight_text_color": "#da8409",
+            "heading_size": "hd2",
+            "text": "<p>Curated collection of trending products, unique gadgets, and viral finds. Be the first to discover what's hot.</p>",
+            "button_label": "Explore Categories",
+            "button_link": "shopify://collections/all",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "image_card_UpRmQf": {
+          "type": "image-card",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/Wellness_Relaxation_Products_2.png",
+            "content_alignment": "center",
+            "heading": "<em>Set of candles</em>",
+            "highlight_style": "none",
+            "highlight_font_style": "normal",
+            "highlight_style_color": "",
+            "highlight_text_color": "rgba(0,0,0,0)",
+            "heading_size": "h3",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "text": "",
+            "card_link": "shopify://products/serenity-glow-effortless-ambiance"
+          }
+        },
+        "image_card_zRJgQk": {
+          "type": "image-card",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/ec9e636047491fdc24221204214bbd75_52acccf3-640f-4c48-a13b-92e659f23780.png",
+            "content_alignment": "center",
+            "heading": "Waterproof Shoe Cover",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h3",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "text": "",
+            "card_link": "shopify://products/waterproof-silicone-shoe-cover-1-pair"
+          }
+        },
+        "image_card_3NGHCV": {
+          "type": "image-card",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/4_806fe9a4-6153-4f86-8ea6-76370cf66013.png",
+            "content_alignment": "center",
+            "heading": "Water Gun Automatic",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h3",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "text": "",
+            "card_link": "shopify://products/water-gun-automatic-v2-0-2025"
+          }
+        },
+        "image_card_eLxeYn": {
+          "type": "image-card",
+          "settings": {
+            "color_scheme": "scheme-10",
+            "image": "shopify://shop_images/mmmm.png",
+            "content_alignment": "center",
+            "heading": "Makeup Bag",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h3",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "text": "",
+            "card_link": "shopify://products/makeup-bag"
+          }
+        }
+      },
+      "block_order": [
+        "slide_jzURAg",
+        "slide_HfpXmr",
+        "image_card_UpRmQf",
+        "image_card_zRJgQk",
+        "image_card_3NGHCV",
+        "image_card_eLxeYn"
+      ],
+      "disabled": true,
+      "name": "t:sections.slider-with-multicolumn.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-inverse",
+        "autoplay": false,
+        "autoplay_delay": 3,
+        "columns_desktop": 2,
+        "column_gap": "small",
+        "row_gap": "inherit",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "show_section_divider": true,
+        "divider_width": "full",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "slideshow_q3U4Jn": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_JhU8hg": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-9",
+            "background": "shopify://shop_images/vhftdg.jpg",
+            "image_overlay_opacity": 40,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "Cotton Made",
+            "title": "<em>New Season July</em>",
+            "highlight_style": "none",
+            "highlight_font_style": "normal",
+            "highlight_style_color": "",
+            "highlight_text_color": "#ededed",
+            "heading_size": "h1",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "Shop collection",
+            "button_link": "shopify://collections/jewelry-accessories",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": true
+          }
+        },
+        "slide_U9bPyj": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-9",
+            "background": "shopify://shop_images/6661de29da95735838449bb813758402.png",
+            "image_overlay_opacity": 40,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "Modern Elegance",
+            "title": "Spoke Sofa",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "hd2",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "Shop collection",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": false
+          }
+        },
+        "slide_6ajC6M": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-9",
+            "background": "shopify://shop_images/9dddf6b532cbd7feaf30baec11037d58.png",
+            "image_overlay_opacity": 40,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "",
+            "title": "Best Sale",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h1",
+            "description": "<p>fggdhsth</p>",
+            "description_size": "text-base",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": false
+          }
+        },
+        "slide_VYBBKy": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "background": "shopify://shop_images/1_7d799441-1422-4bab-9805-82f60534ecff.png",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "",
+            "title": "Image slide",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "hd2",
+            "description": "<p>Tell your brand's story through images</p>",
+            "description_size": "text-base",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": false
+          }
+        }
+      },
+      "block_order": [
+        "slide_JhU8hg",
+        "slide_U9bPyj",
+        "slide_6ajC6M",
+        "slide_VYBBKy"
+      ],
+      "disabled": true,
+      "settings": {
+        "container": "fixed",
+        "slide_height": "adapt",
+        "show_controls": true,
+        "autoplay": true,
+        "autoplay_delay": 5,
+        "show_text_below": false,
+        "text_alignment_mobile": "center",
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
+    "featured_collection_bdaamt": {
+      "type": "featured-collection",
+      "blocks": {
+        "collection_ydJPzX": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "title": "New Arrivals",
+            "show_banner": true,
+            "color_scheme": "scheme-inverse",
+            "card_link": "",
+            "banner_image": "shopify://shop_images/ab6a78255615b67edeec8f591db556a9_de8f5dd2-a62f-48b2-b314-5f95e12dbd4a.png",
+            "image_overlay_opacity": 10,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "subheading": "Promotion",
+            "subheading_style": "",
+            "heading": "Soft Stools Design",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "text_size": "text-base",
+            "button_label": "Shop now",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "collection_E83rKg": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "title": "Hot Items",
+            "show_banner": true,
+            "color_scheme": "scheme-inverse",
+            "card_link": "",
+            "image_overlay_opacity": 10,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "subheading": "Promotion",
+            "subheading_style": "",
+            "heading": "Soft Stools Design",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "text_size": "text-base",
+            "button_label": "Shop now",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "collection_ydJPzX",
+        "collection_E83rKg"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "container": "full",
+        "color_scheme": "",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "Trending Right Now",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h2",
+        "description": "<p>Traditional divides between personal and professional space.</p>",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "limit": 7,
+        "columns": 5,
+        "column_gap": "medium",
+        "row_gap": "large",
+        "enable_slider": true,
+        "content_overflow": true,
+        "navigation_position": "bottom",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "show_progress_bar": true,
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "promotion_banner_VCkmzP": {
+      "type": "promotion-banner",
+      "blocks": {
+        "subheading_xKzbww": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Flash Sale — Limited Time!",
+            "subheading_icon": "lightning"
+          }
+        },
+        "timer_6FyFrY": {
+          "type": "timer",
+          "settings": {
+            "type": "evergreen",
+            "number_size": "h1",
+            "duration": "every_month",
+            "time": "2025/06/28 03:45 PM"
+          }
+        },
+        "text_QWap4d": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Up to 50% off on best-selling products. While supplies last.</p>",
+            "text_color": "base-text"
+          }
+        },
+        "button_6pTcPM": {
+          "type": "button",
+          "settings": {
+            "button_label": "Use Code: FLASH30",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_xKzbww",
+        "timer_6FyFrY",
+        "text_QWap4d",
+        "button_6pTcPM"
+      ],
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-3",
+        "layout": "horizontal",
+        "content_alignment": "center",
+        "content_alignment_mobile": "center",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "custom_content_JxRy7x": {
+      "type": "custom-content",
+      "blocks": {
+        "image_card_mL7WWJ": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "image": "shopify://shop_images/Women_s_Shoes_2.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 0,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "small",
+            "content_gap": "fitted",
+            "card_link": "shopify://collections/womens-shoes",
+            "subheading": "",
+            "subheading_style": "",
+            "heading": "Women's Shoes",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "<p>Elevate your space with 40% off<br/>our timeless designs!</p>",
+            "button_label": "Shop Now",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": true,
+            "badge_color_scheme": "scheme-3",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "40%",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "left",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": true
+          }
+        },
+        "image_card_Vj69GM": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "image": "shopify://shop_images/Garden_Sculptures.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 0,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "small",
+            "content_gap": "fitted",
+            "card_link": "shopify://collections/outdoor-decor",
+            "subheading": "",
+            "subheading_style": "",
+            "heading": "Outdoor Decor",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "<p>Get 30% off elegant, timeless <br/>seating—don’t miss out!</p>",
+            "button_label": "Shop Now",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": true,
+            "badge_color_scheme": "scheme-8",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "30%",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "left",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": false
+          }
+        }
+      },
+      "block_order": [
+        "image_card_mL7WWJ",
+        "image_card_Vj69GM"
+      ],
+      "custom_css": [
+        ".bg-none {--aspect-ratio: 21/9 !important;}"
+      ],
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "enable_sticky_column": false,
+        "section_header_alignment": "left",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "",
+        "text_size": "text-base",
+        "column_gap": "2xs",
+        "row_gap": "inherit",
+        "swipe_on_mobile": false,
+        "columns_mobile": "1",
+        "padding_top": 40,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "personalized_feed_cqj9Ri": {
+      "type": "personalized-feed",
+      "custom_css": [
+        ".product-card {background: #fff !important; border: 1px solid #e0e5f0 !important; border-radius: 12px !important; overflow: hidden !important;}",
+        ".product-card__image-wrapper {padding: 8px 8px 0 !important;}",
+        ".product-card__image {border-radius: 8px 8px 0 0 !important;}",
+        ".product-card__info {padding: 12px 16px 16px !important;}",
+        "#FacetFiltersContainer .sticky-element {background: #fff !important; border: 1px solid #e0e5f0 !important; border-radius: 12px !important; padding: 20px !important;}"
+      ],
+      "name": "Personalized feed",
+      "settings": {
+        "eyebrow": "For you",
+        "title": "Picked for you",
+        "subtitle": "A feed that adapts to what the visitor explored before.",
+        "empty_title": "Trending now",
+        "empty_subtitle": "New visitors see the products you want to push first.",
+        "products_to_show": 18,
+        "fallback_products_per_collection": 8,
+        "max_scroll_pages": 20,
+        "end_message": "You've seen it all!",
+        "fallback_collection_1": "",
+        "fallback_collection_2": "",
+        "fallback_collection_3": ""
+      }
+    },
+    "featured_collection_ibfdGE": {
+      "type": "featured-collection",
+      "blocks": {
+        "collection_7XfYD3": {
+          "type": "collection",
+          "settings": {
+            "collection": "newest-products",
+            "title": "",
+            "show_banner": false,
+            "color_scheme": "scheme-073a6b86-0c50-499b-906a-4fbcfd3ff980",
+            "card_link": "",
+            "image_overlay_opacity": 0,
+            "content_position": "top-left",
+            "content_alignment": "left",
+            "subheading": "",
+            "subheading_style": "",
+            "heading": "Collections",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "text_size": "text-base",
+            "button_label": "Button label",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "collection_b7tEb7": {
+          "type": "collection",
+          "disabled": true,
+          "settings": {
+            "collection": "sale",
+            "title": "",
+            "show_banner": false,
+            "color_scheme": "",
+            "card_link": "",
+            "image_overlay_opacity": 0,
+            "content_position": "top-left",
+            "content_alignment": "left",
+            "subheading": "",
+            "subheading_style": "",
+            "heading": "Collections",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "text_size": "text-base",
+            "button_label": "Button label",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "collection_peBCbi": {
+          "type": "collection",
+          "disabled": true,
+          "settings": {
+            "collection": "",
+            "title": "",
+            "show_banner": false,
+            "color_scheme": "",
+            "card_link": "",
+            "image_overlay_opacity": 0,
+            "content_position": "top-left",
+            "content_alignment": "left",
+            "subheading": "",
+            "subheading_style": "",
+            "heading": "Collections",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h2",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "text_size": "text-base",
+            "button_label": "Button label",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "collection_7XfYD3",
+        "collection_b7tEb7",
+        "collection_peBCbi"
+      ],
+      "disabled": true,
+      "name": "t:sections.featured-collection.presets__2.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-073a6b86-0c50-499b-906a-4fbcfd3ff980",
+        "section_header_alignment": "left",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "Product tabs",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "limit": 4,
+        "columns": 4,
+        "column_gap": "2xs",
+        "row_gap": "extra-small",
+        "enable_slider": true,
+        "content_overflow": true,
+        "navigation_position": "bottom",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "show_progress_bar": true,
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": true,
+        "divider_width": "fixed"
+      }
+    },
+    "177304554916cc84e5": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "1773045534598cae3a": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_content_HPgFTK": {
+      "type": "custom-content",
+      "blocks": {
+        "image_card_zmVaRW": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-12",
+            "image": "shopify://shop_images/Home_Storage_Organization.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 30,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "small",
+            "content_gap": "tight",
+            "card_link": "shopify://collections/towels-shower-curtains",
+            "subheading": "HOT",
+            "subheading_style": "border",
+            "heading": "Towels",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h1",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "button_label": "Shop",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": false,
+            "badge_color_scheme": "scheme-inverse",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "99$",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "center",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": false
+          }
+        },
+        "image_card_99YjcC": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-12",
+            "image": "shopify://shop_images/Boys_Sneakers.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 30,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "medium",
+            "content_gap": "fitted",
+            "card_link": "shopify://collections/boys-sneakers",
+            "subheading": "TOP",
+            "subheading_style": "border",
+            "heading": "Boys' Sneakers",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h1",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "button_label": "Shop",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": false,
+            "badge_color_scheme": "scheme-1",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "99$",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "center",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": false
+          }
+        },
+        "image_card_GfjA9E": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-12",
+            "image": "shopify://shop_images/Men_s_Loungewear.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 30,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "medium",
+            "content_gap": "fitted",
+            "card_link": "shopify://collections/mens-polos",
+            "subheading": "SALE",
+            "subheading_style": "border",
+            "heading": "Men's Polos",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h1",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "button_label": "Shop",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": false,
+            "badge_color_scheme": "scheme-1",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "99$",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "center",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": false
+          }
+        },
+        "image_card_K6AMHq": {
+          "type": "image_card",
+          "settings": {
+            "color_scheme": "scheme-12",
+            "image": "shopify://shop_images/Wellness_Relaxation_Products_22.png",
+            "image_ratio": "adapt",
+            "image_overlay_opacity": 30,
+            "content_position": "split-bottom-button",
+            "content_alignment": "left",
+            "content_spacing": "medium",
+            "content_gap": "fitted",
+            "card_link": "shopify://collections/bathing-accessories-spa-like-comfort",
+            "subheading": "<strong>- 30%</strong>",
+            "subheading_style": "border",
+            "heading": "Bathing Accessories",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h1",
+            "heading_size_mobile": "inherit",
+            "heading_size_custom": 18,
+            "description": "",
+            "button_label": "Shop",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "show_badge": false,
+            "badge_color_scheme": "scheme-1",
+            "badge_shape": "circle",
+            "badge_position": "top-right",
+            "badge_subtext": "Save",
+            "badge_text": "99$",
+            "color_scheme_mobile": "scheme-1",
+            "show_text_below": false,
+            "content_alignment_mobile": "center",
+            "width": "50%",
+            "alignment": "center",
+            "block_custom_class": "",
+            "enable_preload_image": false
+          }
+        }
+      },
+      "block_order": [
+        "image_card_zmVaRW",
+        "image_card_99YjcC",
+        "image_card_GfjA9E",
+        "image_card_K6AMHq"
+      ],
+      "disabled": true,
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "enable_sticky_column": true,
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "center",
+        "subheading": "",
+        "heading": "",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h2",
+        "description": "",
+        "text_size": "text-base",
+        "column_gap": "extra-small",
+        "row_gap": "2xs",
+        "swipe_on_mobile": true,
+        "columns_mobile": "1",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "show_section_divider": true,
+        "divider_width": "fixed"
+      }
+    },
+    "collection_list_Azm9te": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_KdFqFq": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "allproducts",
+            "image": "shopify://shop_images/sale_6b9b6cda-f233-44f1-a515-8fdf08adf6ff.png",
+            "title": "Sale Items"
+          }
+        },
+        "featured_collection_d8XGnb": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "tires-wheels",
+            "image": "shopify://shop_images/Automotive_22.png",
+            "title": ""
+          }
+        },
+        "featured_collection_FzRWDn": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "wellness-relaxation-products",
+            "image": "shopify://shop_images/Wellness_Relaxation_Products_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_at4gCr": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "power-tools",
+            "image": "shopify://shop_images/Power_Tools_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_F69pQy": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "pools-hot-tubs",
+            "image": "shopify://shop_images/Pools_Hot_Tubs_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_JV9tDT": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "girls-sets",
+            "image": "shopify://shop_images/sets.png",
+            "title": ""
+          }
+        },
+        "featured_collection_WLrpbE": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "office-furniture-parts",
+            "image": "shopify://shop_images/Office_School_Supplies_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_qdrbEr": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "toys-games",
+            "image": "shopify://shop_images/Novelty_Gag_Toys_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_Pa8kFP": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "winter-sports",
+            "image": "shopify://shop_images/Winter_Sports_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_UTWiiY": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "kids-hats-caps",
+            "image": "shopify://shop_images/hat_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_rkynNN": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "greenhouses-growing-lights",
+            "image": "shopify://shop_images/Greenhouses_Growing_Lights_2.png",
+            "title": ""
+          }
+        },
+        "featured_collection_8t9tJr": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-blazers",
+            "image": "shopify://shop_images/blazer.png",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_KdFqFq",
+        "featured_collection_d8XGnb",
+        "featured_collection_FzRWDn",
+        "featured_collection_at4gCr",
+        "featured_collection_F69pQy",
+        "featured_collection_JV9tDT",
+        "featured_collection_WLrpbE",
+        "featured_collection_qdrbEr",
+        "featured_collection_Pa8kFP",
+        "featured_collection_UTWiiY",
+        "featured_collection_rkynNN",
+        "featured_collection_8t9tJr"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "name": "Collection list *",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-073a6b86-0c50-499b-906a-4fbcfd3ff980",
+        "section_header_alignment": "left",
+        "section_header_alignment_mobile": "center",
+        "subheading": "",
+        "heading": "Shop By Categories",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h3",
+        "description": "",
+        "text_size": "text-sm",
+        "button_label": "Shop All Products",
+        "button_link": "",
+        "button_style": "btn--plain",
+        "button_icon": "caret-right",
+        "card_color_scheme": "scheme-073a6b86-0c50-499b-906a-4fbcfd3ff980",
+        "card_style": "standard",
+        "card_heading_size": "text-base",
+        "card_text_line_limit": "none",
+        "card_image_ratio": "1/1",
+        "card_image_width": "large",
+        "card_image_padding": "none",
+        "rounded_card_image": false,
+        "card_show_border": false,
+        "mobile_layout": "vertical",
+        "columns_desktop": 6,
+        "column_gap": "none",
+        "row_gap": "inherit",
+        "grid_bordered": true,
+        "columns_mobile": "3",
+        "swipe_on_mobile": true,
+        "padding_top": 60,
+        "padding_bottom": 0,
+        "show_section_divider": true,
+        "divider_width": "fixed"
+      }
+    },
+    "collection_tabs_VexkkR": {
+      "type": "collection-tabs",
+      "blocks": {
+        "collection_kXyTe3": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/2_9b1b4496-043c-4dd6-8602-d30799cdc499.png",
+            "title": "Dining Chairs",
+            "text": "<p>With a shape inspired by the bollards used to<br/>secure vessels to a jetty</p>",
+            "button_label": "Shop Collection",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "collection_qxfNFe": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/3.png",
+            "title": "Spoke Cotton Sofas",
+            "text": "<p>Anchored in design, inspired by the sturdy bollards<br/>that secure ships to docks.</p>",
+            "button_label": "Shop Collection",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        },
+        "collection_j3wCpz": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/1_05d2171b-1251-4695-a5f4-07a4648eb5dd.png",
+            "title": "",
+            "text": "<p>Designed with a silhouette inspired by the crossbars <br/>that provide strength and stability.</p>",
+            "button_label": "Shop Collection",
+            "button_style": "btn--primary",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "collection_kXyTe3",
+        "collection_qxfNFe",
+        "collection_j3wCpz"
+      ],
+      "disabled": true,
+      "custom_css": [
+        "@media (min-width: 1024px) {collection-tabs {padding-inline: 5rem; }}"
+      ],
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "heading": "Featured Collections",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h6",
+        "image_position": "right",
+        "image_ratio": "adapt",
+        "collection_heading_size": "h1",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "lookbook_slider_9zCdQJ": {
+      "type": "lookbook-slider",
+      "blocks": {
+        "lookbook_card_8cicAx": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [
+              "large-capacity-anti-theft-usb-charging-shoulder-bag"
+            ],
+            "width": 30,
+            "width_mobile": 30,
+            "image": "shopify://shop_images/22_87746548-f89c-4b47-9d36-030794224b36.png",
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        },
+        "lookbook_card_eUB7yN": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [],
+            "width": 50,
+            "width_mobile": 50,
+            "image": "shopify://shop_images/44.png",
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        },
+        "lookbook_card_tHgUQt": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [],
+            "width": 59,
+            "width_mobile": 90,
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        },
+        "lookbook_card_amCMHk": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [],
+            "width": 59,
+            "width_mobile": 90,
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        },
+        "lookbook_card_8BaXc6": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [],
+            "width": 29,
+            "width_mobile": 65,
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        },
+        "lookbook_card_DtRhzC": {
+          "type": "lookbook_card",
+          "settings": {
+            "product_list": [],
+            "width": 59,
+            "width_mobile": 90,
+            "heading": "Shop this look",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6"
+          }
+        }
+      },
+      "block_order": [
+        "lookbook_card_8cicAx",
+        "lookbook_card_eUB7yN",
+        "lookbook_card_tHgUQt",
+        "lookbook_card_amCMHk",
+        "lookbook_card_8BaXc6",
+        "lookbook_card_DtRhzC"
+      ],
+      "disabled": true,
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-inverse",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "center",
+        "subheading": "",
+        "heading": "Get Inspired by Spaces",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h2",
+        "description": "",
+        "description_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--primary",
+        "button_icon": "none",
+        "column_gap": "medium",
+        "enable_slider": true,
+        "slide_height": "small",
+        "enable_swiper_mobile": true,
+        "show_progress_bar": true,
+        "show_section_divider": true,
+        "divider_width": "fixed",
+        "padding_top": 60,
+        "padding_bottom": 0
+      }
+    },
+    "buttons_with_icon_7zH9F3": {
+      "type": "buttons-with-icon",
+      "blocks": {
+        "button_item_VQE7f9": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Living Room",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_A8ctbq": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Planters",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_gp6wzj": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Gravel Rug",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_KjqtJi": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Table Mirror",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_Q3cegW": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Table Wears",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_pqRX7H": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Dining Decor",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_en8WtA": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Ray Table Lamp",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_JnFWN8": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Chairs",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_FrFqff": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Living Room",
+            "button_link": "",
+            "icon": "check"
+          }
+        },
+        "button_item_mKVJW4": {
+          "type": "button_item",
+          "settings": {
+            "button_label": "Planters",
+            "button_link": "",
+            "icon": "check"
+          }
+        }
+      },
+      "block_order": [
+        "button_item_VQE7f9",
+        "button_item_A8ctbq",
+        "button_item_gp6wzj",
+        "button_item_KjqtJi",
+        "button_item_Q3cegW",
+        "button_item_pqRX7H",
+        "button_item_en8WtA",
+        "button_item_JnFWN8",
+        "button_item_FrFqff",
+        "button_item_mKVJW4"
+      ],
+      "disabled": true,
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h2",
+        "item_alignment": "left",
+        "item_button_style": "btn--icon",
+        "item_button_font": "button",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "show_section_divider": false,
+        "divider_width": "fixed",
+        "padding_top": 10,
+        "padding_bottom": 10
+      }
+    },
+    "multicolumn_icon_zAmMcX": {
+      "type": "multicolumn-icon",
+      "blocks": {
+        "column_z8qCGK": {
+          "type": "column",
+          "settings": {
+            "icon": "lightning",
+            "max_width": 28,
+            "max_width_mb": 28,
+            "title": "Curated Selection",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h5",
+            "heading_font": "heading",
+            "text": "<p>We test and approve every product before it hits our store</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_GB9Ref": {
+          "type": "column",
+          "settings": {
+            "icon": "truck",
+            "max_width": 28,
+            "max_width_mb": 28,
+            "title": "Fast Worldwide Shipping",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "text": "<p>Free shipping on orders $50+. Express options available</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_iF9HzC": {
+          "type": "column",
+          "settings": {
+            "icon": "currency-circle-dollar",
+            "max_width": 28,
+            "max_width_mb": 28,
+            "title": "30-Day Money Back",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "text": "<p>Not happy? Full refund, no questions asked</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_ERhDXC": {
+          "type": "column",
+          "settings": {
+            "icon": "chat",
+            "max_width": 28,
+            "max_width_mb": 28,
+            "title": "24/7 Customer Support",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "text": "<p>Real humans ready to help via chat, email & phone</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "column_z8qCGK",
+        "column_GB9Ref",
+        "column_iF9HzC",
+        "column_ERhDXC"
+      ],
+      "disabled": true,
+      "name": "t:sections.multicolumn-with-icon.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "scheme-inverse",
+        "header_layout": "vertical",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "Why Shop With WANELO?",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "enable_sticky": false,
+        "card_color_scheme": "scheme-10",
+        "content_alignment": "center",
+        "image_position": "top",
+        "icon_color": "#400000",
+        "columns_desktop": 4,
+        "column_gap": "small",
+        "row_gap": "small",
+        "show_divider_col": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "show_section_divider": false,
+        "divider_width": "fixed",
+        "padding_top": 50,
+        "padding_bottom": 50
+      }
+    },
+    "multicolumn_Ff4Wbj": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_YWTLnF": {
+          "type": "column",
+          "settings": {
+            "title": "Comfortable",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h4",
+            "text": "<p>Bow Chair is available in Natural or Black-stained Oak with full EU Ecolabel certification. </p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_AwmLJY": {
+          "type": "column",
+          "settings": {
+            "title": "Price transparency",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h4",
+            "text": "<p>Fair pricing ensures you know exactly what you’re paying for, with no hidden costs or markups.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_j3Pdbn": {
+          "type": "column",
+          "settings": {
+            "title": "All eco-certified",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h4",
+            "text": "<p>All products consider a more holistic environmental impact and are designed for a longer lifetime in a way.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        },
+        "column_MikwAx": {
+          "type": "column",
+          "settings": {
+            "title": "Sustainability",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "h4",
+            "text": "<p>Committed to sustainable practices, ethical sourcing, and reducing environmental impact.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "btn--underline",
+            "button_icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "column_YWTLnF",
+        "column_AwmLJY",
+        "column_j3Pdbn",
+        "column_MikwAx"
+      ],
+      "disabled": true,
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "section_header_alignment": "left",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "content_alignment": "left",
+        "show_col_count": false,
+        "show_image": true,
+        "columns_desktop": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "show_section_divider": false,
+        "divider_width": "fixed",
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    },
+    "testimonials_masonry_eWmjGz": {
+      "type": "testimonials-masonry",
+      "blocks": {
+        "testimonial_kBTXCg": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "none",
+            "text": "<p>\"Absolutely love my purchase! The quality exceeded my expectations and shipping was faster than expected. Will definitely order again!\"</p>",
+            "avatar": "shopify://shop_images/7662713935765e57fd0d087a91e499ba.png",
+            "author": "Sarah M.",
+            "bio": "",
+            "product": "cozycrocs™"
+          }
+        },
+        "testimonial_ahLzWx": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "none",
+            "text": "<p>\"Got this for my daughter and she can't stop playing with it! The quality is great and it's exactly as shown in the pictures.\"</p>",
+            "avatar": "shopify://shop_images/7662713935765e57fd0d087a91e499ba.png",
+            "author": "James T.",
+            "bio": "",
+            "product": "high-flying-fun-airplane-toy"
+          }
+        },
+        "testimonial_brF8L9": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "none",
+            "text": "<p>\"Perfect gift for my mom! She absolutely loved it. The packaging was beautiful and the product itself is stunning!\"</p>",
+            "avatar": "shopify://shop_images/7662713935765e57fd0d087a91e499ba.png",
+            "author": "Emily R.",
+            "bio": "",
+            "product": "infinity-dress"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_kBTXCg",
+        "testimonial_ahLzWx",
+        "testimonial_brF8L9"
+      ],
+      "disabled": true,
+      "name": "t:sections.testimonials_masonry.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "What Customers Say",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h1",
+        "description": "<p>Real reviews from real customers</p>",
+        "text_size": "text-base",
+        "max_height": 0,
+        "card_color_scheme": "scheme-4",
+        "card_image_ratio": "adapt",
+        "show_image": false,
+        "show_author_image": true,
+        "columns_desktop": 3,
+        "column_gap": "medium",
+        "row_gap": "medium",
+        "swipe_on_mobile": true,
+        "show_progress_bar": true,
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "scrolling_gallery_image_wJyLJr": {
+      "type": "scrolling-gallery-image",
+      "blocks": {
+        "gallery_zMzedj": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "thisisaaccount"
+          }
+        },
+        "gallery_PALf8b": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "furniturelover"
+          }
+        },
+        "gallery_t8EfbE": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "thisisaaccount"
+          }
+        },
+        "gallery_HjXBVX": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "baddyjam"
+          }
+        },
+        "gallery_Hdq7y7": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "liamwealthy"
+          }
+        },
+        "gallery_xaTeHP": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "baddyjam"
+          }
+        },
+        "gallery_gf99Q7": {
+          "type": "gallery",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "image_link": "https://www.instagram.com/",
+            "social_media": "instagram",
+            "heading": "liamwealthy"
+          }
+        }
+      },
+      "block_order": [
+        "gallery_zMzedj",
+        "gallery_PALf8b",
+        "gallery_t8EfbE",
+        "gallery_HjXBVX",
+        "gallery_Hdq7y7",
+        "gallery_xaTeHP",
+        "gallery_gf99Q7"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "subheading": "",
+        "heading": "#WANELOFIND — Join the Community",
+        "highlight_style": "none",
+        "highlight_font_style": "italic",
+        "highlight_style_color": "",
+        "highlight_text_color": "",
+        "heading_size": "h2",
+        "description": "<p>See how others style their WANELO finds</p>",
+        "text_size": "text-lg",
+        "show_button_on_top": false,
+        "button_label": "📷 Follow @WANELO on Instagram→",
+        "button_link": "https://instagram.com/wanelo",
+        "button_style": "btn--underline",
+        "button_icon": "none",
+        "direction": "left",
+        "speed": 0.1,
+        "pause_on_hover": true,
+        "column_gap": "medium",
+        "show_section_divider": false,
+        "divider_width": "fixed",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "wanelo_collection_grid": {
+      "type": "wanelo-collection-grid",
+      "settings": {
+        "heading": "Shop by category"
+      }
+    },
+    "wanelo_best_sellers": {
+      "type": "wanelo-best-sellers",
+      "settings": {
+        "eyebrow": "FEATURED",
+        "heading": "Best Sellers",
+        "sub": "Our most-loved products, seen in action",
+        "limit": 6,
+        "cta_label": "Shop all",
+        "hide_badge": false
+      }
+    },
+    "wanelo_category_hubs": {
+      "type": "wanelo-category-hubs",
+      "settings": {
+        "heading": "Shop by category",
+        "subheading": "Browse our top categories",
+        "max_hubs": 15,
+        "directory_handle": "collections"
+      }
+    }
+  },
+  "order": [
+    "wanelo_best_sellers",
+    "wanelo_category_hubs",
+    "collection_list_slider_6qbNfj",
+    "wanelo_collection_grid",
+    "slider_with_multicolumn_KwPRDj",
+    "slideshow_q3U4Jn",
+    "featured_collection_bdaamt",
+    "promotion_banner_VCkmzP",
+    "custom_content_JxRy7x",
+    "personalized_feed_cqj9Ri",
+    "featured_collection_ibfdGE",
+    "177304554916cc84e5",
+    "1773045534598cae3a",
+    "custom_content_HPgFTK",
+    "collection_list_Azm9te",
+    "collection_tabs_VexkkR",
+    "lookbook_slider_9zCdQJ",
+    "buttons_with_icon_7zH9F3",
+    "multicolumn_icon_zAmMcX",
+    "multicolumn_Ff4Wbj",
+    "testimonials_masonry_eWmjGz",
+    "scrolling_gallery_image_wJyLJr"
+  ]
+}
