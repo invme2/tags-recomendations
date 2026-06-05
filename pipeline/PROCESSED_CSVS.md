@@ -10,16 +10,16 @@
 | Tools & Accessories | Beauty & Health | 792 | `tools-accessories-2026-06-04` | 2026-06-04 |
 | Beauty Essentials | Beauty & Health | 119 | `beauty-essentials-2026-05-28` | 2026-05-28 |
 | Bath & Shower | Beauty & Health | 26 | `bath-shower-2026-05-28` | 2026-05-28 |
+| Shaving & Hair Removal | Beauty & Health | 130 | `shaving-hair-removal-2026-06-05` | 2026-06-05 |
 
 ## ⏳ PENDING
 
-### Beauty & Health — ~7,128 строк, 6 файлов
+### Beauty & Health — ~6,998 строк, 5 файлов
 - [ ] Skin Care — 3586
 - [ ] Makeup — 1489
 - [ ] Hair Care & Styling — 1221
 - [ ] Fragrances & Deodorants — 362
 - [ ] Sex Product — 340
-- [ ] Shaving & Hair Removal — 130
 
 ### Cars & Motocycles — ~1,302 строк, 7 файлов
 - [ ] Car Wash & Maintenance — 607
