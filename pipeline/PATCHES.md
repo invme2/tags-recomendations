@@ -864,3 +864,40 @@ Risk: правки только в текст-промптах + новое по
 Тест: pytest **570 ✅** (test_photo_pack 65); ast.parse каждого патча; ручная
 проверка 10 рандомных готовых (релевантность 10/10, учёт пола/возраста); демо
 удочка→река/лодка/улов и парфюм→свидание (divergent).
+
+---
+
+## 2026-06-05 — Нормализация ключей Designer (junk-секции/метафилды)
+Cell: #14 (перед блоком кеширования новых ключей)
+Cell ID: ce20f070
+Snapshot: pipeline/.snapshots/Shopify_Pipeline.20260605-183638.before-section-normalize.ipynb
+
+**Проблема (оператор «генерит один и тот же дизайн»):** Designer изобретал
+новые секции с опечатками/вариантами (`timerline`→timeline, `comparison`→compare,
+`ingredients_explanation`→ingredients, `idline`) и сыпал photo-brief слоты
+(`inline_hero`, `inline_story_1/2/3`, `inline_cta`, `inline_photo_briefs`,
+дефисные `inline-*`) верхним уровнем. Пуш авто-создавал под КАЖДЫЙ определение
+метафилда, а кэш `dynamic_schemas.json` впрыскивал их в промпт следующих товаров
+→ самоповтор. Живая тема имеет generic-fallback `wanelo-auto-section` (рендерит
+любой `{head, items}`), поэтому typo-ключи **рендерились видимыми дублями**
+(«What to Expect» на 88 товарах), а `inline_*` (только image_url) — невидимы.
+
+**Фикс (`patch_section_normalize.py`):** перед кешированием/сборкой секций
+нормализуем `designer_resp` — alias typo→каноника (если каноники нет, иначе drop
+дубля) + drop photo-brief-shape ключей (`{image_url,image_alt}`-only) и `inline[-_]*`
++ placeholders. Предотвращает junk-метафилды и самоповтор на будущих прогонах.
+
+**Очистка существующего (тулы):**
+- `clean_junk_sections.py` — вырезал junk из 2 кэшей + 283 товаров в DB-meta.
+- `migrate_then_delete_junk.py` — на ЖИВОМ Shopify: мигрировал 88 видимых
+  секций typo→каноника (timeline 55 / compare 30 / ingredients 3, additive),
+  затем удалил **20 junk-определений** (+ ~580 невидимых значений).
+  Итог: 70→50 определений, 0 junk, 0 товаров с typo-ключом, потерь секций нет.
+- `clean_junk_metafields.py` — ранний вариант (только удаление), заменён на
+  migrate-then-delete после обнаружения auto-section рендера.
+
+Зачем: убрать самоповтор изобретённых секций + почистить схему метафилдов,
+сохранив видимый контент (миграция, не слепое удаление).
+
+Тест: pytest **570 ✅**; ast.parse; верификация на Shopify (defs 70→50, typo=0,
+каноники timeline 1852/compare 2050/ingredients 1129).

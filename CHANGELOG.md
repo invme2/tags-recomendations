@@ -6,6 +6,18 @@
 
 ## [Unreleased]
 
+### Fixed
+- **Designer самоповтор изобретённых секций / junk-метафилды (cell 14 `ce20f070`).**
+  Designer плодил опечатки-секции (`timerline`/`comparison`/`ingredients_explanation`/
+  `idline`) и сыпал photo-brief слоты (`inline_*`) верхним уровнем; пуш авто-создавал
+  определение под каждый, кэш `dynamic_schemas.json` впрыскивал их в следующие промпты
+  → самоповтор. Из-за generic `wanelo-auto-section` в живой теме typo-ключи рендерились
+  видимыми дублями. Фикс `patch_section_normalize.py`: нормализация ключей Designer
+  (alias typo→каноника + drop photo-brief/inline) до кеша/пуша. Очистка:
+  `clean_junk_sections.py` (2 кэша + 283 товара DB-meta), `migrate_then_delete_junk.py`
+  (живой Shopify: мигрировал 88 видимых секций typo→каноника, удалил 20 junk-определений
+  + ~580 невидимых значений → 70→50 определений, 0 junk, потерь нет). Тесты 570 ✅.
+
 ### Added
 - **Review-фото под товар (photo-pack overhaul, cell 14 `ce20f070`).** Сцены для
   UGC-отзывов теперь генерятся по смыслу товара/категории, а не из бьюти-шаблона.
