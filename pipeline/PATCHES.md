@@ -821,3 +821,46 @@ Brushes, «gel shots to the knee» в Knee Massagers). Эмпирически Cl
 edge-cases будущих категорий.
 
 Проверка: notebook_smoke ✅ (17 ячеек); pytest 570 ✅; гард подтверждён в cell 4+6.
+
+---
+
+## 2026-06-05 — Review-фото: релевантные под товар + разнообразные сцены (photo-pack overhaul)
+Cell: #14 (photo-pack ZIP builder + Designer schema)
+Cell ID: ce20f070
+Snapshots: pipeline/.snapshots/Shopify_Pipeline.20260605-160855.before-photo-prompt-fixes.ipynb,
+           .20260605-163450.before-review-scenes.ipynb, .20260605-170151.before-archive-derive.ipynb
+
+**Проблема (оператор):** у двух товаров одной коллекции (2 парфюма) review-фото
+получались почти одинаковыми (6 из 8 сцен совпадали), сцены — бьюти-шаблон
+(ванная/туалетный столик), нерелевантный для не-бьюти (для удочки нужна река,
+не ванная). Плюс inline-промпты иногда тянули overlay-текст/инфографику в
+editorial-слот (Designer нарушал «NO TEXT»), и inline-hero дублировал carousel-hero.
+
+**Фикс (несколько правок, через nbformat + snapshot, патчеры в pipeline/tools/):**
+1. `patch_photo_prompts.py` — reviews: per-product seed (выбор/порядок 8 из пула)
+   + инъекция product `visual_style`; inline guardrail (EDITORIAL OVERRIDE при
+   overlay/infographic/callout/step/badge; inline-hero → lifestyle-nudge);
+   Designer-инструкция «INLINE = ZERO TEXT».
+2. `patch_review_scenes.py` — Designer-схема `review_scenes` (8 UGC-сцен под
+   товар) + инструкция с примерами (удочка→река, дрель→гараж, духи→свидание);
+   сборка `meta['review_scenes']`; reviews-билдер: primary=Designer, fallback=
+   **категорийный** (11 категорий по title/тегам, без бьюти-перекоса).
+3. `patch_archive_scenes.py` — tier-2: дерайв сцен из существующих
+   `photo_briefs` товара (lifestyle/in-use/inline концепты, $0, без парсинга),
+   фильтр не-сценовых брифов (diagram/infographic/anatomical). Приоритет:
+   review_scenes → archive photo_briefs → категорийный top-up до 8.
+
+**Бэкафилл (опционально, премиум):** `enrich_review_scenes.py` (1 DeepSeek-вызов
+→ только `review_scenes`, без пуша в Shopify) + `backfill_all_review_scenes.py`
+(весь каталог, дедуп по eprolo_url, конкуррентность, резюмируемость). Прогон:
+**3116/3116 уникальных живых товаров (100%)** получили premium-сцены, 0 сбоев,
+67 мин, ≈$5–10. `regen_photo_prompts.py` — пересборка .txt из сохранённых
+данных (без re-Vision/Strategy/Designer, без Shopify) для проверки.
+
+Зачем: review-фото должны быть «как реальный владелец снял этот товар» (по смыслу
+категории/демографии). Деривация из архива honors «всё уже внутри товара».
+Risk: правки только в текст-промптах + новое поле meta; titles/цены/секции не тронуты.
+
+Тест: pytest **570 ✅** (test_photo_pack 65); ast.parse каждого патча; ручная
+проверка 10 рандомных готовых (релевантность 10/10, учёт пола/возраста); демо
+удочка→река/лодка/улов и парфюм→свидание (divergent).

@@ -7,6 +7,21 @@
 ## [Unreleased]
 
 ### Added
+- **Review-фото под товар (photo-pack overhaul, cell 14 `ce20f070`).** Сцены для
+  UGC-отзывов теперь генерятся по смыслу товара/категории, а не из бьюти-шаблона.
+  Designer выдаёт `review_scenes` (8 сцен: удочка→река/лодка/улов, дрель→гараж,
+  духи→свидание); reviews-билдер: primary=Designer → tier-2 дерайв из архивных
+  `photo_briefs` товара ($0, без парсинга) → категорийный fallback (11 категорий).
+  Reviews больше не клонируются между товарами (per-product seed + инъекция
+  `visual_style`). Inline guardrail: EDITORIAL OVERRIDE при overlay/infographic в
+  editorial-слоте + inline-hero lifestyle-nudge. Новые тулы:
+  `patch_photo_prompts.py`, `patch_review_scenes.py`, `patch_archive_scenes.py`
+  (one-shot патчеры nbformat), `regen_photo_prompts.py` (пересборка .txt из
+  сохранённых данных без re-Vision/Strategy/Designer и без Shopify),
+  `enrich_review_scenes.py` + `backfill_all_review_scenes.py` (премиум-бэкафилл
+  через DeepSeek, дедуп по eprolo_url, резюмируемый). Прод-бэкафилл:
+  **3116/3116 живых товаров (100%)** получили premium-сцены, 0 сбоев, ≈$5–10.
+  Тесты 570 ✅.
 - **`pipeline/tools/attach_missing_photos.py`** — восстанавливает медиа товарам с
   0 фото (упавший media-шаг прогона): матч по `eprolo_url` к run-DB галерее
   (`top_image_urls`) → `productCreateMedia`. Идемпотентно (skip если media>0),
