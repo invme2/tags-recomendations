@@ -7,6 +7,11 @@
 ## [Unreleased]
 
 ### Fixed
+- **Варианты не пушились в Shopify (cell 14 STEP 5, `ce20f070` ~стр.2448).** Пуш читал
+  `row['variants_json']` (колонка не заполняется → всегда `[]`), поэтому товары со
+  скрейп-вариантами получали 1 вариант (Title). Прошлый фикс поправил только
+  Designer-контекст (стр.446), не сам пуш. Фикс: читать `scrape_json.variants`.
+  Демо-товары дочинены точечно `fix_demo_variants.py`. Тесты 570 ✅.
 - **Designer самоповтор изобретённых секций / junk-метафилды (cell 14 `ce20f070`).**
   Designer плодил опечатки-секции (`timerline`/`comparison`/`ingredients_explanation`/
   `idline`) и сыпал photo-brief слоты (`inline_*`) верхним уровнем; пуш авто-создавал

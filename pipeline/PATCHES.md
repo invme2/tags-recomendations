@@ -901,3 +901,26 @@ Snapshot: pipeline/.snapshots/Shopify_Pipeline.20260605-183638.before-section-no
 
 Тест: pytest **570 ✅**; ast.parse; верификация на Shopify (defs 70→50, typo=0,
 каноники timeline 1852/compare 2050/ingredients 1129).
+
+---
+
+## 2026-06-05 — Варианты не пушились в Shopify (STEP 5 читал пустую колонку)
+Cell: #14 (STEP 5 Shopify push)
+Cell ID: ce20f070 (строка ~2448)
+Snapshot: pipeline/.snapshots/Shopify_Pipeline.20260605-195915.before-variant-push-fix.ipynb
+
+**Проблема:** у товаров со скрейп-вариантами (Color/Size) в Shopify создавался
+1 вариант (Title) — варианты не появлялись, хотя контент их упоминал. Прошлый
+variant-фикс поправил только строку 446 (контекст для Designer — поэтому он
+*писал* про варианты), а сам пуш (STEP 5) остался на
+`variants = json.loads(row['variants_json'] or '[]')` — колонка `variants_json`
+не заполняется НИКОГДА (root-bug) → всегда `[]` → `shopify_create_variants([])`.
+
+**Фикс (1 строка):** `variants = json.loads(row['scrape_json'] or '{}').get('variants', [])`
+— как на строке 446. Теперь пуш создаёт реальные опции из скрейпа.
+
+Демо-товары (уже залитые) дочинены точечно `fix_demo_variants.py`
+(Smart Watch Color×6, Hearing Aid Color×5, цена сохранена).
+
+Тест: pytest **570 ✅**; ast.parse; верификация на Shopify (оба демо: options
+[Color], variants 6/5).
