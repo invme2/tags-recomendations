@@ -7,6 +7,15 @@
 ## [Unreleased]
 
 ### Added
+- **`pipeline/tools/attach_missing_photos.py`** — восстанавливает медиа товарам с
+  0 фото (упавший media-шаг прогона): матч по `eprolo_url` к run-DB галерее
+  (`top_image_urls`) → `productCreateMedia`. Идемпотентно (skip если media>0),
+  dry-run по умолчанию. Прод: 79 товаров без фото → 0 (527 фото восстановлено).
+- **`pipeline/tools/audit_collections_seo.py`** + **`fix_collections_seo.py`** —
+  senior-SEO аудит ВСЕХ коллекций (бренды, длины title/meta, CTA, дубли,
+  keyword-stuffing) + Opus-реген суб-стандартных (brand-free, корректные длины,
+  на тему). Прод: 969 коллекций → исправлено 35 (4 бренда «Real Techniques»,
+  22 без meta, 14 пустых описаний, дубли, длины), осталось чистых 969/969.
 - **`pipeline/tools/fill_collections.py`** — наполняет пустые/тонкие
   keyword-коллекции (SEO-лендинги из DataForSEO) топологически релевантными
   товарами через TF-IDF (прямой матч коллекция↔товар по заголовку/тегам +
