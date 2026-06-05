@@ -795,3 +795,29 @@ Reader (без прогона ноутбука): `python pipeline/tools/anthropi
 
 Проверка: sandbox-exec блока трекера — накопление через «рестарт» подтверждено
 (calls 2→3, Haiku подтянулся из сайдкара, Opus cache 60% / Haiku 10%); pytest 570 ✅.
+
+---
+
+## 2026-06-04 — Off-topic/brand keyword guard в copy-промптах (patch_kw_offtopic_guard.py)
+
+**Проблема:** per-collection `top_keywords` — volume-ranked из DataForSEO + FAISS-
+валидация, но БЕЗ интент-курирования. Генеричные односложные seed'ы («oil»,
+«brush», «knee») тянут огромный-объём-но-офф-топ («coconut oil» в Oil Absorbing
+Tools, «hoover carpet cleaner» в Makeup Brushes, «procreate brushes» в Nail Art
+Brushes, «gel shots to the knee» в Knee Massagers). Эмпирически Claude **уже**
+срезает это при синтезе (живой вывод Tools&Accessories — заголовки/мета/описания
+ЧИСТЫЕ), но инструкция была мягкая («weave in naturally»).
+
+**Фикс (промпт-only, без логики, cell 4 + cell 6):**
+- cell 4 (`generate_collection_html` kw_instruction): «Candidate keywords
+  volume-ranked, NOT curated… weave ONLY those matching THIS collection product
+  type; IGNORE off-topic/wrong-category/brand».
+- cell 6 (batch SEO title/meta prompt): «CRITICAL: lists volume-ranked NOT curated…
+  use ONLY matching product type; never put brand/unrelated category in title/meta».
+
+НЕ детерминированный фильтр ключей (выкинул бы релевантные без словосовпадения, напр.
+«red light therapy» для Eye Massagers) — усилен именно Claude-гейт, который и так
+работает. Существующий вывод уже чистый → перегенерация не требуется; гард укрепляет
+edge-cases будущих категорий.
+
+Проверка: notebook_smoke ✅ (17 ячеек); pytest 570 ✅; гард подтверждён в cell 4+6.
