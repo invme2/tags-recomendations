@@ -117,6 +117,14 @@
     {%- comment -%} ===== designer metafield sections (custom.*) — adapted to Vibe ===== {%- endcomment -%}
     {%- assign mf = product.metafields.custom -%}
 
+    {%- assign hero = mf.hero.value -%}
+    {%- if hero and hero.h1 -%}
+      <section class="fpsec"><div class="vmf-hero">
+        <div>{% if hero.kicker %}<span class="vmf__kick">{{ hero.kicker }}</span>{% endif %}<h2>{{ hero.h1 }}</h2>{% if hero.lead %}<p>{{ hero.lead }}</p>{% endif %}</div>
+        {%- if hero.image_url -%}<div class="vmf-hero__img" style="background-image:url('{{ hero.image_url }}')"></div>{%- endif -%}
+      </div></section>
+    {%- endif -%}
+
     {%- if mf.features.value.items -%}{%- assign h = mf.features.value.head -%}
       <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2>{% if h.desc != blank %}<p>{{ h.desc }}</p>{% endif %}</div>
         <div class="vmf-feat">{%- for it in mf.features.value.items -%}<div class="vmf-feat__card glass">{%- if it.image_url -%}<div class="vmf-feat__img" style="background-image:url('{{ it.image_url }}')"></div>{%- endif -%}<div class="vmf-feat__body">{% if it.meta %}<span class="vmf__kick">{{ it.meta }}</span>{% endif %}<h4>{{ it.h4 }}</h4>{% if it.p %}<p>{{ it.p }}</p>{% endif %}</div></div>{%- endfor -%}</div></section>
@@ -135,6 +143,17 @@
     {%- if mf.whats_included.value.items -%}{%- assign h = mf.whats_included.value.head -%}
       <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2></div>
         <div class="vmf-box">{%- for it in mf.whats_included.value.items -%}<div class="vmf-box__item"><span class="vmf-box__g">{{ it.glyph | default: '✦' }}</span><div><b>{{ it.name }}{% if it.qty %} <span style="color:var(--txt-3);font-weight:600">×{{ it.qty }}</span>{% endif %}</b>{% if it.note %}<small>{{ it.note }}</small>{% endif %}</div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
+    {%- if mf.story.value.chapters -%}{%- assign h = mf.story.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2>{% if h.desc != blank %}<p>{{ h.desc }}</p>{% endif %}</div>
+        {%- for ch in mf.story.value.chapters -%}<div class="vmf-story__ch">{%- if ch.image_url -%}<div class="vmf-story__img" style="background-image:url('{{ ch.image_url }}')"></div>{%- endif -%}<div class="vmf-story__t">{% if ch.kicker %}<span class="vmf__kick">{{ ch.kicker }}</span>{% endif %}<h3>{{ ch.h3 }}</h3>{% if ch.p %}<p>{{ ch.p }}</p>{% endif %}</div></div>{%- endfor -%}</section>
+    {%- endif -%}
+
+    {%- if mf.dimensions.value.items -%}{%- assign h = mf.dimensions.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2></div>
+        <div class="vmf-dims">{%- for it in mf.dimensions.value.items -%}<div class="vmf-dim"><div class="v">{{ it.value }}</div><div class="a">{{ it.axis }}</div></div>{%- endfor -%}</div>
+        {% if mf.dimensions.value.scale_note %}<div class="vmf-dims__note">{{ mf.dimensions.value.scale_note }}</div>{% endif %}</section>
     {%- endif -%}
 
     <!-- description -->
@@ -165,6 +184,11 @@
         <div class="cbanner__l"><span class="cbanner__tag">{% render 'vibe-icon', name:'spark', size:14 %} {{ c.kicker | default: 'Ready when you are' }}</span><h3>{{ c.h2 | default: c.title | default: product.title }}</h3>{% if c.lead or c.desc %}<p>{{ c.lead | default: c.desc }}</p>{% endif %}<span class="cbanner__cta">{{ c.button | default: 'Add to cart' }} {% render 'vibe-icon', name:'arrowR', size:17, stroke:2.4 %}</span></div>
         <div class="cbanner__r"><span class="cbanner__orb">{% render 'vibe-icon', name:'cart', size:46, stroke:1.4 %}</span></div>
       </a>
+    {%- endif -%}
+
+    {%- if mf.interlinks.value.items -%}{%- assign h = mf.interlinks.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 | default: 'Explore more' }}</h2></div>
+        <div class="vmf-links">{%- for it in mf.interlinks.value.items -%}<a href="/collections/{{ it.handle }}">{{ it.anchor | default: it.handle }} {% render 'vibe-icon', name:'arrowR', size:14, stroke:2.2 %}</a>{%- endfor -%}</div></section>
     {%- endif -%}
 
     <!-- recommendations -->

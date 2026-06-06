@@ -986,3 +986,24 @@ body.clips-mobile-lock { overflow: hidden; }
 @media(max-width:600px){ .vibe-home .vmf-feat,.vibe-home .vmf-stats,.vibe-home .vmf-steps,.vibe-home .vmf-box{ grid-template-columns:1fr; } }
 
 .vibe-home .clipcard__vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--panel); }
+
+
+/* ===== more designer metafield sections (hero/story/dimensions/interlinks) ===== */
+.vibe-home .vmf-hero{ display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;margin-top:48px;padding:28px;border-radius:24px;background:var(--panel); }
+.vibe-home .vmf-hero h2{ font-family:Space Grotesk,sans-serif;font-size:32px;font-weight:600;letter-spacing:-.02em;margin:8px 0 12px;line-height:1.08; }
+.vibe-home .vmf-hero p{ color:var(--txt-2);font-size:16px;margin:0; }
+.vibe-home .vmf-hero__img{ aspect-ratio:1/.78;border-radius:18px;background-size:cover;background-position:center;background-color:var(--line-2); }
+.vibe-home .vmf-story__ch{ display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;margin-bottom:16px; }
+.vibe-home .vmf-story__ch:nth-child(even) .vmf-story__img{ order:2; }
+.vibe-home .vmf-story__img{ aspect-ratio:1/.72;border-radius:20px;background-size:cover;background-position:center;background-color:var(--line-2); }
+.vibe-home .vmf-story__t h3{ font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:600;margin:6px 0 10px; }
+.vibe-home .vmf-story__t p{ color:var(--txt-2);margin:0;line-height:1.55; }
+.vibe-home .vmf-dims{ display:flex;gap:14px;flex-wrap:wrap; }
+.vibe-home .vmf-dim{ flex:1;min-width:120px;padding:18px;border-radius:16px;background:var(--panel);text-align:center; }
+.vibe-home .vmf-dim .v{ font-family:Space Grotesk,sans-serif;font-size:24px;font-weight:600;color:var(--brand); }
+.vibe-home .vmf-dim .a{ color:var(--txt-3);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-top:4px; }
+.vibe-home .vmf-dims__note{ color:var(--txt-2);font-size:14px;margin-top:12px; }
+.vibe-home .vmf-links{ display:flex;flex-wrap:wrap;gap:8px; }
+.vibe-home .vmf-links a{ display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:99px;background:var(--panel);color:var(--brand);font-weight:600;font-size:13.5px;text-transform:none; }
+.vibe-home .vmf-links a:hover{ background:var(--panel-2); }
+@media(max-width:900px){ .vibe-home .vmf-hero,.vibe-home .vmf-story__ch{ grid-template-columns:1fr; } .vibe-home .vmf-story__ch:nth-child(even) .vmf-story__img{ order:0; } }
