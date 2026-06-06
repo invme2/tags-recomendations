@@ -1032,3 +1032,11 @@ body.clips-mobile-lock { overflow: hidden; }
 .vibe-home .vmf-gen__item b{ font-family:Space Grotesk,sans-serif; font-size:15px; display:block; margin-bottom:4px; }
 .vibe-home .vmf-gen__item p{ margin:0; color:var(--txt-2); font-size:13.5px; }
 @media(max-width:760px){ .vibe-home .vmf-ingr,.vibe-home .vmf-gen{ grid-template-columns:1fr; } .vibe-home .vmf-tl__item{ grid-template-columns:1fr; gap:4px; } }
+
+
+/* ===== mobile grid overflow fix (cards must shrink below content min-content) ===== */
+.vibe-home .fpcard{ min-width:0; }
+.vibe-home .fgrid{ grid-template-columns: repeat(var(--fc,5), minmax(0,1fr)); }
+@media (max-width:1080px){ .vibe-home .fgrid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width:1000px){ .vibe-home .fcat{ grid-template-columns: minmax(0,1fr); } }
+@media (max-width:600px){ .vibe-home .fgrid{ grid-template-columns: repeat(2, minmax(0,1fr)); gap:9px; } }
