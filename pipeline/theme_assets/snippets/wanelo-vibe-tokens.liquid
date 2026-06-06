@@ -34,5 +34,8 @@
   {%- if settings.vibe_apply_colors %}
   .wanelo-page{ --sec-accent: var(--wv-brand); }
   a:not(.button):not(.btn):hover{ color: var(--wv-brand); }
+  /* SEO-silo: clickable attribute values in the buy-box spec table */
+  .wanelo-spec-table a{ color: var(--wv-brand); font-weight: 600; text-decoration: none; }
+  .wanelo-spec-table a:hover{ text-decoration: underline; }
   {%- endif %}
 </style>
