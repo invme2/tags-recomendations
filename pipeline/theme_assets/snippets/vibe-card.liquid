@@ -9,7 +9,11 @@
     {%- if product.images.size > 0 -%}
       <div class="vpc" data-vpc>
         {%- for image in product.images limit: 4 -%}
-          <img class="vpc__slide{% if forloop.first %} on{% endif %}" src="{{ image | image_url: width: 520 }}" alt="{{ product.title | escape }}" {% unless forloop.first %}loading="lazy"{% endunless %} width="520" height="540">
+          {%- if forloop.first -%}
+            <img class="vpc__slide on" src="{{ image | image_url: width: 520 }}" alt="{{ product.title | escape }}" width="520" height="540">
+          {%- else -%}
+            <img class="vpc__slide" data-src="{{ image | image_url: width: 520 }}" alt="" width="520" height="540">
+          {%- endif -%}
         {%- endfor -%}
       </div>
       {%- if product.images.size > 1 -%}

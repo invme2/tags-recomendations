@@ -1,0 +1,6 @@
+{%- comment -%} Wanelo Vibe footer as a standalone section (so other sections can sit above it). {%- endcomment -%}
+{{ 'vibe.css' | asset_url | stylesheet_tag }}
+<div class="vibe-home"><div class="fwrap">{% render 'vibe-footer' %}</div></div>
+{% schema %}
+{ "name": "Vibe Footer", "settings": [], "presets": [{ "name": "Vibe Footer" }] }
+{% endschema %}
