@@ -28,8 +28,14 @@
     {%- endif %}
   }
   {%- if settings.vibe_fonts_on %}
-  body, .rte, button, input, select, textarea, .wanelo-page, .wanelo-section{ font-family: var(--wv-font-body); }
-  h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.wanelo-page h1,.wanelo-page h2,.wanelo-page h3,.wanelo-head h2,.wanelo-head .wanelo-kicker{ font-family: var(--wv-font-head); }
+  /* Vibe fonts must beat the theme's body{font-family:var(--font-body-family)}.
+     No icon webfont in this theme, so !important is safe. */
+  html body, body .rte, body button, body input, body select, body textarea,
+  body .wanelo-page, body .wanelo-section, body .product-card__title{ font-family: var(--wv-font-body) !important; }
+  body h1, body h2, body h3, body h4, body h5, body h6,
+  body .h1, body .h2, body .h3, body .h4,
+  body .wanelo-page h1, body .wanelo-page h2, body .wanelo-page h3,
+  body .wanelo-head h2, body .wanelo-head .wanelo-kicker, body .card__heading{ font-family: var(--wv-font-head) !important; }
   {%- endif %}
   {%- if settings.vibe_apply_colors %}
   .wanelo-page{ --sec-accent: var(--wv-brand); }
