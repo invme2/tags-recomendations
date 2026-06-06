@@ -1962,3 +1962,9 @@
 .collection-card--boxed { border: 0 !important; box-shadow: none !important; }
 /* boxed product card 1px inset outline */
 .product-card-style-boxed { box-shadow: none !important; }
+
+/* BUY-BOX SPEC TABLE (body_html) — same design tokens as .wanelo-specs */
+.wanelo-spec-table{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0 2px;font-feature-settings:"tnum"}
+.wanelo-spec-table th{text-align:left;font-weight:400;color:var(--sec-fg-3,#8a8a8a);padding:9px 18px 9px 0;white-space:nowrap;vertical-align:top;border-bottom:1px solid var(--sec-line,#ececec)}
+.wanelo-spec-table td{color:var(--sec-fg,#1d1d1f);padding:9px 0;border-bottom:1px solid var(--sec-line,#ececec)}
+.wanelo-spec-table tr:last-child th,.wanelo-spec-table tr:last-child td{border-bottom:0}

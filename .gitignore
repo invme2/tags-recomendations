@@ -73,3 +73,7 @@ tmp/
 # Generated artifact from pipeline/tools/extract_cells.py (regen-on-demand)
 pipeline/Shopify_Pipeline.extracted.py
 pipeline/theme_assets/.snapshots/
+
+pipeline/.design_extract/
+pipeline/.design_manifest
+pipeline/design.tar.gz

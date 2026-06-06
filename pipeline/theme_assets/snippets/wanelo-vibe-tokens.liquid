@@ -1,0 +1,38 @@
+{%- comment -%}
+  Wanelo Vibe — design tokens (colors + fonts).
+  Edit everything in Theme settings → "Wanelo Vibe — Design".
+  Loads Onest (body) + Space Grotesk (headings) and exposes the Vibe palette
+  as CSS custom properties (--wv-*). Phase 1 of the Vibe redesign.
+{%- endcomment -%}
+{%- if settings.vibe_fonts_on -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+{%- endif -%}
+<style>
+  :root{
+    --wv-brand: {{ settings.vibe_brand | default: '#7c5cfc' }};
+    --wv-brand-ink: {{ settings.vibe_brand_ink | default: '#6442e8' }};
+    --wv-accent: {{ settings.vibe_accent | default: '#1763ff' }};
+    --wv-lime: {{ settings.vibe_lime | default: '#e6fb55' }};
+    --wv-pink: {{ settings.vibe_pink | default: '#ff3dbd' }};
+    --wv-teal: {{ settings.vibe_teal | default: '#1fc9c9' }};
+    --wv-ink: {{ settings.vibe_ink | default: '#10151c' }};
+    --wv-bg: {{ settings.vibe_bg | default: '#f3f4f8' }};
+    {%- if settings.vibe_fonts_on %}
+    --wv-font-body: 'Onest', system-ui, -apple-system, sans-serif;
+    --wv-font-head: 'Space Grotesk', 'Onest', system-ui, sans-serif;
+    {%- else %}
+    --wv-font-body: {{ settings.vibe_body_font.family }}, {{ settings.vibe_body_font.fallback_families }};
+    --wv-font-head: {{ settings.vibe_heading_font.family }}, {{ settings.vibe_heading_font.fallback_families }};
+    {%- endif %}
+  }
+  {%- if settings.vibe_fonts_on %}
+  body, .rte, button, input, select, textarea, .wanelo-page, .wanelo-section{ font-family: var(--wv-font-body); }
+  h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.wanelo-page h1,.wanelo-page h2,.wanelo-page h3,.wanelo-head h2,.wanelo-head .wanelo-kicker{ font-family: var(--wv-font-head); }
+  {%- endif %}
+  {%- if settings.vibe_apply_colors %}
+  .wanelo-page{ --sec-accent: var(--wv-brand); }
+  a:not(.button):not(.btn):hover{ color: var(--wv-brand); }
+  {%- endif %}
+</style>

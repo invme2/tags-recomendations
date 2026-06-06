@@ -6,6 +6,23 @@
 
 ## [Unreleased]
 
+### Added
+- **Ozon-style IA / attribute-filter SEO-силос — план + прототип (`docs/IA_SILO_PLAN.md`).**
+  Архитектура 5 tiers (Department→Category→Subcategory→Product-type хаб→Attribute лист)
+  + 3 слоя перелинковки (PDP-spec-ссылки → attribute-коллекции; коллекция → ранж.
+  related-чипы; крошки по primary-пути). Прототип на «Лампах для маникюра»: factual
+  specs из EPROLO (`scrape_specs_to_metafield.py`, оба DOM-формата `ul.product-property-list`
+  + `<p>Label:Value</p>`); volume-gate по DataForSEO (uv/led/gel nail lamp = 4k–22k →
+  создать; «white nail lamp» = 10 → пропустить); fillability-gate; facet-извлечение
+  Designer-ом (`test_facets2.py` — категорийные канонические теги type/tech/color/ingredient,
+  нормализация, контекст). Созданы 2 живые smart-коллекции (led/gel nail lamps, авто-наполнены).
+  Тулы: `inspect_eprolo_specs.py`, `scrape_specs_to_metafield.py`, `test_facets*.py`.
+- **Wanelo Vibe редизайн — Фаза 1 (токены + настройки темы).** `snippets/wanelo-vibe-tokens.liquid`
+  + секция «Wanelo Vibe — Design» в `settings_schema` (`apply_vibe_phase1.py`): грузит шрифты
+  Onest (body) + Space Grotesk (headings), Vibe-палитра (brand #7c5cfc / accent / lime / pink /
+  teal) как CSS-переменные `--wv-*`, всё редактируется в кастомайзере. Применено на живой теме.
+  `wanelo.css`: класс `.wanelo-spec-table` на дизайн-токенах (Ozon-стиль buy-box таблица).
+
 ### Fixed
 - **GSC Product structured-data: дубль Product-схемы + битые медиа.** Страница товара
   рендерила ДВЕ Product JSON-LD (официальную Shopify `{{ product | structured_data }}`
