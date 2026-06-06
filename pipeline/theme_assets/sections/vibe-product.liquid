@@ -31,12 +31,20 @@
       <div class="fgallery">
         <div class="fgthumbs">
           {%- for image in product.images limit: 7 -%}
-            <button type="button" class="fgthumb glass{% if forloop.first %} on{% endif %}" data-thumb data-src="{{ image | image_url: width: 900 }}" style="background-image:url('{{ image | image_url: width: 160 }}');background-size:cover;background-position:center"></button>
+            <button type="button" class="fgthumb glass{% if forloop.first %} on{% endif %}" data-fgthumb="{{ forloop.index0 }}" style="background-image:url('{{ image | image_url: width: 160 }}');background-size:cover;background-position:center"></button>
           {%- endfor -%}
-          {%- if product.images.size > 7 -%}<button type="button" class="fgthumb glass more">+{{ product.images.size | minus: 7 }}</button>{%- endif -%}
         </div>
         <div class="fgmain glass">
-          {%- if product.featured_image -%}<img data-main src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.title | escape }}">{%- else -%}<span class="fph"><span class="fph__mesh tint-violet"></span></span>{%- endif -%}
+          <div class="fgmain__track" data-fgtrack>
+            {%- if product.images.size > 0 -%}
+              {%- for image in product.images -%}
+                <div class="fgslide"><img src="{{ image | image_url: width: 900 }}" alt="{{ product.title | escape }}" {% unless forloop.first %}loading="lazy"{% endunless %}></div>
+              {%- endfor -%}
+            {%- else -%}
+              <div class="fgslide"><span class="fph"><span class="fph__mesh tint-violet"></span></span></div>
+            {%- endif -%}
+          </div>
+          {%- if product.images.size > 1 -%}<div class="fgmain__dots" data-fgdots>{%- for image in product.images -%}<i{% if forloop.first %} class="on"{% endif %}></i>{%- endfor -%}</div>{%- endif -%}
           {%- if product.compare_at_price > product.price -%}
             <div class="fgmain__badges"><span class="fbadge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%</span></div>
           {%- endif -%}
@@ -170,7 +178,12 @@
   {% unless product.has_only_default_variant %}{% for o in product.options_with_values %}sel[{{ forloop.index0 }}] = {{ o.selected_value | json }};{% endfor %}{% endunless %}
   var idInput = form.querySelector('[data-variant-id]');
   var priceEl = document.querySelector('[data-price]'), cpriceEl=document.querySelector('[data-cprice]');
-  var mainImg = document.querySelector('[data-main]');
+  var track = document.querySelector('[data-fgtrack]');
+  var fgdots = document.querySelectorAll('[data-fgdots] i');
+  var fgthumbs = document.querySelectorAll('[data-fgthumb]');
+  function fgActive(){ if(!track||!track.clientWidth) return; var i=Math.round(track.scrollLeft/track.clientWidth); fgdots.forEach(function(d,k){ d.classList.toggle('on',k===i); }); fgthumbs.forEach(function(t,k){ t.classList.toggle('on',k===i); }); }
+  if(track){ track.addEventListener('scroll', function(){ requestAnimationFrame(fgActive); }, {passive:true}); }
+  fgthumbs.forEach(function(t){ t.addEventListener('click', function(){ if(track) track.scrollTo({left:(+t.getAttribute('data-fgthumb'))*track.clientWidth, behavior:'smooth'}); }); });
   function money(c){ try{ return (c/100).toLocaleString(undefined,{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
   function match(){ return VARIANTS.find(function(v){ return Object.keys(sel).every(function(k){ return v.options[k]===sel[k]; }); }); }
   function update(){
@@ -178,7 +191,7 @@
     idInput.value=v.id;
     if(priceEl) priceEl.textContent=money(v.price);
     if(cpriceEl) cpriceEl.style.display = (v.compare_at_price && v.compare_at_price>v.price)?'':'none';
-    if(v.featured_image && mainImg) mainImg.src=v.featured_image.src.replace(/(\.[a-z]+)(\?|$)/i,'_900x$1$2');
+    /* gallery is a swipe carousel of all product images */
   }
   form.querySelectorAll('[data-opt]').forEach(function(b){
     b.addEventListener('click',function(){
@@ -187,11 +200,6 @@
       var lab=form.querySelector('[data-opt-label="'+oi+'"]'); if(lab) lab.textContent=sel[oi];
       update();
     });
-  });
-  // thumbs
-  document.querySelectorAll('[data-thumb]').forEach(function(t){
-    t.addEventListener('click',function(){ if(mainImg) mainImg.src=t.getAttribute('data-src');
-      document.querySelectorAll('[data-thumb]').forEach(function(x){x.classList.remove('on')}); t.classList.add('on'); });
   });
   // qty
   var q=1, qv=document.querySelector('[data-qty-val]');
