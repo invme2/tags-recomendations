@@ -1051,3 +1051,10 @@ body.clips-mobile-lock { overflow: hidden; }
 .vibe-home .fgmain__dots i{ width:7px; height:7px; border-radius:50%; background:rgba(16,18,34,.22); transition:background .15s; }
 .vibe-home .fgmain__dots i.on{ background:var(--brand); }
 @media (max-width:1000px){ .vibe-home .fgthumbs{ display:none; } .vibe-home .fgallery{ display:block; } }
+
+
+/* ===== personalized feed → Vibe cards grid ===== */
+.vibe-home .personalized-feed__grid{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:16px; }
+.vibe-home .personalized-feed__cell{ min-width:0; }
+@media(max-width:1080px){ .vibe-home .personalized-feed__grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px){ .vibe-home .personalized-feed__grid{ gap:9px; } }
