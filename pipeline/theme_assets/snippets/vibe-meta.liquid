@@ -41,13 +41,35 @@
   {%- if val.chapters -%}<section class="fpsec vmf">{{ head }}{%- for ch in val.chapters -%}<div class="vmf-story__ch">{% if ch.image_url %}<img class="vmf-story__img" src="{{ ch.image_url }}" alt="{{ ch.image_alt | escape }}" loading="lazy">{% endif %}<div class="vmf-story__t">{% if ch.kicker %}<span class="vmf__kick">{{ ch.kicker }}</span>{% endif %}<h3>{{ ch.h3 }}</h3>{% if ch.p %}<p>{{ ch.p }}</p>{% endif %}</div></div>{%- endfor -%}</section>{%- endif -%}
 
 {%- when 'faq' -%}
-  {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-faq">{%- for it in val.items -%}<div class="vmf-faq__item"><div class="vmf-faq__q">{{ it.q }}</div><div class="vmf-faq__a">{{ it.a }}</div></div>{%- endfor -%}</div></section>{%- endif -%}
+  {%- if val.items -%}<section class="fpsec vmf" id="vibe-faq">{{ head }}<div class="vmf-faq">{%- for it in val.items -%}<div class="vmf-faq__item"><div class="vmf-faq__q">{{ it.q }}</div><div class="vmf-faq__a">{{ it.a }}</div></div>{%- endfor -%}</div></section>{%- endif -%}
 
 {%- when 'interlinks' -%}
   {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-links">{%- for it in val.items -%}<a href="/collections/{{ it.handle }}">{{ it.anchor | default: it.handle }} {% render 'vibe-icon', name:'arrowR', size:14, stroke:2.2 %}</a>{%- endfor -%}</div></section>{%- endif -%}
 
 {%- when 'cta' -%}
   {%- if val.h2 or val.title -%}<a class="cbanner" href="#vibe-pform" style="margin-top:30px"><div class="cbanner__l"><span class="cbanner__tag">{% render 'vibe-icon', name:'spark', size:14 %} {{ val.kicker | default: 'Ready when you are' }}</span><h3>{{ val.h2 | default: val.title }}</h3>{% if val.lead or val.desc %}<p>{{ val.lead | default: val.desc }}</p>{% endif %}<span class="cbanner__cta">{{ val.button | default: 'Add to cart' }} {% render 'vibe-icon', name:'arrowR', size:17, stroke:2.4 %}</span></div><div class="cbanner__r"><span class="cbanner__orb">{% render 'vibe-icon', name:'cart', size:46, stroke:1.4 %}</span></div></a>{%- endif -%}
+
+{%- when 'reviews' -%}
+  {%- if val.items -%}
+    {%- assign rtotal = 0 -%}
+    {%- for it in val.items -%}{%- assign ssz = it.stars | remove: '☆' | remove: '✩' | size -%}{%- assign rtotal = rtotal | plus: ssz -%}{%- endfor -%}
+    {%- assign ravg = rtotal | times: 1.0 | divided_by: val.items.size | round: 1 -%}
+    {%- assign faqv = product.metafields.custom.faq.value -%}
+    <section class="fpsec vmf" id="vibe-reviews">{{ head }}
+      <div class="vmf-rate glass">
+        <div class="vmf-rate__score"><div class="big">{{ ravg }}</div><div class="vmf-rate__stars">{% for i in (1..5) %}{% render 'vibe-icon', name:'star', size:16, fill:'#ffb020', stroke:0, style:'color:#ffb020' %}{% endfor %}</div><div class="vmf-rate__cnt">{{ val.items.size }} reviews</div></div>
+        {%- if faqv.items -%}<a href="#vibe-faq" class="vmf-rate__q"><b>{{ faqv.items.size }}</b><span>questions</span></a>{%- endif -%}
+      </div>
+      <div class="vmf-rev">
+        {%- for it in val.items -%}
+          <div class="vmf-rev__card glass">
+            <div class="vmf-rev__top"><span class="vmf-rev__av">{{ it.author | strip | slice: 0 | upcase }}</span><div class="vmf-rev__id"><div class="vmf-rev__name">{{ it.author }}</div><div class="vmf-rev__meta">{% render 'vibe-icon', name:'check', size:11, stroke:3 %} {{ it.meta | default: 'Verified buyer' }}</div></div><span class="vmf-rev__stars">{{ it.stars }}</span></div>
+            <p>{{ it.quote }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    </section>
+  {%- endif -%}
 
 {%- else -%}
   {%- comment -%} generic fallback for any other {head, items} metafield {%- endcomment -%}

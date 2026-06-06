@@ -1058,3 +1058,37 @@ body.clips-mobile-lock { overflow: hidden; }
 .vibe-home .personalized-feed__cell{ min-width:0; }
 @media(max-width:1080px){ .vibe-home .personalized-feed__grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px){ .vibe-home .personalized-feed__grid{ gap:9px; } }
+
+
+/* ===== PDP gallery overlay buttons (Wildberries-style) ===== */
+.vibe-home .fgnav{ position:absolute; top:12px; left:12px; right:12px; display:flex; justify-content:space-between; z-index:5; pointer-events:none; }
+.vibe-home .fgnav__r{ display:flex; gap:8px; }
+.vibe-home .fgnav__btn{ pointer-events:auto; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.9); -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px); display:grid; place-items:center; color:var(--ink); box-shadow:var(--soft-shadow); transition:background .15s,color .15s; }
+.vibe-home .fgnav__btn:hover{ background:#fff; }
+.vibe-home .fgnav__btn.on{ color:var(--neon-mag); }
+.vibe-home .fgnav__btn.on svg{ fill:var(--neon-mag); }
+.vibe-home .fgcount{ position:absolute; left:12px; bottom:12px; z-index:5; background:rgba(16,18,34,.55); color:#fff; font-size:12.5px; font-weight:600; padding:3px 11px; border-radius:99px; -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+.vibe-home .fgsimilar{ position:absolute; right:12px; bottom:12px; z-index:5; display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,.92); color:var(--ink); font-size:12.5px; font-weight:600; padding:6px 12px; border-radius:99px; box-shadow:var(--soft-shadow); }
+/* clean WB-style image: hide the discount badge + info chips on the gallery (info stays in buybox) */
+.vibe-home .fgmain__badges, .vibe-home .fgmain__chips{ display:none; }
+
+
+/* ===== reviews: rating summary + review cards (WB-style) ===== */
+.vibe-home .vmf-rate{ display:flex; align-items:center; gap:24px; padding:20px 24px; border-radius:20px; margin-bottom:18px; }
+.vibe-home .vmf-rate__score{ display:flex; flex-direction:column; gap:4px; }
+.vibe-home .vmf-rate__score .big{ font-family:Space Grotesk,sans-serif; font-size:42px; font-weight:600; line-height:1; }
+.vibe-home .vmf-rate__stars{ display:flex; gap:2px; }
+.vibe-home .vmf-rate__cnt{ color:var(--txt-2); font-size:13px; }
+.vibe-home .vmf-rate__q{ display:flex; flex-direction:column; align-items:flex-start; padding-left:24px; box-shadow:inset 1px 0 0 var(--line); }
+.vibe-home .vmf-rate__q b{ font-family:Space Grotesk,sans-serif; font-size:28px; font-weight:600; color:var(--brand); }
+.vibe-home .vmf-rate__q span{ color:var(--txt-2); font-size:13px; }
+.vibe-home .vmf-rev{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.vibe-home .vmf-rev__card{ padding:18px 20px; border-radius:18px; }
+.vibe-home .vmf-rev__top{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.vibe-home .vmf-rev__av{ width:40px; height:40px; border-radius:50%; background:var(--brand); color:#fff; display:grid; place-items:center; font-weight:700; flex-shrink:0; }
+.vibe-home .vmf-rev__id{ flex:1; min-width:0; }
+.vibe-home .vmf-rev__name{ font-weight:600; font-size:14.5px; }
+.vibe-home .vmf-rev__meta{ display:flex; align-items:center; gap:4px; color:#0c8c3e; font-size:12px; }
+.vibe-home .vmf-rev__stars{ color:#ffb020; font-size:14px; letter-spacing:1px; white-space:nowrap; }
+.vibe-home .vmf-rev__card p{ margin:0; color:var(--txt-2); font-size:14px; line-height:1.5; }
+@media(max-width:760px){ .vibe-home .vmf-rev{ grid-template-columns:1fr; } .vibe-home .vmf-rate{ flex-wrap:wrap; gap:16px; } }

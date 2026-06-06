@@ -35,6 +35,15 @@
           {%- endfor -%}
         </div>
         <div class="fgmain glass">
+          <div class="fgnav">
+            <button type="button" class="fgnav__btn" data-fgback aria-label="Назад">{% render 'vibe-icon', name:'chevL', size:22, stroke:2.4 %}</button>
+            <div class="fgnav__r">
+              <button type="button" class="fgnav__btn" data-fav aria-label="В избранное">{% render 'vibe-icon', name:'heart', size:20 %}</button>
+              <button type="button" class="fgnav__btn" data-fgshare aria-label="Поделиться">{% render 'vibe-icon', name:'share', size:18 %}</button>
+            </div>
+          </div>
+          {%- if product.images.size > 1 -%}<span class="fgcount"><b data-fgcount>1</b>/{{ product.images.size }}</span>{%- endif -%}
+          <a href="#vibe-recs" class="fgsimilar">{% render 'vibe-icon', name:'search', size:14 %} Похожие</a>
           <div class="fgmain__track" data-fgtrack>
             {%- if product.images.size > 0 -%}
               {%- for image in product.images -%}
@@ -124,7 +133,7 @@
 
     {%- comment -%} ===== designer metafield sections (custom.*) — ALL types via generic Vibe renderer ===== {%- endcomment -%}
     {%- assign mf = product.metafields.custom -%}
-    {%- assign mf_order = 'hero,features,stats,compare,timeline,how_to,ingredients,care,whats_included,dimensions,target_profile,use_scenarios,scent_profile,nutrition_facts,size_guide,compatibility,assembly,room_placement,brand_story,story,gift_options,trust,trust_strip,safety,protocol,sustainability,clinical_evidence,research_refs,mistake_warnings,progress_milestones,subscription_refill,unboxing_journey,lifestyle_gallery,app_showcase' | split: ',' -%}
+    {%- assign mf_order = 'hero,features,stats,reviews,compare,timeline,how_to,ingredients,care,whats_included,dimensions,target_profile,use_scenarios,scent_profile,nutrition_facts,size_guide,compatibility,assembly,room_placement,brand_story,story,gift_options,trust,trust_strip,safety,protocol,sustainability,clinical_evidence,research_refs,mistake_warnings,progress_milestones,subscription_refill,unboxing_journey,lifestyle_gallery,app_showcase' | split: ',' -%}
     {%- for key in mf_order -%}
       {%- assign mval = mf[key].value -%}
       {%- if mval != blank -%}{% render 'vibe-meta', key: key, val: mval %}{%- endif -%}
@@ -154,7 +163,7 @@
     <!-- recommendations -->
     {%- assign recsrc = product.collections.first -%}
     {%- if recsrc and recsrc.products.size > 1 -%}
-    <section class="fpsec">
+    <section class="fpsec" id="vibe-recs">
       <h2>You might also like</h2>
       <div class="fgrid" style="--fc:6">
         {%- assign shown = 0 -%}
@@ -181,9 +190,12 @@
   var track = document.querySelector('[data-fgtrack]');
   var fgdots = document.querySelectorAll('[data-fgdots] i');
   var fgthumbs = document.querySelectorAll('[data-fgthumb]');
-  function fgActive(){ if(!track||!track.clientWidth) return; var i=Math.round(track.scrollLeft/track.clientWidth); fgdots.forEach(function(d,k){ d.classList.toggle('on',k===i); }); fgthumbs.forEach(function(t,k){ t.classList.toggle('on',k===i); }); }
+  var fgcount=document.querySelector('[data-fgcount]');
+  function fgActive(){ if(!track||!track.clientWidth) return; var i=Math.round(track.scrollLeft/track.clientWidth); fgdots.forEach(function(d,k){ d.classList.toggle('on',k===i); }); fgthumbs.forEach(function(t,k){ t.classList.toggle('on',k===i); }); if(fgcount) fgcount.textContent=i+1; }
   if(track){ track.addEventListener('scroll', function(){ requestAnimationFrame(fgActive); }, {passive:true}); }
   fgthumbs.forEach(function(t){ t.addEventListener('click', function(){ if(track) track.scrollTo({left:(+t.getAttribute('data-fgthumb'))*track.clientWidth, behavior:'smooth'}); }); });
+  var fgback=document.querySelector('[data-fgback]'); if(fgback) fgback.addEventListener('click', function(){ if(history.length>1){ history.back(); } else { location.href={{ product.collections.first.url | default: routes.collections_url | json }}; } });
+  var fgshare=document.querySelector('[data-fgshare]'); if(fgshare) fgshare.addEventListener('click', function(){ if(navigator.share){ navigator.share({title:document.title, url:location.href}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); fgshare.classList.add('on'); setTimeout(function(){fgshare.classList.remove('on');},1200); } });
   function money(c){ try{ return (c/100).toLocaleString(undefined,{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
   function match(){ return VARIANTS.find(function(v){ return Object.keys(sel).every(function(k){ return v.options[k]===sel[k]; }); }); }
   function update(){
