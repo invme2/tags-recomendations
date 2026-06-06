@@ -77,3 +77,4 @@ pipeline/theme_assets/.snapshots/
 pipeline/.design_extract/
 pipeline/.design_manifest
 pipeline/design.tar.gz
+pipeline/.theme_backup_*/
