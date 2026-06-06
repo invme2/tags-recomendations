@@ -7,6 +7,16 @@
 ## [Unreleased]
 
 ### Fixed
+- **GSC Product structured-data: дубль Product-схемы + битые медиа.** Страница товара
+  рендерила ДВЕ Product JSON-LD (официальную Shopify `{{ product | structured_data }}`
+  из Hyper `main-product` + нашу `wanelo-product-schema`) → GSC «Duplicate brand»
+  (4 invalid + 49). Фикс: убрал нашу дубль-схему (`render 'wanelo-product-schema'` →
+  comment в `sections/wanelo-product-page.liquid`, live + repo). «Missing image» был
+  пустым `image[]` нашей схемы (у товаров без `featured_image`) + 1 товар с реально
+  битыми медиа (EPROLO/Aliyun отдавал `application/octet-stream` → Shopify-фетчер
+  отвергал) — перелит через staged-upload (`fix_failed_media_staged.py`). Новый хелпер
+  `theme_edit.py` (fetch/snapshot/upload ассетов темы). Применится на след. крауле
+  Google → «Validate Fix» в GSC.
 - **Варианты не пушились в Shopify (cell 14 STEP 5, `ce20f070` ~стр.2448).** Пуш читал
   `row['variants_json']` (колонка не заполняется → всегда `[]`), поэтому товары со
   скрейп-вариантами получали 1 вариант (Title). Прошлый фикс поправил только
