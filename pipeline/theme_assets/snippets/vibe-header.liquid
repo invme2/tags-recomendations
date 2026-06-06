@@ -1,0 +1,22 @@
+{%- comment -%} Wanelo Vibe shared header (pill). Used on home/collection/product. {%- endcomment -%}
+<header class="fhdr">
+  <div class="fhdr__inner lg">
+    <div class="lg__warp"></div>
+    <a href="{{ routes.root_url }}" class="flogo"><span class="mark"></span>wanelo <span class="yr">Vibe</span></a>
+    <div class="fcatwrap">
+      <a href="{{ routes.collections_url }}" class="fcatbtn">{% render 'vibe-icon', name:'grid', size:18, stroke:2.2 %} <span class="fcatbtn__lbl">Catalog</span></a>
+    </div>
+    <form class="fsearch" action="{{ routes.search_url }}" method="get" role="search">
+      {% render 'vibe-icon', name:'search', size:19, class:'fsearch__ic' %}
+      <input class="fsearch__in" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands, creators…">
+      <button class="fsearch__cam" type="submit" title="Search">{% render 'vibe-icon', name:'camera', size:20 %}</button>
+    </form>
+    <nav class="fnav">
+      <a href="{{ routes.collections_url }}" class="{% if active == 'Clips' %}on{% endif %}" style="display:inline-flex;gap:6px;align-items:center"><span class="live-dot"></span>Clips</a>
+      <a href="{{ routes.collections_url }}" class="{% if active == 'Earn' %}on{% endif %}">Earn</a>
+    </nav>
+    <button class="themebtn ficon" type="button" data-night-toggle title="Night mode">{% render 'vibe-icon', name:'moon', size:22 %}</button>
+    <a href="{{ routes.account_url }}" class="ficon ficon--user">{% render 'vibe-icon', name:'user', size:22 %}</a>
+    <a href="{{ routes.cart_url }}" class="ficon">{% render 'vibe-icon', name:'cart', size:22 %}{% if cart.item_count > 0 %}<span class="cnt">{{ cart.item_count }}</span>{% endif %}</a>
+  </div>
+</header>

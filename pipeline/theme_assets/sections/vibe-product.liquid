@@ -1,0 +1,215 @@
+{%- comment -%}
+  Wanelo Vibe — product page matching the mockup (Wanelo Vibe Product.html).
+  Real Shopify data. Fabricated reviews / AI claims from the mockup are intentionally
+  omitted (FTC + operator guardrail). Reuses vibe.css + shared header/footer.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{{ 'vibe.css' | asset_url | stylesheet_tag }}
+<style>
+  .shopify-section-group-header-group, .shopify-section-group-footer-group { display: none !important; }
+  body { background: #f5f3ff; }
+  .vibe-home .fpcard__img img, .vibe-home .fgmain img, .vibe-home .fgthumb img { width: 100%; height: 100%; object-fit: cover; }
+  .vibe-home .fgmain img { object-fit: contain; }
+</style>
+
+{%- assign cv = product.selected_or_first_available_variant -%}
+<div class="vibe-home">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lgDistort" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="n"/><feGaussianBlur in="n" stdDeviation="1.1" result="sn"/><feDisplacementMap in="SourceGraphic" in2="sn" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+  <div class="fwrap">
+    {% render 'vibe-header', active: '' %}
+
+    <div class="fcrumbs" style="margin-top:22px;display:flex;align-items:center;gap:8px;color:var(--txt-3);font-size:13px">
+      <a href="{{ routes.root_url }}">Home</a>{% render 'vibe-icon', name:'chevR', size:13 %}
+      {%- if product.collections.first -%}<a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>{% render 'vibe-icon', name:'chevR', size:13 %}{%- endif -%}
+      <span style="color:var(--txt-2)">{{ product.title | truncate: 40 }}</span>
+    </div>
+
+    <div class="fpdp">
+      <!-- gallery -->
+      <div class="fgallery">
+        <div class="fgthumbs">
+          {%- for image in product.images limit: 7 -%}
+            <button type="button" class="fgthumb glass{% if forloop.first %} on{% endif %}" data-thumb data-src="{{ image | image_url: width: 900 }}" style="background-image:url('{{ image | image_url: width: 160 }}');background-size:cover;background-position:center"></button>
+          {%- endfor -%}
+          {%- if product.images.size > 7 -%}<button type="button" class="fgthumb glass more">+{{ product.images.size | minus: 7 }}</button>{%- endif -%}
+        </div>
+        <div class="fgmain glass">
+          {%- if product.featured_image -%}<img data-main src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.title | escape }}">{%- else -%}<span class="fph"><span class="fph__mesh tint-violet"></span></span>{%- endif -%}
+          {%- if product.compare_at_price > product.price -%}
+            <div class="fgmain__badges"><span class="fbadge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%</span></div>
+          {%- endif -%}
+          <div class="fgmain__chips">
+            {%- if product.available -%}<span class="fgmain__chip">{% render 'vibe-icon', name:'check', size:12, stroke:3, style:'color:var(--neon-cyan)' %}In stock</span>{%- endif -%}
+            {%- if product.type != blank -%}<span class="fgmain__chip">{{ product.type }}</span>{%- endif -%}
+            <span class="fgmain__chip">{% render 'vibe-icon', name:'shield', size:12, style:'color:var(--neon-blue)' %}Buyer protection</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- info -->
+      <div>
+        <div class="fpdp-head">
+          <span class="fpdp-brand">{{ product.vendor | default: 'Wanelo' }}</span>
+          <span class="fbadge orig">{% render 'vibe-icon', name:'check', size:12, stroke:3 %} Original</span>
+        </div>
+        <h1>{{ product.title }}</h1>
+
+        <form method="post" action="{{ routes.cart_add_url }}" id="vibe-pform" accept-charset="UTF-8" enctype="multipart/form-data">
+          <input type="hidden" name="form_type" value="product"><input type="hidden" name="utf8" value="✓">
+          <input type="hidden" name="id" value="{{ cv.id }}" data-variant-id>
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="fvar">
+                <div class="fvar__top"><span class="lbl">{{ option.name }}: <b data-opt-label="{{ forloop.index0 }}">{{ option.selected_value }}</b></span></div>
+                {%- if option.name == 'Color' or option.name == 'Colour' -%}
+                  <div class="fcolor-row">
+                    {%- for value in option.values -%}<button type="button" class="fstor{% if value == option.selected_value %} on{% endif %}" data-opt="{{ option.position | minus: 1 }}" data-val="{{ value | escape }}">{{ value }}</button>{%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="fstor-row">
+                    {%- for value in option.values -%}<button type="button" class="fstor{% if value == option.selected_value %} on{% endif %}" data-opt="{{ option.position | minus: 1 }}" data-val="{{ value | escape }}">{{ value }}</button>{%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          {%- comment -%} key specs preview from metafield {%- endcomment -%}
+          {%- assign specs = product.metafields.custom.specs.value -%}
+          {%- if specs.items -%}
+            <div class="fkspec">
+              {%- for it in specs.items limit: 8 -%}
+                <div class="fkspec__row"><div class="k"><span>{{ it.k | default: it.label | default: it[0] }}</span></div><div class="v">{{ it.v | default: it.value | default: it[1] }}</div></div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </form>
+      </div>
+
+      <!-- buybox -->
+      <div class="fbuybox glass">
+        <div class="fbb-price">
+          <span class="fbb-now neon-text" data-price>{{ cv.price | money }}</span>
+          {%- if product.compare_at_price > product.price -%}<span class="fbb-old" data-cprice>{{ product.compare_at_price | money }}</span>{%- endif -%}
+        </div>
+        {%- if product.compare_at_price > product.price -%}<span class="fbb-save">{% render 'vibe-icon', name:'bolt', size:13 %} Save {{ product.compare_at_price | minus: product.price | money }}</span>{%- endif -%}
+        <div class="fbb-pay">or <b>{{ cv.price | divided_by: 4 | money }} × 4</b> with Wanelo Pay · 0%</div>
+        <div class="fbb-actions">
+          <div class="fqty">
+            <button type="button" data-qty="-1">{% render 'vibe-icon', name:'minus', size:18, stroke:2.4 %}</button>
+            <span data-qty-val>1</span>
+            <button type="button" data-qty="1">{% render 'vibe-icon', name:'plus', size:18, stroke:2.4 %}</button>
+          </div>
+          <button type="button" class="fbtn fbtn-primary" style="flex:1;height:50px" data-pdp-add {% unless product.available %}disabled{% endunless %}>{% if product.available %}Add to cart{% else %}Sold out{% endif %}</button>
+        </div>
+        <a href="{{ routes.cart_url }}" class="fbtn fbtn-glass fbb-buynow" style="width:100%;height:50px">View cart</a>
+        <div class="fbb-deliv">
+          <div class="fbb-deliv__row">{% render 'vibe-icon', name:'truck', size:20 %}<div><b>Fast delivery</b><div class="muted">tracked, worldwide</div></div></div>
+          <div class="fbb-deliv__row">{% render 'vibe-icon', name:'shield', size:20 %}<div><b>Buyer protection</b><div class="muted">every order insured end-to-end</div></div></div>
+        </div>
+        <div class="fbb-store"><span class="logo">W</span><div><b>Sold &amp; shipped by {{ shop.name }}</b><div style="color:var(--txt-2)">Official store</div></div></div>
+      </div>
+    </div>
+
+    <!-- description -->
+    {%- if product.description != blank -%}
+    <section class="fpsec" style="margin-top:52px">
+      <h2>Description</h2>
+      <div class="fdesc glass"><div class="rte" style="padding:6px 4px">{{ product.description }}</div></div>
+    </section>
+    {%- endif -%}
+
+    <!-- specifications -->
+    {%- if specs.items -%}
+    <section class="fpsec">
+      <h2>Specifications</h2>
+      <div class="fspectable glass">
+        {%- for it in specs.items -%}<div class="fspectable__row"><span class="k">{{ it.k | default: it.label | default: it[0] }}</span><span class="v">{{ it.v | default: it.value | default: it[1] }}</span></div>{%- endfor -%}
+      </div>
+    </section>
+    {%- endif -%}
+
+    <!-- recommendations -->
+    {%- assign recsrc = product.collections.first -%}
+    {%- if recsrc and recsrc.products.size > 1 -%}
+    <section class="fpsec">
+      <h2>You might also like</h2>
+      <div class="fgrid" style="--fc:6">
+        {%- assign shown = 0 -%}
+        {%- for p in recsrc.products limit: 12 -%}
+          {%- if p.id != product.id and shown < 6 -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {%- assign onsale = false -%}{%- if p.compare_at_price > p.price -%}{%- assign onsale = true -%}{%- endif -%}
+            <div class="fpcard glass">
+              <a href="{{ p.url }}" class="fpcard__img">
+                {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 400 }}" alt="{{ p.title | escape }}" loading="lazy" width="400" height="416">{%- else -%}<span class="fph"><span class="fph__mesh tint-cyan"></span></span>{%- endif -%}
+                {%- if onsale -%}<span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round }}%</span>{%- endif -%}
+              </a>
+              <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
+              <div class="fpcard__body">
+                <div class="fpcard__price"><span class="fpcard__now">{{ p.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ p.compare_at_price | money }}</span>{%- endif -%}</div>
+                <a href="{{ p.url }}" class="fpcard__title">{{ p.title }}</a>
+                <div class="fpcard__meta"><span class="st" style="color:var(--txt-3)">{{ p.vendor | default: 'Wanelo' }}</span></div>
+                {%- if p.available -%}<button class="fpcard__add" type="button" data-add="{{ p.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>{%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+(function(){
+  var VARIANTS = {{ product.variants | json }};
+  var form = document.getElementById('vibe-pform'); if(!form) return;
+  var sel = {};
+  {% unless product.has_only_default_variant %}{% for o in product.options_with_values %}sel[{{ forloop.index0 }}] = {{ o.selected_value | json }};{% endfor %}{% endunless %}
+  var idInput = form.querySelector('[data-variant-id]');
+  var priceEl = document.querySelector('[data-price]'), cpriceEl=document.querySelector('[data-cprice]');
+  var mainImg = document.querySelector('[data-main]');
+  function money(c){ try{ return (c/100).toLocaleString(undefined,{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
+  function match(){ return VARIANTS.find(function(v){ return Object.keys(sel).every(function(k){ return v.options[k]===sel[k]; }); }); }
+  function update(){
+    var v=match(); if(!v) return;
+    idInput.value=v.id;
+    if(priceEl) priceEl.textContent=money(v.price);
+    if(cpriceEl) cpriceEl.style.display = (v.compare_at_price && v.compare_at_price>v.price)?'':'none';
+    if(v.featured_image && mainImg) mainImg.src=v.featured_image.src.replace(/(\.[a-z]+)(\?|$)/i,'_900x$1$2');
+  }
+  form.querySelectorAll('[data-opt]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var oi=+b.getAttribute('data-opt'); sel[oi]=b.getAttribute('data-val');
+      b.parentNode.querySelectorAll('.fstor').forEach(function(x){x.classList.remove('on')}); b.classList.add('on');
+      var lab=form.querySelector('[data-opt-label="'+oi+'"]'); if(lab) lab.textContent=sel[oi];
+      update();
+    });
+  });
+  // thumbs
+  document.querySelectorAll('[data-thumb]').forEach(function(t){
+    t.addEventListener('click',function(){ if(mainImg) mainImg.src=t.getAttribute('data-src');
+      document.querySelectorAll('[data-thumb]').forEach(function(x){x.classList.remove('on')}); t.classList.add('on'); });
+  });
+  // qty
+  var q=1, qv=document.querySelector('[data-qty-val]');
+  document.querySelectorAll('[data-qty]').forEach(function(b){ b.addEventListener('click',function(){ q=Math.max(1,q+(+b.getAttribute('data-qty'))); if(qv) qv.textContent=q; }); });
+  // add to cart
+  var addBtn=document.querySelector('[data-pdp-add]');
+  if(addBtn) addBtn.addEventListener('click',function(){
+    var old=addBtn.innerHTML; addBtn.textContent='✓ In cart';
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{id:+idInput.value,quantity:q}]})})
+      .then(function(r){return r.json()}).then(function(){ var c=document.querySelector('.fhdr .ficon .cnt'); if(c){c.textContent=(parseInt(c.textContent||'0')+q);} setTimeout(function(){addBtn.innerHTML=old;},1600); })
+      .catch(function(){ addBtn.innerHTML=old; });
+  });
+  update();
+})();
+</script>
+
+{% schema %}
+{ "name": "Vibe Product", "settings": [], "blocks": [] }
+{% endschema %}

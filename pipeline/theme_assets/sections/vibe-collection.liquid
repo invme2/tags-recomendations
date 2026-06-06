@@ -1,0 +1,149 @@
+{%- comment -%}
+  Wanelo Vibe — collection page matching the mockup (Wanelo Vibe Collection.html).
+  Reuses vibe.css + shared header/footer snippets. Native Shopify filtering & sorting.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{{ 'vibe.css' | asset_url | stylesheet_tag }}
+<style>
+  .shopify-section-group-header-group, .shopify-section-group-footer-group { display: none !important; }
+  body { background: #f5f3ff; }
+  .vibe-home .fpcard__img img { width: 100%; height: 100%; object-fit: cover; }
+  .vibe-home .fsortbar { overflow-x: auto; }
+  .vibe-home .fseg { flex-wrap: nowrap; }
+  .vibe-home .fseg a { padding: 8px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: var(--txt-2); white-space: nowrap; transition: background .14s, color .14s; }
+  .vibe-home .fseg a.on { background: var(--glass); color: var(--txt); box-shadow: var(--soft-shadow); }
+  /* hide common storefront app floaters on Vibe pages */
+  #shopify-section-header, .header-wrapper, .announcement-bar-section { display: none !important; }
+</style>
+
+<div class="vibe-home">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lgDistort" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="n"/><feGaussianBlur in="n" stdDeviation="1.1" result="sn"/><feDisplacementMap in="SourceGraphic" in2="sn" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+  <div class="fwrap">
+    {% render 'vibe-header', active: 'Catalog' %}
+
+    <div class="fcrumbs" style="margin-top:22px;display:flex;align-items:center;gap:8px;color:var(--txt-3);font-size:13px">
+      <a href="{{ routes.root_url }}">Home</a>{% render 'vibe-icon', name:'chevR', size:13 %}<a href="{{ routes.collections_url }}">Catalog</a>{% render 'vibe-icon', name:'chevR', size:13 %}<span style="color:var(--txt-2)">{{ collection.title }}</span>
+    </div>
+
+    <div class="fcat-top">
+      <h1>{{ collection.title }}<span class="count">{{ collection.products_count }} items</span></h1>
+    </div>
+
+    {%- comment -%} sibling collection chips {%- endcomment -%}
+    {%- if linklists['collection-tabs'].links.size > 0 or collections.size > 0 -%}
+    <div class="fsubchips">
+      {%- assign chiplist = linklists['collection-tabs'].links -%}
+      {%- if chiplist.size > 0 -%}
+        {%- for l in chiplist limit: 12 -%}
+          <a class="fchip {% if l.url == collection.url %}on{% endif %}" href="{{ l.url }}">{{ l.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for c in collections limit: 12 -%}
+          <a class="fchip {% if c.handle == collection.handle %}on{% endif %}" href="{{ c.url }}">{{ c.title }}</a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+
+    {% paginate collection.products by 24 %}
+    <div class="fcat">
+      <aside class="fcat-side glass">
+        <form id="vibe-filters" method="get">
+          {%- if collection.current_type -%}<input type="hidden" name="constraint" value="{{ collection.current_type }}">{%- endif -%}
+          {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
+          {%- if collection.filters.size > 0 -%}
+            {%- for filter in collection.filters -%}
+              <div class="ffg">
+                <button type="button" class="ffg__h">{{ filter.label }}{% render 'vibe-icon', name:'chevR', size:18, stroke:2.4, style:'transform:rotate(90deg)' %}</button>
+                <div class="ffg__b">
+                  {%- case filter.type -%}
+                  {%- when 'list', 'boolean' -%}
+                    {%- for value in filter.values -%}
+                      <label class="fcrow">
+                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} onchange="this.form.submit()">
+                        <span class="box">{% render 'vibe-icon', name:'check', size:13, stroke:3.2 %}</span>
+                        <span>{{ value.label }}</span><span class="cnt">{{ value.count }}</span>
+                      </label>
+                    {%- endfor -%}
+                  {%- when 'price_range' -%}
+                    <div class="fprice">
+                      <input type="text" inputmode="numeric" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="from" onchange="this.form.submit()">
+                      <span>—</span>
+                      <input type="text" inputmode="numeric" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="to" onchange="this.form.submit()">
+                    </div>
+                  {%- endcase -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="ffg"><div class="ffg__h" style="cursor:default">Categories</div><div class="ffg__b">
+              {%- for c in collections limit: 10 -%}<a class="fcrow" href="{{ c.url }}"><span class="box" style="background:transparent">{% render 'vibe-icon', name:'chevR', size:12 %}</span><span>{{ c.title }}</span></a>{%- endfor -%}
+            </div></div>
+          {%- endif -%}
+        </form>
+      </aside>
+
+      <section>
+        <div class="fsortbar glass">
+          {% render 'vibe-icon', name:'spark', size:18, stroke:2, style:'color:var(--txt-3);margin-left:4px' %}
+          <div class="fseg">
+            {%- for opt in collection.sort_options -%}
+              <a class="{% if collection.sort_by == opt.value or collection.default_sort_by == opt.value and collection.sort_by == blank %}on{% endif %}" href="{{ collection.url }}?sort_by={{ opt.value }}">{{ opt.name }}</a>
+            {%- endfor -%}
+          </div>
+          <span class="spacer"></span>
+        </div>
+
+        {%- assign active_count = 0 -%}
+        {%- for f in collection.filters -%}{%- for v in f.active_values -%}{%- assign active_count = active_count | plus: 1 -%}{%- endfor -%}{%- endfor -%}
+        {%- if active_count > 0 -%}
+          <div class="fachips">
+            {%- for f in collection.filters -%}
+              {%- for v in f.active_values -%}<a class="fachip" href="{{ v.url_to_remove }}">{{ v.label }} {% render 'vibe-icon', name:'close', size:14, stroke:2.6 %}</a>{%- endfor -%}
+              {%- if f.type == 'price_range' and f.min_value.value or f.max_value.value -%}{%- endif -%}
+            {%- endfor -%}
+            <a class="fclear" href="{{ collection.url }}">Clear all</a>
+          </div>
+        {%- endif -%}
+
+        {%- if collection.products.size == 0 -%}
+          <div class="fempty">{% render 'vibe-icon', name:'search', size:60, stroke:1.4 %}<h3>Nothing matches these filters</h3><p>Try removing a filter or widening the range.</p></div>
+        {%- else -%}
+          <div class="fgrid" style="--fc:4">
+            {%- for product in collection.products -%}
+              {%- assign onsale = false -%}{%- if product.compare_at_price > product.price -%}{%- assign onsale = true -%}{%- endif -%}
+              <div class="fpcard glass">
+                <a href="{{ product.url }}" class="fpcard__img">
+                  {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" loading="lazy" width="500" height="520">{%- else -%}<span class="fph"><span class="fph__mesh tint-violet"></span></span>{%- endif -%}
+                  {%- if onsale -%}{%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}<span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>{%- endif -%}
+                </a>
+                <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
+                <div class="fpcard__body">
+                  <div class="fpcard__price"><span class="fpcard__now">{{ product.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}</div>
+                  <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>
+                  <div class="fpcard__meta">
+                    {%- assign rt = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value -%}
+                    {%- if rt -%}<span class="st">{% render 'vibe-icon', name:'star', size:12, fill:'var(--neon-cyan)', stroke:0, style:'color:var(--neon-cyan)' %}{{ rt }}</span>{%- else -%}<span class="st" style="color:var(--txt-3)">{{ product.vendor | default: 'Wanelo' }}</span>{%- endif -%}
+                  </div>
+                  {%- if product.available -%}<button class="fpcard__add" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>{%- else -%}<span class="fpcard__add" style="opacity:.55">Sold out</span>{%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+          {%- if paginate.pages > 1 and paginate.next -%}
+            <div class="fmore"><a class="fbtn fbtn-glass" style="padding:0 36px;height:50px" href="{{ paginate.next.url }}">Show more</a></div>
+          {%- endif -%}
+        {%- endif -%}
+      </section>
+    </div>
+    {% endpaginate %}
+
+    {% render 'vibe-footer' %}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Vibe Collection", "settings": [], "blocks": [] }
+{% endschema %}
