@@ -8,10 +8,10 @@
 {%- case key -%}
 
 {%- when 'hero' -%}
-  {%- if val.h1 -%}<section class="fpsec"><div class="vmf-hero"><div>{% if val.kicker %}<span class="vmf__kick">{{ val.kicker }}</span>{% endif %}<h2>{{ val.h1 }}</h2>{% if val.lead %}<p>{{ val.lead }}</p>{% endif %}</div>{% if val.image_url %}<div class="vmf-hero__img" style="background-image:url('{{ val.image_url }}')"></div>{% endif %}</div></section>{%- endif -%}
+  {%- if val.h1 -%}<section class="fpsec"><div class="vmf-hero"><div>{% if val.kicker %}<span class="vmf__kick">{{ val.kicker }}</span>{% endif %}<h2>{{ val.h1 }}</h2>{% if val.lead %}<p>{{ val.lead }}</p>{% endif %}</div>{% if val.image_url %}<img class="vmf-hero__img" src="{{ val.image_url }}" alt="" loading="lazy">{% endif %}</div></section>{%- endif -%}
 
 {%- when 'features' -%}
-  {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-feat">{%- for it in val.items -%}<div class="vmf-feat__card glass">{% if it.image_url %}<div class="vmf-feat__img" style="background-image:url('{{ it.image_url }}')"></div>{% endif %}<div class="vmf-feat__body">{% if it.meta %}<span class="vmf__kick">{{ it.meta }}</span>{% endif %}<h4>{{ it.h4 }}</h4>{% if it.p %}<p>{{ it.p }}</p>{% endif %}</div></div>{%- endfor -%}</div></section>{%- endif -%}
+  {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-feat">{%- for it in val.items -%}<div class="vmf-feat__card glass">{% if it.image_url %}<img class="vmf-feat__img" src="{{ it.image_url }}" alt="{{ it.image_alt | escape }}" loading="lazy">{% endif %}<div class="vmf-feat__body">{% if it.meta %}<span class="vmf__kick">{{ it.meta }}</span>{% endif %}<h4>{{ it.h4 }}</h4>{% if it.p %}<p>{{ it.p }}</p>{% endif %}</div></div>{%- endfor -%}</div></section>{%- endif -%}
 
 {%- when 'stats' -%}
   {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-stats">{%- for it in val.items -%}<div class="vmf-stat">{% if it.kicker %}<span class="kick">{{ it.kicker }}</span>{% endif %}<div class="big">{{ it.value }}</div><div class="lab">{{ it.label }}</div></div>{%- endfor -%}</div></section>{%- endif -%}
@@ -38,7 +38,7 @@
   {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-dims">{%- for it in val.items -%}<div class="vmf-dim"><div class="v">{{ it.value }}</div><div class="a">{{ it.axis }}</div></div>{%- endfor -%}</div>{% if val.scale_note %}<div class="vmf-dims__note">{{ val.scale_note }}</div>{% endif %}</section>{%- endif -%}
 
 {%- when 'story' -%}
-  {%- if val.chapters -%}<section class="fpsec vmf">{{ head }}{%- for ch in val.chapters -%}<div class="vmf-story__ch">{% if ch.image_url %}<div class="vmf-story__img" style="background-image:url('{{ ch.image_url }}')"></div>{% endif %}<div class="vmf-story__t">{% if ch.kicker %}<span class="vmf__kick">{{ ch.kicker }}</span>{% endif %}<h3>{{ ch.h3 }}</h3>{% if ch.p %}<p>{{ ch.p }}</p>{% endif %}</div></div>{%- endfor -%}</section>{%- endif -%}
+  {%- if val.chapters -%}<section class="fpsec vmf">{{ head }}{%- for ch in val.chapters -%}<div class="vmf-story__ch">{% if ch.image_url %}<img class="vmf-story__img" src="{{ ch.image_url }}" alt="{{ ch.image_alt | escape }}" loading="lazy">{% endif %}<div class="vmf-story__t">{% if ch.kicker %}<span class="vmf__kick">{{ ch.kicker }}</span>{% endif %}<h3>{{ ch.h3 }}</h3>{% if ch.p %}<p>{{ ch.p }}</p>{% endif %}</div></div>{%- endfor -%}</section>{%- endif -%}
 
 {%- when 'faq' -%}
   {%- if val.items -%}<section class="fpsec vmf">{{ head }}<div class="vmf-faq">{%- for it in val.items -%}<div class="vmf-faq__item"><div class="vmf-faq__q">{{ it.q }}</div><div class="vmf-faq__a">{{ it.a }}</div></div>{%- endfor -%}</div></section>{%- endif -%}
