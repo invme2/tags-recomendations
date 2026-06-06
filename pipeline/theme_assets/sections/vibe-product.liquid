@@ -114,6 +114,29 @@
       </div>
     </div>
 
+    {%- comment -%} ===== designer metafield sections (custom.*) — adapted to Vibe ===== {%- endcomment -%}
+    {%- assign mf = product.metafields.custom -%}
+
+    {%- if mf.features.value.items -%}{%- assign h = mf.features.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2>{% if h.desc != blank %}<p>{{ h.desc }}</p>{% endif %}</div>
+        <div class="vmf-feat">{%- for it in mf.features.value.items -%}<div class="vmf-feat__card glass">{%- if it.image_url -%}<div class="vmf-feat__img" style="background-image:url('{{ it.image_url }}')"></div>{%- endif -%}<div class="vmf-feat__body">{% if it.meta %}<span class="vmf__kick">{{ it.meta }}</span>{% endif %}<h4>{{ it.h4 }}</h4>{% if it.p %}<p>{{ it.p }}</p>{% endif %}</div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
+    {%- if mf.stats.value.items -%}{%- assign h = mf.stats.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2></div>
+        <div class="vmf-stats">{%- for it in mf.stats.value.items -%}<div class="vmf-stat">{% if it.kicker %}<span class="kick">{{ it.kicker }}</span>{% endif %}<div class="big">{{ it.value }}</div><div class="lab">{{ it.label }}</div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
+    {%- if mf.how_to.value.items -%}{%- assign h = mf.how_to.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2>{% if h.desc != blank %}<p>{{ h.desc }}</p>{% endif %}</div>
+        <div class="vmf-steps">{%- for it in mf.how_to.value.items -%}<div class="vmf-step"><span class="vmf-step__n">{{ it.n | default: forloop.index }}</span><div><h4>{{ it.h4 }}</h4><p>{{ it.p }}</p></div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
+    {%- if mf.whats_included.value.items -%}{%- assign h = mf.whats_included.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2></div>
+        <div class="vmf-box">{%- for it in mf.whats_included.value.items -%}<div class="vmf-box__item"><span class="vmf-box__g">{{ it.glyph | default: '✦' }}</span><div><b>{{ it.name }}{% if it.qty %} <span style="color:var(--txt-3);font-weight:600">×{{ it.qty }}</span>{% endif %}</b>{% if it.note %}<small>{{ it.note }}</small>{% endif %}</div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
     <!-- description -->
     {%- if product.description != blank -%}
     <section class="fpsec" style="margin-top:52px">
@@ -132,6 +155,18 @@
     </section>
     {%- endif -%}
 
+    {%- if mf.faq.value.items -%}{%- assign h = mf.faq.value.head -%}
+      <section class="fpsec vmf"><div class="vmf__head">{% if h.kicker %}<span class="vmf__kick">{{ h.kicker }}</span>{% endif %}<h2>{{ h.h2 }}</h2></div>
+        <div class="vmf-faq">{%- for it in mf.faq.value.items -%}<div class="vmf-faq__item"><div class="vmf-faq__q">{{ it.q }}</div><div class="vmf-faq__a">{{ it.a }}</div></div>{%- endfor -%}</div></section>
+    {%- endif -%}
+
+    {%- if mf.cta.value -%}{%- assign c = mf.cta.value -%}
+      <a class="cbanner" href="#vibe-pform" style="margin-top:30px">
+        <div class="cbanner__l"><span class="cbanner__tag">{% render 'vibe-icon', name:'spark', size:14 %} {{ c.kicker | default: 'Ready when you are' }}</span><h3>{{ c.h2 | default: c.title | default: product.title }}</h3>{% if c.lead or c.desc %}<p>{{ c.lead | default: c.desc }}</p>{% endif %}<span class="cbanner__cta">{{ c.button | default: 'Add to cart' }} {% render 'vibe-icon', name:'arrowR', size:17, stroke:2.4 %}</span></div>
+        <div class="cbanner__r"><span class="cbanner__orb">{% render 'vibe-icon', name:'cart', size:46, stroke:1.4 %}</span></div>
+      </a>
+    {%- endif -%}
+
     <!-- recommendations -->
     {%- assign recsrc = product.collections.first -%}
     {%- if recsrc and recsrc.products.size > 1 -%}
@@ -142,20 +177,7 @@
         {%- for p in recsrc.products limit: 12 -%}
           {%- if p.id != product.id and shown < 6 -%}
             {%- assign shown = shown | plus: 1 -%}
-            {%- assign onsale = false -%}{%- if p.compare_at_price > p.price -%}{%- assign onsale = true -%}{%- endif -%}
-            <div class="fpcard glass">
-              <a href="{{ p.url }}" class="fpcard__img">
-                {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 400 }}" alt="{{ p.title | escape }}" loading="lazy" width="400" height="416">{%- else -%}<span class="fph"><span class="fph__mesh tint-cyan"></span></span>{%- endif -%}
-                {%- if onsale -%}<span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round }}%</span>{%- endif -%}
-              </a>
-              <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
-              <div class="fpcard__body">
-                <div class="fpcard__price"><span class="fpcard__now">{{ p.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ p.compare_at_price | money }}</span>{%- endif -%}</div>
-                <a href="{{ p.url }}" class="fpcard__title">{{ p.title }}</a>
-                <div class="fpcard__meta"><span class="st" style="color:var(--txt-3)">{{ p.vendor | default: 'Wanelo' }}</span></div>
-                {%- if p.available -%}<button class="fpcard__add" type="button" data-add="{{ p.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>{%- endif -%}
-              </div>
-            </div>
+            {% render 'vibe-card', product: p, tint: 'tint-cyan' %}
           {%- endif -%}
         {%- endfor -%}
       </div>

@@ -33,5 +33,20 @@
     document.querySelectorAll('[data-filters-open]').forEach(function(b){ b.addEventListener('click',function(){ if(fside) fside.classList.add('open'); document.body.style.overflow='hidden'; }); });
     document.querySelectorAll('[data-filters-close]').forEach(function(b){ b.addEventListener('click',function(){ if(fside) fside.classList.remove('open'); document.body.style.overflow=''; }); });
     document.addEventListener('click',function(e){ if(fside && fside.classList.contains('open') && !fside.contains(e.target) && !e.target.closest('[data-filters-open]')){ fside.classList.remove('open'); document.body.style.overflow=''; } });
+
+    // product card photo carousel (hover-zones desktop, swipe mobile)
+    document.querySelectorAll('[data-vpc]').forEach(function(vpc){
+      var slides=vpc.querySelectorAll('.vpc__slide'); if(slides.length<2) return;
+      var wrap=vpc.closest('.fpcard__img'); var dots=wrap?wrap.querySelectorAll('.vpc__dots i'):[];
+      var idx=0, moved=false;
+      function show(i){ i=Math.max(0,Math.min(slides.length-1,i)); if(i===idx)return; slides[idx].classList.remove('on'); slides[i].classList.add('on'); if(dots[idx])dots[idx].classList.remove('on'); if(dots[i])dots[i].classList.add('on'); idx=i; }
+      if(wrap){ wrap.addEventListener('mousemove',function(e){ var r=wrap.getBoundingClientRect(); show(Math.floor((e.clientX-r.left)/r.width*slides.length)); });
+        wrap.addEventListener('mouseleave',function(){ show(0); }); }
+      var sx=null;
+      vpc.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; moved=false; },{passive:true});
+      vpc.addEventListener('touchmove',function(e){ if(sx===null)return; var dx=e.touches[0].clientX-sx; if(Math.abs(dx)>30){ show(idx+(dx<0?1:-1)); sx=e.touches[0].clientX; moved=true; } },{passive:true});
+      vpc.addEventListener('touchend',function(){ sx=null; });
+      if(wrap&&wrap.tagName==="A"){ wrap.addEventListener('click',function(e){ if(moved){ e.preventDefault(); moved=false; } }); }
+    });
   });
 })();

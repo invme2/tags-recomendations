@@ -125,23 +125,7 @@
         {%- else -%}
           <div class="fgrid" style="--fc:4">
             {%- for product in collection.products -%}
-              {%- assign onsale = false -%}{%- if product.compare_at_price > product.price -%}{%- assign onsale = true -%}{%- endif -%}
-              <div class="fpcard glass">
-                <a href="{{ product.url }}" class="fpcard__img">
-                  {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" loading="lazy" width="500" height="520">{%- else -%}<span class="fph"><span class="fph__mesh tint-violet"></span></span>{%- endif -%}
-                  {%- if onsale -%}{%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}<span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>{%- endif -%}
-                </a>
-                <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
-                <div class="fpcard__body">
-                  <div class="fpcard__price"><span class="fpcard__now">{{ product.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}</div>
-                  <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>
-                  <div class="fpcard__meta">
-                    {%- assign rt = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value -%}
-                    {%- if rt -%}<span class="st">{% render 'vibe-icon', name:'star', size:12, fill:'var(--neon-cyan)', stroke:0, style:'color:var(--neon-cyan)' %}{{ rt }}</span>{%- else -%}<span class="st" style="color:var(--txt-3)">{{ product.vendor | default: 'Wanelo' }}</span>{%- endif -%}
-                  </div>
-                  {%- if product.available -%}<button class="fpcard__add" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>{%- else -%}<span class="fpcard__add" style="opacity:.55">Sold out</span>{%- endif -%}
-                </div>
-              </div>
+              {% render 'vibe-card', product: product %}
             {%- endfor -%}
           </div>
           {%- if paginate.pages > 1 and paginate.next -%}

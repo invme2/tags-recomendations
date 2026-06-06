@@ -941,3 +941,48 @@ body.clips-mobile-lock { overflow: hidden; }
   .fgallery, .fbuybox { position: static; }
   .fdesc__feats, .frev-grid, .frev-head { grid-template-columns: 1fr; }
 }
+
+
+/* ===== product card photo carousel ===== */
+.vibe-home .vpc{ position:absolute; inset:0; }
+.vibe-home .vpc__slide{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .14s ease; }
+.vibe-home .vpc__slide.on{ opacity:1; }
+.vibe-home .vpc__dots{ position:absolute; left:0; right:0; bottom:8px; display:flex; justify-content:center; gap:4px; z-index:2; pointer-events:none; }
+.vibe-home .vpc__dots i{ width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.55); box-shadow:0 0 3px rgba(0,0,0,.35); transition:background .14s; }
+.vibe-home .vpc__dots i.on{ background:#fff; }
+
+
+/* ===== designer metafield sections (Vibe) ===== */
+.vibe-home .vmf{ margin-top:48px; }
+.vibe-home .vmf__head{ margin-bottom:22px; }
+.vibe-home .vmf__kick{ font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand); }
+.vibe-home .vmf__head h2{ font-family:Space Grotesk,sans-serif;font-size:30px;font-weight:600;letter-spacing:-.02em;margin:6px 0 0; }
+.vibe-home .vmf__head p{ color:var(--txt-2);margin:8px 0 0;max-width:640px; }
+.vibe-home .vmf-feat{ display:grid;grid-template-columns:repeat(3,1fr);gap:16px; }
+.vibe-home .vmf-feat__card{ border-radius:20px;overflow:hidden;display:flex;flex-direction:column; }
+.vibe-home .vmf-feat__img{ aspect-ratio:1/.72;background-size:cover;background-position:center;background-color:var(--line-2); }
+.vibe-home .vmf-feat__body{ padding:16px 18px 20px; }
+.vibe-home .vmf-feat__body h4{ font-family:Space Grotesk,sans-serif;font-size:18px;font-weight:600;margin:6px 0 8px; }
+.vibe-home .vmf-feat__body p{ color:var(--txt-2);font-size:14px;margin:0; }
+.vibe-home .vmf-stats{ display:grid;grid-template-columns:repeat(4,1fr);gap:14px; }
+.vibe-home .vmf-stat{ padding:20px;border-radius:18px;background:var(--panel); }
+.vibe-home .vmf-stat .big{ font-family:Space Grotesk,sans-serif;font-size:34px;font-weight:600;color:var(--brand);line-height:1; }
+.vibe-home .vmf-stat .lab{ color:var(--txt-2);font-size:13px;margin-top:6px; }
+.vibe-home .vmf-stat .kick{ font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);display:block;margin-bottom:8px; }
+.vibe-home .vmf-steps{ display:grid;grid-template-columns:repeat(2,1fr);gap:14px; }
+.vibe-home .vmf-step{ display:flex;gap:14px;padding:18px;border-radius:18px;background:var(--panel); }
+.vibe-home .vmf-step__n{ width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;flex-shrink:0; }
+.vibe-home .vmf-step h4{ font-family:Space Grotesk,sans-serif;margin:0 0 4px;font-size:16px; }
+.vibe-home .vmf-step p{ margin:0;color:var(--txt-2);font-size:13.5px; }
+.vibe-home .vmf-box{ display:grid;grid-template-columns:repeat(3,1fr);gap:12px; }
+.vibe-home .vmf-box__item{ display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:var(--panel); }
+.vibe-home .vmf-box__g{ font-size:20px;color:var(--brand);flex-shrink:0; }
+.vibe-home .vmf-box__item b{ display:block;font-size:14px; } .vibe-home .vmf-box__item small{ color:var(--txt-3);font-size:12.5px; }
+.vibe-home .vmf-faq{ display:flex;flex-direction:column;gap:10px; }
+.vibe-home .vmf-faq__item{ padding:18px 20px;border-radius:16px;background:var(--glass);box-shadow:var(--soft-shadow); }
+.vibe-home .vmf-faq__q{ font-weight:600;font-size:15.5px; }
+.vibe-home .vmf-faq__a{ color:var(--txt-2);font-size:14px;margin-top:8px;line-height:1.5; }
+@media(max-width:900px){ .vibe-home .vmf-feat,.vibe-home .vmf-stats,.vibe-home .vmf-steps,.vibe-home .vmf-box{ grid-template-columns:1fr 1fr; } }
+@media(max-width:600px){ .vibe-home .vmf-feat,.vibe-home .vmf-stats,.vibe-home .vmf-steps,.vibe-home .vmf-box{ grid-template-columns:1fr; } }
+
+.vibe-home .clipcard__vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--panel); }

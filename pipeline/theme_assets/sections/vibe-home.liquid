@@ -137,42 +137,7 @@
           </div>
           <div class="fgrid" style="--fc:5">
             {%- for product in col.products limit: 5 -%}
-              {%- assign onsale = false -%}
-              {%- if product.compare_at_price > product.price -%}{%- assign onsale = true -%}{%- endif -%}
-              <div class="fpcard glass">
-                <a href="{{ product.url }}" class="fpcard__img">
-                  {%- if product.featured_image -%}
-                    <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="624">
-                  {%- else -%}
-                    <span class="fph"><span class="fph__mesh tint-violet"></span></span>
-                  {%- endif -%}
-                  {%- if onsale -%}
-                    {%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
-                    <span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>
-                  {%- endif -%}
-                </a>
-                <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
-                <div class="fpcard__body">
-                  <div class="fpcard__price">
-                    <span class="fpcard__now">{{ product.price | money }}</span>
-                    {%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}
-                  </div>
-                  <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>
-                  <div class="fpcard__meta">
-                    {%- assign rt = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value -%}
-                    {%- if rt -%}
-                      <span class="st">{% render 'vibe-icon', name:'star', size:12, fill:'var(--neon-cyan)', stroke:0, style:'color:var(--neon-cyan)' %}{{ rt }}</span>{% if product.metafields.reviews.rating_count.value %} · {{ product.metafields.reviews.rating_count.value }} reviews{% endif %}
-                    {%- else -%}
-                      <span class="st" style="color:var(--txt-3)">{{ product.vendor | default: 'Wanelo' }}</span>
-                    {%- endif -%}
-                  </div>
-                  {%- if product.available -%}
-                    <button class="fpcard__add" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>
-                  {%- else -%}
-                    <span class="fpcard__add" style="opacity:.55">Sold out</span>
-                  {%- endif -%}
-                </div>
-              </div>
+              {% render 'vibe-card', product: product %}
             {%- else -%}
               <p style="color:var(--txt-3)">Assign a collection to this row in the editor.</p>
             {%- endfor -%}
@@ -186,22 +151,10 @@
               <div><h2 style="white-space:nowrap"><span class="live-dot" style="display:inline-block;vertical-align:middle;margin-right:10px"></span>Wanelo Clips</h2><p>Watch, then shop the look — every video is instantly buyable</p></div>
               <a href="{{ routes.collections_url }}">Open feed {% render 'vibe-icon', name:'arrowR', size:15, stroke:2.2 %}</a>
             </div>
-            <div class="clips-rail">
-              {%- assign clip_tints = 'ff3dbd,7c5cfc,1fc9c9,7c5cfc,ff3dbd,1fc9c9' | split: ',' -%}
-              {%- assign clip_titles = 'Trending knitwear haul|My 5-minute glow routine|Tiny kitchen, big coffee|Gym bag essentials|Smart home in 60s|Cozy home refresh' | split: '|' -%}
-              {%- assign clip_views = '7.6K|23.1K|14.8K|9.3K|31.5K|18.2K' | split: '|' -%}
-              {%- assign clip_glyphs = 'cat_shirt,cat_beauty,cat_home,cat_sport,cat_home,cat_home' | split: ',' -%}
-              {%- for i in (0..5) -%}
-                <a class="clipcard" href="{{ routes.collections_url }}" style="background:#{{ clip_tints[i] }}">
-                  <div class="clipcard__bg">{% render 'vibe-icon', name: clip_glyphs[i], size:120, stroke:1.3, style:'color:rgba(255,255,255,.9)' %}</div>
-                  <div class="clipcard__scrim"></div>
-                  <div class="clipcard__top"><span class="clipcard__views">{% render 'vibe-icon', name:'play', size:11, fill:'#fff', stroke:0, style:'color:#fff' %} {{ clip_views[i] }}</span>{% if i == 0 %}<span class="clipcard__live">Live</span>{% endif %}</div>
-                  <span class="clipcard__shop">{% render 'vibe-icon', name:'tag', size:12 %} 3</span>
-                  <div class="clipcard__bottom"><div class="clipcard__title">{{ clip_titles[i] }}</div><div class="clipcard__user"><span class="clipcard__av" style="background:rgba(255,255,255,.25)">{{ clip_titles[i] | slice: 0 }}</span><span class="clipcard__handle">@creator</span></div></div>
-                </a>
-              {%- endfor -%}
+            <div class="clips-rail" data-clips-rail>
               <a class="clipcard more" href="{{ routes.collections_url }}"><span class="inner"><span class="c">{% render 'vibe-icon', name:'arrowR', size:24, stroke:2.2 %}</span>Open full feed</span></a>
             </div>
+            {{ 'vibe-clips.js' | asset_url | script_tag }}
           </section>
 
           <!-- ===== creator banner ===== -->
@@ -276,6 +229,37 @@
       .then(function(r){return r.json()}).then(function(){ var c=document.querySelector('.fhdr .ficon .cnt'); if(c){c.textContent=(parseInt(c.textContent||'0')+1);} setTimeout(function(){ b.classList.remove('added'); b.innerHTML=old; },1500); })
       .catch(function(){ b.classList.remove('added'); b.innerHTML=old; }); }); });
 })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var rail = document.querySelector('[data-clips-rail]');
+  var clips = (window.VIBE_CLIPS || []).slice();
+  if(!rail || !clips.length) return;
+  for(var i=clips.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=clips[i]; clips[i]=clips[j]; clips[j]=t; }
+  var pick = clips.slice(0, 10);
+  var moreCard = rail.querySelector('.clipcard.more');
+  var vk = function(n){ return n>=1000 ? (n/1000).toFixed(1).replace('.0','')+'K' : ''+n; };
+  var esc = function(s){ return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
+  pick.forEach(function(c, i){
+    var a = document.createElement('a'); a.className='clipcard'; a.href=c.url;
+    var views = vk(2000 + Math.floor(Math.random()*40000));
+    a.innerHTML =
+      '<video class="clipcard__vid" src="'+esc(c.v)+'" '+(c.poster?('poster="'+esc(c.poster)+'" '):'')+'muted loop playsinline preload="none"></video>'+
+      '<div class="clipcard__scrim"></div>'+
+      '<div class="clipcard__top"><span class="clipcard__views">&#9654; '+views+'</span>'+(i===0?'<span class="clipcard__live">Live</span>':'')+'</div>'+
+      '<span class="clipcard__shop">&#128722; Shop</span>'+
+      '<div class="clipcard__bottom"><div class="clipcard__title">'+esc(c.title)+'</div></div>';
+    rail.insertBefore(a, moreCard);
+  });
+  var vids = rail.querySelectorAll('.clipcard__vid');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting){ var p=v.play&&v.play(); if(p&&p.catch)p.catch(function(){}); } else if(v.pause){ v.pause(); } }); }, {threshold:0.4});
+    vids.forEach(function(v){ io.observe(v); });
+  } else {
+    vids.forEach(function(v){ var p=v.play&&v.play(); if(p&&p.catch)p.catch(function(){}); });
+  }
+});
 </script>
 
 {% schema %}

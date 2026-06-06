@@ -1,0 +1,36 @@
+{%- comment -%}
+  Wanelo Vibe product card with photo carousel (hover-zones desktop, swipe mobile).
+  Usage: {% render 'vibe-card', product: product, tint: 'tint-violet' %}
+{%- endcomment -%}
+{%- assign onsale = false -%}{%- if product.compare_at_price > product.price -%}{%- assign onsale = true -%}{%- endif -%}
+{%- assign t = tint | default: 'tint-violet' -%}
+<div class="fpcard glass">
+  <a href="{{ product.url }}" class="fpcard__img" data-card-link>
+    {%- if product.images.size > 0 -%}
+      <div class="vpc" data-vpc>
+        {%- for image in product.images limit: 4 -%}
+          <img class="vpc__slide{% if forloop.first %} on{% endif %}" src="{{ image | image_url: width: 520 }}" alt="{{ product.title | escape }}" {% unless forloop.first %}loading="lazy"{% endunless %} width="520" height="540">
+        {%- endfor -%}
+      </div>
+      {%- if product.images.size > 1 -%}
+        <div class="vpc__dots">{%- for image in product.images limit: 4 -%}<i{% if forloop.first %} class="on"{% endif %}></i>{%- endfor -%}</div>
+      {%- endif -%}
+    {%- else -%}
+      <span class="fph"><span class="fph__mesh {{ t }}"></span></span>
+    {%- endif -%}
+    {%- if onsale -%}
+      {%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+      <span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>
+    {%- endif -%}
+  </a>
+  <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
+  <div class="fpcard__body">
+    <div class="fpcard__price"><span class="fpcard__now">{{ product.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}</div>
+    <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>
+    <div class="fpcard__meta">
+      {%- assign rt = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value -%}
+      {%- if rt -%}<span class="st">{% render 'vibe-icon', name:'star', size:12, fill:'var(--neon-cyan)', stroke:0, style:'color:var(--neon-cyan)' %}{{ rt }}</span>{%- else -%}<span class="st" style="color:var(--txt-3)">{{ product.vendor | default: 'Wanelo' }}</span>{%- endif -%}
+    </div>
+    {%- if product.available -%}<button class="fpcard__add" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>{%- else -%}<span class="fpcard__add" style="opacity:.55">Sold out</span>{%- endif -%}
+  </div>
+</div>
