@@ -1,0 +1,309 @@
+{%- comment -%}
+  Wanelo Vibe — bespoke homepage matching the Wanelo Vibe mockup.
+  Reuses the mockup CSS (assets/vibe.css) and emits the same DOM, wired to
+  Shopify data (cart, search, collections, products). Operator guardrails honoured.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{{ 'vibe.css' | asset_url | stylesheet_tag }}
+
+<style>
+  /* page chrome: hide the theme header/footer on the Vibe homepage, set page bg */
+  body.template-index .shopify-section-group-header-group,
+  body.template-index .shopify-section-group-footer-group { display: none !important; }
+  body.template-index { background: var(--vibe-bg, #f5f3ff); }
+  .vibe-home .fpcard__img img { width: 100%; height: 100%; object-fit: cover; }
+  .vibe-home .aipick__img img { width: 100%; height: 100%; object-fit: cover; }
+  .vibe-home { --vibe-bg: #f5f3ff; }
+</style>
+
+{%- liquid
+  assign feat_col = section.settings.featured_collection
+  assign feat = feat_col.products.first
+-%}
+
+<div class="vibe-home">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lgDistort" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="n"/><feGaussianBlur in="n" stdDeviation="1.1" result="sn"/><feDisplacementMap in="SourceGraphic" in2="sn" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+
+  <div class="fwrap">
+    <!-- ===== header ===== -->
+    <header class="fhdr">
+      <div class="fhdr__inner lg">
+        <div class="lg__warp"></div>
+        <a href="{{ routes.root_url }}" class="flogo"><span class="mark"></span>wanelo <span class="yr">Vibe</span></a>
+        <div class="fcatwrap">
+          <a href="{{ routes.collections_url }}" class="fcatbtn">{% render 'vibe-icon', name:'grid', size:18, stroke:2.2 %} <span class="fcatbtn__lbl">Catalog</span></a>
+        </div>
+        <form class="fsearch" action="{{ routes.search_url }}" method="get" role="search">
+          {% render 'vibe-icon', name:'search', size:19, class:'fsearch__ic' %}
+          <input class="fsearch__in" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands, creators…">
+          <button class="fsearch__cam" type="submit" title="Search">{% render 'vibe-icon', name:'camera', size:20 %}</button>
+        </form>
+        <nav class="fnav">
+          <a href="{{ routes.collections_url }}" style="display:inline-flex;gap:6px;align-items:center"><span class="live-dot"></span>Clips</a>
+          <a href="{{ routes.collections_url }}">Earn</a>
+        </nav>
+        <button class="themebtn ficon" type="button" data-night-toggle title="Night mode">{% render 'vibe-icon', name:'moon', size:22 %}</button>
+        <a href="{{ routes.account_url }}" class="ficon ficon--user">{% render 'vibe-icon', name:'user', size:22 %}</a>
+        <a href="{{ routes.cart_url }}" class="ficon">{% render 'vibe-icon', name:'cart', size:22 %}{% if cart.item_count > 0 %}<span class="cnt">{{ cart.item_count }}</span>{% endif %}</a>
+      </div>
+    </header>
+
+    <!-- ===== AI hero ===== -->
+    <div class="ai-hero">
+      <div class="fhero-l">
+        <span class="fhero-eyebrow"><span class="tag-aurora">{{ section.settings.eyebrow_tag | default: 'Wanelo Intelligence' }}</span> · {{ section.settings.eyebrow_rest | default: '14M products, one prompt' }}</span>
+        <h1 class="fhero-h1">{{ section.settings.title_1 | default: 'Shopping that' }}<br><span class="neon-text">{{ section.settings.title_2 | default: 'thinks with you.' }}</span></h1>
+        <p class="fhero-sub">{{ section.settings.subtitle | default: 'Describe what you need in plain language. Wanelo finds it, compares it, and delivers it — same day.' }}</p>
+        <form class="aibar" action="{{ routes.search_url }}" method="get">
+          <span class="ai-orb"></span>
+          <input name="q" placeholder="Try “a birthday gift for my dad who loves cycling”">
+          <button class="aibar__send" type="submit">{% render 'vibe-icon', name:'arrowR', size:20, stroke:2.4 %}</button>
+        </form>
+        <div class="ai-sugs">
+          {%- assign sugs = section.settings.suggestions | default: 'Gift under 5000 ₽ for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom' | split: '|' -%}
+          {%- for s in sugs -%}
+            <a class="fchip" href="{{ routes.search_url }}?q={{ s | url_encode }}">{{ s }}</a>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="fhero-r">
+        <div class="fhero-r__top">
+          <div class="gcard glass col tint-cyan">
+            <div class="gcard__label"><span class="live-dot"></span>Trending now</div>
+            <div class="big neon-text" data-viewers>2 481</div>
+            <div class="sub">shoppers browsing live</div>
+          </div>
+          <div class="gcard glass col tint-mag">
+            <div class="gcard__label">{% render 'vibe-icon', name:'bolt', size:13, style:'color:var(--neon-mag)' %}Flash drop ends</div>
+            <div class="countdown" data-countdown>
+              <div class="cd-unit"><b data-h>05</b><span>hrs</span></div>
+              <div class="cd-unit"><b data-m>20</b><span>min</span></div>
+              <div class="cd-unit"><b data-s>00</b><span>sec</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gcard glass aipick tint-violet">
+          <div class="gcard__label">{% render 'vibe-icon', name:'spark', size:13, style:'color:var(--neon-violet)' %}AI pick for you</div>
+          {%- if feat -%}
+          <a class="aipick__img" href="{{ feat.url }}">
+            {%- if feat.featured_image -%}<img src="{{ feat.featured_image | image_url: width: 500 }}" alt="{{ feat.title | escape }}" loading="lazy">{%- else -%}<span class="fph"><span class="fph__mesh tint-cyan"></span></span>{%- endif -%}
+          </a>
+          <div class="aipick__name">{{ feat.title | truncate: 46 }}</div>
+          <div class="aipick__row">
+            <span class="aipick__price neon-text">{{ feat.price | money }}</span>
+            {%- if feat.available -%}<a class="fbtn fbtn-glass fbtn-sm" href="{{ feat.url }}">{% render 'vibe-icon', name:'cart', size:16 %} Add</a>{%- endif -%}
+          </div>
+          {%- else -%}
+          <div class="aipick__img"><span class="fph"><span class="fph__mesh tint-cyan"></span></span></div>
+          <div class="aipick__name">Pick a featured collection in the editor</div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== feature strip ===== -->
+    <div class="fstats">
+      <div class="fstat glass"><span class="fstat__ic">{% render 'vibe-icon', name:'truck', size:20 %}</span><div><b>Same-day</b><span>autonomous delivery</span></div></div>
+      <div class="fstat glass"><span class="fstat__ic">{% render 'vibe-icon', name:'spark', size:20 %}</span><div><b>AI concierge</b><span>shops for you 24/7</span></div></div>
+      <div class="fstat glass"><span class="fstat__ic">{% render 'vibe-icon', name:'shield', size:20 %}</span><div><b>Zero-risk</b><span>90-day instant returns</span></div></div>
+      <div class="fstat glass"><span class="fstat__ic">{% render 'vibe-icon', name:'wallet', size:20 %}</span><div><b>Pay in 4</b><span>0% with Wanelo Pay</span></div></div>
+    </div>
+
+    <!-- ===== browse the universe (orbs) ===== -->
+    <section class="fsec">
+      <div class="fsec__head"><div><h2>Browse the universe</h2><p>Every category, one tap away</p></div></div>
+      <div class="orbs">
+        {%- assign orbcols = section.settings.orb_collections | default: '' | split: ',' -%}
+        {%- assign orb_defs = 'Electronics:cat_phone,Home & Garden:cat_home,Clothing & Shoes:cat_shirt,Beauty & Health:cat_beauty,Kids & Toys:cat_toy,Sport & Outdoor:cat_sport,Auto:cat_auto,Grocery:cat_food,Pet Supplies:cat_pet' | split: ',' -%}
+        {%- for od in orb_defs -%}
+          {%- assign parts = od | split: ':' -%}
+          <a href="{{ routes.collections_url }}" class="orb"><span class="orb__c">{% render 'vibe-icon', name: parts[1], size:30, stroke:1.6 %}</span><span>{{ parts[0] }}</span></a>
+        {%- endfor -%}
+        <a href="{{ routes.collections_url }}" class="orb"><span class="orb__c" style="color:var(--neon-mag)">{% render 'vibe-icon', name:'pct', size:30, stroke:1.6 %}</span><span>Clearance</span></a>
+      </div>
+    </section>
+
+    <!-- ===== product carousels (blocks) ===== -->
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'row' -%}
+        {%- assign col = block.settings.collection -%}
+        <section class="fsec" {{ block.shopify_attributes }}>
+          <div class="fsec__head">
+            <div><h2>{{ block.settings.title | default: col.title }}</h2>{% if block.settings.subtitle != blank %}<p>{{ block.settings.subtitle }}</p>{% endif %}</div>
+            <a href="{{ col.url | default: routes.collections_url }}">Explore all {% render 'vibe-icon', name:'arrowR', size:15, stroke:2.2 %}</a>
+          </div>
+          <div class="fgrid" style="--fc:5">
+            {%- for product in col.products limit: 5 -%}
+              {%- assign onsale = false -%}
+              {%- if product.compare_at_price > product.price -%}{%- assign onsale = true -%}{%- endif -%}
+              <div class="fpcard glass">
+                <a href="{{ product.url }}" class="fpcard__img">
+                  {%- if product.featured_image -%}
+                    <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="624">
+                  {%- else -%}
+                    <span class="fph"><span class="fph__mesh tint-violet"></span></span>
+                  {%- endif -%}
+                  {%- if onsale -%}
+                    {%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                    <span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>
+                  {%- endif -%}
+                </a>
+                <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
+                <div class="fpcard__body">
+                  <div class="fpcard__price">
+                    <span class="fpcard__now">{{ product.price | money }}</span>
+                    {%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}
+                  </div>
+                  <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>
+                  <div class="fpcard__meta">
+                    {%- assign rt = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value -%}
+                    {%- if rt -%}
+                      <span class="st">{% render 'vibe-icon', name:'star', size:12, fill:'var(--neon-cyan)', stroke:0, style:'color:var(--neon-cyan)' %}{{ rt }}</span>{% if product.metafields.reviews.rating_count.value %} · {{ product.metafields.reviews.rating_count.value }} reviews{% endif %}
+                    {%- else -%}
+                      <span class="st" style="color:var(--txt-3)">{{ product.vendor | default: 'Wanelo' }}</span>
+                    {%- endif -%}
+                  </div>
+                  {%- if product.available -%}
+                    <button class="fpcard__add" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">{% render 'vibe-icon', name:'cart', size:17 %} Add to cart</button>
+                  {%- else -%}
+                    <span class="fpcard__add" style="opacity:.55">Sold out</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- else -%}
+              <p style="color:var(--txt-3)">Assign a collection to this row in the editor.</p>
+            {%- endfor -%}
+          </div>
+        </section>
+
+        {%- if forloop.first -%}
+          <!-- ===== Wanelo Clips (static showcase) ===== -->
+          <section class="fsec">
+            <div class="fsec__head">
+              <div><h2 style="white-space:nowrap"><span class="live-dot" style="display:inline-block;vertical-align:middle;margin-right:10px"></span>Wanelo Clips</h2><p>Watch, then shop the look — every video is instantly buyable</p></div>
+              <a href="{{ routes.collections_url }}">Open feed {% render 'vibe-icon', name:'arrowR', size:15, stroke:2.2 %}</a>
+            </div>
+            <div class="clips-rail">
+              {%- assign clip_tints = 'ff3dbd,7c5cfc,1fc9c9,7c5cfc,ff3dbd,1fc9c9' | split: ',' -%}
+              {%- assign clip_titles = 'Trending knitwear haul|My 5-minute glow routine|Tiny kitchen, big coffee|Gym bag essentials|Smart home in 60s|Cozy home refresh' | split: '|' -%}
+              {%- assign clip_views = '7.6K|23.1K|14.8K|9.3K|31.5K|18.2K' | split: '|' -%}
+              {%- assign clip_glyphs = 'cat_shirt,cat_beauty,cat_home,cat_sport,cat_home,cat_home' | split: ',' -%}
+              {%- for i in (0..5) -%}
+                <a class="clipcard" href="{{ routes.collections_url }}" style="background:#{{ clip_tints[i] }}">
+                  <div class="clipcard__bg">{% render 'vibe-icon', name: clip_glyphs[i], size:120, stroke:1.3, style:'color:rgba(255,255,255,.9)' %}</div>
+                  <div class="clipcard__scrim"></div>
+                  <div class="clipcard__top"><span class="clipcard__views">{% render 'vibe-icon', name:'play', size:11, fill:'#fff', stroke:0, style:'color:#fff' %} {{ clip_views[i] }}</span>{% if i == 0 %}<span class="clipcard__live">Live</span>{% endif %}</div>
+                  <span class="clipcard__shop">{% render 'vibe-icon', name:'tag', size:12 %} 3</span>
+                  <div class="clipcard__bottom"><div class="clipcard__title">{{ clip_titles[i] }}</div><div class="clipcard__user"><span class="clipcard__av" style="background:rgba(255,255,255,.25)">{{ clip_titles[i] | slice: 0 }}</span><span class="clipcard__handle">@creator</span></div></div>
+                </a>
+              {%- endfor -%}
+              <a class="clipcard more" href="{{ routes.collections_url }}"><span class="inner"><span class="c">{% render 'vibe-icon', name:'arrowR', size:24, stroke:2.2 %}</span>Open full feed</span></a>
+            </div>
+          </section>
+
+          <!-- ===== creator banner ===== -->
+          <a class="cbanner" href="{{ routes.collections_url }}">
+            <div class="cbanner__l">
+              <span class="cbanner__tag">{% render 'vibe-icon', name:'spark', size:14 %} Wanelo for Creators</span>
+              <h3>Turn your clips into income</h3>
+              <p>Earn three ways — <b>100 ₽ per 1,000 views</b>, up to <b>50% of every sale</b>, plus paid brand features.</p>
+              <span class="cbanner__cta">Start earning {% render 'vibe-icon', name:'arrowR', size:17, stroke:2.4 %}</span>
+            </div>
+            <div class="cbanner__r">
+              <span class="cbanner__chip a">{% render 'vibe-icon', name:'eye', size:15 %} +2,300 views</span>
+              <span class="cbanner__chip b">{% render 'vibe-icon', name:'coins', size:15 %} +1,840 ₽</span>
+              <span class="cbanner__chip c">{% render 'vibe-icon', name:'tag', size:15 %} 3 sales</span>
+              <span class="cbanner__orb">{% render 'vibe-icon', name:'rocket', size:46, stroke:1.4 %}</span>
+            </div>
+          </a>
+
+          <!-- ===== promos ===== -->
+          <div class="fpromos">
+            <div class="fpromo tint-blue">
+              <div class="fpromo__art">{% render 'vibe-icon', name:'cat_laptop', size:180, stroke:1 %}</div>
+              <h3>Tech, upgraded</h3><p>Next-gen phones, laptops &amp; wearables with AI built in.</p>
+              <a href="{{ routes.collections_url }}" class="fbtn fbtn-primary">Shop electronics</a>
+            </div>
+            <div class="fpromo tint-mag"><h3>Beauty lab</h3><p>Personalised skincare from $1.99.</p><a href="{{ routes.collections_url }}" class="fbtn fbtn-glass">Discover</a></div>
+            <div class="fpromo tint-violet"><h3>Home OS</h3><p>Smart living, beautifully designed.</p><a href="{{ routes.collections_url }}" class="fbtn fbtn-glass">Browse home</a></div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- ===== footer ===== -->
+    <footer class="fftr">
+      <div class="fftr__top">
+        <div style="max-width:300px">
+          <div class="flogo" style="margin-bottom:14px"><span class="mark"></span>wanelo <span class="yr">Vibe</span></div>
+          <p style="color:var(--txt-2);font-size:14px;margin:0">The intelligent everything store. Describe it — we’ll deliver it.</p>
+        </div>
+        <div class="fftr__cols">
+          <div class="fftr__col"><h4>Shop</h4><a href="{{ routes.collections_url }}">Categories</a><a href="{{ routes.collections_url }}">Live</a><a href="{{ routes.collections_url }}">Flash drops</a><a href="{{ routes.account_url }}">Wanelo Plus</a></div>
+          <div class="fftr__col"><h4>Intelligence</h4><a href="{{ routes.search_url }}">AI concierge</a><a href="{{ routes.search_url }}">Visual search</a><a href="{{ routes.collections_url }}">Auto-reorder</a></div>
+          <div class="fftr__col"><h4>Support</h4><a href="/pages/contact">Help</a><a href="/pages/contact">Delivery</a><a href="/pages/contact">Returns</a></div>
+        </div>
+      </div>
+      <div class="fftr__bottom"><span>© {{ 'now' | date: '%Y' }} {{ shop.name }}</span><span>Privacy · Terms · AI principles</span></div>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.currentScript.closest('body') || document.body;
+  // countdown to local midnight
+  var cd = document.querySelector('[data-countdown]');
+  if (cd){ var h=cd.querySelector('[data-h]'),m=cd.querySelector('[data-m]'),s=cd.querySelector('[data-s]');
+    function tick(){ var n=new Date(),e=new Date(n); e.setHours(24,0,0,0); var t=Math.max(0,Math.floor((e-n)/1000));
+      var p=function(x){return String(x).padStart(2,'0')}; h.textContent=p(Math.floor(t/3600)); m.textContent=p(Math.floor(t%3600/60)); s.textContent=p(t%60); }
+    tick(); setInterval(tick,1000); }
+  // viewers ticker
+  var vw=document.querySelector('[data-viewers]');
+  if(vw){ var v=2481; setInterval(function(){ v+=Math.round((Math.random()-0.45)*12); vw.textContent=v.toLocaleString('ru-RU').replace(/,/g,' '); },2200); }
+  // favourite toggle (visual only)
+  document.querySelectorAll('[data-fav]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); b.classList.toggle('on'); var sv=b.querySelector('svg'); if(sv) sv.setAttribute('fill', b.classList.contains('on')?'var(--neon-mag)':'none'); }); });
+  // night toggle
+  var nt=document.querySelector('[data-night-toggle]'); var vh=document.querySelector('.vibe-home');
+  if(nt&&vh){ try{ if(localStorage.getItem('vibe_night')==='1') vh.classList.add('night'); }catch(e){} nt.addEventListener('click',function(){ vh.classList.toggle('night'); try{ localStorage.setItem('vibe_night', vh.classList.contains('night')?'1':'0'); }catch(e){} }); }
+  // add to cart (AJAX)
+  document.querySelectorAll('[data-add]').forEach(function(b){ b.addEventListener('click',function(){ var id=b.getAttribute('data-add'); if(!id) return;
+    b.classList.add('added'); var old=b.innerHTML; b.textContent='✓ In cart';
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:[{id:id,quantity:1}]})})
+      .then(function(r){return r.json()}).then(function(){ var c=document.querySelector('.fhdr .ficon .cnt'); if(c){c.textContent=(parseInt(c.textContent||'0')+1);} setTimeout(function(){ b.classList.remove('added'); b.innerHTML=old; },1500); })
+      .catch(function(){ b.classList.remove('added'); b.innerHTML=old; }); }); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Vibe Home",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "eyebrow_tag", "label": "Eyebrow tag", "default": "Wanelo Intelligence" },
+    { "type": "text", "id": "eyebrow_rest", "label": "Eyebrow rest", "default": "14M products, one prompt" },
+    { "type": "text", "id": "title_1", "label": "Title line 1", "default": "Shopping that" },
+    { "type": "text", "id": "title_2", "label": "Title line 2 (accent)", "default": "thinks with you." },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Describe what you need in plain language. Wanelo finds it, compares it, and delivers it — same day." },
+    { "type": "text", "id": "suggestions", "label": "Suggestion chips (| separated)", "default": "Gift under 5000 ₽ for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom" },
+    { "type": "collection", "id": "featured_collection", "label": "AI-pick / featured collection" }
+  ],
+  "blocks": [
+    { "type": "row", "name": "Product row", "settings": [
+      { "type": "collection", "id": "collection", "label": "Collection" },
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "text", "id": "subtitle", "label": "Subtitle" }
+    ]}
+  ],
+  "presets": [
+    { "name": "Vibe Home", "blocks": [
+      { "type": "row", "settings": { "title": "Curated for you", "subtitle": "Learned from everything you’ve loved" } },
+      { "type": "row", "settings": { "title": "Flash drops", "subtitle": "Live deals — gone when the timer hits zero" } },
+      { "type": "row", "settings": { "title": "Trending in your city", "subtitle": "Popular right now" } }
+    ]}
+  ]
+}
+{% endschema %}
