@@ -50,5 +50,17 @@
       vpc.addEventListener('touchend',function(){ sx=null; });
       if(wrap&&wrap.tagName==="A"){ wrap.addEventListener('click',function(e){ if(moved){ e.preventDefault(); moved=false; } }); }
     });
+
+    // ── feed scroll restoration: come back from a product to the same spot in the feed ──
+    var FEED='.personalized-feed-section';
+    document.addEventListener('click', function(e){ var a=e.target.closest(FEED+' a[href*="/products/"]'); if(a){ try{ sessionStorage.setItem('vibe_feed_y', String(Math.round(window.scrollY))); sessionStorage.setItem('vibe_feed_t', String(Date.now())); }catch(_){} } }, true);
+    if(document.querySelector(FEED)){
+      var fy=0, ft=0; try{ fy=parseInt(sessionStorage.getItem('vibe_feed_y')||'0',10); ft=parseInt(sessionStorage.getItem('vibe_feed_t')||'0',10); }catch(_){}
+      if(fy>150 && (Date.now()-ft)<900000){
+        try{ if('scrollRestoration' in history) history.scrollRestoration='manual'; }catch(_){}
+        var n=0, iv=setInterval(function(){ n++; if(document.body.scrollHeight>=fy+window.innerHeight){ window.scrollTo(0,fy); clearInterval(iv); } else { window.scrollTo(0,document.body.scrollHeight); } if(n>45){ clearInterval(iv); window.scrollTo(0,Math.min(fy,document.body.scrollHeight)); } }, 90);
+        setTimeout(function(){ try{ sessionStorage.removeItem('vibe_feed_y'); sessionStorage.removeItem('vibe_feed_t'); }catch(_){} try{ if('scrollRestoration' in history) history.scrollRestoration='auto'; }catch(_){} }, 4200);
+      }
+    }
   });
 })();

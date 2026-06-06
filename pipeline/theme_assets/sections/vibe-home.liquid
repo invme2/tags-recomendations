@@ -78,6 +78,19 @@
           </div>
           <div class="gcard glass col tint-mag">
             <div class="gcard__label">{% render 'vibe-icon', name:'bolt', size:13, style:'color:var(--neon-mag)' %}Flash drop ends</div>
+            {%- assign flashn = 0 -%}
+            <div class="fdrop">
+              {%- for product in feat_col.products limit: 16 -%}
+                {%- if product.compare_at_price > product.price and flashn < 2 -%}
+                  {%- assign flashn = flashn | plus: 1 -%}
+                  <a href="{{ product.url }}" class="fdrop__item">
+                    {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 200 }}" alt="{{ product.title | escape }}" loading="lazy">{%- else -%}<span class="fdrop__ph"></span>{%- endif -%}
+                    <span class="fdrop__disc">-{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%</span>
+                    <span class="fdrop__p">{{ product.price | money }}</span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
             <div class="countdown" data-countdown>
               <div class="cd-unit"><b data-h>05</b><span>hrs</span></div>
               <div class="cd-unit"><b data-m>20</b><span>min</span></div>

@@ -1092,3 +1092,19 @@ body.clips-mobile-lock { overflow: hidden; }
 .vibe-home .vmf-rev__stars{ color:#ffb020; font-size:14px; letter-spacing:1px; white-space:nowrap; }
 .vibe-home .vmf-rev__card p{ margin:0; color:var(--txt-2); font-size:14px; line-height:1.5; }
 @media(max-width:760px){ .vibe-home .vmf-rev{ grid-template-columns:1fr; } .vibe-home .vmf-rate{ flex-wrap:wrap; gap:16px; } }
+
+
+/* ===== mobile: fix Specifications table fixed-300px column overflow ===== */
+@media(max-width:760px){
+  .vibe-home .fspectable{ padding:4px 16px; }
+  .vibe-home .fspectable__row{ grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:10px; font-size:13.5px; }
+  .vibe-home .fspectable__row .v{ word-break:break-word; overflow-wrap:anywhere; }
+}
+
+
+/* ===== hero Flash-drop card: products ===== */
+.vibe-home .fdrop{ display:flex; gap:8px; margin:10px 0; }
+.vibe-home .fdrop__item{ flex:1; min-width:0; position:relative; display:flex; flex-direction:column; gap:4px; }
+.vibe-home .fdrop__item img, .vibe-home .fdrop__ph{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px; background:var(--card); display:block; }
+.vibe-home .fdrop__disc{ position:absolute; top:5px; left:5px; background:var(--neon-mag); color:#fff; font-size:10px; font-weight:700; padding:1px 6px; border-radius:6px; }
+.vibe-home .fdrop__p{ font-size:13px; font-weight:700; font-family:Space Grotesk,sans-serif; }
