@@ -38,4 +38,12 @@
   .wanelo-spec-table a{ color: var(--wv-brand); font-weight: 600; text-decoration: none; }
   .wanelo-spec-table a:hover{ text-decoration: underline; }
   {%- endif %}
+  /* Product card (collections): keep ~2px of the card backing visible around the
+     photo. Scoped to the media wrapper ONLY — does NOT touch .pcard-carousel
+     (the hover photo-slider). Operator guardrail 2026-06-06. */
+  .product-card-style-card .product-card__image-wrapper,
+  .product-card-style-boxed .product-card__image-wrapper{
+    padding: 2px;
+    background: transparent;
+  }
 </style>
