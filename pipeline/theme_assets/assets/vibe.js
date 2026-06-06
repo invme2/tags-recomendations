@@ -28,5 +28,10 @@
     document.querySelectorAll('.ffg__h').forEach(function(h){
       h.addEventListener('click', function(e){ e.preventDefault(); h.closest('.ffg').classList.toggle('closed'); });
     });
+    // mobile filter drawer
+    var fside=document.querySelector('.fcat-side');
+    document.querySelectorAll('[data-filters-open]').forEach(function(b){ b.addEventListener('click',function(){ if(fside) fside.classList.add('open'); document.body.style.overflow='hidden'; }); });
+    document.querySelectorAll('[data-filters-close]').forEach(function(b){ b.addEventListener('click',function(){ if(fside) fside.classList.remove('open'); document.body.style.overflow=''; }); });
+    document.addEventListener('click',function(e){ if(fside && fside.classList.contains('open') && !fside.contains(e.target) && !e.target.closest('[data-filters-open]')){ fside.classList.remove('open'); document.body.style.overflow=''; } });
   });
 })();

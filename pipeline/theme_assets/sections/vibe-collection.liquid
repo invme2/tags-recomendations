@@ -16,6 +16,16 @@
   .vibe-home .fseg a.on { background: var(--glass); color: var(--txt); box-shadow: var(--soft-shadow); }
   /* hide common storefront app floaters on Vibe pages */
   #shopify-section-header, .header-wrapper, .announcement-bar-section { display: none !important; }
+  /* mobile filter drawer */
+  .vibe-home .fmfbar, .vibe-home .fcat-mclose { display: none; }
+  @media (max-width: 1000px) {
+    .vibe-home .fmfbar { display: flex; gap: 10px; margin-bottom: 12px; }
+    .vibe-home .fmfilters { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 14px; background: var(--brand); color: #fff; font-weight: 600; flex-shrink: 0; }
+    .vibe-home .fcat-side { display: block !important; position: fixed; top: 0; left: 0; bottom: 0; width: 86%; max-width: 340px; z-index: 400; transform: translateX(-106%); transition: transform .25s ease; overflow: auto; border-radius: 0 22px 22px 0; padding: 16px 18px; }
+    .vibe-home .fcat-side.open { transform: none; box-shadow: 0 0 0 100vw rgba(16,18,34,.45); }
+    .vibe-home .fcat-mclose { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-weight: 700; font-size: 16px; }
+    .vibe-home .fcat-mclose button { width: 36px; height: 36px; border-radius: 10px; background: var(--panel); display: grid; place-items: center; }
+  }
 </style>
 
 <div class="vibe-home">
@@ -50,6 +60,7 @@
     {% paginate collection.products by 24 %}
     <div class="fcat">
       <aside class="fcat-side glass">
+        <div class="fcat-mclose">Filters<button type="button" data-filters-close>{% render 'vibe-icon', name:'close', size:20, stroke:2.4 %}</button></div>
         <form id="vibe-filters" method="get">
           {%- if collection.current_type -%}<input type="hidden" name="constraint" value="{{ collection.current_type }}">{%- endif -%}
           {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
@@ -86,6 +97,7 @@
       </aside>
 
       <section>
+        <div class="fmfbar"><button type="button" class="fmfilters" data-filters-open>{% render 'vibe-icon', name:'grid', size:16, stroke:2.2 %} Filters</button></div>
         <div class="fsortbar glass">
           {% render 'vibe-icon', name:'spark', size:18, stroke:2, style:'color:var(--txt-3);margin-left:4px' %}
           <div class="fseg">
