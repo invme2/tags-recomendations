@@ -1,0 +1,260 @@
+{% liquid
+  assign enable_rtl = settings.enable_rtl
+  assign language_support_rtl = settings.language_support_rtl
+  if enable_rtl and language_support_rtl != blank
+    assign shop_locale = localization.language.iso_code
+    assign language_support_rtl_list = language_support_rtl | split: ','
+    assign is_rtl = language_support_rtl_list | where: shop_locale
+    if is_rtl.size > 0
+      assign enable_rtl = true
+    else
+      assign enable_rtl = false
+    endif 
+  endif
+%}
+<!doctype html>
+<html
+  class="no-js{% if cart != empty %} cart-has-items{% endif %}"
+  lang="{{ request.locale.iso_code }}"
+  {% if enable_rtl %}
+    dir="rtl"
+  {% endif %}
+>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    {%- assign _canon = canonical_url -%}{%- if template.name == "collection" and collection.handle != blank -%}{%- assign _cmap = shop.metafields.custom.canonical_map.value -%}{%- if _cmap != blank -%}{%- assign _strong = _cmap[collection.handle] -%}{%- if _strong != blank -%}{%- assign _canon = shop.url | append: "/collections/" | append: _strong -%}{%- endif -%}{%- endif -%}{%- endif -%}<link rel="canonical" href="{{ _canon }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {%- if template.name == 'index' -%}
+        Wanelo — Online Store: Millions of Products in Every Category
+      {%- else -%}
+        {{- page_title -}}
+        {%- if current_tags -%}
+          {%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+        {%- endif -%}
+        {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+        {%- if template == 'password' -%}
+          {{- shop.name -}}
+        {%- else -%}
+          {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+        {%- endif -%}
+      {%- endif -%}
+    </title>
+
+    {%- comment -%} SEO meta description: homepage hardcoded; otherwise use page_description, else
+      synthesize a relevant fallback so collections / pages / blog never ship an empty description. {%- endcomment -%}
+    {%- if template.name == 'index' -%}
+      <meta name="description" content="Millions of products across every category at Wanelo — home, fashion, electronics, beauty, sports and more, with great prices and fast shipping.">
+    {%- else -%}
+      {%- assign _desc = page_description -%}
+      {%- if _desc == blank -%}
+        {%- case template.name -%}
+          {%- when 'collection' -%}
+            {%- if collection.description != blank -%}{%- assign _desc = collection.description | strip_html -%}
+            {%- else -%}{%- assign _desc = 'Shop ' | append: collection.title | append: ' at Wanelo — curated picks with honest descriptions, fast shipping and prices you’ll love.' -%}{%- endif -%}
+          {%- when 'product' -%}{%- assign _desc = product.description | strip_html -%}
+          {%- when 'page' -%}{%- assign _desc = page.content | strip_html -%}
+            {%- if _desc == blank -%}{%- assign _desc = page.title | append: ' — Wanelo. Curated beauty, skincare and wellness essentials with honest picks and fast shipping.' -%}{%- endif -%}
+          {%- when 'article' -%}{%- assign _desc = article.excerpt | default: article.content | strip_html -%}
+          {%- when 'blog' -%}{%- assign _desc = 'The Wanelo journal — guides, tips and product stories across beauty, skincare, hair and wellness.' -%}
+        {%- endcase -%}
+      {%- endif -%}
+      {%- if _desc != blank -%}<meta name="description" content="{{ _desc | strip_newlines | truncate: 160 | escape }}">{%- endif -%}
+    {%- endif -%}
+
+    {%- liquid
+      render 'meta-tags'
+      render 'css-variables'
+
+      echo 'vendor.css' | asset_url | stylesheet_tag: preload: true
+      echo 'theme.css' | asset_url | stylesheet_tag: preload: true
+
+      if settings.enable_product_compare
+        echo 'compare.css' | asset_url | stylesheet_tag: preload: true
+      endif
+
+      if enable_rtl 
+        echo 'rtl.css' | asset_url | stylesheet_tag: preload: true
+      endif
+    -%}
+
+    {{ content_for_header }}
+    <script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+    {%- if request.page_type contains 'customers/' -%}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    <script>
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+
+    {%- if request.design_mode -%}
+      <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- render 'js-variables' -%}
+
+    {% comment %} Custom metafield for head tag like GTag tracking {% endcomment %}
+    {{ shop.metafields.foxtheme.code_head.value }}
+    {% comment %} End custom metafield for head tag like GTag tracking {% endcomment %}
+
+    {% comment %} === CUSTOM: Carousel CSS === {% endcomment %}
+    {{ 'pcard-carousel.css' | asset_url | stylesheet_tag }}
+
+    {% comment %} === CUSTOM: Performance & Layout Fixes === {% endcomment %}
+    <style>
+      /* CLS fix: reserve space for images */
+      .product-card .media-wrapper,.product-card__image{aspect-ratio:3/4}
+      img[loading="lazy"]{content-visibility:auto;contain-intrinsic-size:auto 300px}
+      img,video{height:auto}
+
+      /* Toolbar: unstick */
+      .sticky-element.grid.z-9{position:static!important;top:auto!important}
+
+      /* Filter sidebar: sticky with hidden scrollbar */
+      .sticky-element.z-8{position:sticky!important;top:7.2rem!important;max-height:calc(100vh - 8rem)!important;overflow-y:auto!important;scrollbar-width:none;align-self:start!important}
+      .sticky-element.z-8::-webkit-scrollbar{display:none}
+
+      /* Hide empty mega menu item */
+      details.no-links[id="Mega-menu-item-"]{display:none!important}
+
+      /* Reduce paint: offscreen product cards */
+      .product-card:not(:hover){contain:layout style}
+      /* Fix footer CLS on infinite scroll */
+.shopify-section-group-footer-group{contain:layout size;min-height:300px}
+
+/* Fix rich text CLS */
+.section-rich-text motion-element{transform:none!important;opacity:1!important;visibility:visible!important}.section-rich-text .read-more__content{min-height:120px}
+    </style>
+
+    {% comment %} === Preload LCP image (hero/banner) === {% endcomment %}
+    {%- if template == 'index' and settings.share_image -%}
+      <link rel="preload" as="image" href="{{ settings.share_image | image_url: width: 1400 }}" fetchpriority="high">
+    {%- endif -%}
+    {% render 'wanelo-vibe-tokens' %}
+
+    {%- comment -%} === SEO: structured data (JSON-LD) + homepage social image === {%- endcomment -%}
+    {%- render 'seo-jsonld' -%}
+    {%- if template.name == 'index' and settings.share_image -%}
+      {%- capture _ogimg -%}{{ settings.share_image | image_url: width: 1200 }}{%- endcapture -%}{%- assign _ogimg = _ogimg | replace: 'http://','https://' -%}{%- unless _ogimg contains 'https:' -%}{%- assign _ogimg = _ogimg | prepend: 'https:' -%}{%- endunless -%}
+      <meta property="og:image" content="{{ _ogimg }}">
+      <meta name="twitter:image" content="{{ _ogimg }}">
+      <meta name="twitter:card" content="summary_large_image">
+    {%- endif -%}
+</head>
+
+  <body
+    class="{{ request.page_type }}-template {{ template.suffix }} blocks-corner--{{ settings.blocks_corner_radius }}{% if request.design_mode %} shopify-design-mode{% endif %}"
+    data-initializing
+  >
+    {% comment %} Custom metafield for body tag like GTag tracking {% endcomment %}
+    {{ shop.metafields.foxtheme.code_body.value }}
+    {% comment %} End custom metafield for body tab like GTag tracking {% endcomment %}
+
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+
+    {%- liquid
+      if settings.enable_page_transition
+        render 'page-transition'
+      endif
+    -%}
+
+    <div class="site-wrapper min-height-screen">
+      {%- assign vibe_chrome = false -%}
+      {%- unless template.name == 'index' or template.name == 'product' or template.name == 'collection' -%}{%- assign vibe_chrome = true -%}{%- endunless -%}
+      {%- if vibe_chrome -%}
+        {{ 'vibe.css' | asset_url | stylesheet_tag }}
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>.shopify-section-group-header-group, .shopify-section-group-footer-group{ display:none !important; }</style>
+        <div class="vibe-home"><div class="fwrap" style="padding-top:14px">{% render 'vibe-header' %}</div></div>
+      {%- endif -%}
+      {% sections 'header-group' %}
+
+      <main id="MainContent" class="main-content content-for-layout focus-none" role="main" tabindex="-1">
+        {{ content_for_layout }}
+      </main>
+
+      {% sections 'footer-group' %}
+      {%- if vibe_chrome -%}<div class="vibe-home"><div class="fwrap">{% render 'vibe-footer' %}</div></div>{%- endif -%}
+    </div>
+
+    {% sections 'overlay-group' %}
+    {%- liquid
+      if settings.enable_back_to_top
+        render 'back-to-top'
+      endif
+    -%}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    {% if settings.pcard_show_quickview_button or settings.pcard_choose_options_actions == 'open_popup' %}
+      <script src="{{ 'quick-view.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+
+    {%- if settings.enable_product_compare -%}
+      <script src="{{ 'compare.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% comment %} === CUSTOM: Carousel + Drilldown + New Tab === {% endcomment %}
+    <script src="{{ 'pcard-carousel.js' | asset_url }}" defer></script>
+    <script src="{{ 'category-drilldown.js' | asset_url }}" defer></script>
+    <script>
+    document.addEventListener('click',function(e){
+      if(e.target.closest('.drawer,.facet-drawer,#FacetDrawer,.drilldown-nav'))return;
+      var a=e.target.closest('.product-card a');
+      if(a&&a.href){e.preventDefault();window.open(a.href,'_blank')}
+    });
+    </script>
+<script>
+  window.__PERSONAL_FEED_CONTEXT__ = {
+    pageType: {{ request.page_type | json }},
+    product: {% if request.page_type == 'product' and product %}
+      {
+        id: {{ product.id | json }},
+        handle: {{ product.handle | json }},
+        title: {{ product.title | json }},
+        url: {{ product.url | json }},
+        featured_image: {{ product.featured_image | image_url: width: 900 | json }},
+        tags: {{ product.tags | json }},
+        type: {{ product.type | json }},
+        price: {{ product.price | json }},
+        compare_at_price: {{ product.compare_at_price | default: 0 | json }},
+        collections: [
+          {%- for col in product.collections -%}
+            {{ col.handle | json }}{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ],
+        category: {{ product.category.full_name | default: product.type | json }}
+      }
+    {% else %}
+      null
+    {% endif %}
+  };
+</script>
+<script src="{{ 'personalized-feed.js' | asset_url }}" defer></script>
+
+  </body>
+</html>

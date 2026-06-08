@@ -41,20 +41,51 @@
       <h1>{{ collection.title }}<span class="count">{{ collection.products_count }} items</span></h1>
     </div>
 
-    {%- comment -%} sibling collection chips {%- endcomment -%}
-    {%- if linklists['collection-tabs'].links.size > 0 or collections.size > 0 -%}
-    <div class="fsubchips">
-      {%- assign chiplist = linklists['collection-tabs'].links -%}
-      {%- if chiplist.size > 0 -%}
-        {%- for l in chiplist limit: 12 -%}
-          <a class="fchip {% if l.url == collection.url %}on{% endif %}" href="{{ l.url }}">{{ l.title }}</a>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for c in collections limit: 12 -%}
-          <a class="fchip {% if c.handle == collection.handle %}on{% endif %}" href="{{ c.url }}">{{ c.title }}</a>
-        {%- endfor -%}
-      {%- endif -%}
+    {%- comment -%} contextual category chips: categories actually present in THIS collection {%- endcomment -%}
+    {%- assign chip_counts = collection.metafields.custom.facet_counts.value -%}
+    {%- assign cat_tags = '' -%}{%- for tg in collection.all_tags -%}{%- if tg contains 'Category:' -%}{%- assign cat_tags = cat_tags | append: tg | append: '~' -%}{%- endif -%}{%- endfor -%}
+    {%- if cat_tags != '' -%}
+    <div class="fsubchips" data-chipsort>
+      {%- assign clist = cat_tags | split: '~' -%}
+      {%- for tg in clist -%}
+        {%- assign tgh = tg | handleize -%}
+        {%- assign nice = tg | remove: 'Category:' | replace: '-', ' ' | capitalize -%}
+        {%- assign cnt = '' -%}{%- if chip_counts != blank -%}{%- assign cnt = chip_counts[tg] -%}{%- endif -%}
+        <a class="fchip" href="{{ collection.url }}/{{ tgh }}" data-count="{{ cnt | default: 0 }}">{{ nice }}{%- if cnt != blank and cnt != '' -%} <b>{{ cnt }}</b>{%- endif -%}</a>
+      {%- endfor -%}
     </div>
+    {%- elsif linklists['collection-tabs'].links.size > 0 -%}
+    <div class="fsubchips">
+      {%- for l in linklists['collection-tabs'].links limit: 12 -%}<a class="fchip {% if l.url == collection.url %}on{% endif %}" href="{{ l.url }}">{{ l.title }}</a>{%- endfor -%}
+    </div>
+    {%- endif -%}
+
+{%- comment -%} Shop by type: relevant SEO sub-collections in this collection's dominant category {%- endcomment -%}
+    {%- assign cmap = shop.metafields.custom.category_collections.value -%}
+    {%- if cmap != blank -%}
+      {%- assign mycat = '' -%}
+      {%- comment -%} authoritative: find which category list contains THIS collection {%- endcomment -%}
+      {%- for entry in cmap -%}
+        {%- for s in entry[1] -%}{%- if s.h == collection.handle -%}{%- assign mycat = entry[0] -%}{%- break -%}{%- endif -%}{%- endfor -%}
+        {%- if mycat != '' -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if mycat == '' -%}
+        {%- assign maxn = -1 -%}{%- assign fcounts = collection.metafields.custom.facet_counts.value -%}
+        {%- for tg in collection.all_tags -%}{%- if tg contains 'Category:' -%}{%- assign cname = tg | remove: 'Category:' -%}{%- assign n = 0 -%}{%- if fcounts != blank -%}{%- assign n = fcounts[tg] | default: 0 -%}{%- endif -%}{%- if n > maxn -%}{%- assign maxn = n -%}{%- assign mycat = cname -%}{%- endif -%}{%- endif -%}{%- endfor -%}
+      {%- endif -%}
+      {%- assign siblings = cmap[mycat] -%}
+      {%- if siblings != blank and siblings.size > 1 -%}
+      <div class="fseo">
+        <span class="fseo__lbl">Shop by type</span>
+        <div class="fseo__row">
+          {%- for s in siblings limit: 24 -%}
+            {%- unless s.h == collection.handle -%}
+            <a class="fseo__chip" href="/collections/{{ s.h }}">{{ s.h | replace: '-', ' ' | capitalize }}{%- if s.n -%} <b>{{ s.n }}</b>{%- endif -%}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- endif -%}
     {%- endif -%}
 
     {% paginate collection.products by 24 %}
@@ -62,59 +93,94 @@
       <aside class="fcat-side glass">
         <div class="fcat-mclose">Filters<button type="button" data-filters-close>{% render 'vibe-icon', name:'close', size:20, stroke:2.4 %}</button></div>
         <form id="vibe-filters" method="get">
-          {%- if collection.current_type -%}<input type="hidden" name="constraint" value="{{ collection.current_type }}">{%- endif -%}
-          {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
-          {%- if collection.filters.size > 0 -%}
-            {%- for filter in collection.filters -%}
-              <div class="ffg">
-                <button type="button" class="ffg__h">{{ filter.label }}{% render 'vibe-icon', name:'chevR', size:18, stroke:2.4, style:'transform:rotate(90deg)' %}</button>
+          {%- assign counts = collection.metafields.custom.facet_counts.value -%}
+          {%- assign pp = request.path | split: '/' -%}
+          {%- assign tagseg = '' -%}{%- if pp.size > 3 -%}{%- assign tagseg = pp[3] -%}{%- endif -%}
+          {%- assign cur_handles = tagseg | split: '+' -%}
+          {%- assign has_clean = false -%}{%- for tg in collection.all_tags -%}{%- if tg contains 'Category:' or tg contains 'Concern:' or tg contains 'Format:' or tg contains 'For:' -%}{%- assign has_clean = true -%}{%- break -%}{%- endif -%}{%- endfor -%}{%- if has_clean -%}{%- assign facet_defs = 'Category:Category,Concern:Concern,Format:Format,For:For' | split: ',' -%}{%- else -%}{%- assign facet_defs = 'cluster:Type,demo:For' | split: ',' -%}{%- endif -%}
+          {%- assign has_any_facet = false -%}
+          {%- for fd in facet_defs -%}
+            {%- assign fp = fd | split: ':' -%}
+            {%- assign prefix = fp[0] | append: ':' -%}
+            {%- assign glabel = fp[1] -%}
+            {%- assign grouptags = '' -%}
+            {%- for tg in collection.all_tags -%}{%- if tg contains prefix -%}{%- assign grouptags = grouptags | append: tg | append: '~' -%}{%- endif -%}{%- endfor -%}
+            {%- if grouptags != '' -%}
+              {%- assign has_any_facet = true -%}
+              {%- assign glist = grouptags | split: '~' -%}
+              {%- assign vcount = glist | size -%}
+              <div class="ffg" data-fgroup>
+                <button type="button" class="ffg__h">{{ glabel }}{% render 'vibe-icon', name:'chevR', size:18, stroke:2.4, style:'transform:rotate(90deg)' %}</button>
                 <div class="ffg__b">
-                  {%- case filter.type -%}
-                  {%- when 'list', 'boolean' -%}
-                    {%- for value in filter.values -%}
-                      <label class="fcrow">
-                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} onchange="this.form.submit()">
-                        <span class="box">{% render 'vibe-icon', name:'check', size:13, stroke:3.2 %}</span>
-                        <span>{{ value.label }}</span><span class="cnt">{{ value.count }}</span>
-                      </label>
-                    {%- endfor -%}
-                  {%- when 'price_range' -%}
-                    <div class="fprice">
-                      <input type="text" inputmode="numeric" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="from" onchange="this.form.submit()">
-                      <span>—</span>
-                      <input type="text" inputmode="numeric" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="to" onchange="this.form.submit()">
-                    </div>
-                  {%- endcase -%}
+                  {%- if vcount > 10 -%}<input type="text" class="ffg__search" placeholder="Search..." aria-label="search {{ glabel }}">{%- endif -%}
+                  <div class="ffg__rows">
+                  {%- for tg in glist -%}
+                    {%- assign tgh = tg | handleize -%}
+                    {%- assign nice = tg | remove: prefix | replace: '-', ' ' | capitalize -%}
+                    {%- assign isactive = false -%}{%- if cur_handles contains tgh -%}{%- assign isactive = true -%}{%- endif -%}
+                    {%- assign newh = '' -%}
+                    {%- for ch in cur_handles -%}{%- if ch != '' and ch != tgh -%}{%- if newh == '' -%}{%- assign newh = ch -%}{%- else -%}{%- assign newh = newh | append: '+' | append: ch -%}{%- endif -%}{%- endif -%}{%- endfor -%}
+                    {%- unless isactive -%}{%- if newh == '' -%}{%- assign newh = tgh -%}{%- else -%}{%- assign newh = newh | append: '+' | append: tgh -%}{%- endif -%}{%- endunless -%}
+                    {%- if newh == '' -%}{%- assign turl = collection.url -%}{%- else -%}{%- assign turl = collection.url | append: '/' | append: newh -%}{%- endif -%}
+                    {%- if collection.sort_by != blank -%}{%- assign turl = turl | append: '?sort_by=' | append: collection.sort_by -%}{%- endif -%}
+                    {%- assign cnt = '' -%}{%- if counts != blank -%}{%- assign cnt = counts[tg] -%}{%- endif -%}
+                    <a class="fcrow{% if isactive %} on{% endif %}" href="{{ turl }}" data-count="{{ cnt | default: 0 }}"><span class="box">{% render 'vibe-icon', name:'check', size:13, stroke:3.2 %}</span><span class="fcrow__t">{{ nice }}</span>{%- if cnt != blank and cnt != '' -%}<span class="cnt">{{ cnt }}</span>{%- endif -%}</a>
+                  {%- endfor -%}
+                  </div>
+                  {%- if vcount > 8 -%}<button type="button" class="ffg__more" data-fgmore>Show all ({{ vcount }})</button>{%- endif -%}
                 </div>
               </div>
-            {%- endfor -%}
-          {%- else -%}
-            <div class="ffg"><div class="ffg__h" style="cursor:default">Categories</div><div class="ffg__b">
-              {%- for c in collections limit: 10 -%}<a class="fcrow" href="{{ c.url }}"><span class="box" style="background:transparent">{% render 'vibe-icon', name:'chevR', size:12 %}</span><span>{{ c.title }}</span></a>{%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- unless has_any_facet -%}
+            <div class="ffg"><div class="ffg__h" style="cursor:default">Browse</div><div class="ffg__b">
+              {%- for col in collections limit: 12 -%}<a class="fcrow" href="{{ col.url }}"><span class="box" style="background:transparent">{% render 'vibe-icon', name:'chevR', size:12 %}</span><span class="fcrow__t">{{ col.title }}</span></a>{%- endfor -%}
             </div></div>
-          {%- endif -%}
+          {%- endunless -%}
         </form>
       </aside>
 
       <section>
         <div class="fmfbar"><button type="button" class="fmfilters" data-filters-open>{% render 'vibe-icon', name:'grid', size:16, stroke:2.2 %} Filters</button></div>
+        {%- comment -%} Curated sort: Featured / Popular / Price(toggle) / New. Only render sorts the
+        collection actually supports. Verbose Shopify defaults (A-Z, Z-A, relevance, oldest) dropped. {%- endcomment -%}
         <div class="fsortbar glass">
-          {% render 'vibe-icon', name:'spark', size:18, stroke:2, style:'color:var(--txt-3);margin-left:4px' %}
-          <div class="fseg">
-            {%- for opt in collection.sort_options -%}
-              <a class="{% if collection.sort_by == opt.value or collection.default_sort_by == opt.value and collection.sort_by == blank %}on{% endif %}" href="{{ collection.url }}?sort_by={{ opt.value }}">{{ opt.name }}</a>
-            {%- endfor -%}
+          {%- assign avail = '' -%}
+          {%- for o in collection.sort_options -%}{%- assign avail = avail | append: o.value | append: ',' -%}{%- endfor -%}
+          {%- assign cur = collection.sort_by -%}{%- if cur == blank -%}{%- assign cur = collection.default_sort_by -%}{%- endif -%}
+          <div class="fseg" role="group" aria-label="Sort products">
+            {%- if avail contains 'manual' -%}
+              <a class="fsort{% if cur == 'manual' %} on{% endif %}" href="{{ request.path }}?sort_by=manual" title="Featured" aria-label="Featured">{% render 'vibe-icon', name:'spark', size:15, stroke:2.2 %}<span>Featured</span></a>
+            {%- endif -%}
+            {%- if avail contains 'best-selling' -%}
+              <a class="fsort{% if cur == 'best-selling' %} on{% endif %}" href="{{ request.path }}?sort_by=best-selling" title="Best selling" aria-label="Best selling">{% render 'vibe-icon', name:'bolt', size:15, stroke:2.2 %}<span>Popular</span></a>
+            {%- endif -%}
+            {%- if avail contains 'price-ascending' -%}
+              {%- if cur == 'price-ascending' -%}
+                <a class="fsort on" href="{{ request.path }}?sort_by=price-descending" title="Price: high to low" aria-label="Price high to low">{% render 'vibe-icon', name:'tag', size:15, stroke:2.2 %}<span>Price&nbsp;↑</span></a>
+              {%- elsif cur == 'price-descending' -%}
+                <a class="fsort on" href="{{ request.path }}?sort_by=price-ascending" title="Price: low to high" aria-label="Price low to high">{% render 'vibe-icon', name:'tag', size:15, stroke:2.2 %}<span>Price&nbsp;↓</span></a>
+              {%- else -%}
+                <a class="fsort" href="{{ request.path }}?sort_by=price-ascending" title="Price: low to high" aria-label="Price low to high">{% render 'vibe-icon', name:'tag', size:15, stroke:2.2 %}<span>Price</span></a>
+              {%- endif -%}
+            {%- endif -%}
+            {%- if avail contains 'created-descending' -%}
+              <a class="fsort{% if cur == 'created-descending' %} on{% endif %}" href="{{ request.path }}?sort_by=created-descending" title="Newest" aria-label="Newest">{% render 'vibe-icon', name:'clock', size:15, stroke:2.2 %}<span>New</span></a>
+            {%- endif -%}
           </div>
           <span class="spacer"></span>
         </div>
 
-        {%- assign active_count = 0 -%}
-        {%- for f in collection.filters -%}{%- for v in f.active_values -%}{%- assign active_count = active_count | plus: 1 -%}{%- endfor -%}{%- endfor -%}
-        {%- if active_count > 0 -%}
+        {%- assign cpp = request.path | split: '/' -%}{%- assign ctagseg = '' -%}{%- if cpp.size > 3 -%}{%- assign ctagseg = cpp[3] -%}{%- endif -%}
+        {%- if ctagseg != '' -%}
           <div class="fachips">
-            {%- for f in collection.filters -%}
-              {%- for v in f.active_values -%}<a class="fachip" href="{{ v.url_to_remove }}">{{ v.label }} {% render 'vibe-icon', name:'close', size:14, stroke:2.6 %}</a>{%- endfor -%}
-              {%- if f.type == 'price_range' and f.min_value.value or f.max_value.value -%}{%- endif -%}
+            {%- assign chl = ctagseg | split: '+' -%}
+            {%- for ch in chl -%}
+              {%- assign newh = '' -%}
+              {%- for c2 in chl -%}{%- unless c2 == ch -%}{%- if newh == '' -%}{%- assign newh = c2 -%}{%- else -%}{%- assign newh = newh | append: '+' | append: c2 -%}{%- endif -%}{%- endunless -%}{%- endfor -%}
+              {%- if newh == '' -%}{%- assign rurl = collection.url -%}{%- else -%}{%- assign rurl = collection.url | append: '/' | append: newh -%}{%- endif -%}
+              {%- assign nice = ch | remove_first: 'category-' | remove_first: 'concern-' | remove_first: 'format-' | remove_first: 'for-' | remove_first: 'scent-' | remove_first: 'cluster-' | remove_first: 'demo-' | remove_first: 'persona-' | replace: '-', ' ' | capitalize -%}
+              <a class="fachip" href="{{ rurl }}">{{ nice }} {% render 'vibe-icon', name:'close', size:14, stroke:2.6 %}</a>
             {%- endfor -%}
             <a class="fclear" href="{{ collection.url }}">Clear all</a>
           </div>
@@ -135,6 +201,95 @@
       </section>
     </div>
     {% endpaginate %}
+
+    <script>
+    (function(){
+      document.querySelectorAll('[data-fgroup]').forEach(function(g){
+        var wrap=g.querySelector('.ffg__rows'); if(!wrap) return;
+        var rows=[].slice.call(wrap.querySelectorAll('.fcrow'));
+        var hasCounts=rows.some(function(r){ return (+r.getAttribute('data-count'))>0; });
+        if(hasCounts){
+          rows.sort(function(a,b){ return (+b.getAttribute('data-count'))-(+a.getAttribute('data-count')); });
+          rows.forEach(function(r){ if((+r.getAttribute('data-count'))===0 && !r.classList.contains('on')){ r.dataset.zero='1'; r.style.display='none'; } wrap.appendChild(r); });
+        }
+        function vis(){ return rows.filter(function(r){ return r.dataset.zero!=='1'; }); }
+        var LIM=8, more=g.querySelector('[data-fgmore]'), expanded=false;
+        function collapse(){ var v=vis(); v.forEach(function(r,i){ r.classList.toggle('ffg-hidden', !expanded && i>=LIM); }); if(more){ if(v.length>LIM){ more.style.display=''; more.textContent=expanded?'Show less':('Show all ('+v.length+')'); } else more.style.display='none'; } }
+        if(more) more.addEventListener('click', function(){ expanded=!expanded; collapse(); });
+        collapse();
+        var s=g.querySelector('.ffg__search');
+        if(s) s.addEventListener('input', function(){ var q=this.value.toLowerCase().trim();
+          rows.forEach(function(r){ var zero=r.dataset.zero==='1'; var hit=!q || r.querySelector('.fcrow__t').textContent.toLowerCase().indexOf(q)>=0;
+            if(q){ r.classList.remove('ffg-hidden'); r.style.display=(hit && !zero)?'':'none'; } else { r.style.display=zero?'none':''; } });
+          if(!q) collapse();
+        });
+      });
+      var cs=document.querySelector('[data-chipsort]');
+      if(cs){ var chips=[].slice.call(cs.querySelectorAll('.fchip'));
+        if(chips.some(function(c){return (+c.getAttribute('data-count'))>0;})){
+          chips.sort(function(a,b){ return (+b.getAttribute('data-count'))-(+a.getAttribute('data-count')); });
+          chips.forEach(function(c){ if((+c.getAttribute('data-count'))===0) c.style.display='none'; cs.appendChild(c); });
+        }
+      }
+    })();
+    </script>
+
+    <script>
+    (function(){
+      var grid = document.querySelector('.fcat .fgrid'); if(!grid) return;
+      var container = grid.parentNode;
+      var more = container.querySelector('.fmore');
+      var BASE = {{ collection.url | json }};
+      var FALLBACK = {{ collections['bestsellers'].url | default: routes.all_products_collection_url | json }};
+      var nextUrl = (more && more.querySelector('a')) ? more.querySelector('a').getAttribute('href') : null;
+      if(more){ more.style.display='none'; }
+      var THRESH = 12;
+
+      var statusEl=document.createElement('div'); statusEl.setAttribute('aria-live','polite'); statusEl.style.cssText='text-align:center;padding:20px;color:var(--txt-3);font-size:13px;'; container.appendChild(statusEl);
+
+      function handleOf(card){ var a=card.querySelector('a[href*="/products/"]'); if(!a) return null; var m=a.getAttribute('href').match(/\/products\/([^\/?#]+)/); return m?m[1]:null; }
+      var seen={}; [].forEach.call(grid.querySelectorAll('.fpcard'),function(c){ var h=handleOf(c); if(h) seen[h]=1; });
+      function shownCount(){ return Object.keys(seen).length; }
+      function reinit(){ try{ document.dispatchEvent(new CustomEvent('shopify:section:load')); }catch(e){} }
+      function appendTo(g,cards){ var frag=document.createDocumentFragment(),n=0; cards.forEach(function(c){ var h=handleOf(c); if(!h||seen[h]) return; seen[h]=1; frag.appendChild(c); n++; }); if(n){ g.appendChild(frag); reinit(); } return n; }
+      function fetchGrid(url){ return fetch(url,{credentials:'same-origin'}).then(function(r){return r.ok?r.text():'';}).then(function(html){ if(!html) return {cards:[],next:null}; var d=new DOMParser().parseFromString(html,'text/html'); var g=d.querySelector('.fcat .fgrid'); var nm=d.querySelector('.fmore a'); return { cards: g?[].slice.call(g.querySelectorAll('.fpcard')):[], next: nm?nm.getAttribute('href'):null }; }).catch(function(){ return {cards:[],next:null}; }); }
+
+      var simGrid=null;
+      function ensureSim(){ if(simGrid) return; var w=document.createElement('div'); w.style.marginTop='34px'; var h=document.createElement('h2'); h.textContent='Similar products'; h.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin:0 0 16px;color:var(--txt);"; simGrid=document.createElement('div'); simGrid.className='fgrid'; simGrid.style.setProperty('--fc','4'); w.appendChild(h); w.appendChild(simGrid); container.insertBefore(w,statusEl); }
+
+      var busy=false, mainDone=false, simDone=false;
+      var simSources=null, simI=0, simPage=null;
+      function loadSimilar(){
+        if(simDone) return Promise.resolve();
+        if(simSources===null){ simSources=[]; var hp=location.pathname.replace(/\/+$/,''); var bp=BASE.replace(/^https?:\/\/[^\/]+/,'').replace(/\/+$/,''); if(hp!==bp) simSources.push(BASE); if(FALLBACK && FALLBACK!==BASE) simSources.push(FALLBACK); simSources.push('/collections/all'); }
+        if(simI>=simSources.length){ simDone=true; return Promise.resolve(); }
+        return fetchGrid(simPage || simSources[simI]).then(function(res){
+          var fresh=res.cards.filter(function(c){ var h=handleOf(c); return h && !seen[h]; });
+          if(fresh.length){ ensureSim(); appendTo(simGrid,fresh); }
+          if(res.next){ simPage=res.next; } else { simPage=null; simI++; }
+        });
+      }
+
+      function onHit(){
+        if(busy) return; busy=true; statusEl.textContent='Loading...';
+        var p;
+        if(!mainDone && nextUrl){ p=fetchGrid(nextUrl).then(function(res){ appendTo(grid,res.cards); nextUrl=res.next; if(!nextUrl) mainDone=true; }); }
+        else { mainDone=true; p=loadSimilar(); }
+        p.then(function(){ statusEl.textContent=''; busy=false; if(mainDone && simDone){ stopWatching(); } setTimeout(maybeMore,80); });
+      }
+
+      function nearBottom(){ return (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 800); }
+      function maybeMore(){ if(!busy && !(mainDone&&simDone) && nearBottom()) onHit(); }
+      var ticking=false;
+      function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; maybeMore(); }); }
+      function stopWatching(){ window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', onScroll, {passive:true});
+
+      if(!nextUrl && shownCount()<THRESH){ onHit(); }
+      else { maybeMore(); }
+    })();
+    </script>
 
     {% render 'vibe-footer' %}
   </div>

@@ -1,10 +1,10 @@
-{%- comment -%} Wanelo Vibe shared header (pill). Used on home/collection/product. {%- endcomment -%}
+{%- comment -%} Wanelo Vibe shared header (pill) + catalog dropdown. Used on home/collection/product. {%- endcomment -%}
 <header class="fhdr">
   <div class="fhdr__inner lg">
     <div class="lg__warp"></div>
     <a href="{{ routes.root_url }}" class="flogo"><span class="mark"></span>wanelo <span class="yr">Vibe</span></a>
     <div class="fcatwrap">
-      <a href="{{ routes.collections_url }}" class="fcatbtn">{% render 'vibe-icon', name:'grid', size:18, stroke:2.2 %} <span class="fcatbtn__lbl">Catalog</span></a>
+      <a href="{{ routes.collections_url }}" class="fcatbtn{% if active == 'Catalog' %} on{% endif %}" data-catmenu-toggle aria-haspopup="true" aria-expanded="false">{% render 'vibe-icon', name:'grid', size:18, stroke:2.2 %} <span class="fcatbtn__lbl">Catalog</span></a>
     </div>
     <form class="fsearch" action="{{ routes.search_url }}" method="get" role="search">
       {% render 'vibe-icon', name:'search', size:19, class:'fsearch__ic' %}
@@ -20,3 +20,24 @@
     <a href="{{ routes.cart_url }}" class="ficon">{% render 'vibe-icon', name:'cart', size:22 %}{% if cart.item_count > 0 %}<span class="cnt">{{ cart.item_count }}</span>{% endif %}</a>
   </div>
 </header>
+
+{%- comment -%} ===== catalog category dropdown (works on every page) ===== {%- endcomment -%}
+<div class="vcat-bg" data-catmenu-bg></div>
+<nav class="vcat-pop" data-catmenu aria-label="Product categories">
+  <div class="vcat-head">
+    <h3>Shop by category</h3>
+    <a class="vcat-all" href="{{ routes.all_products_collection_url }}">All products {% render 'vibe-icon', name:'arrowR', size:13, stroke:2.4 %}</a>
+    <button type="button" class="vcat-mx" data-catmenu-close aria-label="Close menu">✕</button>
+  </div>
+  <div class="vcat-grid">
+    {%- assign vcats = 'skincare|Skincare,makeup|Makeup,hair-care|Hair Care,nail-care|Nail Care,oral-care|Oral Care,body-care|Body Care,massage|Massage,anti-aging|Anti-Aging,body-sculpting|Body Sculpting,eye-care|Eye Care,lashes-brows|Lashes & Brows,brow-care|Brow Care,lip-care|Lip Care,acne-care|Acne Care,dental-kits|Dental Kits,bath|Bath,natural-organic|Natural & Organic,bestsellers|Bestsellers' | split: ',' -%}
+    {%- for c in vcats -%}
+      {%- assign p = c | split: '|' -%}
+      {%- assign vc = collections[p[0]] -%}
+      {%- if vc != blank and vc.all_products_count > 0 -%}
+        <a class="vcat-item" href="{{ vc.url }}"><span class="vcat-name">{{ p[1] }}</span><span class="vcat-cnt">{{ vc.all_products_count }}</span></a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</nav>
+<script src="{{ 'vibe.js' | asset_url }}" defer></script>

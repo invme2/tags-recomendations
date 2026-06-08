@@ -27,28 +27,7 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lgDistort" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="n"/><feGaussianBlur in="n" stdDeviation="1.1" result="sn"/><feDisplacementMap in="SourceGraphic" in2="sn" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 
   <div class="fwrap">
-    <!-- ===== header ===== -->
-    <header class="fhdr">
-      <div class="fhdr__inner lg">
-        <div class="lg__warp"></div>
-        <a href="{{ routes.root_url }}" class="flogo"><span class="mark"></span>wanelo <span class="yr">Vibe</span></a>
-        <div class="fcatwrap">
-          <a href="{{ routes.collections_url }}" class="fcatbtn">{% render 'vibe-icon', name:'grid', size:18, stroke:2.2 %} <span class="fcatbtn__lbl">Catalog</span></a>
-        </div>
-        <form class="fsearch" action="{{ routes.search_url }}" method="get" role="search">
-          {% render 'vibe-icon', name:'search', size:19, class:'fsearch__ic' %}
-          <input class="fsearch__in" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands, creators…">
-          <button class="fsearch__cam" type="submit" title="Search">{% render 'vibe-icon', name:'camera', size:20 %}</button>
-        </form>
-        <nav class="fnav">
-          <a href="{{ routes.collections_url }}" style="display:inline-flex;gap:6px;align-items:center"><span class="live-dot"></span>Clips</a>
-          <a href="{{ routes.collections_url }}">Earn</a>
-        </nav>
-        <button class="themebtn ficon" type="button" data-night-toggle title="Night mode">{% render 'vibe-icon', name:'moon', size:22 %}</button>
-        <a href="{{ routes.account_url }}" class="ficon ficon--user">{% render 'vibe-icon', name:'user', size:22 %}</a>
-        <a href="{{ routes.cart_url }}" class="ficon">{% render 'vibe-icon', name:'cart', size:22 %}{% if cart.item_count > 0 %}<span class="cnt">{{ cart.item_count }}</span>{% endif %}</a>
-      </div>
-    </header>
+    {% render 'vibe-header' %}
 
     <!-- ===== AI hero ===== -->
     <div class="ai-hero">
@@ -58,11 +37,11 @@
         <p class="fhero-sub">{{ section.settings.subtitle | default: 'Describe what you need in plain language. Wanelo finds it, compares it, and delivers it — same day.' }}</p>
         <form class="aibar" action="{{ routes.search_url }}" method="get">
           <span class="ai-orb"></span>
-          <input name="q" placeholder="Try “a birthday gift for my dad who loves cycling”">
+          <input name="q" placeholder="Try &ldquo;a birthday gift for my dad who loves cycling&rdquo;">
           <button class="aibar__send" type="submit">{% render 'vibe-icon', name:'arrowR', size:20, stroke:2.4 %}</button>
         </form>
         <div class="ai-sugs">
-          {%- assign sugs = section.settings.suggestions | default: 'Gift under 5000 ₽ for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom' | split: '|' -%}
+          {%- assign sugs = section.settings.suggestions | default: 'Gift under $50 for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom' | split: '|' -%}
           {%- for s in sugs -%}
             <a class="fchip" href="{{ routes.search_url }}?q={{ s | url_encode }}">{{ s }}</a>
           {%- endfor -%}
@@ -73,20 +52,36 @@
         <div class="fhero-r__top">
           <div class="gcard glass col tint-cyan">
             <div class="gcard__label"><span class="live-dot"></span>Trending now</div>
-            <div class="big neon-text" data-viewers>2 481</div>
-            <div class="sub">shoppers browsing live</div>
+            {%- assign trend_col = collections['bestsellers'] -%}
+            {%- if trend_col == blank or trend_col.products.size == 0 -%}{%- assign trend_col = feat_col -%}{%- endif -%}
+            {%- if trend_col == blank or trend_col.products.size == 0 -%}{%- assign trend_col = collections.all -%}{%- endif -%}
+            <div class="gtrend">
+              {%- assign tn = 0 -%}
+              {%- for product in trend_col.products limit: 12 -%}
+                {%- if product.available and tn < 5 -%}
+                  {%- assign tn = tn | plus: 1 -%}
+                  <a href="{{ product.url }}" class="gtrend__item">
+                    <span class="gtrend__rank">{{ tn }}</span>
+                    {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 120 }}" width="42" height="42" alt="{{ product.title | escape }}">{%- else -%}<span class="gtrend__ph"></span>{%- endif -%}
+                    <span class="gtrend__info"><span class="gtrend__t">{{ product.title | truncate: 34 }}</span><span class="gtrend__p">{{ product.price | money }}</span></span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <div class="gtrend__live"><span class="live-dot"></span><b data-viewers>2 481</b> shoppers browsing live</div>
           </div>
           <div class="gcard glass col tint-mag">
             <div class="gcard__label">{% render 'vibe-icon', name:'bolt', size:13, style:'color:var(--neon-mag)' %}Flash drop ends</div>
             {%- assign flashn = 0 -%}
             <div class="fdrop">
-              {%- for product in feat_col.products limit: 16 -%}
-                {%- if product.compare_at_price > product.price and flashn < 2 -%}
+              {%- for product in trend_col.products offset: 5 limit: 40 -%}
+                {%- if product.compare_at_price > product.price and flashn < 4 -%}
                   {%- assign flashn = flashn | plus: 1 -%}
+                  {%- assign fdisc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
                   <a href="{{ product.url }}" class="fdrop__item">
-                    {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 200 }}" alt="{{ product.title | escape }}" loading="lazy">{%- else -%}<span class="fdrop__ph"></span>{%- endif -%}
-                    <span class="fdrop__disc">-{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%</span>
-                    <span class="fdrop__p">{{ product.price | money }}</span>
+                    {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 120 }}" width="42" height="42" alt="{{ product.title | escape }}">{%- else -%}<span class="fdrop__ph"></span>{%- endif -%}
+                    <span class="fdrop__info"><span class="fdrop__t">{{ product.title | truncate: 30 }}</span><span class="fdrop__prices"><b class="fdrop__p">{{ product.price | money }}</b><s class="fdrop__old">{{ product.compare_at_price | money }}</s></span></span>
+                    <span class="fdrop__disc">-{{ fdisc }}%</span>
                   </a>
                 {%- endif -%}
               {%- endfor -%}
@@ -167,7 +162,7 @@
             <div class="clips-rail" data-clips-rail>
               <a class="clipcard more" href="{{ routes.collections_url }}"><span class="inner"><span class="c">{% render 'vibe-icon', name:'arrowR', size:24, stroke:2.2 %}</span>Open full feed</span></a>
             </div>
-            {{ 'vibe-clips.js' | asset_url | script_tag }}
+            <script src="{{ 'vibe-clips.js' | asset_url }}" defer></script>
           </section>
 
           <!-- ===== creator banner ===== -->
@@ -175,12 +170,12 @@
             <div class="cbanner__l">
               <span class="cbanner__tag">{% render 'vibe-icon', name:'spark', size:14 %} Wanelo for Creators</span>
               <h3>Turn your clips into income</h3>
-              <p>Earn three ways — <b>100 ₽ per 1,000 views</b>, up to <b>50% of every sale</b>, plus paid brand features.</p>
+              <p>Earn three ways — <b>$2 per 1,000 views</b>, up to <b>50% of every sale</b>, plus paid brand features.</p>
               <span class="cbanner__cta">Start earning {% render 'vibe-icon', name:'arrowR', size:17, stroke:2.4 %}</span>
             </div>
             <div class="cbanner__r">
               <span class="cbanner__chip a">{% render 'vibe-icon', name:'eye', size:15 %} +2,300 views</span>
-              <span class="cbanner__chip b">{% render 'vibe-icon', name:'coins', size:15 %} +1,840 ₽</span>
+              <span class="cbanner__chip b">{% render 'vibe-icon', name:'coins', size:15 %} +$24</span>
               <span class="cbanner__chip c">{% render 'vibe-icon', name:'tag', size:15 %} 3 sales</span>
               <span class="cbanner__orb">{% render 'vibe-icon', name:'rocket', size:46, stroke:1.4 %}</span>
             </div>
@@ -270,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function(){
     { "type": "text", "id": "title_1", "label": "Title line 1", "default": "Shopping that" },
     { "type": "text", "id": "title_2", "label": "Title line 2 (accent)", "default": "thinks with you." },
     { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Describe what you need in plain language. Wanelo finds it, compares it, and delivers it — same day." },
-    { "type": "text", "id": "suggestions", "label": "Suggestion chips (| separated)", "default": "Gift under 5000 ₽ for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom" },
+    { "type": "text", "id": "suggestions", "label": "Suggestion chips (| separated)", "default": "Gift under $50 for a coffee lover|Set up a home gym|Best phone for photography|Refresh my bathroom" },
     { "type": "collection", "id": "featured_collection", "label": "AI-pick / featured collection" }
   ],
   "blocks": [

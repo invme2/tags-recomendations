@@ -119,16 +119,16 @@
     {% comment %} ── Grid with NATIVE product cards ── {% endcomment %}
     {% comment %} Render extra cards so JS can shuffle without fetching {% endcomment %}
     {% assign render_limit = product_limit | times: 3 %}
-    <div class="personalized-feed__grid" data-personalized-feed-grid data-visible-limit="{{ product_limit }}">
+    <div class="vibe-home"><div class="personalized-feed__grid" data-personalized-feed-grid data-visible-limit="{{ product_limit }}">
       {% if initial_collection != blank %}
         {% for product in initial_collection.products limit: render_limit %}
           {% unless product.available %}{% continue %}{% endunless %}
           <div class="personalized-feed__cell" data-pf-handle="{{ product.handle }}"{% if forloop.index > product_limit %} style="display:none" data-pf-extra{% endif %}>
-            {%- render 'card-product', product: product, section_index: section_index, index: forloop.index -%}
+            {%- render 'vibe-card', product: product -%}
           </div>
         {% endfor %}
       {% endif %}
-    </div>
+    </div></div>
 
     {% comment %} ── Infinite scroll ── {% endcomment %}
     <div class="personalized-feed__loader" data-personalized-feed-loader>
@@ -162,11 +162,14 @@
     }
     /* Mobile: grid goes edge-to-edge, ignoring page-width padding */
     @media (max-width: 767px) {
+      .personalized-feed-section { overflow-x: hidden; }
+      .personalized-feed-section .vibe-home { background: transparent; }
       .personalized-feed__grid {
-        margin-left: calc(-1 * var(--page-width-padding, 15px));
-        margin-right: calc(-1 * var(--page-width-padding, 15px));
-        padding-left: 0;
-        padding-right: 0;
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+        gap: 9px;
       }
     }
     @media (min-width: 768px) {

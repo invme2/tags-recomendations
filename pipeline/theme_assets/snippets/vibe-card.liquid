@@ -12,7 +12,7 @@
           {%- if forloop.first -%}
             <img class="vpc__slide on" src="{{ image | image_url: width: 520 }}" alt="{{ product.title | escape }}" width="520" height="540">
           {%- else -%}
-            <img class="vpc__slide" data-src="{{ image | image_url: width: 520 }}" alt="" width="520" height="540">
+            <img class="vpc__slide" data-src="{{ image | image_url: width: 520 }}" alt="{{ product.title | escape }}" width="520" height="540">
           {%- endif -%}
         {%- endfor -%}
       </div>
@@ -27,7 +27,6 @@
       <span class="fpcard__badge sale">{% render 'vibe-icon', name:'bolt', size:12 %} -{{ disc }}%</span>
     {%- endif -%}
   </a>
-  <button class="fpcard__fav" type="button" data-fav>{% render 'vibe-icon', name:'heart', size:17 %}</button>
   <div class="fpcard__body">
     <div class="fpcard__price"><span class="fpcard__now">{{ product.price | money }}</span>{%- if onsale -%}<span class="fpcard__old">{{ product.compare_at_price | money }}</span>{%- endif -%}</div>
     <a href="{{ product.url }}" class="fpcard__title">{{ product.title }}</a>

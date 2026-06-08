@@ -36,18 +36,18 @@
         </div>
         <div class="fgmain glass">
           <div class="fgnav">
-            <button type="button" class="fgnav__btn" data-fgback aria-label="Назад">{% render 'vibe-icon', name:'chevL', size:22, stroke:2.4 %}</button>
+            <button type="button" class="fgnav__btn" data-fgback aria-label="Back">{% render 'vibe-icon', name:'chevL', size:22, stroke:2.4 %}</button>
             <div class="fgnav__r">
-              <button type="button" class="fgnav__btn" data-fav aria-label="В избранное">{% render 'vibe-icon', name:'heart', size:20 %}</button>
-              <button type="button" class="fgnav__btn" data-fgshare aria-label="Поделиться">{% render 'vibe-icon', name:'share', size:18 %}</button>
+              <button type="button" class="fgnav__btn" data-fav aria-label="Save">{% render 'vibe-icon', name:'heart', size:20 %}</button>
+              <button type="button" class="fgnav__btn" data-fgshare aria-label="Share">{% render 'vibe-icon', name:'share', size:18 %}</button>
             </div>
           </div>
           {%- if product.images.size > 1 -%}<span class="fgcount"><b data-fgcount>1</b>/{{ product.images.size }}</span>{%- endif -%}
-          <a href="#vibe-recs" class="fgsimilar">{% render 'vibe-icon', name:'search', size:14 %} Похожие</a>
+          <a href="#vibe-recs" class="fgsimilar">{% render 'vibe-icon', name:'search', size:14 %} Similar</a>
           <div class="fgmain__track" data-fgtrack>
             {%- if product.images.size > 0 -%}
               {%- for image in product.images -%}
-                <div class="fgslide"><img src="{{ image | image_url: width: 900 }}" alt="{{ product.title | escape }}" {% unless forloop.first %}loading="lazy"{% endunless %}></div>
+                <div class="fgslide"><img src="{{ image | image_url: width: 900 }}" width="{{ image.width }}" height="{{ image.height }}" alt="{{ product.title | escape }}" {% unless forloop.first %}loading="lazy"{% endunless %}></div>
               {%- endfor -%}
             {%- else -%}
               <div class="fgslide"><span class="fph"><span class="fph__mesh tint-violet"></span></span></div>
@@ -78,21 +78,39 @@
           <input type="hidden" name="id" value="{{ cv.id }}" data-variant-id>
 
           {%- unless product.has_only_default_variant -%}
-            {%- for option in product.options_with_values -%}
-              <div class="fvar">
-                <div class="fvar__top"><span class="lbl">{{ option.name }}: <b data-opt-label="{{ forloop.index0 }}">{{ option.selected_value }}</b></span></div>
-                {%- if option.name == 'Color' or option.name == 'Colour' -%}
-                  <div class="fcolor-row">
-                    {%- for value in option.values -%}<button type="button" class="fstor{% if value == option.selected_value %} on{% endif %}" data-opt="{{ option.position | minus: 1 }}" data-val="{{ value | escape }}">{{ value }}</button>{%- endfor -%}
-                  </div>
-                {%- else -%}
-                  <div class="fstor-row">
-                    {%- for value in option.values -%}<button type="button" class="fstor{% if value == option.selected_value %} on{% endif %}" data-opt="{{ option.position | minus: 1 }}" data-val="{{ value | escape }}">{{ value }}</button>{%- endfor -%}
-                  </div>
-                {%- endif -%}
+            {%- assign vlimit = 5 -%}
+            {%- assign vimg_count = 0 -%}
+            {%- for v in product.variants -%}{%- if v.image -%}{%- assign vimg_count = vimg_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+            {%- if vimg_count > 0 -%}
+            <div class="fvpick" data-vpick>
+              <div class="fvpick__lbl">{{ product.options.first }}: <b data-vlabel>{{ cv.title }}</b></div>
+              <div class="fvpick__row">
+                {%- for v in product.variants -%}{%- if forloop.index <= vlimit -%}{%- assign vimg = v.image | default: product.featured_image -%}
+                <button type="button" class="fvthumb{% if v.id == cv.id %} on{% endif %}" data-vid="{{ v.id }}" data-vtitle="{{ v.title | escape }}" data-vprice="{{ v.price }}" data-vcompare="{{ v.compare_at_price | default: 0 }}"{% if v.image %} data-vimg="{{ v.image | image_url: width: 300 }}"{% endif %} aria-label="{{ v.title | escape }}">{%- if vimg -%}<img src="{{ vimg | image_url: width: 140 }}" alt="" width="60" height="60" loading="lazy">{%- else -%}<span class="fvthumb__ph"></span>{%- endif -%}</button>{%- endif -%}{%- endfor -%}
+                {%- if product.variants.size > vlimit -%}<button type="button" class="fvthumb fvthumb--more" data-vall aria-label="All variants"><b>+{{ product.variants.size | minus: vlimit }}</b><span>All {{ product.variants.size }}</span></button>{%- endif -%}
               </div>
-            {%- endfor -%}
+            </div>
+            {%- else -%}
+            <div class="fvpick fvpick--pills" data-vpick>
+              <div class="fvpick__lbl">{{ product.options.first }}: <b data-vlabel>{{ cv.title }}</b></div>
+              <div class="fvpills">
+                {%- for v in product.variants -%}
+                <button type="button" class="fvpill{% if v.id == cv.id %} on{% endif %}" data-vid="{{ v.id }}" data-vtitle="{{ v.title | escape }}" data-vprice="{{ v.price }}" data-vcompare="{{ v.compare_at_price | default: 0 }}">{{ v.title }}</button>{%- endfor -%}
+              </div>
+            </div>
+            {%- endif -%}
           {%- endunless -%}
+
+          {%- comment -%} WB-style rating / reviews / questions strip {%- endcomment -%}
+          {%- assign rvv = product.metafields.custom.reviews.value -%}
+          {%- assign fqv = product.metafields.custom.faq.value -%}
+          {%- if rvv.items.size > 0 or fqv.items.size > 0 -%}
+            {%- assign rtotal = 0 -%}{%- for it in rvv.items -%}{%- assign ssz = it.stars | remove: '☆' | remove: '✩' | size -%}{%- assign rtotal = rtotal | plus: ssz -%}{%- endfor -%}
+            <div class="fsocial">
+              {%- if rvv.items.size > 0 -%}{%- assign ravg = rtotal | times: 1.0 | divided_by: rvv.items.size | round: 1 -%}<a href="#vibe-reviews" class="fsocial__rate"><span class="fsocial__big">{{ ravg }}</span><span class="fsocial__stars">{% for i in (1..5) %}{% render 'vibe-icon', name:'star', size:13, fill:'#ffb020', stroke:0, style:'color:#ffb020' %}{% endfor %}</span><span class="fsocial__cnt">{{ rvv.items.size }} reviews</span></a>{%- endif -%}
+              {%- if fqv.items.size > 0 -%}<a href="#vibe-faq" class="fsocial__q">{% render 'vibe-icon', name:'check', size:14, stroke:2.6 %}<b>{{ fqv.items.size }}</b><span>questions</span></a>{%- endif -%}
+            </div>
+          {%- endif -%}
 
           {%- comment -%} key specs preview from metafield {%- endcomment -%}
           {%- assign specs = product.metafields.custom.specs.value -%}
@@ -133,27 +151,45 @@
 
     {%- comment -%} ===== designer metafield sections (custom.*) — ALL types via generic Vibe renderer ===== {%- endcomment -%}
     {%- assign mf = product.metafields.custom -%}
-    {%- assign mf_order = 'hero,features,stats,reviews,compare,timeline,how_to,ingredients,care,whats_included,dimensions,target_profile,use_scenarios,scent_profile,nutrition_facts,size_guide,compatibility,assembly,room_placement,brand_story,story,gift_options,trust,trust_strip,safety,protocol,sustainability,clinical_evidence,research_refs,mistake_warnings,progress_milestones,subscription_refill,unboxing_journey,lifestyle_gallery,app_showcase' | split: ',' -%}
+    {%- assign mf_order = 'hero,features,reviews,how_to,stats,compare,ingredients,nutrition_facts,timeline,progress_milestones,use_scenarios,whats_included,story,brand_story,clinical_evidence,research_refs,protocol,scent_profile,compatibility,size_guide,dimensions,assembly,room_placement,care,safety,mistake_warnings,target_profile,sustainability,trust,trust_strip,subscription_refill,gift_options,unboxing_journey,lifestyle_gallery,app_showcase' | split: ',' -%}
     {%- for key in mf_order -%}
       {%- assign mval = mf[key].value -%}
       {%- if mval != blank -%}{% render 'vibe-meta', key: key, val: mval %}{%- endif -%}
     {%- endfor -%}
 
-    <!-- description -->
-    {%- if product.description != blank -%}
-    <section class="fpsec" style="margin-top:52px">
-      <h2>Description</h2>
-      <div class="fdesc glass"><div class="rte" style="padding:6px 4px">{{ product.description }}</div></div>
-    </section>
-    {%- endif -%}
-
-    <!-- specifications -->
-    {%- if specs.items -%}
-    <section class="fpsec">
-      <h2>Specifications</h2>
-      <div class="fspectable glass">
-        {%- for it in specs.items -%}<div class="fspectable__row"><span class="k">{{ it.k | default: it.label | default: it[0] }}</span><span class="v">{{ it.v | default: it.value | default: it[1] }}</span></div>{%- endfor -%}
+    <!-- About: WB-style tabbed spec sheet (Specifications / Description) -->
+    {%- if specs.items or product.description != blank -%}
+    {%- assign sku = cv.sku | default: product.variants.first.sku -%}
+    <section class="fpsec fabout" style="margin-top:52px" data-about>
+      <h2>About this item</h2>
+      <div class="fabout__tabs" role="tablist">
+        {%- if specs.items -%}<button type="button" class="fabout__tab on" data-atab="specs">Specifications</button>{%- endif -%}
+        {%- if product.description != blank -%}<button type="button" class="fabout__tab{% unless specs.items %} on{% endunless %}" data-atab="desc">Description</button>{%- endif -%}
       </div>
+
+      {%- if specs.items -%}
+      <div class="fabout__panel on glass" data-apanel="specs">
+        {%- assign show_brand = false -%}{%- if product.vendor != blank and product.vendor != shop.name -%}{%- assign show_brand = true -%}{%- endif -%}{%- if show_brand or product.type != blank or sku != blank -%}
+        <div class="fspecgrp">
+          <div class="fspecgrp__h">Main information</div>
+          {%- if product.vendor != blank and product.vendor != shop.name -%}<div class="fspecrow"><span class="k">Brand</span><span class="dots"></span><span class="v">{{ product.vendor }}</span></div>{%- endif -%}
+          {%- if product.type != blank -%}<div class="fspecrow"><span class="k">Category</span><span class="dots"></span><span class="v">{{ product.type }}</span></div>{%- endif -%}
+          {%- if sku != blank -%}<div class="fspecrow"><span class="k">SKU</span><span class="dots"></span><span class="v">{{ sku }}</span></div>{%- endif -%}
+        </div>
+        {%- endif -%}
+        <div class="fspecgrp">
+          <div class="fspecgrp__h">Details</div>
+          {%- for it in specs.items -%}<div class="fspecrow"><span class="k">{{ it.k | default: it.label | default: it[0] }}</span><span class="dots"></span><span class="v">{{ it.v | default: it.value | default: it[1] }}</span></div>{%- endfor -%}
+        </div>
+        <div class="fabout__verified">{% render 'vibe-icon', name:'shield', size:16 %} Documents verified</div>
+      </div>
+      {%- endif -%}
+
+      {%- if product.description != blank -%}
+      <div class="fabout__panel{% unless specs.items %} on{% endunless %} glass" data-apanel="desc">
+        <div class="rte" style="padding:2px">{{ product.description }}</div>
+      </div>
+      {%- endif -%}
     </section>
     {%- endif -%}
 
@@ -165,7 +201,7 @@
     {%- if recsrc and recsrc.products.size > 1 -%}
     <section class="fpsec" id="vibe-recs">
       <h2>You might also like</h2>
-      <div class="fgrid" style="--fc:6">
+      <div class="fgrid" style="--fc:6" data-recs-grid data-recs-src="{{ recsrc.url }}" data-recs-self="{{ product.handle }}">
         {%- assign shown = 0 -%}
         {%- for p in recsrc.products limit: 12 -%}
           {%- if p.id != product.id and shown < 6 -%}
@@ -177,14 +213,53 @@
     </section>
     {%- endif -%}
   </div>
+  {%- unless product.has_only_default_variant -%}{%- if vimg_count > 0 and product.variants.size > vlimit -%}
+  <div class="fvmodal" data-vmodal>
+    <div class="fvmodal__bg" data-vclose></div>
+    <div class="fvmodal__sheet">
+      <div class="fvmodal__head"><b>{{ product.options.first }} · {{ product.variants.size }}</b><button type="button" class="fvmodal__x" data-vclose aria-label="Close">✕</button></div>
+      <div class="fvmodal__grid">
+        {%- for v in product.variants -%}{%- assign vimg = v.image | default: product.featured_image -%}
+        <button type="button" class="fvcard{% if v.id == cv.id %} on{% endif %}" data-vid="{{ v.id }}" data-vtitle="{{ v.title | escape }}" data-vprice="{{ v.price }}" data-vcompare="{{ v.compare_at_price | default: 0 }}"{% if v.image %} data-vimg="{{ v.image | image_url: width: 300 }}"{% endif %}>{%- if vimg -%}<img src="{{ vimg | image_url: width: 200 }}" alt="" width="92" height="92" loading="lazy">{%- else -%}<span class="fvthumb__ph"></span>{%- endif -%}<span class="fvcard__t">{{ v.title }}</span><span class="fvcard__p">{{ v.price | money }}</span></button>{%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}{%- endunless -%}
+  <script>
+  (function(){
+    var sec=document.getElementById('vibe-recs'); if(!sec) return;
+    var grid=sec.querySelector('[data-recs-grid]'); if(!grid) return;
+    var src=grid.getAttribute('data-recs-src'), selfH=grid.getAttribute('data-recs-self');
+    var sources=[src,'/collections/all'].filter(Boolean), si=0, page=null, busy=false, done=false;
+    function handleOf(card){ var a=card.querySelector('a[href*="/products/"]'); if(!a) return null; var m=a.getAttribute('href').match(/\/products\/([^\/?#]+)/); return m?m[1]:null; }
+    var seen={}; [].forEach.call(grid.querySelectorAll('.fpcard'),function(c){ var h=handleOf(c); if(h) seen[h]=1; }); if(selfH) seen[selfH]=1;
+    function reinit(){ try{ document.dispatchEvent(new CustomEvent('shopify:section:load')); }catch(e){} }
+    function fetchCards(url){ return fetch(url,{credentials:'same-origin'}).then(function(r){return r.ok?r.text():'';}).then(function(html){ if(!html) return {cards:[],next:null}; var d=new DOMParser().parseFromString(html,'text/html'); var g=d.querySelector('.fcat .fgrid'); var nm=d.querySelector('.fmore a'); return {cards:g?[].slice.call(g.querySelectorAll('.fpcard')):[], next:nm?nm.getAttribute('href'):null}; }).catch(function(){return {cards:[],next:null};}); }
+    function load(){
+      if(busy||done) return; busy=true;
+      if(si>=sources.length){ done=true; busy=false; return; }
+      fetchCards(page||sources[si]).then(function(res){
+        var frag=document.createDocumentFragment(),n=0;
+        res.cards.forEach(function(c){ var h=handleOf(c); if(!h||seen[h]) return; seen[h]=1; frag.appendChild(c); n++; });
+        if(n){ grid.appendChild(frag); reinit(); }
+        if(res.next){ page=res.next; } else { page=null; si++; }
+        busy=false;
+        if(near()) load();
+      });
+    }
+    function near(){ var r=sec.getBoundingClientRect(); return r.bottom < (window.innerHeight + 900); }
+    var tick=false;
+    window.addEventListener('scroll', function(){ if(tick)return; tick=true; requestAnimationFrame(function(){ tick=false; if(near()) load(); }); }, {passive:true});
+    window.addEventListener('resize', function(){ if(near()) load(); }, {passive:true});
+  })();
+  </script>
+  {% render 'vibe-footer' %}
 </div>
 
 <script>
 (function(){
   var VARIANTS = {{ product.variants | json }};
   var form = document.getElementById('vibe-pform'); if(!form) return;
-  var sel = {};
-  {% unless product.has_only_default_variant %}{% for o in product.options_with_values %}sel[{{ forloop.index0 }}] = {{ o.selected_value | json }};{% endfor %}{% endunless %}
   var idInput = form.querySelector('[data-variant-id]');
   var priceEl = document.querySelector('[data-price]'), cpriceEl=document.querySelector('[data-cprice]');
   var track = document.querySelector('[data-fgtrack]');
@@ -197,21 +272,31 @@
   var fgback=document.querySelector('[data-fgback]'); if(fgback) fgback.addEventListener('click', function(){ if(history.length>1){ history.back(); } else { location.href={{ product.collections.first.url | default: routes.collections_url | json }}; } });
   var fgshare=document.querySelector('[data-fgshare]'); if(fgshare) fgshare.addEventListener('click', function(){ if(navigator.share){ navigator.share({title:document.title, url:location.href}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); fgshare.classList.add('on'); setTimeout(function(){fgshare.classList.remove('on');},1200); } });
   function money(c){ try{ return (c/100).toLocaleString(undefined,{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
-  function match(){ return VARIANTS.find(function(v){ return Object.keys(sel).every(function(k){ return v.options[k]===sel[k]; }); }); }
-  function update(){
-    var v=match(); if(!v) return;
-    idInput.value=v.id;
-    if(priceEl) priceEl.textContent=money(v.price);
-    if(cpriceEl) cpriceEl.style.display = (v.compare_at_price && v.compare_at_price>v.price)?'':'none';
-    /* gallery is a swipe carousel of all product images */
+  var vlabel=document.querySelector('[data-vlabel]');
+  var vmodal=document.querySelector('[data-vmodal]');
+  function closeVModal(){ if(vmodal){ vmodal.classList.remove('open'); document.body.style.overflow=''; } }
+  function selectVariant(btn){
+    var id=btn.getAttribute('data-vid'); if(idInput) idInput.value=id;
+    document.querySelectorAll('.fvthumb.on,.fvcard.on,.fvpill.on').forEach(function(x){ x.classList.remove('on'); });
+    document.querySelectorAll('[data-vid="'+id+'"]').forEach(function(x){ x.classList.add('on'); });
+    if(vlabel) vlabel.textContent=btn.getAttribute('data-vtitle');
+    var p=parseInt(btn.getAttribute('data-vprice'),10); if(priceEl && !isNaN(p)) priceEl.textContent=money(p);
+    var cp=parseInt(btn.getAttribute('data-vcompare'),10)||0; if(cpriceEl) cpriceEl.style.display=(cp>p)?'':'none';
+    var vimg=btn.getAttribute('data-vimg');
+    if(vimg && track){ function st(u){ u=(u||'').split('?')[0]; u=u.substring(u.lastIndexOf('/')+1); return u.replace(/_\d+x\d*(\.\w+)?$/,'').replace(/\.\w+$/,''); } var vstem=st(vimg); var slides=[].slice.call(track.querySelectorAll('.fgslide')); for(var i=0;i<slides.length;i++){ var im=slides[i].querySelector('img'); if(im && st(im.getAttribute('src'))===vstem){ track.scrollLeft=i*track.clientWidth; break; } } }
   }
-  form.querySelectorAll('[data-opt]').forEach(function(b){
-    b.addEventListener('click',function(){
-      var oi=+b.getAttribute('data-opt'); sel[oi]=b.getAttribute('data-val');
-      b.parentNode.querySelectorAll('.fstor').forEach(function(x){x.classList.remove('on')}); b.classList.add('on');
-      var lab=form.querySelector('[data-opt-label="'+oi+'"]'); if(lab) lab.textContent=sel[oi];
-      update();
-    });
+  document.querySelectorAll('[data-vid]').forEach(function(b){ b.addEventListener('click', function(){ selectVariant(b); if(b.closest('[data-vmodal]')) closeVModal(); }); });
+  document.querySelectorAll('[data-vall]').forEach(function(b){ b.addEventListener('click', function(){ if(vmodal){ vmodal.classList.add('open'); document.body.style.overflow='hidden'; } }); });
+  document.querySelectorAll('[data-vclose]').forEach(function(c){ c.addEventListener('click', closeVModal); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeVModal(); });
+  // About tabs (Specifications / Description)
+  document.querySelectorAll('[data-about]').forEach(function(ab){
+    var tabs=ab.querySelectorAll('[data-atab]'), panels=ab.querySelectorAll('[data-apanel]');
+    tabs.forEach(function(t){ t.addEventListener('click', function(){
+      tabs.forEach(function(x){ x.classList.remove('on'); }); t.classList.add('on');
+      var key=t.getAttribute('data-atab');
+      panels.forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-apanel')===key); });
+    }); });
   });
   // qty
   var q=1, qv=document.querySelector('[data-qty-val]');
@@ -224,8 +309,21 @@
       .then(function(r){return r.json()}).then(function(){ var c=document.querySelector('.fhdr .ficon .cnt'); if(c){c.textContent=(parseInt(c.textContent||'0')+q);} setTimeout(function(){addBtn.innerHTML=old;},1600); })
       .catch(function(){ addBtn.innerHTML=old; });
   });
-  update();
 })();
+
+  // metafield/section reveal-on-scroll (IntersectionObserver — fires as each section actually enters the viewport)
+  (function(){
+    var root = document.querySelector('.vibe-home'); if(!root) return;
+    var secs = [].slice.call(document.querySelectorAll('.fpsec'));
+    if(!secs.length) return;
+    if(!('IntersectionObserver' in window)){ secs.forEach(function(s){ s.classList.add('in'); }); return; }
+    root.classList.add('vibe-reveal');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+    secs.forEach(function(s){ io.observe(s); });
+    setTimeout(function(){ secs.forEach(function(s){ s.classList.add('in'); }); try{io.disconnect();}catch(e){} }, 8000);
+  })();
 </script>
 
 {% schema %}

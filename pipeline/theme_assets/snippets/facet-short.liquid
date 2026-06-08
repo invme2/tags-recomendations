@@ -1,0 +1,41 @@
+<label for="SortBy-{{ context }}" class="text-nowrap {{ label_class }}">
+  {{- 'products.facets.sort_by_label' | t -}}
+  :</label
+>
+<div class="select w-auto facet-short flex items-center gap-2 flex-grow">
+  {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+  {%- comment -%} Curated sorts: keep Featured/Relevant/Popular/Price/Newest. Drop A-Z, Z-A and
+  oldest-first (admin sorts shoppers never use) so the dropdown is short. Labels shortened.
+  Native <option> can't hold SVG icons; price direction shown with ↑/↓. {%- endcomment -%}
+  {%- assign keep_sorts = 'manual,relevance,best-selling,price-ascending,price-descending,created-descending' -%}
+  <select
+    name="sort_by"
+    class="form-control form-control--select"
+    id="SortBy-{{ context }}"
+    aria-describedby="a11y-refresh-page-message"
+    is="facet-short"
+  >
+    {%- for option in results.sort_options -%}
+      {%- if keep_sorts contains option.value -%}
+        {%- assign lbl = option.name -%}
+        {%- case option.value -%}
+          {%- when 'manual' -%}{%- assign lbl = 'Featured' -%}
+          {%- when 'relevance' -%}{%- assign lbl = 'Relevant' -%}
+          {%- when 'best-selling' -%}{%- assign lbl = 'Popular' -%}
+          {%- when 'price-ascending' -%}{%- assign lbl = 'Price ↑' -%}
+          {%- when 'price-descending' -%}{%- assign lbl = 'Price ↓' -%}
+          {%- when 'created-descending' -%}{%- assign lbl = 'Newest' -%}
+        {%- endcase -%}
+        <option
+          value="{{ option.value | escape }}"
+          {% if option.value == sort_by %}
+            selected="selected"
+          {% endif %}
+        >
+          {{ lbl }}
+        </option>
+      {%- endif -%}
+    {%- endfor -%}
+  </select>
+  {% render 'icon-caret-down', size: '2xs' %}
+</div>
