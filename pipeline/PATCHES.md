@@ -924,3 +924,12 @@ variant-фикс поправил только строку 446 (контекс�
 
 Тест: pytest **570 ✅**; ast.parse; верификация на Shopify (оба демо: options
 [Color], variants 6/5).
+
+## 2026-06-07 — AEO-оптимизация Designer-промпта (cell 14)
+Аудит (реальный прогон: 3 субагента-покупателя вслепую, наш товар выиграл 3/3 при confidence 68-72%; scorecard A-H) выявил 5 провалов. Правки через nbformat-safe эквивалент apply_patch (1 совпадение + validate + ast.parse), snapshot: pipeline/.snapshots/20260607_aeo_before.ipynb.
+
+ЧТО БЫЛО / СТАЛО / ЗАЧЕМ:
+1. Интерлинки: было «Weave 5-10 inline wa-link links throughout body paragraphs» → форсило 5-10 ссылок → искажённые якоря в проде («beard combs: neem», «oral care brighter,», «gum care: remineralizing»). Стало: «Weave 3-6 … ONLY where topically relevant; anchor = чистое имя коллекции; нет естественной ссылки — не вставлять; max 1 на абзац». Зачем: грубый AEO/trust-провал (галлюцинированные ссылки).
+2-5. В COPY QUALITY добавлены жёсткие правила: GROUNDING (любая цифра/clinical только из source, иначе качественный claim) · CLINICAL/EFFICACY (efficacy-claim требует clinical_evidence или смягчения may/designed to) · VALUE FRAMING (в faq/compare обоснование ценности cost-per-use/vs recurring) · FIT (target_profile обязателен с ideal_for И not_ideal_for, явно кому НЕ подойдёт). Зачем: симуляция показала, что эти пробелы ограничивали confidence (нет цены, тонкие пруфы, нет self-qualification).
+
+RE-TEST: на следующем прогоне пайплайна сгенерить описания этих же товаров новым промптом → повторить агентную симуляцию → цель confidence 80%+, битых интерлинков 0, grounding 5/5.
