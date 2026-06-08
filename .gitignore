@@ -56,6 +56,9 @@ eprolo_state.json
 # Local-run outputs from pipeline/tools/run_pipeline_local.py
 runs/
 
+# Facet engine LLM classification cache (regenerated on demand, not source)
+taxonomy/.facet_llm_cache.json
+
 # Editor / OS
 .DS_Store
 Thumbs.db

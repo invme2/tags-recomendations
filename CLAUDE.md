@@ -82,6 +82,46 @@ tags-recomendations/
 - Прямые правки `main` запрещены, только через PR
 - **МЕДИА-ГЕНЕРАЦИЯ (правило оператора 2026-05-29): сайт СВЕТЛЫЙ — НИКОГДА не использовать чёрный/тёмный фон ни в генерации изображений, ни в видео.** Фоны только светлые/белые/пастельные/воздушные при дневном свете. Видео-промпты строить через `pipeline/tools/video_prompts.py` (ротация светлых сцен + light-guard). Видео-стандарт: 8 роликов БЕЗ Unboxing (модель выдумывает содержимое коробки), Hyper Motion=`product_showcase` всегда index 0 (верх). Водяной знак «wanelo.com» лёгкий+движущийся, апскейл до 1080p, self-host на Shopify Files.
 
+## 🗂 КАТАЛОГ / ФАСЕТЫ / ФИЛЬТРЫ (Ozon-слой) — операционка (2026-06-07)
+Storefront-фильтры и навигация построены на СЛОЕ ТЕГОВ поверх товаров (НЕ на Search & Discovery — его конфиг недоступен через Admin API). Движок фасетов: единый источник `taxonomy/facets.json` → исполняется `pipeline/tools/facet_engine.py` (`gen_facets.py` теперь шим над ним) → 12 категорий + Concern/Format/For/Scent. **Новая категория = +1 запись в facets.json** (keyword-правила) ИЛИ LLM-fallback флагует её `unclassified` (не молчит).
+
+**⚠️ ГЛАВНОЕ ПРАВИЛО ОПЕРАТОРА: после загрузки ЛЮБЫХ новых товаров — ОДНА команда (иначе новые товары НЕ попадут в фильтры/«Shop by type» и поедут с SEO-проблемами):**
+```
+python pipeline/tools/post_load.py --llm --seo     # ПОЛНАЯ гигиена: facets+counts+maps+canonical + SEO title/desc + health
+python pipeline/tools/post_load.py --health-only   # только read-only валидация (CI/preview gate, без записи)
+```
+`post_load.py` идемпотентно сворачивает скрипты + health-чек. Флаги: `--llm` (LLM-rescue неизвестных категорий), `--seo` (заполнить пустые `seo.title`/`seo.description`). Что внутри (можно и по-отдельности):
+1. `facet_backfill_full.py` — теги `Category:/Concern:/Format:/For:/Scent:` всем товарам (PUT только изменившихся).
+2. `compute_facet_counts.py` — `custom.facet_counts` на 25 smart-коллекциях (Ozon-счётчики).
+3. `build_seo_collection_map.py` — shop-метафилд `custom.category_collections` (Shop-by-type + дедуп).
+4. `build_canonical_map.py` — shop-метафилд `custom.canonical_map` (недеструктивный дедуп).
+5. `catalog_health.py` — read-only: coverage/unclassified/engine-drift/counts/canonical/price-variance/hygiene, exit≠0 = gate.
+- `post_load.py` НЕ запускает guardrailed-операции (нормализация цен вариантов, 301-дедуп) — только по явной отмашке.
+- ⚠️ Движок перешёл на **word-boundary матчинг** (facet_engine) — чинит подстрочные ложняки (`massage`→Anti-aging, `bluetooth`→Oral). Первый `facet_backfill_full` после этого перетегирует ~329 товаров (−322 ложных/+88 корректных). Оригинальные хардкод-правила — в `gen_facets_legacy.py`.
+
+**🆕 ОНБОРДИНГ НОВОЙ КАТЕГОРИИ (3 шага, ~5 мин):**
+1. Добавить запись в `taxonomy/tools/build_facets_config.py` (CATS): имя, keyword-список (специфичные термины, проверить что не цепляют существующее — read-only скан `classify(...,use_llm=False)` по каталогу), cluster-ключи, params, modules. Порядок важен (специфичные категории ВЫШЕ общих). → `python taxonomy/tools/build_facets_config.py`.
+2. Создать smart-коллекцию с правилом `tag equals Category:<Имя>` (можно `published:false` пока 0 товаров). Handle = bare slug (`sexual-wellness`).
+3. Загрузить товары → `python pipeline/tools/post_load.py` (тегирование + counts + maps + health). Опубликовать коллекцию + добавить в header-меню (ручной брендинг-шаг).
+- Движок сам флагует неизвестные категории (`catalog_health.py` → `classification_coverage` + `proposed_category`), а LLM-rescue (`facet_engine.classify(use_llm=True)`) либо относит в существующую, либо предлагает имя новой.
+- ✅ Онбоарднута **Sexual Wellness** (2026-06-08): движок (первой в order, чистые adult-ключи, 0 ложных среди 3100) + коллекция `sexual-wellness` (unpublished, id 365217808562). Готова принять товары.
+- Все правки темы — через `pipeline/tools/theme_edit.py` (token/main_theme_id/fetch/upload/snapshot); published theme = 155750138034. Snapshot перед каждой правкой. НЕ `shopify theme push/publish/delete`.
+
+**🧱 ГРАБЛИ (НЕ наступать повторно):**
+- `products_count` в `*_collections.json` (список) НЕНАДЁЖЕН (отдаёт None/0) → реальный счёт только `/products/count.json?collection_id=`.
+- `collection.current_tags` ПУСТ на smart-коллекциях → активные фильтры детектить из `request.path` (split '/', tag-сегмент `pp[3]`, split '+', сравнивать по `handleize`).
+- Legacy tag-filtering `/collections/<handle>/<tag>` (и `tag1+tag2` для AND) РАБОТАЕТ без S&D (проверено 427→146). На этом построены фильтры.
+- Счётчики у значений фасета НЕЛЬЗЯ посчитать в Liquid по всей коллекции (`collection.products` = только текущая страница) → предвычислять в метафилд `custom.facet_counts`.
+- Liquid `{% for x in EXPR | filter %}` — ЗАПРЕЩЕНО (422 при upload). Сначала `{% assign a = EXPR | filter %}`, потом `for x in a`.
+- Доминантная категория коллекции для «Shop by type»: сначала искать коллекцию в `category_collections` (авторитетно), фоллбэк — Category-тег с макс. `facet_counts`, иначе первый.
+- CSS: flex-элемент со `overflow-x:auto` НЕ скроллится без `min-width:0` (раздувается под контент) → горизонтальные ленты (`.fseo__row`, чипсы) обязаны иметь `min-width:0` + `touch-action:pan-x`.
+- `backdrop-filter: url(#svgTurbulence)` на липком хедере = жёсткий scroll-jank → отключать warp, держать только лёгкий `blur()`.
+- Скоупить глобальные CSS-правила через `:where(.vibe-home) ...` (специфичность 0,0,x — не перебивает компонентные классы вроде `.fpcard__add`).
+- ⚠️ Программный `window.scrollTo/scrollBy` через CDP/Playwright НЕ шлёт scroll-событий → инфинити/мобильные ленты проверять РЕАЛЬНЫМ колесом (computer.scroll) или прямым вызовом, не синтетическим скроллом в eval.
+- Python 3.11: бэкслеш в выражении f-string = SyntaxError (`f"{x[\"k\"]}"`) → использовать `%`-форматирование или одинарные кавычки внутри.
+- Массовые/деструктивные операции (unpublish/301/удаление коллекций, запись цен) — guardrail блокирует без ЯВНОЙ отмашки; rel=canonical / дедуп-в-навигации — недеструктивные альтернативы.
+- Бесконечная лента карточек: после append новых `.fpcard` — `document.dispatchEvent(new CustomEvent('shopify:section:load'))` чтобы переинициализировать hover-карусель `.vpc` (vibe.js слушает это событие).
+
 ## Быстрые команды
 - Общий чек: `python tools/health_check.py`
 - Валидация taxonomy: `python taxonomy/tools/validate_taxonomy.py`

@@ -1,0 +1,1066 @@
+{
+ "version": "1.0",
+ "fallback_category": "Health & Wellness",
+ "category_order": [
+  "Sexual Wellness",
+  "Feminine Care",
+  "Eye Care",
+  "Ear & Hearing Care",
+  "Jewelry & Accessories",
+  "Fragrance",
+  "Nail Care",
+  "Oral Care",
+  "Makeup",
+  "Hair & Grooming",
+  "Supplements & Wellness",
+  "Massage & Recovery",
+  "Body Care",
+  "Men's Grooming",
+  "Skincare",
+  "Sleep & Snoring",
+  "Fashion & Apparel",
+  "Electronics",
+  "Home & Living",
+  "Auto & Moto",
+  "Pet Supplies",
+  "Health & Wellness"
+ ],
+ "categories": {
+  "Sexual Wellness": {
+   "keywords": [
+    "vibrator",
+    "vibrators",
+    "dildo",
+    "dildos",
+    "lube",
+    "personal lubricant",
+    "intimate lubricant",
+    "condom",
+    "masturbat",
+    "butt plug",
+    "anal plug",
+    "anal toy",
+    "anal beads",
+    "anal vibrator",
+    "cock ring",
+    "penis ring",
+    "penis pump",
+    "g-spot",
+    "g spot",
+    "clitoral",
+    "clitoris",
+    "prostate massager",
+    "prostate stimulator",
+    "bondage",
+    "kegel",
+    "ben wa",
+    "strap-on",
+    "strap on",
+    "stroker",
+    "pleasure toy",
+    "adult toy",
+    "sex toy",
+    "nipple clamp",
+    "bullet vibrator",
+    "rabbit vibrator",
+    "aphrodisiac",
+    "thrusting vibrator",
+    "wearable vibrator",
+    "remote vibrator",
+    "intimate toy"
+   ],
+   "cluster_keywords": [
+    "adult",
+    "sexual-wellness",
+    "intimate",
+    "sex-toys"
+   ],
+   "params": [
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "safety",
+    "care",
+    "whats_included",
+    "target_profile"
+   ],
+   "collection_handle": "sexual-wellness"
+  },
+  "Feminine Care": {
+   "keywords": [
+    "vaginal",
+    "feminine hygiene",
+    "feminine wash",
+    "menstrual cup",
+    "menstrual",
+    "gynecolog",
+    "yeast infection",
+    "intimate wash",
+    "yoni",
+    "period underwear"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "safety",
+    "ingredients",
+    "target_profile"
+   ],
+   "collection_handle": "feminine-care"
+  },
+  "Eye Care": {
+   "keywords": [
+    "eye drops",
+    "eye spray",
+    "dry eye",
+    "dry eyes",
+    "contact lens",
+    "lens cleaner",
+    "lens case",
+    "anti-fog spray",
+    "eyeglass cleaner",
+    "eye wash",
+    "myopia"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "For",
+    "Format"
+   ],
+   "modules": [
+    "how_to",
+    "safety",
+    "target_profile"
+   ],
+   "collection_handle": "eye-care-wellness"
+  },
+  "Ear & Hearing Care": {
+   "keywords": [
+    "ear wax",
+    "earwax",
+    "ear cleaner",
+    "ear cleaning",
+    "ear pick",
+    "ear vacuum",
+    "tinnitus",
+    "hearing aid",
+    "hearing amplifier",
+    "sound amplifier",
+    "ear correct",
+    "ear drops",
+    "otoscope",
+    "ear care serum",
+    "ear sticker"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "For",
+    "Format"
+   ],
+   "modules": [
+    "how_to",
+    "safety",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "ear-hearing-care"
+  },
+  "Jewelry & Accessories": {
+   "keywords": [
+    "earrings",
+    "necklace",
+    "choker",
+    "grillz",
+    "anklet",
+    "brooch",
+    "pendant",
+    "jewelry",
+    "stud earrings",
+    "crawler earrings"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "For"
+   ],
+   "modules": [
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "jewelry-accessories"
+  },
+  "Fragrance": {
+   "keywords": [
+    "perfume",
+    "cologne",
+    "eau de",
+    "fragrance",
+    " scent",
+    " musk",
+    "parfum"
+   ],
+   "cluster_keywords": [
+    "fragrance",
+    "perfume"
+   ],
+   "params": [
+    "Scent",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "scent_profile",
+    "ingredients",
+    "gift_options",
+    "target_profile"
+   ],
+   "collection_handle": "fragrance"
+  },
+  "Nail Care": {
+   "keywords": [
+    "nail",
+    "acrylic",
+    "manicure",
+    "pedicure",
+    "cuticle"
+   ],
+   "cluster_keywords": [
+    "nail"
+   ],
+   "params": [
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "nail-care"
+  },
+  "Oral Care": {
+   "keywords": [
+    "tooth",
+    "teeth",
+    "dental",
+    "oral",
+    "floss",
+    "mouth",
+    "denture",
+    "interdental"
+   ],
+   "cluster_keywords": [
+    "oral",
+    "dental"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "ingredients",
+    "how_to",
+    "safety",
+    "target_profile"
+   ],
+   "collection_handle": "oral-care"
+  },
+  "Makeup": {
+   "keywords": [
+    "makeup",
+    "lipstick",
+    "mascara",
+    "eyeliner",
+    "eyeshadow",
+    "foundation",
+    "blush",
+    "lash",
+    "brow",
+    "brush",
+    "blender",
+    "sponge"
+   ],
+   "cluster_keywords": [
+    "makeup",
+    "cosmetics",
+    "lash-brow",
+    "eye-makeup"
+   ],
+   "params": [
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "variants",
+    "how_to",
+    "target_profile"
+   ],
+   "collection_handle": "makeup"
+  },
+  "Hair & Grooming": {
+   "keywords": [
+    "hair",
+    "beard",
+    "shav",
+    "razor",
+    "clipper",
+    "trimmer",
+    "wig",
+    "comb",
+    "scalp"
+   ],
+   "cluster_keywords": [
+    "hair",
+    "beard",
+    "grooming",
+    "shaving"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "ingredients",
+    "target_profile"
+   ],
+   "collection_handle": "hair-grooming"
+  },
+  "Supplements & Wellness": {
+   "keywords": [
+    "supplement",
+    "gummies",
+    "gummy",
+    "capsule",
+    "vitamin",
+    "collagen",
+    "probiotic",
+    "magnesium",
+    "ashwagandha",
+    "tablet",
+    "powder"
+   ],
+   "cluster_keywords": [
+    "supplement",
+    "wellness",
+    "vitamin",
+    "gummies"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "nutrition_facts",
+    "ingredients",
+    "clinical_evidence",
+    "protocol",
+    "safety",
+    "subscription_refill",
+    "target_profile"
+   ],
+   "collection_handle": "supplements-wellness"
+  },
+  "Massage & Recovery": {
+   "keywords": [
+    "massage",
+    "massager",
+    "knee",
+    "back pain",
+    "joint",
+    "foot",
+    "posture",
+    "brace",
+    "heating pad",
+    "acupressure",
+    "cupping"
+   ],
+   "cluster_keywords": [
+    "massage",
+    "back-pain",
+    "knee",
+    "joint",
+    "foot-care",
+    "recovery"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "protocol",
+    "safety",
+    "target_profile"
+   ],
+   "collection_handle": "massage-recovery"
+  },
+  "Body Care": {
+   "keywords": [
+    "body",
+    "cellulite",
+    "slimming",
+    "sculpt",
+    "bath",
+    "shower",
+    "scrub",
+    "tan",
+    "firming"
+   ],
+   "cluster_keywords": [
+    "body-care",
+    "body-sculpting",
+    "cellulite",
+    "bath",
+    "shower",
+    "slimming"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "ingredients",
+    "how_to",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "body-care"
+  },
+  "Men's Grooming": {
+   "keywords": [
+    "men's",
+    "mens "
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "target_profile"
+   ],
+   "collection_handle": "mens-grooming"
+  },
+  "Skincare": {
+   "keywords": [
+    "skin",
+    "serum",
+    "cream",
+    "moistur",
+    "cleanser",
+    "acne",
+    "anti-aging",
+    "wrinkle",
+    "pore",
+    "mask",
+    "toner",
+    "spf",
+    "retinol"
+   ],
+   "cluster_keywords": [
+    "skincare",
+    "acne",
+    "anti-aging",
+    "mens-skincare"
+   ],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "ingredients",
+    "clinical_evidence",
+    "timeline",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "skincare"
+  },
+  "Sleep & Snoring": {
+   "keywords": [
+    "snore",
+    "snoring",
+    "nasal strip",
+    "sleep strip",
+    "anti-snore",
+    "apnea",
+    "mouthpiece",
+    "sleep mask",
+    "sleep aid",
+    "earplug"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "how_to",
+    "safety",
+    "target_profile"
+   ],
+   "collection_handle": "sleep-snoring"
+  },
+  "Fashion & Apparel": {
+   "keywords": [
+    "t-shirt",
+    "tshirt",
+    "dress",
+    "jacket",
+    "coat",
+    "hoodie",
+    "sweatshirt",
+    "pants ",
+    "trousers",
+    "jeans",
+    "sweater",
+    "cardigan",
+    "blazer",
+    "skirt",
+    "blouse",
+    "shirt",
+    "shorts",
+    "jumpsuit",
+    "leggings",
+    "socks",
+    "lingerie",
+    "underwear",
+    "bra ",
+    "panties",
+    "swimsuit",
+    "swimwear",
+    "bikini",
+    "beanie",
+    "apparel",
+    "clothing"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "For"
+   ],
+   "modules": [
+    "variants",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "fashion-apparel"
+  },
+  "Electronics": {
+   "keywords": [
+    "headphone",
+    "earphone",
+    "earbud",
+    "earbuds",
+    "power bank",
+    "powerbank",
+    "charging cable",
+    "usb cable",
+    "hdmi",
+    "webcam",
+    "camera",
+    "tablet",
+    "laptop",
+    "keyboard",
+    "mouse ",
+    "smartwatch",
+    "smart watch",
+    "projector",
+    "microphone",
+    "drone",
+    "router",
+    "bluetooth speaker",
+    "speaker"
+   ],
+   "cluster_keywords": [],
+   "params": [],
+   "modules": [
+    "specs",
+    "whats_included",
+    "target_profile"
+   ],
+   "collection_handle": "electronics"
+  },
+  "Home & Living": {
+   "keywords": [
+    "cookware",
+    "frying pan",
+    "cutting board",
+    "utensil",
+    "kitchen",
+    "cutlery",
+    "dinnerware",
+    "bedding",
+    "duvet",
+    "pillow",
+    "blanket",
+    "towel",
+    "curtain",
+    "rug ",
+    "doormat",
+    "vase",
+    "home decor",
+    "wall art",
+    "storage box",
+    "laundry",
+    "mop ",
+    "broom",
+    "dustpan",
+    "garden",
+    "planter",
+    "furniture",
+    "shelf",
+    "clothes hanger",
+    "trash can",
+    "tablecloth"
+   ],
+   "cluster_keywords": [],
+   "params": [],
+   "modules": [
+    "specs",
+    "whats_included",
+    "care",
+    "target_profile"
+   ],
+   "collection_handle": "home-living"
+  },
+  "Auto & Moto": {
+   "keywords": [
+    "car mount",
+    "car seat",
+    "car cover",
+    "windshield",
+    "windscreen",
+    "dashboard",
+    "steering wheel",
+    "license plate",
+    "car wash",
+    "car wax",
+    "motorcycle",
+    "motorbike",
+    "tire ",
+    "tyre",
+    "wiper",
+    "automotive",
+    "vehicle",
+    "car mat"
+   ],
+   "cluster_keywords": [],
+   "params": [],
+   "modules": [
+    "specs",
+    "whats_included",
+    "target_profile"
+   ],
+   "collection_handle": "auto-moto"
+  },
+  "Pet Supplies": {
+   "keywords": [
+    "pet ",
+    "dog ",
+    "puppy",
+    "kitten",
+    "cat litter",
+    "litter box",
+    "aquarium",
+    "fish tank",
+    "pet bed",
+    "dog bed",
+    "cat bed",
+    "leash",
+    "pet collar",
+    "dog collar",
+    "chew toy",
+    "bird cage",
+    "hamster",
+    "pet food",
+    "kennel",
+    "scratching post"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "For"
+   ],
+   "modules": [
+    "specs",
+    "how_to",
+    "target_profile"
+   ],
+   "collection_handle": "pet-supplies"
+  },
+  "Health & Wellness": {
+   "keywords": [
+    "brace",
+    "support",
+    "posture",
+    "radiation",
+    "protective",
+    "emergency",
+    "blood pressure",
+    "thermometer",
+    "first aid",
+    "air purifier",
+    "air fresh",
+    "humidifier",
+    "monitor",
+    "glucose",
+    "nebulizer",
+    "anti-chafing",
+    "insole",
+    "wrist",
+    "ankle",
+    "elbow",
+    "compression"
+   ],
+   "cluster_keywords": [],
+   "params": [
+    "Concern",
+    "Format",
+    "For"
+   ],
+   "modules": [
+    "specs",
+    "safety",
+    "how_to",
+    "target_profile"
+   ],
+   "collection_handle": "health-wellness"
+  }
+ },
+ "params": {
+  "Format": {
+   "type": "single",
+   "priority": [
+    [
+     "Gummies",
+     [
+      "gummies",
+      "gummy"
+     ]
+    ],
+    [
+     "Capsules",
+     [
+      "capsule",
+      "softgel",
+      "caps "
+     ]
+    ],
+    [
+     "Tablets",
+     [
+      "tablet",
+      "pill "
+     ]
+    ],
+    [
+     "Powder",
+     [
+      "powder"
+     ]
+    ],
+    [
+     "Drops & Liquids",
+     [
+      "drops",
+      "tincture",
+      "liquid "
+     ]
+    ],
+    [
+     "Serum",
+     [
+      "serum",
+      "essence",
+      "ampoule"
+     ]
+    ],
+    [
+     "Oil",
+     [
+      " oil",
+      "essential oil"
+     ]
+    ],
+    [
+     "Cream & Lotion",
+     [
+      "cream",
+      "lotion",
+      "balm",
+      "butter",
+      "moisturizer"
+     ]
+    ],
+    [
+     "Gel",
+     [
+      " gel"
+     ]
+    ],
+    [
+     "Spray & Mist",
+     [
+      "spray",
+      "mist"
+     ]
+    ],
+    [
+     "Mask",
+     [
+      " mask",
+      "sheet mask"
+     ]
+    ],
+    [
+     "Patches",
+     [
+      "patch",
+      "patches",
+      "strips"
+     ]
+    ],
+    [
+     "Cleanser & Wash",
+     [
+      "cleanser",
+      "wash",
+      "soap",
+      "foam",
+      "shampoo"
+     ]
+    ],
+    [
+     "Tools & Devices",
+     [
+      "massager",
+      "device",
+      "machine",
+      "roller",
+      "gua sha",
+      "trimmer",
+      "clipper",
+      "lamp",
+      "brush",
+      "tool",
+      "kit",
+      "tweezer",
+      "file",
+      "curler",
+      "mirror",
+      "meter",
+      "monitor"
+     ]
+    ]
+   ]
+  },
+  "Concern": {
+   "type": "multi",
+   "max": 3,
+   "values": {
+    "Acne": [
+     "acne",
+     "pimple",
+     "blemish",
+     "blackhead",
+     "breakout"
+    ],
+    "Anti-aging": [
+     "anti-aging",
+     "anti aging",
+     "wrinkle",
+     "firming",
+     " lift",
+     "collagen",
+     "age "
+    ],
+    "Brightening": [
+     "bright",
+     "whiten",
+     "dark spot",
+     "pigment",
+     "glow",
+     "radian",
+     "tone"
+    ],
+    "Hydration": [
+     "hydrat",
+     "moistur",
+     " dry ",
+     "nourish"
+    ],
+    "Pores": [
+     "pore"
+    ],
+    "Slimming & Contour": [
+     "cellulite",
+     "slim",
+     "fat ",
+     "contour",
+     "sculpt",
+     "weight",
+     "firm"
+    ],
+    "Pain Relief": [
+     "pain",
+     " ache",
+     "sore",
+     "relief",
+     "arthritis",
+     "inflamm"
+    ],
+    "Sleep": [
+     "sleep",
+     "insomnia",
+     "melatonin",
+     "night"
+    ],
+    "Stress & Calm": [
+     "stress",
+     "anxiety",
+     "calm",
+     "relax",
+     "ashwagandha"
+    ],
+    "Hair Growth": [
+     "hair growth",
+     "regrow",
+     "thinning",
+     "bald",
+     "grow hair"
+    ],
+    "Joint & Back": [
+     "joint",
+     "knee",
+     "back ",
+     "spine",
+     "posture",
+     "lumbar"
+    ],
+    "Snoring": [
+     "snore",
+     "snoring",
+     "apnea"
+    ],
+    "Detox": [
+     "detox",
+     "cleanse",
+     "colon"
+    ],
+    "Energy & Focus": [
+     "energy",
+     "focus",
+     "brain",
+     "memory",
+     "cognit"
+    ],
+    "Immunity": [
+     "immune",
+     "immunity",
+     "vitamin c"
+    ],
+    "Teeth Whitening": [
+     "whiten",
+     "teeth"
+    ]
+   }
+  },
+  "For": {
+   "type": "single",
+   "values": {
+    "Women": [
+     "women",
+     "ladies",
+     "female",
+     "her "
+    ],
+    "Men": [
+     "men's",
+     "mens ",
+     " men ",
+     "male",
+     "him "
+    ],
+    "Unisex": []
+   },
+   "demo_map": {
+    "female": "Women",
+    "male": "Men",
+    "unisex": "Unisex"
+   }
+  },
+  "Scent": {
+   "type": "multi",
+   "max": 3,
+   "category_gate": "Fragrance",
+   "values": {
+    "Floral": [
+     "floral",
+     "rose",
+     "jasmine",
+     "flower",
+     "peony"
+    ],
+    "Woody": [
+     "wood",
+     "sandal",
+     "oud",
+     "cedar",
+     "amber"
+    ],
+    "Citrus": [
+     "citrus",
+     "lemon",
+     "bergamot",
+     "orange",
+     "lime",
+     "grapefruit"
+    ],
+    "Fresh": [
+     "fresh",
+     "aqua",
+     "marine",
+     "clean",
+     "ocean",
+     "breeze"
+    ],
+    "Sweet": [
+     "vanilla",
+     "sweet",
+     "caramel",
+     "gourmand",
+     "candy",
+     "sugar"
+    ],
+    "Musk": [
+     "musk"
+    ],
+    "Oriental & Spice": [
+     "oriental",
+     "spice",
+     "cinnamon",
+     "clove"
+    ]
+   }
+  }
+ },
+ "llm": {
+  "confidence_threshold": 1,
+  "model": "claude-haiku-4-5",
+  "enable": true
+ }
+}
