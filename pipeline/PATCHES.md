@@ -933,3 +933,12 @@ variant-фикс поправил только строку 446 (контекс�
 2-5. В COPY QUALITY добавлены жёсткие правила: GROUNDING (любая цифра/clinical только из source, иначе качественный claim) · CLINICAL/EFFICACY (efficacy-claim требует clinical_evidence или смягчения may/designed to) · VALUE FRAMING (в faq/compare обоснование ценности cost-per-use/vs recurring) · FIT (target_profile обязателен с ideal_for И not_ideal_for, явно кому НЕ подойдёт). Зачем: симуляция показала, что эти пробелы ограничивали confidence (нет цены, тонкие пруфы, нет self-qualification).
 
 RE-TEST: на следующем прогоне пайплайна сгенерить описания этих же товаров новым промптом → повторить агентную симуляцию → цель confidence 80%+, битых интерлинков 0, grounding 5/5.
+
+## 2026-06-08 — feat: HUMAN VOICE (humanizer) в Designer-промпте (cell 14)
+Cell: 14 (_designer_system, блок COPY QUALITY, сразу после IMG_ALT, перед PRODUCT TITLE)
+Snapshot: pipeline/.snapshots/20260608_*_before_humanizer.ipynb
+Источник: blader/humanizer (SKILL.md, 34 правила анти-AI-tell), адаптировано под e-commerce body-копи.
+Что стало: добавлен блок «HUMAN VOICE» — копулы is/are/has вместо serves as/boasts; вырезаны AI-бузворды (testament/landscape/delve/elevate/seamless/realm/tapestry/…); без сигнпостинга и чатбот-артефактов (let's dive in, in conclusion, rest assured); без стэков хеджирования; без fake-depth -ing хвостов; без forced rule-of-three и «not just X, but Y»; в прозе без em/en-тире (точки/запятые/двоеточия); прямые кавычки, минимум bold, без эмодзи; конкретика вместо общих похвал.
+Зачем: тексты при заливке должны звучать по-человечески, не как AI (доверие покупателя + AEO).
+⚠️ Конфликт-резолюшн (намеренно): блок ЗАСКОУПЛЕН на body-копи и НЕ трогает PRODUCT TITLE — тайтлы сохраняют разделитель «—» и Title Case (дизайн-паттерн всех товаров + основа SEO-экстракции seo_backfill по тире). Правило 17 (sentence-case headings) НЕ форсится (визуальная консистентность). Гуманизация тайтлов — отдельное решение (затронет SEO-экстрактор + дизайн).
+Тест: nbformat.validate + notebook_smoke ✅ (17 ячеек, 8 code); 1 совпадение якоря; +1117 символов. Полная проверка эффекта — на следующем прогоне Designer'а.
