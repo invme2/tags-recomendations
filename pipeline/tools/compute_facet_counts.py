@@ -9,7 +9,7 @@ import theme_edit as te
 tok = te.token(); STORE = os.environ['SHOPIFY_STORE']; BASE = f'https://{STORE}/admin/api/2024-10'
 H = {'X-Shopify-Access-Token': tok}
 HJ = {**H, 'Content-Type': 'application/json'}
-PREFIXES = ('Category:', 'Concern:', 'Format:', 'For:', 'Scent:')
+PREFIXES = ('Category:', 'Concern:', 'Format:', 'For:', 'Scent:', 'Material:', 'Color:', 'Size:')
 
 def all_collections():
     out=[]

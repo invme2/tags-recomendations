@@ -138,12 +138,13 @@ def _vision_category(title, image_url):
     except Exception:
         return (None, None)
 
-def classify(title, ptype, tags, desc='', image_url=None, use_llm=True, use_vision=False):
+def classify(title, ptype, tags, desc='', image_url=None, use_llm=True, use_vision=False, vision=None):
     c = cfg()
     dtxt = _striphtml(desc)[:800]
     t = ((title or '') + ' ' + (ptype or '') + ' ' + dtxt).lower()
     cl = _clusters(tags); demos = _demos(tags)
     res = {'category': None, 'concern': [], 'format': None, 'audience': [], 'scent': [],
+           'material': [], 'color': [], 'size': [],
            'confidence': 0.0, 'source': 'keyword', 'unclassified': False, 'proposed_category': None}
 
     # ---- category (keyword fast-path over title + type + DESCRIPTION) ----
@@ -186,6 +187,17 @@ def classify(title, ptype, tags, desc='', image_url=None, use_llm=True, use_visi
     if res['category'] == Sg or _kw(t, ['perfume', 'cologne', 'eau de', 'fragrance']):
         sc = [name for name, keys in P['Scent']['values'].items() if _kw(t, keys)]
         res['scent'] = sc[:P['Scent'].get('max', 3)]
+    # ---- material (keyword; low ambiguity) ----
+    Mv = (P.get('Material') or {}).get('values', {})
+    if Mv:
+        res['material'] = [n for n, keys in Mv.items() if _kw(t, keys)][:(P['Material'].get('max', 2))]
+    # ---- vision dict enrichment: Color / Material / Size come precisely from the photo analysis ----
+    if vision:
+        s = vision.get('sensory', {}) or {}; ph = vision.get('physical', {}) or {}
+        cn = s.get('color_names') or []
+        if cn and not res['color']: res['color'] = [str(x).strip().title() for x in cn if x][:3]
+        if s.get('material') and not res['material']: res['material'] = [str(s['material']).strip().title()]
+        if ph.get('size_impression') and not res['size']: res['size'] = [str(ph['size_impression']).strip().title()]
     return res
 
 def to_tags(res):
@@ -195,19 +207,25 @@ def to_tags(res):
     if res.get('format'): out.append('Format:' + res['format'])
     for x in res.get('audience', []): out.append('For:' + x)
     for x in res.get('scent', []): out.append('Scent:' + x)
+    for x in res.get('material', []): out.append('Material:' + x)
+    for x in res.get('color', []): out.append('Color:' + x)
+    for x in res.get('size', []): out.append('Size:' + x)
     return out
 
-def derive(title, ptype, tags, desc='', image_url=None, use_llm=False, use_vision=False):
+def derive(title, ptype, tags, desc='', image_url=None, use_llm=False, use_vision=False, vision=None):
     """gen_facets-compatible output (drop-in). use_llm=False by default so catalog SWEEPS
     are cheap + deterministic; onboarding/health paths pass use_llm=True (and optionally
     use_vision=True + image_url) to rescue unknowns from description / product photo."""
-    r = classify(title, ptype, tags, desc=desc, image_url=image_url, use_llm=use_llm, use_vision=use_vision)
+    r = classify(title, ptype, tags, desc=desc, image_url=image_url, use_llm=use_llm, use_vision=use_vision, vision=vision)
     f = {}
     if r['category']: f['f_category'] = [r['category']]
     if r['concern']: f['f_concern'] = r['concern']
     if r['format']: f['f_form'] = [r['format']]
     if r['audience']: f['f_audience'] = r['audience']
     if r['scent']: f['f_scent'] = r['scent']
+    if r['material']: f['f_material'] = r['material']
+    if r['color']: f['f_color'] = r['color']
+    if r['size']: f['f_size'] = r['size']
     return f
 
 def derive_keyword(title, ptype, tags, desc=''):

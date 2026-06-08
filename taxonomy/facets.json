@@ -1056,6 +1056,78 @@
      "clove"
     ]
    }
+  },
+  "Material": {
+   "type": "multi",
+   "max": 2,
+   "values": {
+    "Cotton": [
+     "cotton"
+    ],
+    "Polyester": [
+     "polyester"
+    ],
+    "Leather": [
+     "leather",
+     "pu leather",
+     "faux leather"
+    ],
+    "Silk & Satin": [
+     "silk",
+     "satin"
+    ],
+    "Wool": [
+     "wool",
+     "cashmere"
+    ],
+    "Denim": [
+     "denim"
+    ],
+    "Linen": [
+     "linen"
+    ],
+    "Silicone": [
+     "silicone"
+    ],
+    "Stainless Steel": [
+     "stainless steel",
+     "stainless"
+    ],
+    "Plastic": [
+     "plastic"
+    ],
+    "Glass": [
+     "glass"
+    ],
+    "Ceramic": [
+     "ceramic"
+    ],
+    "Wood & Bamboo": [
+     "wooden",
+     "bamboo"
+    ],
+    "Metal": [
+     "alloy",
+     "aluminum",
+     "aluminium"
+    ]
+   }
+  },
+  "Color": {
+   "type": "multi",
+   "source": "variant_option",
+   "option_names": [
+    "color",
+    "colour"
+   ]
+  },
+  "Size": {
+   "type": "multi",
+   "source": "variant_option",
+   "option_names": [
+    "size",
+    "sizes"
+   ]
   }
  },
  "llm": {

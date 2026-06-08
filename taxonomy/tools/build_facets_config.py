@@ -117,6 +117,16 @@ PARAMS={
     "Floral":["floral","rose","jasmine","flower","peony"],"Woody":["wood","sandal","oud","cedar","amber"],
     "Citrus":["citrus","lemon","bergamot","orange","lime","grapefruit"],"Fresh":["fresh","aqua","marine","clean","ocean","breeze"],
     "Sweet":["vanilla","sweet","caramel","gourmand","candy","sugar"],"Musk":["musk"],"Oriental & Spice":["oriental","spice","cinnamon","clove"]}},
+ # Material: keyword/vision (low ambiguity). Useful for Home/Fashion/Jewelry.
+ "Material": {"type":"multi","max":2,"values":{
+    "Cotton":["cotton"],"Polyester":["polyester"],"Leather":["leather","pu leather","faux leather"],
+    "Silk & Satin":["silk","satin"],"Wool":["wool","cashmere"],"Denim":["denim"],"Linen":["linen"],
+    "Silicone":["silicone"],"Stainless Steel":["stainless steel","stainless"],"Plastic":["plastic"],
+    "Glass":["glass"],"Ceramic":["ceramic"],"Wood & Bamboo":["wooden","bamboo"],"Metal":["alloy","aluminum","aluminium"]}},
+ # Color & Size come from VARIANT OPTIONS (reliable), not text keywords. facet_backfill reads
+ # product.options named like these and emits Color:/Size: tags. Vision color_names can enrich Color.
+ "Color": {"type":"multi","source":"variant_option","option_names":["color","colour"]},
+ "Size":  {"type":"multi","source":"variant_option","option_names":["size","sizes"]},
 }
 
 config={"version":"1.0","fallback_category":"Health & Wellness","category_order":order,

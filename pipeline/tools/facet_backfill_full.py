@@ -17,11 +17,13 @@ def _derive(ti, pt, tg, body='', img=None):
 
 tok = te.token(); STORE = os.environ['SHOPIFY_STORE']; BASE = f'https://{STORE}/admin/api/2024-10'
 H = {'X-Shopify-Access-Token': tok, 'Content-Type': 'application/json'}
-PREFIXES = ('Category:', 'Concern:', 'Format:', 'For:', 'Scent:')
-KMAP = {'f_category': 'Category', 'f_concern': 'Concern', 'f_form': 'Format', 'f_audience': 'For', 'f_scent': 'Scent'}
+PREFIXES = ('Category:', 'Concern:', 'Format:', 'For:', 'Scent:', 'Material:', 'Color:', 'Size:')
+KMAP = {'f_category': 'Category', 'f_concern': 'Concern', 'f_form': 'Format', 'f_audience': 'For',
+        'f_scent': 'Scent', 'f_material': 'Material', 'f_color': 'Color', 'f_size': 'Size'}
+COLOR_OPTS = ('color', 'colour'); SIZE_OPTS = ('size', 'sizes')
 
 def fetch_all():
-    out=[]; url=f'{BASE}/products.json?limit=250&fields=id,title,product_type,tags,body_html,image'
+    out=[]; url=f'{BASE}/products.json?limit=250&fields=id,title,product_type,tags,body_html,image,options'
     while url:
         r=requests.get(url,headers={'X-Shopify-Access-Token':tok},timeout=90); out+=r.json()['products']
         m=re.search(r'<([^>]+)>; rel="next"', r.headers.get('Link','')); url=m.group(1) if m else None
@@ -47,6 +49,15 @@ def main():
         facet=[]
         for k,label in KMAP.items():
             for v in f.get(k,[]): facet.append(f'{label}:{v}')
+        # Color / Size straight from VARIANT OPTIONS (reliable for fashion/apparel)
+        for opt in (p.get('options') or []):
+            on=(opt.get('name') or '').strip().lower()
+            if on in COLOR_OPTS:
+                for val in (opt.get('values') or [])[:10]:
+                    if val and val.strip(): facet.append('Color:'+val.strip()[:30])
+            elif on in SIZE_OPTS:
+                for val in (opt.get('values') or [])[:12]:
+                    if val and val.strip(): facet.append('Size:'+val.strip()[:20])
         existing=[t.strip() for t in (p.get('tags') or '').split(',') if t.strip()]
         kept=[t for t in existing if not t.startswith(PREFIXES)]
         # dedupe preserve order
