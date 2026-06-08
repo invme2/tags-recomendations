@@ -8,9 +8,12 @@ import theme_edit as te
 import gen_facets as G
 import facet_engine as FE
 
-USE_LLM = '--llm' in sys.argv  # rescue unknowns into existing categories via Haiku (cached)
-def _derive(ti, pt, tg):
-    return FE.derive(ti, pt, tg, use_llm=True) if USE_LLM else G.derive(ti, pt, tg)
+USE_LLM = '--llm' in sys.argv      # rescue unknowns via Haiku over title+type+DESCRIPTION (cached)
+USE_VISION = '--vision' in sys.argv  # last-resort: classify from the PRODUCT PHOTO (EPROLO thin, photo rich)
+def _derive(ti, pt, tg, body='', img=None):
+    if USE_LLM or USE_VISION:
+        return FE.derive(ti, pt, tg, desc=body, image_url=img, use_llm=True, use_vision=USE_VISION)
+    return G.derive(ti, pt, tg, desc=body)  # keyword path now also scans the description
 
 tok = te.token(); STORE = os.environ['SHOPIFY_STORE']; BASE = f'https://{STORE}/admin/api/2024-10'
 H = {'X-Shopify-Access-Token': tok, 'Content-Type': 'application/json'}
@@ -18,7 +21,7 @@ PREFIXES = ('Category:', 'Concern:', 'Format:', 'For:', 'Scent:')
 KMAP = {'f_category': 'Category', 'f_concern': 'Concern', 'f_form': 'Format', 'f_audience': 'For', 'f_scent': 'Scent'}
 
 def fetch_all():
-    out=[]; url=f'{BASE}/products.json?limit=250&fields=id,title,product_type,tags'
+    out=[]; url=f'{BASE}/products.json?limit=250&fields=id,title,product_type,tags,body_html,image'
     while url:
         r=requests.get(url,headers={'X-Shopify-Access-Token':tok},timeout=90); out+=r.json()['products']
         m=re.search(r'<([^>]+)>; rel="next"', r.headers.get('Link','')); url=m.group(1) if m else None
@@ -39,7 +42,8 @@ def main():
     changed=0; skipped=0; failed=0; i=0
     for p in P:
         i+=1
-        f=_derive(p.get('title',''), p.get('product_type',''), p.get('tags') or '')
+        img=(p.get('image') or {}).get('src')
+        f=_derive(p.get('title',''), p.get('product_type',''), p.get('tags') or '', p.get('body_html') or '', img)
         facet=[]
         for k,label in KMAP.items():
             for v in f.get(k,[]): facet.append(f'{label}:{v}')

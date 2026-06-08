@@ -60,62 +60,109 @@ def _clusters(tags):
 def _demos(tags):
     return [x.strip()[5:] for x in (tags or '').split(',') if x.strip().startswith('demo:')]
 
-def _llm_category(title, ptype, use_llm=True):
-    """Classify into an EXISTING category or 'NEW: <name>'. Cached. Returns (category_or_None, proposed_or_None)."""
+def _striphtml(s):
+    return re.sub(r'<[^>]+>', ' ', s or '')
+
+def _api_key():
+    api = os.environ.get('ANTHROPIC_API_KEY')
+    if not api:
+        try:
+            for line in open(os.path.join(ROOT, '.env'), encoding='utf-8'):
+                if line.startswith('ANTHROPIC_API_KEY='): api = line.split('=', 1)[1].strip()
+        except Exception: pass
+    return api
+
+def _parse_cat(ans, cats):
+    if ans.upper().startswith('NEW:'):
+        return (None, ans.split(':', 1)[1].strip()[:40])
+    for cat in cats:
+        if cat.lower() == ans.lower() or cat.lower() in ans.lower():
+            return (cat, None)
+    return (None, None)
+
+def _llm_category(title, ptype, desc='', use_llm=True):
+    """Classify into an EXISTING category or 'NEW: <name>' from title+type+DESCRIPTION. Cached.
+    The description is gold: EPROLO titles are often sparse, but the generated copy (written from
+    the product photos via VISION) carries the real signal."""
     c = cfg()
     if not (use_llm and c.get('llm', {}).get('enable')): return (None, None)
-    key = hashlib.sha1((title + '|' + (ptype or '')).encode('utf-8', 'ignore')).hexdigest()
+    key = hashlib.sha1((title + '|' + (ptype or '') + '|' + (desc or '')[:200]).encode('utf-8', 'ignore')).hexdigest()
     cache = _cache()
     if key in cache:
         v = cache[key]; return (v.get('category'), v.get('proposed'))
     try:
         import anthropic
-        api = os.environ.get('ANTHROPIC_API_KEY')
-        if not api:
-            # try .env
-            try:
-                for line in open(os.path.join(ROOT, '.env'), encoding='utf-8'):
-                    if line.startswith('ANTHROPIC_API_KEY='): api = line.split('=', 1)[1].strip()
-            except Exception: pass
+        api = _api_key()
         if not api: return (None, None)
         cats = c['category_order']
         prompt = ("Classify this e-commerce product into EXACTLY ONE category from the list. "
                   "If none fits well, reply 'NEW: <2-3 word category name>'.\n\nCATEGORIES:\n- " + "\n- ".join(cats) +
                   "\n\nPRODUCT: " + (title or '')[:200] + " | type: " + (ptype or '')[:60] +
+                  "\n\nDESCRIPTION: " + (_striphtml(desc))[:500] +
                   "\n\nReply with ONLY the exact category name from the list, or 'NEW: ...'. No other text.")
         cl = anthropic.Anthropic(api_key=api)
         r = cl.messages.create(model=c['llm'].get('model', 'claude-haiku-4-5'), max_tokens=30,
                                messages=[{'role': 'user', 'content': prompt}])
-        ans = r.content[0].text.strip()
-        category = None; proposed = None
-        if ans.upper().startswith('NEW:'):
-            proposed = ans.split(':', 1)[1].strip()[:40]
-        else:
-            for cat in cats:
-                if cat.lower() == ans.lower() or cat.lower() in ans.lower():
-                    category = cat; break
+        category, proposed = _parse_cat(r.content[0].text.strip(), cats)
         cache[key] = {'category': category, 'proposed': proposed}; _cache_save()
         return (category, proposed)
     except Exception:
         return (None, None)
 
-def classify(title, ptype, tags, use_llm=True):
+def _vision_category(title, image_url):
+    """Classify straight from the PRODUCT PHOTO. The last-resort signal for items where EPROLO gave
+    almost no text but the image shows exactly what it is. Cached by image URL."""
     c = cfg()
-    t = ((title or '') + ' ' + (ptype or '')).lower()
+    if not (c.get('llm', {}).get('enable') and image_url): return (None, None)
+    key = 'vis:' + hashlib.sha1(image_url.encode('utf-8', 'ignore')).hexdigest()
+    cache = _cache()
+    if key in cache:
+        v = cache[key]; return (v.get('category'), v.get('proposed'))
+    try:
+        import anthropic
+        api = _api_key()
+        if not api: return (None, None)
+        cats = c['category_order']
+        prompt = ("Look at this product photo and classify the product into EXACTLY ONE category from "
+                  "the list. If none fits, reply 'NEW: <2-3 word category name>'.\n\nCATEGORIES:\n- " +
+                  "\n- ".join(cats) + "\n\n(Title, may be vague: " + (title or '')[:120] +
+                  ")\n\nReply with ONLY the exact category name, or 'NEW: ...'. No other text.")
+        cl = anthropic.Anthropic(api_key=api)
+        r = cl.messages.create(model=c['llm'].get('vision_model', c['llm'].get('model', 'claude-haiku-4-5')),
+                               max_tokens=30, messages=[{'role': 'user', 'content': [
+                                   {'type': 'image', 'source': {'type': 'url', 'url': image_url}},
+                                   {'type': 'text', 'text': prompt}]}])
+        category, proposed = _parse_cat(r.content[0].text.strip(), cats)
+        cache[key] = {'category': category, 'proposed': proposed}; _cache_save()
+        return (category, proposed)
+    except Exception:
+        return (None, None)
+
+def classify(title, ptype, tags, desc='', image_url=None, use_llm=True, use_vision=False):
+    c = cfg()
+    dtxt = _striphtml(desc)[:800]
+    t = ((title or '') + ' ' + (ptype or '') + ' ' + dtxt).lower()
     cl = _clusters(tags); demos = _demos(tags)
     res = {'category': None, 'concern': [], 'format': None, 'audience': [], 'scent': [],
            'confidence': 0.0, 'source': 'keyword', 'unclassified': False, 'proposed_category': None}
 
-    # ---- category (keyword fast-path) ----
+    # ---- category (keyword fast-path over title + type + DESCRIPTION) ----
     for name in c['category_order']:
         cd = c['categories'][name]
         if _kw(t, cd['keywords']) or (cd.get('cluster_keywords') and _kw(cl, cd['cluster_keywords'])):
             res['category'] = name; res['confidence'] = 0.9; break
     if res['category'] is None:
-        # LLM fallback (unknown category)
-        cat, proposed = _llm_category(title, ptype, use_llm)
+        # text LLM fallback (title + type + description)
+        cat, proposed = _llm_category(title, ptype, dtxt, use_llm)
+        # vision fallback: read the photo when text still failed (EPROLO thin, photo rich)
+        if not cat and use_vision and image_url:
+            vcat, vprop = _vision_category(title, image_url)
+            if vcat: cat = vcat; proposed = None; res['source'] = 'vision'
+            elif vprop and not proposed: proposed = vprop
         if cat:
-            res['category'] = cat; res['source'] = 'llm'; res['confidence'] = 0.7
+            res['category'] = cat
+            if res['source'] != 'vision': res['source'] = 'llm'
+            res['confidence'] = 0.7
         else:
             res['category'] = c['fallback_category']; res['unclassified'] = True
             res['proposed_category'] = proposed; res['confidence'] = 0.2; res['source'] = 'fallback'
@@ -150,10 +197,11 @@ def to_tags(res):
     for x in res.get('scent', []): out.append('Scent:' + x)
     return out
 
-def derive(title, ptype, tags, use_llm=False):
+def derive(title, ptype, tags, desc='', image_url=None, use_llm=False, use_vision=False):
     """gen_facets-compatible output (drop-in). use_llm=False by default so catalog SWEEPS
-    are cheap + deterministic; onboarding/health paths pass use_llm=True to rescue unknowns."""
-    r = classify(title, ptype, tags, use_llm=use_llm)
+    are cheap + deterministic; onboarding/health paths pass use_llm=True (and optionally
+    use_vision=True + image_url) to rescue unknowns from description / product photo."""
+    r = classify(title, ptype, tags, desc=desc, image_url=image_url, use_llm=use_llm, use_vision=use_vision)
     f = {}
     if r['category']: f['f_category'] = [r['category']]
     if r['concern']: f['f_concern'] = r['concern']
@@ -162,9 +210,9 @@ def derive(title, ptype, tags, use_llm=False):
     if r['scent']: f['f_scent'] = r['scent']
     return f
 
-def derive_keyword(title, ptype, tags):
-    """Deterministic keyword-only derive (no LLM). Used by gen_facets shim + sweeps."""
-    return derive(title, ptype, tags, use_llm=False)
+def derive_keyword(title, ptype, tags, desc=''):
+    """Deterministic keyword-only derive (no LLM). Now also scans the description text."""
+    return derive(title, ptype, tags, desc=desc, use_llm=False)
 
 if __name__ == '__main__':
     import sys

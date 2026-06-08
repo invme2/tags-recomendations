@@ -105,7 +105,7 @@ def main():
     uncls = 0; drift = 0; cat_new = Counter(); proposals = Counter(); drift_samples = []
     for p in P:
         ti = p.get('title', ''); pt = p.get('product_type', ''); tg = p.get('tags') or ''
-        r = FE.classify(ti, pt, tg, use_llm=False)
+        r = FE.classify(ti, pt, tg, desc=p.get('body_html') or '', use_llm=False)
         cat_new[r['category']] += 1
         if r['unclassified']:
             uncls += 1

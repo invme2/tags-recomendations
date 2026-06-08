@@ -12,9 +12,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 import facet_engine as _fe
 
 # Deterministic, keyword-only (no LLM) — identical contract to the old derive(),
-# minus latent substring false positives (e.g. 'bluetooth'->Oral, 'massage'->Anti-aging).
-def derive(title, ptype, tags):
-    return _fe.derive_keyword(title, ptype, tags)
+# minus latent substring false positives. Now also scans the description (desc) when provided.
+def derive(title, ptype, tags, desc=''):
+    return _fe.derive_keyword(title, ptype, tags, desc=desc)
 
 # Pass-throughs for callers that want the richer engine.
 classify = _fe.classify
