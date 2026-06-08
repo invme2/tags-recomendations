@@ -20,9 +20,26 @@
   <div class="fwrap">
     {% render 'vibe-header', active: '' %}
 
+    {%- comment -%} Ozon-style category nav: pick the product's REAL category collection, not
+    collections.first (often bestsellers/all). pcat = Category tag; sibs = category siblings. {%- endcomment -%}
+    {%- assign GEN = 'all,bestsellers,best-sellers,top-best-sellers,frontpage,home,home-page,new,new-arrivals,sale,featured' | split: ',' -%}
+    {%- assign pcat = '' -%}
+    {%- for t in product.tags -%}{%- if t contains 'Category:' -%}{%- assign pcat = t | remove: 'Category:' | strip -%}{%- break -%}{%- endif -%}{%- endfor -%}
+    {%- assign cmap = shop.metafields.custom.category_collections.value -%}
+    {%- assign sibs = '' -%}{%- if cmap != blank and pcat != '' -%}{%- for entry in cmap -%}{%- if entry[0] == pcat -%}{%- assign sibs = entry[1] -%}{%- break -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+    {%- assign primary_col = blank -%}
+    {%- for c in product.collections -%}
+      {%- unless GEN contains c.handle -%}
+        {%- if primary_col == blank -%}{%- assign primary_col = c -%}{%- endif -%}
+        {%- if sibs != '' -%}{%- for s in sibs -%}{%- if s.h == c.handle -%}{%- assign primary_col = c -%}{%- break -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+        {%- if pcat != '' and c.title contains pcat -%}{%- assign primary_col = c -%}{%- endif -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    {%- if primary_col == blank -%}{%- assign primary_col = product.collections.first -%}{%- endif -%}
+
     <div class="fcrumbs" style="margin-top:22px;display:flex;align-items:center;gap:8px;color:var(--txt-3);font-size:13px">
       <a href="{{ routes.root_url }}">Home</a>{% render 'vibe-icon', name:'chevR', size:13 %}
-      {%- if product.collections.first -%}<a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>{% render 'vibe-icon', name:'chevR', size:13 %}{%- endif -%}
+      {%- if primary_col -%}<a href="{{ primary_col.url }}">{{ primary_col.title }}</a>{% render 'vibe-icon', name:'chevR', size:13 %}{%- endif -%}
       <span style="color:var(--txt-2)">{{ product.title | truncate: 40 }}</span>
     </div>
 
@@ -196,8 +213,22 @@
     {%- assign mf_end = 'faq,cta,interlinks' | split: ',' -%}
     {%- for key in mf_end -%}{%- assign mval = mf[key].value -%}{%- if mval != blank -%}{% render 'vibe-meta', key: key, val: mval %}{%- endif -%}{%- endfor -%}
 
+    {%- comment -%} Ozon-style related-collections band — sibling collections in the same category {%- endcomment -%}
+    {%- if sibs != '' and sibs.size > 1 -%}
+    <section class="fpsec">
+      <div class="fseo">
+        <span class="fseo__lbl">More in {{ pcat }}</span>
+        <div class="fseo__row">
+          {%- for s in sibs limit: 16 -%}{%- unless primary_col and s.h == primary_col.handle -%}
+            <a class="fseo__chip" href="/collections/{{ s.h }}">{{ s.h | replace: '-', ' ' | capitalize }}{%- if s.n -%} <b>{{ s.n }}</b>{%- endif -%}</a>
+          {%- endunless -%}{%- endfor -%}
+        </div>
+      </div>
+    </section>
+    {%- endif -%}
+
     <!-- recommendations -->
-    {%- assign recsrc = product.collections.first -%}
+    {%- assign recsrc = primary_col -%}
     {%- if recsrc and recsrc.products.size > 1 -%}
     <section class="fpsec" id="vibe-recs">
       <h2>You might also like</h2>
@@ -269,7 +300,7 @@
   function fgActive(){ if(!track||!track.clientWidth) return; var i=Math.round(track.scrollLeft/track.clientWidth); fgdots.forEach(function(d,k){ d.classList.toggle('on',k===i); }); fgthumbs.forEach(function(t,k){ t.classList.toggle('on',k===i); }); if(fgcount) fgcount.textContent=i+1; }
   if(track){ track.addEventListener('scroll', function(){ requestAnimationFrame(fgActive); }, {passive:true}); }
   fgthumbs.forEach(function(t){ t.addEventListener('click', function(){ if(track) track.scrollTo({left:(+t.getAttribute('data-fgthumb'))*track.clientWidth, behavior:'smooth'}); }); });
-  var fgback=document.querySelector('[data-fgback]'); if(fgback) fgback.addEventListener('click', function(){ if(history.length>1){ history.back(); } else { location.href={{ product.collections.first.url | default: routes.collections_url | json }}; } });
+  var fgback=document.querySelector('[data-fgback]'); if(fgback) fgback.addEventListener('click', function(){ if(history.length>1){ history.back(); } else { location.href={{ primary_col.url | default: routes.collections_url | json }}; } });
   var fgshare=document.querySelector('[data-fgshare]'); if(fgshare) fgshare.addEventListener('click', function(){ if(navigator.share){ navigator.share({title:document.title, url:location.href}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); fgshare.classList.add('on'); setTimeout(function(){fgshare.classList.remove('on');},1200); } });
   function money(c){ try{ return (c/100).toLocaleString(undefined,{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
   var vlabel=document.querySelector('[data-vlabel]');
